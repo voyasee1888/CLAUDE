@@ -1,0 +1,15 @@
+VOYASEE BAGFIT 7.0.1 — HOTFIX QA
+
+PASS: All PHP files pass syntax validation.
+PASS: Front-end JavaScript passes Node syntax validation.
+PASS: Airline and airport JSON files parse successfully.
+PASS: Shortcode HTML no longer embeds a user-specific public nonce.
+PASS: Public nonce endpoint is explicitly non-cacheable.
+PASS: POST requests obtain a fresh token before submission.
+PASS: A vsb_nonce failure triggers one automatic renewal and retry.
+PASS: GET airline and airport requests remain public and do not require a token.
+PASS: Plugin and asset version bumped to 7.0.1 for cache invalidation.
+PASS: Existing 250-airline and 7,883-airport data files retained.
+
+Environment limitation:
+A real WordPress/Hostinger/Elementor browser request was not executed in this container. Install on the preview page, purge caches, and repeat the same Quick Check acceptance test.

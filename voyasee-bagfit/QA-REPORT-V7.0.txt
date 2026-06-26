@@ -1,0 +1,70 @@
+VOYASEE BAGFIT 7.0.0 — CONTROLLED QA REPORT
+Generated: 22 June 2026
+
+PACKAGE SCOPE
+- Quick Check mode
+- Full Trip mode
+- Reverse Bag Search
+- Best Shared Size calculator
+- Up to 6 bags and 10 flights
+- 250 airline profiles
+- 7,883 airport search records
+- Saved links and two-page report
+- No AI or paid baggage API dependency
+
+PASSED STATIC CHECKS
+- PHP syntax: every PHP file passed php -l
+- JavaScript syntax: app.js passed node --check
+- CSS structure: balanced and beautified
+- JSON parsing: airlines.json and airports.json passed
+- Unique airline slugs: 250 / 250
+- Official source URL present: 250 / 250
+- Coverage tiers: 34 deep verified, 125 core source-linked, 91 directory only
+- Directory-only profiles contain no numerical bag dimensions
+- No H1 inside the shortcode template
+- No public developer labels such as Rule Engine, Evidence Grade, Confidence Score or No AI API
+- No embedded API credential pattern
+- Front-end source files remain readable rather than being compressed into giant single lines
+
+PASSED CONTROLLED ENGINE SCENARIOS
+- Ryanair exact-size cabin bag
+- One-dimension cabin failure
+- Cabin weight failure
+- Ticket-entered checked allowance
+- Checked bag within 158 cm / 23 kg
+- Checked bag above the total-size limit
+- Multiple bags across multiple flights
+- Flight-by-flight matrix generation
+- Strictest flight identification
+- Ticket line parser: 2PC 23KG EACH 158CM
+- Reverse search across all 250 profiles
+- Best Shared Size calculation
+
+DATA AND LICENSING
+- Airport index count: 7,883
+- Airport source package: airportsdata 20260315
+- Airport license notice bundled at data/licenses/AIRPORTSDATA-LICENSE.txt
+- Airport metadata is used only for search convenience
+
+NOT EXECUTED IN THIS ENVIRONMENT
+- Rendering inside the user's exact Hostinger, Astra and Elementor stack
+- Production cache/CDN interaction
+- Live ad-manager shortcode output
+- Live source-monitor requests to all 250 airline URLs
+- Browser testing with the user's translation and accessibility widgets
+- Real saved-link and PDF flow against the production WordPress database
+
+REQUIRED STAGING ACCEPTANCE TEST
+1. Replace the earlier BagFit version on a staging or preview page.
+2. Clear Hostinger, WordPress, CDN and browser caches.
+3. Run Quick Check with one personal item and one carry-on.
+4. Run Full Trip with two bags and two airlines.
+5. Paste a checked allowance such as 1PC 23KG 158CM and review extracted values.
+6. Test Reverse Bag Search.
+7. Test Best Shared Size with at least three airlines.
+8. Save a result, open the shared link and open the report.
+9. Check desktop, tablet and mobile widths.
+10. Confirm footer tool and affiliate links before publishing.
+
+RESULT
+Controlled build checks passed. Live production compatibility still requires staging validation.

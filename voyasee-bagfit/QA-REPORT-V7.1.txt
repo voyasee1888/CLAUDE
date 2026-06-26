@@ -1,0 +1,38 @@
+VOYASEE BAGFIT 7.1.0 — UPGRADE QA REPORT
+Generated: 22 June 2026
+
+SCOPE OF THIS RELEASE
+- Render the existing VSB_Advisor smart_plan (what-if scenarios + airport script) on the result page and in the printable report
+- Expand the footer to use all 14 configured tool links and all 14 configured affiliate links
+- Remove the closed-by-default accordion on the affiliate/booking footer column
+- Load the Inter font that the stylesheet already specified but never enqueued
+- Fix the source-monitor User-Agent version mismatch
+
+PASSED STATIC CHECKS
+- PHP syntax: every PHP file in the plugin passed php -l (PHP 8.3)
+- JavaScript syntax: app.js passed node --check
+- CSS brace balance verified (428 open / 428 close)
+- Cross-checked every data-tool/data-affiliate attribute in templates/checker.php against the CONFIG.tools/CONFIG.affiliates keys built in class-vsb-shortcode.php: 14/14 tools matched, 14/14 affiliates matched, no orphaned or misspelled keys
+- Confirmed no remaining <details> elements or related CSS selectors in the footer
+- Confirmed every new CSS class referenced from app.js or the template (vsb7-smart-plan, vsb7-whatif-grid, vsb7-airport-script, vsb7-footer-col) has a matching rule in frontend.css
+- Confirmed VSB_Advisor's smart_plan data shape (headline, what_if[].label/outcome, airport_script) matches exactly what the new renderSmartPlan() in app.js reads
+- Confirmed the required Booking.com (EU) footer entry is unchanged: always rendered, labeled exactly "Booking.com"
+- Confirmed old saved/shared results without a smart_plan field degrade gracefully (renderSmartPlan returns empty string on missing data, no error)
+
+NOT EXECUTED IN THIS ENVIRONMENT
+- Rendering inside the user's live Hostinger/Astra/Elementor stack
+- Production cache/CDN interaction with the newly added Google Fonts request
+- Visual confirmation of the new footer grid and Smart Fix Plan section in a real browser
+- Live click-through measurement on the previously-hidden footer links
+
+REQUIRED STAGING ACCEPTANCE TEST
+1. Replace the 7.0.1 build on a staging or preview page; purge Hostinger, WordPress, CDN and browser caches.
+2. Run a Quick Check that fails on size or weight; confirm the new "Smart Fix Plan" section appears with at least one what-if card and an airport script with a working Copy button.
+3. Open the printable report for the same result; confirm the Smart Fix Plan block appears on page 2.
+4. Scroll to the footer; confirm both columns are visible without clicking anything, and confirm all 14 tool cards and 14 affiliate cards render (the empty "luggage" slot will stay hidden unless a URL is set in Settings).
+5. Confirm the Booking.com (EU) card still reads exactly "Booking.com" and the new Booking.com Asia/Pacific card is visibly distinct from it.
+6. Check that body and heading text now render in Inter (not the visitor's OS default font) on a fresh browser profile.
+7. Check desktop, tablet and mobile widths for the footer grid and the new result-page sections.
+
+RESULT
+Static and structural checks passed. Live production/visual confirmation still requires the staging test above before this replaces the live version.
