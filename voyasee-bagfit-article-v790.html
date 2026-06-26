@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voyasee BagFit: The Smarter Way to Check Every Bag on Every Flight</title>
+</head>
+<body>
+
+<style>
+.voyasee-bagfit-article {
+  --vba-ink: #071633;
+  --vba-muted: #5e6a7d;
+  --vba-line: #dbe7f4;
+  --vba-soft: #f4f9ff;
+  --vba-navy: #071d4b;
+  --vba-blue: #1264e8;
+  --vba-teal: #0dbb83;
+  --vba-coral: #ef3f8f;
+  --vba-amber: #f4a62a;
+  --vba-red: #e94d68;
+  --vba-shadow: 0 18px 48px rgba(7,22,51,.09);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(16px,3vw,30px);
+  color: var(--vba-ink);
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 1.78;
+}
+.voyasee-bagfit-article * { box-sizing: border-box }
+.voyasee-bagfit-article h2,
+.voyasee-bagfit-article h3,
+.voyasee-bagfit-article h4 {
+  color: #0b1e42;
+  line-height: 1.24;
+  margin: 36px 0 14px;
+}
+.voyasee-bagfit-article h2 {
+  font-size: clamp(26px,4vw,40px);
+  letter-spacing: -.025em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--vba-line);
+}
+.voyasee-bagfit-article h3 { font-size: 24px }
+.voyasee-bagfit-article h4 { font-size: 20px }
+.voyasee-bagfit-article p { margin: 0 0 18px }
+.voyasee-bagfit-article ul,
+.voyasee-bagfit-article ol { padding-left: 24px; margin: 0 0 21px }
+.voyasee-bagfit-article li { margin: 7px 0 }
+.voyasee-bagfit-article a {
+  color: #9b2453;
+  text-decoration: underline;
+  text-decoration-thickness: 1.4px;
+  text-underline-offset: 3px;
+}
+.voyasee-bagfit-article a:hover { color: #6f1538 }
+.voyasee-bagfit-article a.vba-internal,
+.voyasee-bagfit-article a.vba-affiliate { font-weight: 800 }
+
+/* Hero */
+.vba-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px,5vw,56px);
+  border: 1px solid #c8d9f0;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 94% 6%, rgba(18,100,232,.18), transparent 32%),
+    radial-gradient(circle at 6% 94%, rgba(13,187,131,.12), transparent 34%),
+    linear-gradient(135deg, #fff8fc 0%, #f0f6ff 55%, #f2fbf8 100%);
+  box-shadow: var(--vba-shadow);
+  margin-bottom: 24px;
+}
+.vba-hero:after {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  right: -80px;
+  bottom: -90px;
+  border-radius: 50%;
+  border: 30px solid rgba(239,63,143,.07);
+}
+.vba-hero h1 {
+  font-size: clamp(28px,4.5vw,44px);
+  font-weight: 900;
+  color: #0b1e42;
+  line-height: 1.18;
+  margin: 10px 0 16px;
+  letter-spacing: -.03em;
+}
+.vba-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  color: #8b1e48;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.vba-lede {
+  position: relative;
+  z-index: 1;
+  max-width: 840px;
+  color: #374155;
+  font-size: 19px;
+  margin: 0 0 18px;
+}
+.vba-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 18px;
+}
+.vba-trust span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 30px;
+  background: rgba(255,255,255,.8);
+  border: 1px solid #c5d9f0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b1e42;
+}
+.vba-trust span i {
+  font-style: normal;
+  font-size: 17px;
+  color: var(--vba-blue);
+}
+
+/* Summary grid */
+.vba-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+.vba-summary {
+  border: 1px solid var(--vba-line);
+  border-radius: 16px;
+  padding: 18px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(15,30,60,.045);
+  border-top: 4px solid #7eb3e8;
+}
+.vba-summary:nth-child(2) { border-top-color: #5ecbb2 }
+.vba-summary:nth-child(3) { border-top-color: #e8b85e }
+.vba-summary:nth-child(4) { border-top-color: #e88097 }
+.vba-summary strong { display: block; margin-bottom: 6px; color: #0b1a2e; }
+.vba-summary span { display: block; color: var(--vba-muted); font-size: 14px; line-height: 1.58; }
+
+/* TOC */
+.vba-toc {
+  border: 1px solid var(--vba-line);
+  border-radius: 17px;
+  padding: 21px 23px;
+  background: linear-gradient(135deg, #f6f9fd, #fbfdff);
+  margin: 25px 0 32px;
+}
+.vba-toc strong { display: block; margin-bottom: 9px; color: #0b1e42; }
+.vba-toc ol { columns: 2; column-gap: 34px; margin-bottom: 0; }
+
+/* Steps */
+.vba-steps { counter-reset: vba-step; margin: 23px 0; }
+.vba-step {
+  position: relative;
+  padding: 19px 19px 19px 64px;
+  border: 1px solid var(--vba-line);
+  border-radius: 16px;
+  margin: 12px 0;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(10,25,55,.04);
+}
+.vba-step:before {
+  counter-increment: vba-step;
+  content: counter(vba-step);
+  position: absolute;
+  top: 19px;
+  left: 18px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e6effa;
+  color: #1264e8;
+  font-weight: 900;
+}
+.vba-step h3 { margin: 0 0 8px; font-size: 20px; }
+
+/* Process grid */
+.vba-process {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+  margin: 20px 0 26px;
+}
+.vba-process div {
+  border: 1px solid var(--vba-line);
+  border-radius: 14px;
+  padding: 16px;
+  background: var(--vba-soft);
+}
+.vba-process b { display: block; color: #0b1e42; margin-bottom: 4px; }
+.vba-process span { display: block; color: var(--vba-muted); font-size: 14px; }
+
+/* Card grids */
+.vba-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+.vba-card {
+  border: 1px solid var(--vba-line);
+  border-radius: 14px;
+  padding: 17px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(12,25,55,.04);
+}
+.vba-card strong { display: block; margin-bottom: 5px; color: #0b1e42; }
+.vba-card span { display: block; color: var(--vba-muted); font-size: 14px; line-height: 1.55; }
+
+/* New feature cards */
+.vba-new-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+.vba-new {
+  border: 1px solid #c8e0f8;
+  border-left: 4px solid var(--vba-blue);
+  border-radius: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f4f8ff, #fff);
+}
+.vba-new strong { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; color: #0b1e42; font-size: 15px; }
+.vba-new span { display: block; color: var(--vba-muted); font-size: 14px; line-height: 1.55; }
+.vba-new em { font-style: normal; font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; background: #e0edff; color: #1264e8; }
+.vba-new em.tag-fix { background: #fff0ea; color: #c45c10; }
+.vba-new em.tag-new { background: #e0edff; color: #1264e8; }
+
+/* Verdict grid */
+.vba-verdict-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+  margin: 18px 0 26px;
+}
+.vba-verdict {
+  border-radius: 13px;
+  padding: 15px;
+  border: 1px solid;
+}
+.vba-verdict.pass { background: #f0fbf6; border-color: #a3e0c0; }
+.vba-verdict.warn { background: #fff9ef; border-color: #f0d08e; }
+.vba-verdict.fail { background: #fff2f4; border-color: #f4aab8; }
+.vba-verdict.stale { background: #fff8ec; border-color: #f0c77a; }
+.vba-verdict.check { background: #f4f6fb; border-color: #b8c5e0; }
+.vba-verdict strong { display: block; margin-bottom: 4px; font-size: 14px; color: #0b1e42; }
+.vba-verdict span { display: block; color: var(--vba-muted); font-size: 14px; line-height: 1.5; }
+
+/* Callout boxes */
+.vba-note, .vba-warning, .vba-tip, .vba-affiliate-note {
+  border-left: 4px solid var(--vba-blue);
+  border-radius: 11px;
+  padding: 16px 18px;
+  margin: 22px 0;
+  background: #f0f6fd;
+}
+.vba-warning { border-left-color: #d17b26; background: #fff8ef; }
+.vba-tip { border-left-color: var(--vba-teal); background: #f0fbf7; }
+.vba-affiliate-note { border-left-color: var(--vba-coral); background: #fff3f8; }
+.vba-note strong, .vba-warning strong, .vba-tip strong, .vba-affiliate-note strong {
+  display: block; margin-bottom: 4px; color: #0b1e42;
+}
+
+/* Modes */
+.vba-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+  margin: 20px 0 26px;
+}
+.vba-mode {
+  border: 1px solid var(--vba-line);
+  border-radius: 14px;
+  padding: 16px;
+  background: var(--vba-soft);
+}
+.vba-mode b { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; color: #0b1e42; font-size: 16px; }
+.vba-mode span { display: block; color: var(--vba-muted); font-size: 14px; line-height: 1.5; }
+.vba-mode i { font-style: normal; font-size: 20px; }
+
+/* Table */
+.vba-table-wrap {
+  overflow-x: auto;
+  margin: 20px 0 28px;
+  border: 1px solid var(--vba-line);
+  border-radius: 14px;
+}
+.vba-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.vba-table th, .vba-table td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--vba-line);
+}
+.vba-table th { background: #f3f7fb; color: #1a2a42; font-weight: 700; }
+.vba-table tr:last-child td { border-bottom: 0; }
+
+/* Partner grid */
+.vba-partner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 14px;
+  margin: 20px 0 28px;
+}
+.vba-partner {
+  border: 1px solid var(--vba-line);
+  border-radius: 14px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(10,20,50,.04);
+}
+.vba-partner strong { display: block; margin-bottom: 5px; color: #0b1e42; }
+.vba-partner span { display: block; color: var(--vba-muted); font-size: 14px; line-height: 1.5; }
+
+/* FAQ */
+.vba-faq { margin: 16px 0 34px; }
+.vba-faq details {
+  border: 1px solid var(--vba-line);
+  border-radius: 12px;
+  margin: 9px 0;
+  background: #fff;
+}
+.vba-faq summary {
+  cursor: pointer;
+  padding: 15px 17px;
+  color: #0b1e42;
+  font-weight: 800;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.vba-faq summary::-webkit-details-marker { display: none; }
+.vba-faq summary::after {
+  content: "+";
+  font-size: 20px;
+  color: var(--vba-blue);
+  transition: transform .2s;
+}
+.vba-faq details[open] summary::after { content: "−"; }
+.vba-faq details p { padding: 0 17px 16px; margin: 0; color: var(--vba-muted); }
+
+/* Last updated */
+.vba-last-updated {
+  margin-top: 38px;
+  padding-top: 18px;
+  border-top: 1px solid var(--vba-line);
+  color: var(--vba-muted);
+  font-size: 14px;
+}
+
+/* CTA banner */
+.vba-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border: 1px solid #c8d9f0;
+  border-radius: 20px;
+  padding: 26px 30px;
+  background: linear-gradient(135deg, #f0f6ff, #fff8fc);
+  margin: 32px 0;
+}
+.vba-cta-text strong { display: block; font-size: 20px; color: #0b1e42; margin-bottom: 5px; }
+.vba-cta-text span { color: var(--vba-muted); font-size: 15px; }
+.vba-cta-btn {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 40px;
+  background: linear-gradient(135deg, #1264e8, #0d4fb5);
+  color: #fff !important;
+  font-weight: 900;
+  font-size: 15px;
+  text-decoration: none !important;
+  white-space: nowrap;
+  box-shadow: 0 6px 20px rgba(18,100,232,.35);
+}
+.vba-cta-btn:hover { background: linear-gradient(135deg, #0d52c8, #093e99); }
+
+@media(max-width: 760px) {
+  .voyasee-bagfit-article { padding: 15px; font-size: 16px; }
+  .vba-summary-grid, .vba-card-grid, .vba-new-grid, .vba-verdict-grid,
+  .vba-modes, .vba-process, .vba-partner-grid { grid-template-columns: 1fr; }
+  .vba-toc ol { columns: 1; }
+  .vba-cta { flex-direction: column; text-align: center; }
+}
+</style>
+
+<article class="voyasee-bagfit-article">
+
+  <!-- HERO -->
+  <section class="vba-hero">
+    <span class="vba-eyebrow">&#9992; Free airline baggage checker &mdash; no account, no paid API</span>
+    <h1>Voyasee BagFit: The Smarter Way to Check Every Bag on Every Flight Before You Fly</h1>
+    <p class="vba-lede">BagFit compares up to six bags against up to ten flights in a single check. It tells you not just whether each bag fits the published rule, but which dimension is the problem, how strictly that airline enforces it, what a rejected bag will likely cost, and exactly what to say at the counter if things go wrong. No invented numbers, no guessed rules &mdash; every result links back to the airline&rsquo;s own official source.</p>
+    <div class="vba-trust">
+      <span><i>250</i>&nbsp;airline profiles</span>
+      <span><i>7,883</i>&nbsp;offline airport records</span>
+      <span><i>4</i>&nbsp;checker modes</span>
+      <span><i>0</i>&nbsp;invented fees</span>
+    </div>
+  </section>
+
+  <!-- SUMMARY GRID -->
+  <div class="vba-summary-grid">
+    <div class="vba-summary">
+      <strong>Multi-bag, multi-flight in one check</strong>
+      <span>Add every bag in your group and every flight on your itinerary. BagFit identifies the exact bag and exact leg that creates the tightest problem.</span>
+    </div>
+    <div class="vba-summary">
+      <strong>Honest confidence levels</strong>
+      <span>50 major airlines are deep-verified against their current official page. Every result shows which tier the airline falls into instead of treating all 250 identically.</span>
+    </div>
+    <div class="vba-summary">
+      <strong>Enforcement and fee intelligence</strong>
+      <span>Know whether your airline actually checks bags at the gate and what a rejected bag costs at counter, online, or gate &mdash; before you find out at the airport.</span>
+    </div>
+    <div class="vba-summary">
+      <strong>Preset sizes and auto-saved measurements</strong>
+      <span>Choose from 9 common bag presets or enter your own &mdash; BagFit remembers your measurements automatically so the next check starts where you left off.</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="vba-toc" aria-label="Article contents">
+    <strong>In this guide</strong>
+    <ol>
+      <li><a href="#why-baggage">Why baggage feels like a trap</a></li>
+      <li><a href="#what-it-checks">What BagFit actually checks</a></li>
+      <li><a href="#how-to-use">Step-by-step: your first check</a></li>
+      <li><a href="#four-modes">Four modes explained</a></li>
+      <li><a href="#new-in-v79">New in version 7.9</a></li>
+      <li><a href="#verdicts">Understanding every verdict</a></li>
+      <li><a href="#smart-plan">Smart Fix Plan and airport script</a></li>
+      <li><a href="#enforcement">How airlines actually enforce rules</a></li>
+      <li><a href="#fees">What a rejected bag costs</a></li>
+      <li><a href="#fare-types">Basic Economy and fare traps</a></li>
+      <li><a href="#soft-bags">Soft bags and the compression question</a></li>
+      <li><a href="#save-share">Save, print, and share a result</a></li>
+      <li><a href="#trip-tools">Fitting BagFit into your trip plan</a></li>
+      <li><a href="#partners">Optional booking partners</a></li>
+      <li><a href="#faq">Frequently asked questions</a></li>
+    </ol>
+  </nav>
+
+  <!-- SECTION 1 -->
+  <section id="why-baggage">
+    <h2>Why Baggage Rules Feel Like a Trap</h2>
+
+    <p>Almost every frequent flyer has a version of the same story. The bag has flown a dozen times without trouble. The trip is booked. Packing is done in twenty minutes flat. Then, at the gate, a staff member points at a metal frame and asks you to step over and try your suitcase inside it. It does not fit. The fee that follows is rarely small, and it almost always lands at the worst possible moment &mdash; right before boarding, when there is no real way to negotiate.</p>
+
+    <p>Airline baggage policy is not one rule. It is a stack of rules that change depending on which airline is flying the plane, which fare you bought, how many flights are on your ticket, and &mdash; increasingly &mdash; which gate agent is standing in front of you that day. The <a href="https://www.iata.org/en/programs/ops-infra/baggage/passenger-baggage-rules/" target="_blank" rel="noopener">International Air Transport Association</a> says this plainly on its own passenger baggage page: baggage rules are set by individual airlines, not by any global authority. There is no universal carry-on size.</p>
+
+    <p>What has changed in the last few years is enforcement. Airlines that once waved bags through on a busy boarding queue now measure more bags, more often, with physical sizer frames at the gate. A bag that travelled fine before is not a guarantee it travels fine on a new airline or route today.</p>
+
+    <p>Add a second flight &mdash; a connection, a return on a different carrier, a booking where the plane you board is operated by a regional partner you never heard of &mdash; and the comparison becomes genuinely difficult to run in your head. Each leg can have a different size limit, a different weight limit, and a different idea of what counts as a personal item. That is the gap BagFit is built to close.</p>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section id="what-it-checks">
+    <h2>What Voyasee BagFit Actually Checks</h2>
+
+    <p>BagFit takes every bag you plan to bring &mdash; cabin, personal item, checked, any combination, up to six bags in one pass &mdash; and compares them against the published rules of up to ten flights on your itinerary, leg by leg. The dataset covers 250 airlines, from the biggest global names to smaller regional operators that rarely appear in this kind of tool.</p>
+
+    <div class="vba-table-wrap">
+      <table class="vba-table">
+        <thead>
+          <tr>
+            <th>What you enter</th>
+            <th>What BagFit checks</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bag dimensions (L &times; W &times; H)</td>
+            <td>All 6 packing orientations against the airline limit</td>
+            <td>Shows the best way to orient the bag for the best chance of passing</td>
+          </tr>
+          <tr>
+            <td>Bag weight (packed)</td>
+            <td>Per-bag and combined weight against the airline limit</td>
+            <td>Some airlines apply one shared weight across cabin + personal item</td>
+          </tr>
+          <tr>
+            <td>Bag type (cabin, personal item, checked)</td>
+            <td>The specific allowance for that type on that airline</td>
+            <td>Each type has its own dimensions and weight rule</td>
+          </tr>
+          <tr>
+            <td>Marketing vs operating airline</td>
+            <td>The operating carrier&rsquo;s rules, which apply at the gate</td>
+            <td>The plane you board follows a different carrier&rsquo;s rules than the one you booked</td>
+          </tr>
+          <tr>
+            <td>Cabin and fare type</td>
+            <td>Fare-specific restrictions (Basic Economy, Premium Economy, etc.)</td>
+            <td>Basic Economy often removes the included carry-on entirely</td>
+          </tr>
+          <tr>
+            <td>Ticket allowance text</td>
+            <td>Parses &ldquo;1PC 23KG&rdquo;, &ldquo;2&times;23KG&rdquo;, &ldquo;55&times;40&times;20&rdquo;, &ldquo;23K&rdquo; into exact rules</td>
+            <td>Uses the actual allowance on your ticket instead of guessing</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="vba-note">
+      <strong>Soft-sided bag leniency:</strong> if your bag is soft-sided and the airline has low gate enforcement, BagFit can apply a small 5&nbsp;mm grace allowance per side &mdash; but only where it genuinely applies. On airlines using automated gate scanners, a soft bag is treated identically to a hard-shell one.
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section id="how-to-use">
+    <h2>Step-by-Step: Your First Check</h2>
+
+    <div class="vba-steps">
+      <div class="vba-step">
+        <h3>Add your bags &mdash; or pick a preset</h3>
+        <p>Start by choosing the bag type (personal item, carry-on, or checked bag), then enter the three packed dimensions and weight. You can enter in centimetres and kilograms, or switch to inches and pounds &mdash; BagFit converts everything internally. If you are not sure of exact measurements yet, the new quick-preset dropdown gives you nine common sizes to start from: standard EU carry-on (55&times;40&times;23&nbsp;cm), US domestic carry-on (22&times;14&times;9&nbsp;in), compact personal item, large checked bag, and more. Once you have entered or chosen measurements, BagFit remembers them automatically in your browser so the next visit starts where you left off.</p>
+      </div>
+      <div class="vba-step">
+        <h3>Set the bag options</h3>
+        <p>Tick whether the dimensions already include wheels and handles (they should &mdash; that is how a gate sizer measures it), whether the bag is soft-sided, and whether an expandable section is open. These change the comparison in a meaningful way. The soft-sided flag activates the small compression grace where it genuinely applies; the expandable flag ensures BagFit uses the true packed size rather than the bag&rsquo;s closed minimum.</p>
+      </div>
+      <div class="vba-step">
+        <h3>Add each flight</h3>
+        <p>For every flight on your itinerary, choose the marketing airline (the one you booked with) and &mdash; whenever possible &mdash; the operating airline (the one actually flying the plane). These can differ on codeshare or regional partner flights, and it is the operating airline&rsquo;s rules that apply at the gate. Also choose the cabin class and the fare type. Since version 7.9, <strong>Premium Economy</strong> is a selectable fare type alongside Basic Economy, Standard, and Flexible &mdash; making the comparison accurate for travellers on premium fares with different allowances.</p>
+      </div>
+      <div class="vba-step">
+        <h3>Enter the checked-bag allowance from your ticket</h3>
+        <p>For checked bags, paste or type the allowance line straight from your booking confirmation &mdash; something like &ldquo;1PC 23KG&rdquo; or &ldquo;2&times;23KG 158CM&rdquo;. BagFit can now read three-dimensional formats (55&times;40&times;20), the shorthand &ldquo;23K&rdquo; for kilograms, and keywords like BAGS, PIECES, and HOLD alongside the standard formats. Once it reads the values, check them against your actual ticket before running the comparison.</p>
+      </div>
+      <div class="vba-step">
+        <h3>Run the check and read the Decision Board</h3>
+        <p>The result appears as a Flight Decision Board: one clear verdict at the top, then the exact bag and exact flight responsible for it, then the specific dimension or weight that pushed things over. Open any bag or any flight leg to see the full breakdown. The Every Bag section shows a best-orientation row &mdash; the optimal way to pack your bag into the overhead bin for the tightest rule on your trip.</p>
+      </div>
+    </div>
+
+    <div class="vba-tip">
+      <strong>Tip &mdash; measure the packed bag, not the empty one:</strong> fill the bag the way you plan to travel, then measure the outside including any compression straps, pocket bumps, wheels, handles, and feet. A bag that measures 54&nbsp;cm empty can easily read 57&nbsp;cm when packed, which is the number that matters at the gate.
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section id="four-modes">
+    <h2>Four Different Ways to Use BagFit</h2>
+
+    <p>The tool offers four entry modes so different travellers can start from the right question rather than the same form.</p>
+
+    <div class="vba-modes">
+      <div class="vba-mode">
+        <b><i>&#9889;</i> Quick Check</b>
+        <span>One bag against one airline &mdash; the fastest way to confirm a carry-on before booking or before leaving the house. Results in under a minute.</span>
+      </div>
+      <div class="vba-mode">
+        <b><i>&#9992;</i> Full Trip Check</b>
+        <span>Multiple bags against multiple flights, all in one pass. The right starting point for any trip with a connection, a return on a different carrier, or a group travelling together.</span>
+      </div>
+      <div class="vba-mode">
+        <b><i>&#8981;</i> Which Airlines Fit?</b>
+        <span>Enter your bag&rsquo;s measurements and compare them against all 250 airlines at once. Useful when baggage is helping you choose between flight options rather than just checking a booking you already have.</span>
+      </div>
+      <div class="vba-mode">
+        <b><i>&#9671;</i> Best Shared Size</b>
+        <span>Choose two or more airlines and calculate the largest bag size that stays within every one of their stored limits simultaneously. Built for travellers who fly regularly across a fixed set of airlines and want one bag that always clears.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section id="new-in-v79">
+    <h2>New in Version 7.9 &mdash; What Just Got Better</h2>
+
+    <p>Version 7.9 fixes seven confirmed bugs and adds eleven improvements that came directly from how real travellers were using the tool. Here is what changed and why it matters to you.</p>
+
+    <div class="vba-new-grid">
+      <div class="vba-new">
+        <strong><em class="tag-new">NEW</em> Quick bag presets</strong>
+        <span>Nine common bag sizes &mdash; EU standard carry-on, US domestic carry-on, standard personal item, large checked bag and more &mdash; are one tap away in the bag form. Great for planning before you buy a bag or checking whether a bag you are considering will pass.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-new">NEW</em> Measurements auto-saved</strong>
+        <span>BagFit now remembers your bag measurements between visits using local browser storage. Open the tool on your phone or laptop and your last check is already filled in, ready to update or re-run. No account needed.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-fix">FIXED</em> Premium Economy fare type</strong>
+        <span>Premium Economy is now a proper selectable fare type. Previously it was missing from the dropdown, which meant travellers on premium fares were checking against the wrong allowance. This is now corrected.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-new">NEW</em> Best bag orientation shown</strong>
+        <span>When a bag passes its size check, the Every Bag result now shows the best way to orient it &mdash; length &times; width &times; depth &mdash; so you know exactly how to load it into the overhead bin to stay within the tightest limit on the trip.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-fix">FIXED</em> Source Stale verdict</strong>
+        <span>When BagFit&rsquo;s stored data for an airline is older than the recommended review window, the result now shows SOURCE STALE &mdash; a distinct, honest signal that you should confirm the rule is still current before flying, rather than a silent downgrade to a generic conditional pass.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-fix">FIXED</em> Unit-aware failure display</strong>
+        <span>If you entered measurements in inches, failure messages now say &ldquo;X in over on one side&rdquo; or &ldquo;X lb over&rdquo; instead of always converting to centimetres and kilograms. The result stays in the unit you used.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-fix">FIXED</em> Soft-bag grace accuracy</strong>
+        <span>The soft-sided compression allowance was previously applying 50&nbsp;mm (nearly 2&nbsp;inches!) of grace per dimension, which could pass bags that were clearly too large. It now correctly applies 5&nbsp;mm &mdash; a small, realistic compression margin only where enforcement is genuinely lenient.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-new">NEW</em> Smarter ticket text parser</strong>
+        <span>The &ldquo;paste your booking allowance&rdquo; field now reads three-dimensional formats like &ldquo;55&times;40&times;20 CM&rdquo;, the shorthand &ldquo;23K&rdquo; for kilograms, BAGS/PIECES keywords, and HOLD/CHECKED scope hints &mdash; on top of the existing 1PC 23KG and pound formats.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-new">NEW</em> Dark mode support</strong>
+        <span>BagFit now detects your device&rsquo;s dark-mode preference and switches to a full dark colour scheme automatically. No setting to toggle &mdash; it follows your operating system or browser preference.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-fix">FIXED</em> Accurate rate limiting behind proxies</strong>
+        <span>The rate limiter now correctly reads the real visitor IP behind Cloudflare and other reverse proxies, preventing one visitor from accidentally exhausting another person&rsquo;s request allowance when sharing an exit IP.</span>
+      </div>
+      <div class="vba-new">
+        <strong><em class="tag-new">NEW</em> Retry on load failure</strong>
+        <span>If the airline data cannot load due to a temporary connection issue, a Retry button appears immediately &mdash; no need to refresh the whole page or re-enter your bag measurements.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section id="verdicts">
+    <h2>Understanding Every Verdict</h2>
+
+    <p>BagFit uses specific, honest verdict codes rather than a generic yes/no. Here is what each one means for you as a traveller.</p>
+
+    <div class="vba-verdict-grid">
+      <div class="vba-verdict pass">
+        <strong>&#10003; FITS</strong>
+        <span>Your bag&rsquo;s size and weight both clear the airline&rsquo;s stated limit with room to spare, and the booking allowance is confirmed. This is a clean pass &mdash; no condition attached.</span>
+      </div>
+      <div class="vba-verdict warn">
+        <strong>! FITS WITH CONDITIONS</strong>
+        <span>The physical measurements pass, but something about your fare or booking still needs a quick confirmation &mdash; usually whether your specific ticket type actually includes that bag.</span>
+      </div>
+      <div class="vba-verdict stale">
+        <strong>&#8987; SOURCE STALE</strong>
+        <span>The bag fits the stored numbers, but the data for this airline is older than the recommended review window. Confirm the current official policy before you fly. <em>New in v7.9.</em></span>
+      </div>
+      <div class="vba-verdict fail">
+        <strong>&#10007; DOES NOT FIT</strong>
+        <span>One or more bags exceed a confirmed size or weight limit. The exact dimension or weight overrun is shown &mdash; you know precisely what needs to change and by how much.</span>
+      </div>
+      <div class="vba-verdict check">
+        <strong>? CHECK REQUIRED</strong>
+        <span>BagFit does not have a precise enough number for this airline and bag type to make a comparison. The tool tells you exactly which detail to ask the airline about directly.</span>
+      </div>
+      <div class="vba-verdict warn">
+        <strong>&#10007; NOT INCLUDED</strong>
+        <span>The bag may fit physically, but the selected fare or allowance option does not include it in the price. You would need to add it to your booking before check-in.</span>
+      </div>
+    </div>
+
+    <p>Below the headline verdict, every result also shows a percentage &mdash; how close each bag is running to the limit on size and weight separately. A bag at 60% of the weight limit and 95% of the size limit is a very different problem than one near the edge on both, and the display shows you which dimension actually needs attention.</p>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section id="smart-plan">
+    <h2>The Smart Fix Plan and the Airport Script</h2>
+
+    <p>When a bag does not pass cleanly, BagFit does not just report the failure. It runs a set of practical &ldquo;what if&rdquo; scenarios specific to your numbers and tells you plainly whether each one would flip the result to a pass.</p>
+
+    <div class="vba-process">
+      <div>
+        <b>What-if scenarios</b>
+        <span>Up to four targeted suggestions: trim a dimension, shift weight to checked luggage, use the personal-item allowance, remove an item.</span>
+      </div>
+      <div>
+        <b>Exact overrun amounts</b>
+        <span>See precisely which side of the bag is over by how much &mdash; in your chosen unit (cm or inches, kg or lb).</span>
+      </div>
+      <div>
+        <b>Airport staff script</b>
+        <span>A pre-written, polite confirmation line you can copy and show at the counter &mdash; one tap puts it on your clipboard.</span>
+      </div>
+    </div>
+
+    <p>The airport script is a small but genuinely practical feature. It phrases your situation as a direct confirmation request rather than an argument &mdash; asking the agent to confirm whether your bag, at its measured size and weight, is included on your fare and accepted by the operating carrier for that flight. Having the exact wording ready on your phone takes one stressor off the gate experience entirely.</p>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section id="enforcement">
+    <h2>How Airlines Actually Enforce Their Own Rules</h2>
+
+    <p>The published limit and the real-world enforcement are not always the same thing. Some airlines weigh and measure carry-on bags at almost every gate with a physical sizer frame that allows no exceptions. Others post the same numbers on their website but rarely check them on quieter routes or at older terminals.</p>
+
+    <p>BagFit attaches an enforcement signal &mdash; <strong>strictly enforced</strong>, <strong>selectively enforced</strong>, or <strong>rarely enforced</strong> &mdash; to airlines where this is genuinely documented, along with a specific note about how that airline tends to check: at the counter, at the boarding gate, on certain hub airports more than others.</p>
+
+    <div class="vba-warning">
+      <strong>This is context, not a loophole:</strong> the enforcement signal changes how carefully you should treat a bag that&rsquo;s borderline. It is not an invitation to pack over the limit and hope for the best. A bag running 5% over on an airline with lenient enforcement is a different risk from the same bag on a carrier using automated gate scanners at every boarding call &mdash; but both are risks.
+    </div>
+  </section>
+
+  <!-- SECTION 9 -->
+  <section id="fees">
+    <h2>What a Rejected Bag Actually Costs</h2>
+
+    <p>For airlines where this information is published, BagFit shows an estimated cost range for what happens if a bag is turned away. Seeing these three numbers side by side next to the result tends to change behaviour in a useful way &mdash; a borderline bag starts to feel worth fixing properly rather than hoping for the best, once the realistic cost of being wrong is sitting there in front of you.</p>
+
+    <div class="vba-card-grid">
+      <div class="vba-card">
+        <strong>Add online before check-in</strong>
+        <span>The cheapest option on airlines that allow it &mdash; often 60&ndash;80% lower than the gate fee for the same bag.</span>
+      </div>
+      <div class="vba-card">
+        <strong>Check at the counter</strong>
+        <span>The middle-tier fee &mdash; higher than online but lower than last-minute gate-checking.</span>
+      </div>
+      <div class="vba-card">
+        <strong>Gate-checked at the last moment</strong>
+        <span>The steepest of the three &mdash; consistently the most expensive option on airlines that publish all tiers.</span>
+      </div>
+      <div class="vba-card">
+        <strong>Oversized or overweight surcharge</strong>
+        <span>A separate charge on top of the base fee when a bag significantly exceeds both weight and size limits at once.</span>
+      </div>
+    </div>
+
+    <p>It is also a reasonable moment to think about travel insurance, particularly on longer trips, tight connections, or routes where a baggage problem could cascade into a missed flight. <a class="vba-affiliate" href="https://safetywing.com/?referenceID=26504574&utm_source=26504574&utm_medium=Ambassador" target="_blank" rel="noopener nofollow sponsored">SafetyWing</a> is one policy worth comparing for longer or multi-country travel &mdash; this is an affiliate link, and a small commission supports the free tools on this site at no extra cost if you sign up. If a disruption is the airline&rsquo;s fault, <a class="vba-affiliate" href="https://compensair.tpm.li/u34afsuE" target="_blank" rel="noopener nofollow sponsored">Compensair</a> handles compensation claims for exactly that situation.</p>
+  </section>
+
+  <!-- SECTION 10 -->
+  <section id="fare-types">
+    <h2>Basic Economy, Premium Economy and the Fare Traps Nobody Reads Closely</h2>
+
+    <p>One of the most expensive baggage mistakes has nothing to do with measuring a bag wrong. It is assuming that &ldquo;Economy&rdquo; means the same baggage allowance regardless of which specific fare you bought. On several major airlines it very much does not.</p>
+
+    <p>One large U.S. carrier restricts its cheapest domestic fare to a personal item only &mdash; no included carry-on &mdash; with a real gate fee if an oversized bag shows up anyway. Others are more generous with the bag itself but move Basic Economy passengers to the last boarding group, by which point the overhead bins are often already full regardless of what the ticket technically allows.</p>
+
+    <p>BagFit&rsquo;s fare type field handles this properly. Selecting your fare surfaces the exact rule for that specific fare rather than the generic Economy answer that would otherwise apply. Since version 7.9, <strong>Premium Economy is a proper selectable option</strong> &mdash; meaning travellers on those fares (which often include a larger cabin allowance, an extra personal item, or priority boarding) now get an accurate comparison instead of being lumped in with Standard Economy.</p>
+
+    <div class="vba-note">
+      <strong>Not sure which fare you bought?</strong> Leave the fare type as &ldquo;Not sure&rdquo; and BagFit will flag that the comparison may not match your specific ticket &mdash; and prompt you to check the fare confirmation before running a more precise result.
+    </div>
+  </section>
+
+  <!-- SECTION 11 -->
+  <section id="soft-bags">
+    <h2>Soft Bags, Compression and Why &ldquo;It Fit Last Time&rdquo; Is Getting Riskier</h2>
+
+    <p>Soft-sided bags behave differently from hard-shell suitcases at the actual gate. A fabric backpack or duffel can compress slightly to fit a sizer frame in a way a rigid case cannot, and BagFit&rsquo;s soft-sided toggle accounts for this &mdash; but only where it genuinely applies.</p>
+
+    <p>The compression grace is small and precise: 5&nbsp;mm per dimension, applied only on airlines with documented low enforcement where manual checking is used rather than automated scanners. This was corrected in version 7.9 from a previous value that was ten times too large (50&nbsp;mm &mdash; nearly 2&nbsp;inches per side &mdash; which was passing bags that were clearly over the limit).</p>
+
+    <p>On airlines using automated gate scanners, a soft bag gets exactly the same treatment as a hard one. The tool reflects that honestly rather than giving every soft bag the same generous discount regardless of how the airline checks it. That is also why &ldquo;it fit last time&rdquo; is becoming a less reliable guide &mdash; a route that used a manual check in previous years may now use a sizer frame, and the same bag that was waved through before may be stopped today.</p>
+  </section>
+
+  <!-- SECTION 12 -->
+  <section id="save-share">
+    <h2>Save, Print and Share Your Result</h2>
+
+    <div class="vba-card-grid">
+      <div class="vba-card">
+        <strong>Auto-save to browser</strong>
+        <span>Your bag measurements are saved automatically. Come back a week later and your bags are still filled in &mdash; just update the flights and re-run. No account needed.</span>
+      </div>
+      <div class="vba-card">
+        <strong>Save and share a link</strong>
+        <span>A shareable link renders the full result for anyone who opens it &mdash; useful when one person in a travel group does the checking for everyone else.</span>
+      </div>
+      <div class="vba-card">
+        <strong>Printable report</strong>
+        <span>A clean two-page printable document with the full leg-by-leg breakdown, the official source links, and the airport staff script &mdash; designed to be actually useful at the airport, not just decorative.</span>
+      </div>
+      <div class="vba-card">
+        <strong>Open report at the gate</strong>
+        <span>The saved link or printed page includes everything an agent needs to see: the airline, the allowance, the measured dimensions, and the official source to confirm it.</span>
+      </div>
+    </div>
+
+    <p>For additional offline planning sheets &mdash; packing checklists, document trackers, pre-departure checklists &mdash; the <a class="vba-internal" href="https://voyasee.com/travel-printables/" target="_blank" rel="noopener">travel printables collection</a> has the same idea applied across the rest of your pre-flight prep.</p>
+  </section>
+
+  <!-- SECTION 13 -->
+  <section id="trip-tools">
+    <h2>Fitting BagFit Into the Rest of Your Trip Plan</h2>
+
+    <p>Baggage is rarely the first decision in a trip and should not be treated in isolation. The tools below connect to BagFit naturally at different stages of planning.</p>
+
+    <div class="vba-card-grid">
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/packing-list-generator/" target="_blank" rel="noopener">Smart Packing Generator</a></strong>
+        <span>Build the list of what to bring, factoring in destination climate, trip length and luggage limit &mdash; then bring those measurements back into BagFit.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/medicine-restricted-item-checker/" target="_blank" rel="noopener">Medicine &amp; Restricted Items</a></strong>
+        <span>A bag size pass does not confirm the contents are allowed. Check medicines, batteries, liquids and restricted items separately before closing the bag.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/transit-visa-layover-risk-checker/" target="_blank" rel="noopener">Transit Risk Checker</a></strong>
+        <span>A layover that requires bag collection and recheck changes how you should be packing &mdash; especially relevant for separate-ticket itineraries.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/trip-budget-calculator/" target="_blank" rel="noopener">Trip Budget Calculator</a></strong>
+        <span>A baggage fee you did not plan for can quietly eat into money set aside for the trip itself. Add the realistic worst-case baggage cost to the budget early.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/best-time-to-visit-travel-planner/" target="_blank" rel="noopener">Best Time to Visit Planner</a></strong>
+        <span>A winter trip means bulkier clothing and a tighter packing margin than a beach trip within the same allowance. Check the season before committing to a fare with no flexibility.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/trip-readiness-checklist/" target="_blank" rel="noopener">Travel Passport Checklist</a></strong>
+        <span>A final pre-departure pass across documents, booking, packing, and baggage &mdash; one page rather than five separate tabs the night before a flight.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/destination-quiz/" target="_blank" rel="noopener">Destination Quiz</a></strong>
+        <span>Still deciding where to go? If baggage policy is part of the decision &mdash; and on some routes it should be &mdash; knowing the allowance before you book helps narrow it down.</span>
+      </div>
+      <div class="vba-card">
+        <strong><a class="vba-internal" href="https://voyasee.com/travel-scam-checker/" target="_blank" rel="noopener">Travel Scam Shield</a></strong>
+        <span>At airports where &ldquo;helpful&rdquo; strangers offer to carry an overweight bag through customs for a fee, this checker helps you recognise the pattern before it costs you.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 14 -->
+  <section id="partners">
+    <h2>Optional Booking Partners</h2>
+    <p>The following links are separate from the baggage result and are never used to influence it. They solve booking or arrival problems that can arise once the baggage plan is settled.</p>
+
+    <div class="vba-affiliate-note">
+      <strong>Affiliate disclosure:</strong> the links below are affiliate partnerships. Voyasee earns a small commission on qualifying purchases at no extra cost to you. All baggage results are independent of these relationships.
+    </div>
+
+    <div class="vba-partner-grid">
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://aviasales.tpm.li/jergleAu" target="_blank" rel="noopener nofollow sponsored">Aviasales &mdash; Compare flights</a></strong>
+        <span>Compare fares and routes when baggage policy is part of which airline you choose to fly.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://kiwi.tpm.li/tDvkubl3" target="_blank" rel="noopener nofollow sponsored">Kiwi.com &mdash; Flight search</a></strong>
+        <span>Alternative flight search, useful for connecting itineraries and self-transfer routes where allowances can differ per leg.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://www.dpbolvw.net/click-101719993-11891539" target="_blank" rel="noopener nofollow sponsored">Booking.com &mdash; Accommodation</a></strong>
+        <span>If a baggage problem or tight connection means a night near the airport, this is the accommodation link used across Voyasee.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://radicalstorage.tpm.li/zuiSFLZl" target="_blank" rel="noopener nofollow sponsored">Radical Storage &mdash; Left luggage</a></strong>
+        <span>When the practical answer to an oversized bag is storing it rather than checking it, Radical Storage operates drop points in airports and city centres.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://kiwitaxi.tpm.li/KWy4T7aR" target="_blank" rel="noopener nofollow sponsored">Kiwitaxi &mdash; Airport transfer</a></strong>
+        <span>Pre-book a transparent airport-to-accommodation transfer &mdash; useful when travelling with bulky bags and unfamiliar routes.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://safetywing.com/?referenceID=26504574&utm_source=26504574&utm_medium=Ambassador" target="_blank" rel="noopener nofollow sponsored">SafetyWing &mdash; Travel insurance</a></strong>
+        <span>One policy option worth comparing for longer trips, multi-country movement, or tight connections where a baggage problem could cascade into a missed flight.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://compensair.tpm.li/u34afsuE" target="_blank" rel="noopener nofollow sponsored">Compensair &mdash; Flight disruption</a></strong>
+        <span>Handles compensation claims when a flight disruption is the airline&rsquo;s fault &mdash; relevant when baggage issues lead to a missed connection.</span>
+      </div>
+      <div class="vba-partner">
+        <strong><a class="vba-affiliate" href="https://www.visahq.co.uk/?a_aid=vaff18435" target="_blank" rel="noopener nofollow sponsored">VisaHQ &mdash; Visa documents</a></strong>
+        <span>When the destination paperwork is complicated alongside the packing plan, a paperwork-support option to compare before applying.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 15 -->
+  <section id="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="vba-faq">
+      <details>
+        <summary>Is Voyasee BagFit free to use?</summary>
+        <p>Yes. There is no account requirement and no paywall on the checker itself. The site supports itself through the affiliate links described above and standard advertising &mdash; not through charging for the tool.</p>
+      </details>
+      <details>
+        <summary>Does it remember my bag measurements between visits?</summary>
+        <p>Yes, from version 7.9. BagFit saves your bag measurements automatically in your browser&rsquo;s local storage. The next time you open the tool, your bags are already filled in. This uses only your own device &mdash; no account, no server storage of measurements.</p>
+      </details>
+      <details>
+        <summary>What are the quick preset bag sizes?</summary>
+        <p>Version 7.9 adds a quick-preset dropdown with nine common sizes: three personal item options (40&times;30&times;15&nbsp;cm, 45&times;35&times;20&nbsp;cm, 18&times;14&times;8&nbsp;in), four carry-on options (55&times;40&times;23&nbsp;cm EU standard, 56&times;45&times;25&nbsp;cm EU large, 55&times;35&times;20&nbsp;cm low-cost compact, 22&times;14&times;9&nbsp;in US domestic), and two checked bag options (68&times;45&times;27&nbsp;cm and 78&times;52&times;31&nbsp;cm). Select a preset and the dimensions fill in automatically. You can then adjust any dimension to match your actual bag.</p>
+      </details>
+      <details>
+        <summary>What is SOURCE STALE and why does it matter?</summary>
+        <p>SOURCE STALE is a verdict that appears when your bag fits the stored size and weight numbers, but the data for that airline has not been reviewed recently enough to trust confidently. Previous versions would silently downgrade this to a generic conditional pass without explaining why. The stale verdict is now explicit so you know exactly which detail to go confirm before you fly &mdash; rather than discovering at the airport that the rule changed since the data was collected.</p>
+      </details>
+      <details>
+        <summary>What does &ldquo;best orientation&rdquo; mean in the result?</summary>
+        <p>BagFit tests all six ways a rectangular bag can be loaded into an overhead bin or sizer frame (rotating it across all three axes). The best-orientation row in the Every Bag section shows the specific arrangement &mdash; length &times; width &times; depth &mdash; that gives your bag its best chance of fitting within the tightest stored limit on your trip. This tells you not just whether the bag passes, but how to pack it into the bin to take advantage of that pass.</p>
+      </details>
+      <details>
+        <summary>Can I check Premium Economy and Basic Economy separately?</summary>
+        <p>Yes. The fare type field offers Not sure, Basic Economy, Standard / Main, Premium Economy (new in v7.9), and Flexible / Refundable. Selecting Premium Economy surfaces the exact allowance for that fare tier on airlines where it differs from Standard Economy. Selecting Basic Economy flags any known restriction for that fare &mdash; on several major carriers, Basic Economy removes the included carry-on entirely.</p>
+      </details>
+      <details>
+        <summary>Does it check checked baggage or only carry-on?</summary>
+        <p>Both, along with the personal item category separately. For checked bags the tool is more conservative by design &mdash; where your ticket already specifies an allowance, enter it directly for the most accurate result rather than relying on a general airline default.</p>
+      </details>
+      <details>
+        <summary>How does the ticket allowance text parser work?</summary>
+        <p>Paste or type the allowance line from your booking &mdash; for example &ldquo;1PC 23KG&rdquo;, &ldquo;2&times;23KG 158CM&rdquo;, &ldquo;55&times;40&times;20 CM&rdquo;, or &ldquo;23K&rdquo;. BagFit reads piece count, weight in kg or lb (with automatic conversion), linear total in cm or inches, and three-dimensional sizes (computing the linear total from all three). It also reads shorthand formats like &ldquo;23K&rdquo; for kilograms. Always check the extracted values against your actual ticket before running the comparison.</p>
+      </details>
+      <details>
+        <summary>Can I check a trip with a connecting flight on a different airline?</summary>
+        <p>Yes, and this is one of the most useful parts of the tool. Add each flight separately with its own marketing airline, operating airline, cabin and fare type. The result identifies which specific leg is the strictest one for each bag, rather than giving you one blended answer for the whole trip.</p>
+      </details>
+      <details>
+        <summary>What if the operating airline differs from the one I booked?</summary>
+        <p>Use the operating airline field for the carrier actually flying the aircraft. The rules that apply at the gate are the operating carrier&rsquo;s rules, not the marketing airline&rsquo;s. If you do not know the operating airline, tick the codeshare-unknown box and BagFit will add a notice to confirm this before flying.</p>
+      </details>
+      <details>
+        <summary>How accurate is the data for less common airlines?</summary>
+        <p>The tool tells you which confidence tier each airline falls into. Fifty major airlines are individually deep-verified against their current official baggage page. Mid-size carriers carry numbers from official sources with a lower confidence flag. Smaller regional airlines without a clear published number are listed with a direct link to their own page and no invented dimensions attached.</p>
+      </details>
+      <details>
+        <summary>Can I save and share my result with other travellers?</summary>
+        <p>Yes. Results can be saved (generating a shareable link that renders the same result for whoever opens it), printed as a two-page document with the full breakdown, or stored automatically in your browser between visits. The printed version includes official source links and the airport staff script.</p>
+      </details>
+      <details>
+        <summary>Does using this tool mean I do not need to check with the airline?</summary>
+        <p>No. Every result links to the airline&rsquo;s own official baggage page specifically so you can confirm it yourself before flying. Gate staff have the final say regardless of what any third-party tool shows. The goal is to walk into the airport already knowing the answer &mdash; not to replace the airline&rsquo;s own rules entirely.</p>
+      </details>
+      <details>
+        <summary>Does it work on a phone?</summary>
+        <p>It was built mobile-first on the reasonable assumption that most people are packing a bag and checking a phone in the same room. The full multi-bag, multi-flight check, the Decision Board, the preset dropdown, and the printable result all work on a phone screen the same way as on a laptop. Dark mode also works automatically on phones that have it enabled.</p>
+      </details>
+      <details>
+        <summary>Does BagFit support dark mode?</summary>
+        <p>Yes, from version 7.9. BagFit detects your device or browser&rsquo;s dark-mode preference via the standard prefers-color-scheme media query and switches to a full dark colour scheme automatically. No toggle or setting is needed &mdash; it follows your system preference.</p>
+      </details>
+      <details>
+        <summary>What if airline data fails to load?</summary>
+        <p>If the airline data cannot be fetched (for example due to a temporary connection issue), a Retry button appears immediately so you can re-attempt without refreshing the whole page or re-entering your bag measurements.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section>
+    <h2>Before Your Next Flight</h2>
+
+    <p>A baggage fee at the gate is one of the few travel costs that feels entirely avoidable after the fact. The rule was published somewhere. The number was knowable in advance. The only thing missing was a fast, honest way to check it against your specific bag, your specific airline, and your specific fare &mdash; before you left the house.</p>
+
+    <p>That is what BagFit is built to do. Measure the bag once, run it through before you leave, and the gate becomes a formality instead of a guessing game. And if something is borderline, you will know the exact dimension to trim, the exact cost to avoid, and the exact words to use if you end up at a counter making your case anyway.</p>
+
+    <div class="vba-cta">
+      <div class="vba-cta-text">
+        <strong>Check your bags before you pack them.</strong>
+        <span>250 airlines &mdash; no account, no paid API, no guessed numbers.</span>
+      </div>
+      <a href="https://voyasee.com/bagfit/" class="vba-cta-btn" target="_blank" rel="noopener">Run BagFit free &rarr;</a>
+    </div>
+  </section>
+
+  <div class="vba-last-updated"><strong>Last modified:</strong> June 26, 2026 &nbsp;&middot;&nbsp; Reflects Voyasee BagFit version 7.9.0</div>
+
+</article>
+
+</body>
+</html>
