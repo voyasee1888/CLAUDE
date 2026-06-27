@@ -516,6 +516,89 @@
 @media(max-width:1050px){.voyasee-hub .vh-dimension-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:800px){.voyasee-hub .vh-profile-advanced{grid-template-columns:repeat(2,1fr)}.voyasee-hub .vh-official-grid,.voyasee-hub .vh-intel-quad{grid-template-columns:1fr}.voyasee-hub .vh-check-grid{grid-template-columns:repeat(2,1fr)}.voyasee-hub .vh-nearby-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.voyasee-hub .vh-profile-advanced,.voyasee-hub .vh-check-grid,.voyasee-hub .vh-dimension-grid,.voyasee-hub .vh-nearby-grid{grid-template-columns:1fr}}
+/* ====== UPGRADES v21.2.0 — D1 D2 D3 D4 D6 D7 D8 A3 ====== */
+
+/* D8: Skeleton shimmer on loading overlay */
+@keyframes vh-shimmer{0%{background-position:-700px 0}100%{background-position:700px 0}}
+.voyasee-hub .card-load{background:linear-gradient(90deg,rgba(248,242,232,.04) 25%,rgba(248,242,232,.09) 50%,rgba(248,242,232,.04) 75%);background-size:1400px 100%;animation:vh-shimmer 1.7s infinite}
+.voyasee-hub .spinner{border-color:rgba(248,242,232,.1);border-top-color:var(--jade2)}
+
+/* D4: Two-column main panel grid */
+.voyasee-hub .vh-main-grid{display:grid;grid-template-columns:1fr}
+@media(min-width:1060px){
+  .voyasee-hub .vh-main-grid{grid-template-columns:1fr 1fr;gap:0 18px}
+  .voyasee-hub .vh-main-grid .col-full{grid-column:1/-1}
+  .voyasee-hub .vh-main-grid .col-half{grid-column:auto}
+}
+
+/* D1: Enhanced AQI gradient bar with needle */
+.voyasee-hub .aqi-color-track{position:relative;height:10px;border-radius:999px;background:linear-gradient(90deg,#2ad3a6 0%,#b8e875 20%,#f6cb5b 38%,#ff9f7f 56%,#dc2626 74%,#a855f7 100%);margin:9px 0 5px}
+.voyasee-hub .aqi-color-needle{position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;background:#fff;border:2.5px solid #0a1322;box-shadow:0 2px 8px rgba(0,0,0,.55);transform:translateX(-50%);transition:left .65s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.voyasee-hub .aqi-cat-row{display:flex;align-items:center;gap:8px;margin-top:4px}
+.voyasee-hub .aqi-cat-pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:.65rem;font-weight:800}
+.voyasee-hub .aqi-cat-pill.good{background:rgba(42,211,166,.15);color:#2ad3a6}
+.voyasee-hub .aqi-cat-pill.moderate{background:rgba(246,203,91,.15);color:#f6cb5b}
+.voyasee-hub .aqi-cat-pill.usg{background:rgba(255,159,127,.17);color:#ff9f7f}
+.voyasee-hub .aqi-cat-pill.unhealthy{background:rgba(220,38,38,.15);color:#ff8080}
+.voyasee-hub .aqi-cat-pill.very{background:rgba(168,85,247,.15);color:#c084fc}
+.voyasee-hub .aqi-cat-pill.haz{background:rgba(120,0,50,.22);color:#e040aa}
+
+/* D6: AQI 5-day trend mini-chart */
+.voyasee-hub .aqi-trend-wrap{margin-top:11px;padding-top:9px;border-top:1px solid rgba(248,242,232,.07)}
+.voyasee-hub .aqi-trend-lbl{font-size:.59rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.voyasee-hub .aqi-trend-bars{display:flex;gap:5px;align-items:flex-end;height:44px}
+.voyasee-hub .aqi-trend-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.voyasee-hub .aqi-trend-bar{width:100%;border-radius:3px 3px 0 0;min-height:4px;transition:height .45s ease}
+.voyasee-hub .aqi-trend-day{font-size:.53rem;color:var(--t3)}
+
+/* D1: Improved forecast cards */
+.voyasee-hub .fc-grid-v2{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:thin;scrollbar-color:rgba(248,242,232,.1) transparent}
+.voyasee-hub .fc-grid-v2::-webkit-scrollbar{height:4px}
+.voyasee-hub .fc-grid-v2::-webkit-scrollbar-thumb{background:rgba(248,242,232,.1);border-radius:2px}
+.voyasee-hub .fc-card-v2{background:rgba(6,11,22,.6);border:1px solid var(--border);border-radius:13px;padding:11px 9px 9px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:74px;flex:1;transition:border-color .2s,transform .18s}
+.voyasee-hub .fc-card-v2:hover{border-color:rgba(248,242,232,.24);transform:translateY(-2px)}
+.voyasee-hub .fc-card-v2.today-card{border-color:var(--jade2);background:rgba(42,211,166,.06)}
+.voyasee-hub .fc2-day{font-size:.59rem;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+.voyasee-hub .fc2-ico{font-size:1.55rem;line-height:1;margin:2px 0}
+.voyasee-hub .fc2-hi{font-size:.9rem;font-weight:700;color:var(--paper)}
+.voyasee-hub .fc2-lo{font-size:.71rem;color:var(--t3)}
+.voyasee-hub .fc2-rain{font-size:.59rem;color:#5b9cf6;margin-top:3px;min-height:14px}
+
+/* D3: Interactive before-you-book checklist */
+.voyasee-hub .bby-progress-wrap{margin-bottom:14px}
+.voyasee-hub .bby-progress-track{height:5px;border-radius:999px;background:rgba(248,242,232,.08);overflow:hidden}
+.voyasee-hub .bby-progress-fill{height:100%;background:var(--jade2);border-radius:999px;transition:width .45s ease;width:0%}
+.voyasee-hub .bby-progress-text{font-size:.62rem;color:var(--t3);margin-top:5px}
+.voyasee-hub .bby-checklist-wrap{margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
+.voyasee-hub .bby-cl-heading{font-size:.68rem;font-weight:700;color:var(--paper);margin-bottom:4px}
+.voyasee-hub .bby-cl-sub{font-size:.62rem;color:var(--t3);margin-bottom:12px}
+.voyasee-hub .bby-cl-section{margin-bottom:12px}
+.voyasee-hub .bby-cl-section-title{font-size:.6rem;text-transform:uppercase;letter-spacing:.09em;color:var(--amber2);font-weight:800;margin:0 0 6px;padding:4px 0;border-bottom:1px solid rgba(246,203,91,.12)}
+.voyasee-hub .bby-cl-item{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(248,242,232,.05);cursor:pointer}
+.voyasee-hub .bby-cl-item:last-child{border-bottom:none}
+.voyasee-hub .bby-cl-item input[type=checkbox]{margin-top:2px;accent-color:var(--jade2);cursor:pointer;flex-shrink:0;width:13px;height:13px}
+.voyasee-hub .bby-cl-item label{color:var(--t2);font-size:.7rem;line-height:1.42;cursor:pointer;transition:color .2s,text-decoration .2s}
+.voyasee-hub .bby-cl-item.bby-done label{text-decoration:line-through;color:var(--t3)}
+
+/* D2: Mobile collapsible section headers */
+@media(max-width:760px){
+  .voyasee-hub .vh-live-head.collapsible{cursor:pointer;user-select:none}
+  .voyasee-hub .vh-live-panel .vh-live-head .vh-caret{display:inline-block;font-size:.65rem;color:var(--t3);margin-left:6px;transition:transform .22s;flex-shrink:0}
+  .voyasee-hub .vh-live-panel.vh-collapsed .vh-caret{transform:rotate(-90deg)}
+  .voyasee-hub .vh-live-panel.vh-collapsed .vh-panel-body{display:none}
+  .voyasee-hub .vh-panel-body{display:block}
+}
+
+/* D1: Score ring pulse on good score */
+@keyframes vh-ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(42,211,166,.28)}50%{box-shadow:0 0 0 9px rgba(42,211,166,0)}}
+.voyasee-hub .vh-score-ring.score-good{animation:vh-ring-pulse 2.8s ease-in-out infinite}
+
+/* D5: Per-section freshness note */
+.voyasee-hub .vh-section-ts{font-size:.59rem;color:var(--t3);margin-top:6px;padding-top:5px;border-top:1px solid rgba(248,242,232,.06)}
+
+/* D7: Flag emoji in passport select */
+.voyasee-hub #vhPassport{font-size:.82rem}
+
 /* ---- Settings Modal ---- */
 .voyasee-hub .vh-settings-btn{position:fixed;bottom:22px;right:22px;width:46px;height:46px;border-radius:50%;background:rgba(10,19,34,.92);border:1px solid var(--border);color:var(--paper);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9990;box-shadow:0 4px 18px rgba(0,0,0,.4);transition:transform .22s;padding:0}
 .voyasee-hub .vh-settings-btn:hover{transform:rotate(35deg)}
@@ -597,7 +680,7 @@
     <div class="data-note">Search uses Voyasee Weather Bridge geocoding. Advanced intelligence is processed server-side by Voyasee Travel Intelligence Bridge using official advisories, health notices, hazard feeds, airport reference data and coordinate-based timezone lookup. Critical entry, safety and health details still require official verification.</div>
     <div class="vh-profile-row" aria-label="Trip profile inputs">
       <div class="vh-profile-field"><label for="vhPassport">Passport / Traveller</label>
-        <select id="vhPassport"><option value="IN" selected>Indian passport</option><option value="US">U.S. passport</option><option value="GB">UK passport</option><option value="EU">EU / Schengen passport</option><option value="CA">Canadian passport</option><option value="AU">Australian passport</option><option value="OTHER">Other passport</option></select></div>
+        <select id="vhPassport"><option value="IN" selected>🇮🇳 Indian passport</option><option value="US">🇺🇸 U.S. passport</option><option value="GB">🇬🇧 UK passport</option><option value="EU">🇪🇺 EU / Schengen passport</option><option value="CA">🇨🇦 Canadian passport</option><option value="AU">🇦🇺 Australian passport</option><option value="DE">🇩🇪 German passport</option><option value="FR">🇫🇷 French passport</option><option value="JP">🇯🇵 Japanese passport</option><option value="SG">🇸🇬 Singapore passport</option><option value="AE">🇦🇪 UAE passport</option><option value="NZ">🇳🇿 New Zealand passport</option><option value="OTHER">🌍 Other passport</option></select></div>
       <div class="vh-profile-field"><label for="vhTripStyle">Trip Style</label>
         <select id="vhTripStyle"><option value="first" selected>First-time visitor</option><option value="solo">Solo traveller</option><option value="budget">Budget traveller</option><option value="family">Family trip</option><option value="nomad">Digital nomad</option><option value="luxury">Comfort / luxury</option></select></div>
       <div class="vh-profile-field"><label for="vhTripLength">Stay Length</label>
@@ -634,6 +717,7 @@
           <div class="vh-score-label" id="vhScoreLabel">Run a destination scan</div>
           <div class="vh-score-copy" id="vhScoreCopy">Voyasee scores only the live and official signals that are available, shows data coverage, and keeps exact entry rules in a separate verification step.</div>
           <div class="vh-score-mini" id="vhScoreMini"><span class="vh-mini-pill">Advisory</span><span class="vh-mini-pill">Weather</span><span class="vh-mini-pill">Entry</span></div>
+          <div class="vh-section-ts" id="vhScoreTs"></div>
         </div>
       </div>
     </div>
@@ -669,60 +753,79 @@
     <button class="vh-tool-btn" type="button" id="vhSettingsBtn" title="Settings — API keys &amp; preferences">⚙️ Settings</button>
   </div>
 
-  <div class="vh-live-panel" id="vhAdvisoryPanel" aria-label="Official travel advisories">
+  <div class="vh-main-grid">
+
+  <div class="vh-live-panel col-full" id="vhAdvisoryPanel" aria-label="Official travel advisories">
     <div class="vh-live-head">
       <div><div class="vh-live-title">Official Travel Advisory Board</div><div class="vh-live-sub">The hub displays the advisory issued by each government in its own wording. It does not convert third-party risk scores into government levels and never invents a level when a source is unavailable.</div></div>
       <span class="vh-source-chip" id="vhAdvFreshness">Awaiting destination</span>
     </div>
-    <div class="vh-official-grid">
-      <div class="vh-official-card" id="vhUsAdvisory"><div class="source">U.S. Department of State</div><h4>Run a destination scan</h4><p>The official U.S. advisory will appear here when available.</p></div>
-      <div class="vh-official-card" id="vhUkAdvisory"><div class="source">UK FCDO</div><h4>Run a destination scan</h4><p>UK foreign travel advice and regional warning status will appear here.</p></div>
+    <div class="vh-panel-body">
+      <div class="vh-official-grid">
+        <div class="vh-official-card" id="vhUsAdvisory"><div class="source">U.S. Department of State</div><h4>Run a destination scan</h4><p>The official U.S. advisory will appear here when available.</p></div>
+        <div class="vh-official-card" id="vhUkAdvisory"><div class="source">UK FCDO</div><h4>Run a destination scan</h4><p>UK foreign travel advice and regional warning status will appear here.</p></div>
+      </div>
+      <div class="data-note" id="vhAdvisoryNote">Advisories are written for each issuing government’s own nationals and can contain regional exceptions. Read the full official page.</div>
     </div>
-    <div class="data-note" id="vhAdvisoryNote">Advisories are written for each issuing government’s own nationals and can contain regional exceptions. Read the full official page.</div>
   </div>
 
-  <div class="vh-live-panel" id="vhBeforeBookPanel" aria-label="Before you book live checks">
+  <div class="vh-live-panel col-half" id="vhBeforeBookPanel" aria-label="Before you book live checks">
     <div class="vh-live-head">
       <div><div class="vh-live-title">Before You Book: 8 Decision Checks</div><div class="vh-live-sub">A practical summary of entry verification, official advice, five-day conditions, health environment, timing, hazards, arrival logistics and money context.</div></div>
       <span class="vh-source-chip" id="vhLiveFreshness">Live + curated</span>
     </div>
-    <div class="vh-check-grid" id="vhBeforeBookGrid">
-      <div class="vh-check warn"><b>🛂 Entry</b><span>Passport-specific rules require official verification.</span><em>Verify</em></div>
-      <div class="vh-check warn"><b>🛡 Advisory</b><span>Official U.S. and UK sources load after search.</span><em>Pending</em></div>
-      <div class="vh-check warn"><b>🌦 Weather</b><span>Current comfort and five-day disruption risk.</span><em>Pending</em></div>
-      <div class="vh-check warn"><b>🏥 Health</b><span>US AQI, UV and CDC notices.</span><em>Pending</em></div>
-      <div class="vh-check warn"><b>📅 Timing</b><span>Public-holiday pressure and seasonal context.</span><em>Pending</em></div>
-      <div class="vh-check warn"><b>🌋 Hazards</b><span>Earthquakes, disasters, fire and alerts.</span><em>Pending</em></div>
-      <div class="vh-check warn"><b>🛬 Arrival</b><span>Airport distance and late-arrival friction.</span><em>Pending</em></div>
-      <div class="vh-check warn"><b>💳 Money</b><span>Budget, currency and payment reality.</span><em>Pending</em></div>
+    <div class="vh-panel-body">
+      <div class="bby-progress-wrap">
+        <div class="bby-progress-track"><div class="bby-progress-fill" id="bbyProgressFill"></div></div>
+        <div class="bby-progress-text" id="bbyProgressText">Run a destination scan to see checks</div>
+      </div>
+      <div class="vh-check-grid" id="vhBeforeBookGrid">
+        <div class="vh-check warn"><b>🛂 Entry</b><span>Passport-specific rules require official verification.</span><em>Verify</em></div>
+        <div class="vh-check warn"><b>🛡 Advisory</b><span>Official U.S. and UK sources load after search.</span><em>Pending</em></div>
+        <div class="vh-check warn"><b>🌦 Weather</b><span>Current comfort and five-day disruption risk.</span><em>Pending</em></div>
+        <div class="vh-check warn"><b>🏥 Health</b><span>US AQI, UV and CDC notices.</span><em>Pending</em></div>
+        <div class="vh-check warn"><b>📅 Timing</b><span>Public-holiday pressure and seasonal context.</span><em>Pending</em></div>
+        <div class="vh-check warn"><b>🌋 Hazards</b><span>Earthquakes, disasters, fire and alerts.</span><em>Pending</em></div>
+        <div class="vh-check warn"><b>🛬 Arrival</b><span>Airport distance and late-arrival friction.</span><em>Pending</em></div>
+        <div class="vh-check warn"><b>💳 Money</b><span>Budget, currency and payment reality.</span><em>Pending</em></div>
+      </div>
+      <div class="bby-checklist-wrap" id="bbyChecklistWrap"></div>
     </div>
   </div>
 
-  <div class="vh-live-panel" id="vhAccuracyPanel" aria-label="Accuracy and source confidence">
+  <div class="vh-live-panel col-half" id="vhAccuracyPanel" aria-label="Accuracy and source confidence">
     <div class="vh-live-head">
       <div><div class="vh-live-title">Accuracy &amp; Source Snapshot</div>
         <div class="vh-live-sub" id="vhResolvedSummary">Search a destination to confirm the city, country, coordinates and coordinate-based timezone, then review source freshness and data gaps.</div>
         <div class="vh-resolved-line" id="vhResolvedLine"><span class="vh-resolved-chip warn">Destination not scanned yet</span></div></div>
       <span class="vh-source-chip" id="vhDataFreshness">Awaiting scan</span>
     </div>
-    <div class="vh-data-grid" id="vhDataTrustGrid">
-      <div class="vh-data-card loading"><b>Destination Match</b><span>City and country confirmed after search.</span><em>Pending</em></div>
-      <div class="vh-data-card loading"><b>Live Conditions</b><span>Weather, AQI, UV and time update after search.</span><em>Pending</em></div>
-      <div class="vh-data-card loading"><b>Official Advisory</b><span>Official U.S. and UK travel advice loads after search.</span><em>Pending</em></div>
-      <div class="vh-data-card loading"><b>Official Checks</b><span>Visa, health and safety stay passport-specific.</span><em>Verify</em></div>
+    <div class="vh-panel-body">
+      <div class="vh-data-grid" id="vhDataTrustGrid">
+        <div class="vh-data-card loading"><b>Destination Match</b><span>City and country confirmed after search.</span><em>Pending</em></div>
+        <div class="vh-data-card loading"><b>Live Conditions</b><span>Weather, AQI, UV and time update after search.</span><em>Pending</em></div>
+        <div class="vh-data-card loading"><b>Official Advisory</b><span>Official U.S. and UK travel advice loads after search.</span><em>Pending</em></div>
+        <div class="vh-data-card loading"><b>Official Checks</b><span>Visa, health and safety stay passport-specific.</span><em>Verify</em></div>
+      </div>
     </div>
   </div>
 
-  <div class="vh-live-panel" id="vhReadinessExplainPanel" aria-label="Explainable readiness score">
+  <div class="vh-live-panel col-full" id="vhReadinessExplainPanel" aria-label="Explainable readiness score">
     <div class="vh-live-head"><div><div class="vh-live-title">Why This Readiness Score?</div><div class="vh-live-sub">Only available integrated signals are scored. Exact entry eligibility is never guessed and remains a verification item.</div></div><span class="vh-source-chip" id="vhCoverageBadge">Awaiting scan</span></div>
-    <div class="vh-coverage-note" id="vhCoverageNote">Search a destination to see score coverage and every contributing reason.</div>
-    <div class="vh-dimension-grid" id="vhDimensionGrid"><div class="data-note">Readiness dimensions will appear here.</div></div>
+    <div class="vh-panel-body">
+      <div class="vh-coverage-note" id="vhCoverageNote">Search a destination to see score coverage and every contributing reason.</div>
+      <div class="vh-dimension-grid" id="vhDimensionGrid"><div class="data-note">Readiness dimensions will appear here.</div></div>
+    </div>
   </div>
 
-  <div class="vh-live-panel" id="vhActivityPanel" aria-label="Five-day activity planner">
+  <div class="vh-live-panel col-full" id="vhActivityPanel" aria-label="Five-day activity planner">
     <div class="vh-live-head"><div><div class="vh-live-title">Five-Day Activity Planner</div><div class="vh-live-sub">A condition-aware schedule using forecast rain, temperature, US AQI, UV where available and public-holiday timing.</div></div><span class="vh-source-chip">Forecast-aware</span></div>
-    <div class="vh-activity-wrap" id="vhActivityMatrix"><div class="data-note" style="padding:14px">Search a destination to compare the best outdoor and indoor planning windows.</div></div>
+    <div class="vh-panel-body">
+      <div class="vh-activity-wrap" id="vhActivityMatrix"><div class="data-note" style="padding:14px">Search a destination to compare the best outdoor and indoor planning windows.</div></div>
+    </div>
   </div>
+
+  </div><!-- /vh-main-grid -->
 
   <div class="vh-intel-quad">
     <div class="vh-intel-card"><div class="clabel">🏥 Health Watch</div><div class="vh-report-list" id="vhHealthWatch"><div class="data-note">US AQI trend, UV and official CDC notices appear after search.</div></div></div>
@@ -788,9 +891,14 @@
       <div class="aqi-sep">
         <div class="clabel">💨 Air Quality (US AQI)</div>
         <div class="aqi-num" id="aqiNum">--</div>
-        <span class="aqi-pill" id="aqiPill">--</span>
-        <div class="aqi-bar-bg"><div class="aqi-bar" id="aqiBar" style="width:0%"></div></div>
-        <div style="font-size:.67rem;color:var(--t3);margin-top:5px" id="aqiTip">--</div>
+        <div class="aqi-cat-row"><span class="aqi-cat-pill good" id="aqiPill">--</span></div>
+        <div class="aqi-color-track"><div class="aqi-color-needle" id="aqiNeedle" style="left:0%"></div></div>
+        <div class="aqi-bar-bg" style="display:none"><div class="aqi-bar" id="aqiBar" style="width:0%"></div></div>
+        <div style="font-size:.67rem;color:var(--t3);margin-top:4px" id="aqiTip">--</div>
+        <div class="aqi-trend-wrap" id="aqiTrendWrap" style="display:none">
+          <div class="aqi-trend-lbl">5-day AQI trend</div>
+          <div class="aqi-trend-bars" id="aqiTrendBars"></div>
+        </div>
       </div>
       <div class="uv-section"><div class="uv-label">☀️ UV Index</div><div class="uv-val" id="uvVal">--</div><div class="uv-desc" id="uvDesc">--</div></div>
       <div class="source-note">Sources: Voyasee Weather Bridge (OpenWeather air quality and forecast)</div>
@@ -815,7 +923,7 @@
 
   <div class="sh"><div class="sh-icon">📅</div><div class="sh-label">5-Day Forecast</div></div>
   <div class="card"><div class="card-load" id="fcLoad"><div class="spinner"></div></div>
-    <div class="fc-grid" id="fcRow"><div style="color:var(--t3);font-size:.85rem;padding:7px 0;grid-column:1/-1">Search a destination to see the 5-day forecast.</div></div>
+    <div class="fc-grid-v2" id="fcRow"><div style="color:var(--t3);font-size:.85rem;padding:7px 0">Search a destination to see the 5-day forecast.</div></div>
   </div>
 
   <div class="sh"><div class="sh-icon">🌐</div><div class="sh-label">Destination Intel</div></div>
@@ -1397,6 +1505,7 @@ function renderMasterReadiness(r){
   const icons={safety:"🛡",weather:"🌦",health:"🏥",entry:"🛂",timing:"📅",arrival:"🛬",practicality:"🧭"};const rows=Object.entries(dims);
   $("vhDimensionGrid").innerHTML=rows.map(([k,d])=>`<div class="vh-dimension ${esc(d.status||"")}"><b>${icons[k]||"•"} ${esc(k)}</b><strong>${d.score==null?d.status==="verify"?"Verify":"N/A":esc(d.score)+" / "+esc(d.max)}</strong><span>${esc(d.reason||"")}${d.confidence?` · Evidence: ${esc(d.confidence)}`:""}</span></div>`).join("");
   safeText("vhCoverageBadge",`${rd.coveragePercent??0}% scorable coverage`);safeText("vhCoverageNote",rd.notice||"");
+  const scoreTs=$("vhScoreTs");if(scoreTs)scoreTs.textContent="Score updated "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
   $("readinessStrip").innerHTML=rows.map(([k,d])=>`<span class="ready-chip ${d.status==="verify"?"warn":d.score==null?"risk":d.score/d.max>=.75?"good":d.score/d.max>=.5?"warn":"risk"}">${esc(k)}: ${d.score==null?(d.status==="verify"?"verify":"unavailable"):d.score+"/"+d.max}</span>`).join("");
   $("vhScoreMini").innerHTML=rows.slice(0,5).map(([k,d])=>`<span class="vh-mini-pill">${esc(k)} ${d.score==null?"—":d.score+"/"+d.max}</span>`).join("")
 }
@@ -1436,12 +1545,36 @@ function renderMasterBeforeBook(r,geo){
     ["💳 Money",moneyText,"warn","Estimate"]
   ];
   $("vhBeforeBookGrid").innerHTML=cells.map(c=>`<div class="vh-check ${c[2]}"><b>${esc(c[0])}</b><span>${esc(c[1])}</span><em>${esc(c[3])}</em></div>`).join("");
+  const goodCount=cells.filter(c=>c[2]==="good").length;const fill=$("bbyProgressFill"),txt=$("bbyProgressText");if(fill)fill.style.width=Math.round(goodCount/cells.length*100)+"%";if(txt)txt.textContent=goodCount+"/"+cells.length+" live checks passed";
+  if(geo)renderBbyChecklist(geo);
+  const ring=$("vhScoreRing");if(ring&&goodCount>=6)ring.classList.add("score-good");else if(ring)ring.classList.remove("score-good");
 }
 
+function aqiMeta(aqi){if(aqi<=50)return{label:"Good",cls:"good",pct:aqi/50*16.7,tip:"Excellent air for outdoor plans."};if(aqi<=100)return{label:"Moderate",cls:"moderate",pct:16.7+(aqi-50)/50*16.7,tip:"Acceptable for most travellers."};if(aqi<=150)return{label:"Unhealthy (Sensitive)",cls:"usg",pct:33.4+(aqi-100)/50*16.7,tip:"Sensitive travellers should ease prolonged exertion."};if(aqi<=200)return{label:"Unhealthy",cls:"unhealthy",pct:50+(aqi-150)/50*16.7,tip:"Consider shorter outdoor sessions."};if(aqi<=300)return{label:"Very Unhealthy",cls:"very",pct:66.7+(aqi-200)/100*16.7,tip:"Avoid outdoor exposure when possible."};return{label:"Hazardous",cls:"haz",pct:Math.min(97,83.4+(aqi-300)/200*16.7),tip:"Stay indoors. Follow local authority advice."}}
 function renderAqiCard(aq,sourceLabel){
-  const aqi=aq&&aq.usAqiEstimate;if(aqi==null){safeText("aqiNum","N/A");safeText("aqiPill","Unavailable");safeText("aqiTip","Air quality unavailable. Use local official readings if sensitive.");return false}
-  safeText("aqiNum",Math.round(aqi));let label,bg,fg,bar,pct;if(aqi<=50){label="Good";bg="rgba(42,211,166,.18)";fg="#2ad3a6";bar="#2ad3a6";pct=aqi/50*20}else if(aqi<=100){label="Moderate";bg="rgba(246,203,91,.18)";fg="#f6cb5b";bar="#f6cb5b";pct=20+(aqi-50)/50*20}else if(aqi<=150){label="Unhealthy (Sensitive)";bg="rgba(232,100,58,.18)";fg="#ff9f7f";bar="#e87040";pct=40+(aqi-100)/50*20}else if(aqi<=200){label="Unhealthy";bg="rgba(212,72,72,.18)";fg="#ffb4b4";bar="#dc2626";pct=60+(aqi-150)/50*20}else{label="Very Unhealthy";bg="rgba(138,110,224,.18)";fg="#c4b5fd";bar="#8a6ee0";pct=Math.min(100,80+(aqi-200)/100*20)}
-  const pill=$("aqiPill");pill.textContent=label;pill.style.cssText=`background:${bg};color:${fg}`;$("aqiBar").style.width=pct+"%";$("aqiBar").style.background=bar;const c=aq.components||{},pm=(c.pm2_5!=null||c.pm10!=null)?` PM2.5 ${c.pm2_5??"--"}, PM10 ${c.pm10??"--"}.`:"";safeText("aqiTip",({Good:"Excellent air for outdoor plans.",Moderate:"Acceptable for most travellers.","Unhealthy (Sensitive)":"Sensitive travellers should ease prolonged exertion.",Unhealthy:"Consider shorter outdoor sessions.","Very Unhealthy":"Avoid outdoor exposure when possible."}[label]||"")+pm+` Estimated US AQI from ${sourceLabel||"Voyasee Weather Bridge"}; not an official 24-hour AQI.`);if(currentWeatherDetails)currentWeatherDetails.aqi=aqi;return true
+  const aqi=aq&&aq.usAqiEstimate;if(aqi==null){safeText("aqiNum","N/A");const pill=$("aqiPill");if(pill){pill.textContent="Unavailable";pill.className="aqi-cat-pill"}safeText("aqiTip","Air quality unavailable. Use local official readings if sensitive.");return false}
+  const m=aqiMeta(Number(aqi));
+  safeText("aqiNum",Math.round(aqi));
+  const pill=$("aqiPill");if(pill){pill.textContent=m.label;pill.className="aqi-cat-pill "+m.cls}
+  const needle=$("aqiNeedle");if(needle)needle.style.left=m.pct+"%";
+  const c=aq.components||{},pm=(c.pm2_5!=null||c.pm10!=null)?` PM2.5 ${c.pm2_5??"--"}, PM10 ${c.pm10??"--"}.`:"";
+  safeText("aqiTip",m.tip+pm+` Estimated US AQI from ${sourceLabel||"Voyasee Weather Bridge"}; not an official 24-hour AQI.`);
+  if(currentWeatherDetails)currentWeatherDetails.aqi=Number(aqi);
+  return true
+}
+function renderAqiTrend(days){
+  const wrap=$("aqiTrendWrap"),bars=$("aqiTrendBars");if(!wrap||!bars)return;
+  const pts=days.map(d=>d.aqi!=null?Number(d.aqi):null).filter(v=>v!=null);
+  if(pts.length<2){wrap.style.display="none";return}
+  const max=Math.max(...pts,1),dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  bars.innerHTML=days.slice(0,5).map((d,i)=>{
+    const v=d.aqi!=null?Number(d.aqi):null,h=v!=null?Math.max(10,Math.round(v/max*40)):4;
+    const m=v!=null?aqiMeta(v):{cls:"",label:""};
+    const dt=new Date(d.date+"T00:00:00"),dayLbl=i===0?"Now":dayNames[dt.getDay()];
+    const barColor=m.cls==="good"?"#2ad3a6":m.cls==="moderate"?"#f6cb5b":m.cls==="usg"?"#ff9f7f":m.cls==="unhealthy"?"#dc2626":m.cls==="very"?"#a855f7":"#e040aa";
+    return`<div class="aqi-trend-col"><div class="aqi-trend-bar" style="height:${h}px;background:${barColor}" title="${v!=null?Math.round(v)+' AQI':'N/A'}"></div><div class="aqi-trend-day">${esc(dayLbl)}</div></div>`
+  }).join("");
+  wrap.style.display="block";
 }
 async function fetchIntelligenceReport(geo){
   const d=await fetchJSON(VTI_BASE+"/report?"+masterParams(geo).toString(),30000);if(!d||d.ok===false)throw new Error(d&&d.error&&d.error.message||"Master intelligence unavailable");liveIntel.report=d;
@@ -1457,8 +1590,9 @@ function renderForecastVwb(days){
   $("fcRow").innerHTML=days.map((day,i)=>{
     const d=new Date(day.date+"T00:00:00"),condText=(day.condition&&(day.condition.text||day.condition.group))||"Weather update",icon=weatherIconFor(condText);
     const rain=Number(day.precipitationProbabilityPct||0),hi=Number.isFinite(Number(day.tempMaxC))?fmt(Number(day.tempMaxC)):"--",lo=Number.isFinite(Number(day.tempMinC))?fmt(Number(day.tempMinC)):"--";
-    return`<div class="fc-day ${i===0?"today":""}"><div class="fc-name">${i===0?"Today":dayNames[d.getDay()]}</div><div class="fc-ico">${icon}</div><div class="fc-hi">${hi}</div><div class="fc-lo">${lo}</div><div class="fc-rain">${rain>0?"🌧 "+Math.round(rain)+"%":""}</div></div>`
+    return`<div class="fc-card-v2${i===0?" today-card":""}"><div class="fc2-day">${i===0?"Today":dayNames[d.getDay()]}</div><div class="fc2-ico">${icon}</div><div class="fc2-hi">${hi}</div><div class="fc2-lo">${lo}</div><div class="fc2-rain">${rain>0?"🌧 "+Math.round(rain)+"%":""}</div></div>`
   }).join("");
+  renderAqiTrend(days);
 }
 async function fetchAQI(lat,lon){try{const d=await fetchJSON(VWB_BASE+"/air-quality?lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lon));if(!d||d.ok===false)throw new Error("air quality unavailable");return renderAqiCard(d.airQuality||{},d.source||"Voyasee Weather Bridge")}catch{safeText("aqiNum","N/A");safeText("aqiPill","Unavailable");safeText("aqiTip","Air quality unavailable. Use local official readings if sensitive.");return false}}
 function startClock(){if(clockInterval)clearInterval(clockInterval);function tick(){try{const now=new Date();safeText("tTime",new Intl.DateTimeFormat("en-US",{timeZone:currentTZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).format(now));safeText("tDate",new Intl.DateTimeFormat("en-US",{timeZone:currentTZ,weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(now))}catch{safeText("tTime",new Date().toLocaleTimeString())}}tick();clockInterval=setInterval(tick,1000)}
@@ -1501,7 +1635,31 @@ async function fetchWiki(city){setLoad("wikiLoad",true);try{const q=(city||"").s
 function ccFacts(cc){const c=getC(cc);return{name:(lastGeo&&lastGeo.country)||c.name,capital:c.capital,population:c.population,languages:c.languages,currency:c.currency,region:c.region,timezone:c.tz,calling:c.calling,tld:c.tld}}
 const VCI_BASE=(window.VoyaseeCountryDataConfig&&window.VoyaseeCountryDataConfig.apiBase)||"/wp-json/voyasee-data/v1";
 async function fetchCountry(cc){
-  setLoad("ccLoad",true);const fb=ccFacts(cc);
+  setLoad("ccLoad",true);
+  // A3: If this country isn't in the 50-country curated DB (returns CDEF), try VCI for richer data
+  const isKnown=cc&&Object.prototype.hasOwnProperty.call(C,cc);
+  if(!isKnown){
+    try{
+      const vci=await fetchJSON(VCI_BASE+"/country/"+encodeURIComponent(cc),9000,false);
+      if(vci&&vci.ok!==false&&vci.core){
+        const core=vci.core||{},names=core.names||{},cap=(core.capital&&core.capital.name)||"--";
+        const pop=core.populationSnapshot&&core.populationSnapshot.value;
+        const popStr=pop?(pop>=1e9?(pop/1e9).toFixed(2)+"B":pop>=1e6?(pop/1e6).toFixed(1)+"M":Number(pop).toLocaleString()):"--";
+        const lang=Array.isArray(core.languages)?core.languages.slice(0,4).map(l=>l.name).join(", "):"--";
+        const cv=Array.isArray(core.currencies)&&core.currencies[0];
+        const cur=cv?`${cv.name||""}${cv.symbol?" ("+cv.symbol+")":""}`.trim()||"--":"--";
+        const cls=core.classification||{};const region=(cls.region||"")+(cls.subregion?", "+cls.subregion:"");
+        const tz=(core.timezones&&core.timezones.iana&&core.timezones.iana[0])||"--";
+        const calls=(core.communications&&core.communications.callingCodes)||[];
+        safeText("ccFlag",flagEmoji(cc));safeText("ccName",names.common||names.official||cc);safeText("ccMeta",region||cc);
+        safeText("ccCap",cap);safeText("ccPop",popStr);safeText("ccLang",lang);safeText("ccCur",cur);
+        safeText("ccReg",region||"--");safeText("ccTZ",tz);safeText("ccCall",calls[0]||"--");safeText("ccTLD",core.tld||"--");
+        const n=document.querySelector("#ccCard .source-note");if(n)n.textContent="Source: Voyasee Country Intelligence (extended)";
+        setLoad("ccLoad",false);return;
+      }
+    }catch(e){}
+  }
+  const fb=ccFacts(cc);
   const applyFb=(label)=>{safeText("ccFlag",flagEmoji(cc));safeText("ccName",fb.name);safeText("ccMeta",`${fb.region}${fb.timezone&&fb.timezone!=="--"?" · "+fb.timezone:""}`);safeText("ccCap",fb.capital);safeText("ccPop",fb.population);safeText("ccLang",fb.languages);safeText("ccCur",fb.currency);safeText("ccReg",fb.region);safeText("ccTZ",fb.timezone);safeText("ccCall",fb.calling);safeText("ccTLD",fb.tld);const n=document.querySelector("#ccCard .source-note");if(n)n.textContent=label||"Source: Voyasee curated country facts"};
   try{
     const d=await fetchJSON(VCI_BASE+"/country/"+encodeURIComponent(cc));
@@ -1585,9 +1743,48 @@ function weatherMood(temp,weatherText,uv,precip,wind){let label="Good",cue="Laye
 function bestWindow(){if(!dailyData||!Array.isArray(dailyData.time))return null;let best=null;dailyData.time.forEach((t,i)=>{const hi=Number(dailyData.temperature_2m_max&&dailyData.temperature_2m_max[i]),lo=Number(dailyData.temperature_2m_min&&dailyData.temperature_2m_min[i]),rain=Number(dailyData.precipitation_probability_max&&dailyData.precipitation_probability_max[i])||0;const mid=Number.isFinite(hi)&&Number.isFinite(lo)?(hi+lo)/2:null;let pen=rain;if(mid!=null){pen+=mid>32?(mid-32)*5:0;pen+=mid<8?(8-mid)*4:0}if(rain>=70)pen+=25;if(!best||pen<best.pen)best={i,t,hi,lo,rain,pen}});if(!best)return null;const date=new Date(best.t),lbl=best.i===0?"Today":date.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}),temp=Number.isFinite(best.hi)&&Number.isFinite(best.lo)?`${fmt(best.lo)}-${fmt(best.hi)}`:"window";return{label:`${lbl} · ${temp} · rain ${Math.round(best.rain)}%`}}
 function updateTodayConsole(){const dW=currentWeatherDetails||{},mood=weatherMood(currentTempC,currentWeatherText,dW.uv||0,dW.precip||0,dW.wind||0);safeText("vhTodayTitle",mood.label+" day plan");safeText("vhTodayCopy",mood.copy);const best=bestWindow();safeText("vhBestWindow",best?best.label:(dW.sunrise?`${dW.sunrise}-${dW.sunset||"--"}`:"After search"));safeText("vhOutdoorFit",mood.label);safeText("vhPackCue",mood.cue)}
 
-/* ---------- before you book ---------- */
+/* ---------- before you book + interactive checklist ---------- */
+const BBY_CL_KEY="voyaseeBbyChecklist";
+function bbyChecklistItems(geo){
+  const cc=geo&&geo.cc||currentCC;
+  const d=getC(cc);
+  return[
+    {group:"Essential — before booking",items:[
+      "Check official travel advisory (U.S. State Dept / UK FCDO)",
+      "Confirm passport is valid 6 months beyond travel dates",
+      "Verify visa / e-visa / entry requirements for your passport",
+      "Check health entry requirements and vaccinations (CDC/NHS)",
+      "Purchase travel insurance including medical and cancellation"
+    ]},
+    {group:"Logistics — before you fly",items:[
+      "Book airport-to-hotel transfer in advance",
+      `Get local currency (${d.cur?d.cur.toUpperCase():"destination currency"}) or confirm card acceptance`,
+      "Download offline maps and translation app",
+      "Note local emergency numbers: police, ambulance, fire",
+      "Save embassy contact details for your nationality"
+    ]},
+    {group:"Health & Safety",items:[
+      "Check tap water safety — "+(d.tap&&!d.tap.includes("Safe")?"carry filtered water":"safe to drink locally"),
+      "Pack any required prescriptions with pharmacy letters",
+      "Check UV index and pack appropriate sun protection",
+      "Review current CDC traveller health notices",
+      "Carry copies of all key documents (passport, insurance)"
+    ]},
+    {group:"Packing & Comfort",items:[
+      "Check 5-day forecast and pack accordingly",
+      "Confirm correct plug adapter for "+cc,
+      "Arrange SIM card or eSIM for data roaming",
+      "Check baggage allowance for your airline",
+      "Set phone to local time zone"
+    ]}
+  ];
+}
+function renderBbyProgress(){
+  const saved=storageGet(BBY_CL_KEY,{});const keys=Object.keys(saved).filter(k=>saved[k]);const total=$("bbyChecklistWrap")?$("bbyChecklistWrap").querySelectorAll(".bby-cl-item").length:20;const done=keys.length;const fill=$("bbyProgressFill"),txt=$("bbyProgressText");if(fill)fill.style.width=(total?Math.min(100,Math.round(done/total*100)):0)+"%";if(txt)txt.textContent=done+"/"+total+" pre-trip tasks checked"}
+function renderBbyChecklist(geo){
+  const wrap=$("bbyChecklistWrap");if(!wrap)return;const saved=storageGet(BBY_CL_KEY,{});const sections=bbyChecklistItems(geo);let html='<div class="bby-cl-heading">✅ Pre-Trip Checklist</div><div class="bby-cl-sub">Check off each item as you prepare. Saved locally in your browser.</div>';sections.forEach(s=>{html+=`<div class="bby-cl-section"><div class="bby-cl-section-title">${esc(s.group)}</div>`;s.items.forEach((item,i)=>{const key=s.group+":"+i;const checked=!!saved[key];html+=`<div class="bby-cl-item${checked?" bby-done":""}"><input type="checkbox" id="bby-${btoa(key).slice(0,10)}" data-bby-key="${esc(key)}"${checked?" checked":""}><label for="bby-${btoa(key).slice(0,10)}">${esc(item)}</label></div>`});html+="</div>"});wrap.innerHTML=html;wrap.querySelectorAll("input[type=checkbox]").forEach(cb=>{cb.addEventListener("change",()=>{const k=cb.dataset.bbyKey;const cur=storageGet(BBY_CL_KEY,{});cur[k]=cb.checked;storageSet(BBY_CL_KEY,cur);const item=cb.closest(".bby-cl-item");if(item)item.classList.toggle("bby-done",cb.checked);renderBbyProgress()})});renderBbyProgress()}
 function statusWord(k){return k==="good"?"Good":k==="risk"?"Verify":"Check"}
-function renderBeforeBook(geo){if(liveIntel.report){renderMasterBeforeBook(liveIntel.report,geo);return}if(!geo)return;const entry=entryComplexity(geo.cc),cells=[["🛂 Entry",entry.text,"warn"],["🛡 Advisory","Official sources loading.","warn"],["🌦 Weather",currentTempC==null?"Weather loading.":fmt(currentTempC)+" · "+currentWeatherText,currentTempC!=null?"good":"warn"],["🏥 Health","AQI, UV and CDC notices loading.","warn"],["📅 Timing","Holiday data loading.","warn"],["🌋 Hazards","Hazard sources loading.","warn"],["🛬 Arrival","Airport reference loading.","warn"],["💳 Money","Currency and budget are estimates.","warn"]];$("vhBeforeBookGrid").innerHTML=cells.map(c=>`<div class="vh-check ${c[2]}"><b>${esc(c[0])}</b><span>${esc(c[1])}</span><em>Pending</em></div>`).join("")}
+function renderBeforeBook(geo){if(liveIntel.report){renderMasterBeforeBook(liveIntel.report,geo);return}if(!geo)return;const entry=entryComplexity(geo.cc),cells=[["🛂 Entry",entry.text,"warn"],["🛡 Advisory","Official sources loading.","warn"],["🌦 Weather",currentTempC==null?"Weather loading.":fmt(currentTempC)+" · "+currentWeatherText,currentTempC!=null?"good":"warn"],["🏥 Health","AQI, UV and CDC notices loading.","warn"],["📅 Timing","Holiday data loading.","warn"],["🌋 Hazards","Hazard sources loading.","warn"],["🛬 Arrival","Airport reference loading.","warn"],["💳 Money","Currency and budget are estimates.","warn"]];const goodCount=cells.filter(c=>c[2]==="good").length;const fill=$("bbyProgressFill"),txt=$("bbyProgressText");if(fill)fill.style.width=Math.round(goodCount/cells.length*100)+"%";if(txt)txt.textContent=goodCount+"/"+cells.length+" checks passed";$("vhBeforeBookGrid").innerHTML=cells.map(c=>`<div class="vh-check ${c[2]}"><b>${esc(c[0])}</b><span>${esc(c[1])}</span><em>Pending</em></div>`).join("");renderBbyChecklist(geo)}
 function getSaved(){const r=storageGet(SAVED_KEY,[]);return Array.isArray(r)?r:[]}
 function setSaved(r){storageSet(SAVED_KEY,Array.isArray(r)?r.slice(0,6):[])}
 function renderSaved(){const rows=getSaved();$("vhSavedChips").innerHTML=rows.length?rows.map(r=>`<button class="vh-saved-chip" type="button" data-saved-q="${esc(r.display)}">${esc(r.name||r.display)}</button>`).join(""):`<button class="vh-saved-chip" type="button" data-saved-default="Bangkok, Thailand">Bangkok</button>`}
@@ -1707,6 +1904,12 @@ function bindEvents(){
   ["curFrom","curTo"].forEach(id=>$(id).addEventListener("change",calcCur));$("curAmt").addEventListener("input",calcCur);
   document.querySelectorAll("[data-copy]").forEach(btn=>btn.addEventListener("click",()=>{const el=$(btn.dataset.copy);if(!el)return;if(navigator.clipboard)navigator.clipboard.writeText(el.textContent).then(()=>{const fl=btn.querySelector(".copied-flash");if(fl){fl.style.opacity="1";setTimeout(()=>fl.style.opacity="0",800)}toast("Copied!")}).catch(()=>toast("Copy unavailable","err"));else toast("Copy unavailable","err")}));
   ["vhPassport","vhTripStyle","vhTripLength","vhArrivalDate","vhArrivalTime","vhTravellerType","vhLuggage","vhAqSensitive","vhHeatSensitive","vhLateArrival","vhMobility"].forEach(id=>{const el=$(id);if(el)el.addEventListener("change",()=>{currentPassport=$("vhPassport").value;currentTripStyle=$("vhTripStyle").value;currentTripLength=$("vhTripLength").value;saveProfile();if(lastGeo){updateVisa(lastGeo.cc);updateBudget(lastGeo.cc);renderBeforeBook(lastGeo);renderOfficialCenter(lastGeo);renderRouteIntel(lastGeo);updateSmartLinks(lastGeo);updateReadiness(lastGeo.cc);fetchIntelligenceReport(lastGeo).catch(()=>{})}})});
+  // D2: mobile collapsible panels
+  document.querySelectorAll(".vh-live-panel").forEach(panel=>{
+    const head=panel.querySelector(".vh-live-head");const body=panel.querySelector(".vh-panel-body");if(!head||!body)return;
+    const caret=document.createElement("span");caret.className="vh-caret";caret.textContent="▾";head.appendChild(caret);head.classList.add("collapsible");
+    head.addEventListener("click",()=>{if(window.innerWidth>760)return;panel.classList.toggle("vh-collapsed")});
+  });
   $("vhSaveDest").addEventListener("click",saveCurrentDestination);
   $("vhSavedChips").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const q=b.dataset.savedQ||b.dataset.savedDefault;if(!q)return;selectedGeo=null;si.value=q;runAnalysis()});
   $("vhCopySummary").addEventListener("click",copyTripSummary);
