@@ -203,20 +203,22 @@
 }
 
 .vsb7-hero-visual {
-    height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 52px 32px 28px;
     position: relative;
     overflow: visible
 }
 
 .vsb7-scan-frame {
-    width: 230px;
-    height: 270px;
+    width: 224px;
+    height: 264px;
     border: 2px solid #4deaf0;
     border-radius: 30px;
-    position: absolute;
-    left: 50%;
-    top: 43%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    flex-shrink: 0;
     box-shadow: 0 0 45px #00d7ee55, inset 0 0 34px #00d7ee20;
     background: linear-gradient(#ffffff08, #00cde809)
 }
@@ -231,14 +233,14 @@
 
 .vsb7-scan-frame:before {
     height: 1px;
-    width: 248px;
+    width: 242px;
     left: -9px;
     top: 58%
 }
 
 .vsb7-scan-frame:after {
     width: 1px;
-    height: 288px;
+    height: 282px;
     left: 57%;
     top: -9px
 }
@@ -328,8 +330,18 @@
     bottom: 18px
 }
 
+.vsb7-signal-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%
+}
+
 .vsb7-signal {
-    position: absolute;
+    flex: 1;
+    min-width: 120px;
+    max-width: 180px;
     padding: 11px 15px;
     border-radius: 15px;
     background: #ffffff12;
@@ -350,16 +362,6 @@
 .vsb7-signal b {
     font-size: 13px;
     color: #fff
-}
-
-.vsb7-signal.one {
-    left: 6px;
-    bottom: 14px
-}
-
-.vsb7-signal.two {
-    right: 6px;
-    top: 60px
 }
 
 .vsb7-mode-tabs {
@@ -2672,11 +2674,14 @@
 }
 
 .vsb7.has-started .vsb7-hero-visual {
-    height: 150px;
-    transform: scale(.75)
+    padding-top: 36px;
+    padding-bottom: 16px;
+    gap: 12px;
+    transform: scale(.78);
+    transform-origin: center top
 }
 
-.vsb7.has-started .vsb7-signal.two,
+.vsb7.has-started .vsb7-signal-row,
 .vsb7.has-started .vsb7-scan-frame .d {
     display: none
 }
@@ -2740,20 +2745,18 @@
     }
 
     .vsb7-hero-visual {
-        height: 260px
+        padding: 44px 20px 22px;
+        gap: 16px
     }
 
     .vsb7-scan-frame {
-        transform: translate(-50%, -50%) scale(.88)
+        transform: scale(.88);
+        transform-origin: center center
     }
 
     .vsb7-signal {
-        max-width: 130px;
-        padding: 11px 14px
-    }
-
-    .vsb7-signal.two {
-        top: 18px
+        max-width: 148px;
+        padding: 10px 13px
     }
 
     .vsb7-mode-tabs {
@@ -2850,14 +2853,16 @@
     }
 
     .vsb7-hero-visual {
-        height: 210px
+        padding: 38px 16px 18px;
+        gap: 12px
     }
 
     .vsb7-scan-frame {
-        transform: translate(-50%, -50%) scale(.8)
+        transform: scale(.8);
+        transform-origin: center center
     }
 
-    .vsb7-signal {
+    .vsb7-signal-row {
         display: none
     }
 
