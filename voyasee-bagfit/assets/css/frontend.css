@@ -203,7 +203,9 @@
 }
 
 .vsb7-hero-visual {
-    height: 300px
+    height: 350px;
+    position: relative;
+    overflow: visible
 }
 
 .vsb7-scan-frame {
@@ -213,7 +215,7 @@
     border-radius: 30px;
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 43%;
     transform: translate(-50%, -50%);
     box-shadow: 0 0 45px #00d7ee55, inset 0 0 34px #00d7ee20;
     background: linear-gradient(#ffffff08, #00cde809)
@@ -229,16 +231,16 @@
 
 .vsb7-scan-frame:before {
     height: 1px;
-    width: 280px;
-    left: -25px;
+    width: 248px;
+    left: -9px;
     top: 58%
 }
 
 .vsb7-scan-frame:after {
     width: 1px;
-    height: 310px;
+    height: 288px;
     left: 57%;
-    top: -20px
+    top: -9px
 }
 
 .vsb7-case {
@@ -317,7 +319,7 @@
 }
 
 .vsb7-scan-frame .w {
-    bottom: -18px;
+    bottom: -10px;
     left: 35%
 }
 
@@ -328,12 +330,12 @@
 
 .vsb7-signal {
     position: absolute;
-    padding: 15px 18px;
-    border-radius: 17px;
-    background: #ffffff10;
-    border: 1px solid #65e8f455;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 16px 40px #00123f55
+    padding: 11px 15px;
+    border-radius: 15px;
+    background: #ffffff12;
+    border: 1px solid #65e8f460;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 28px #00123f66
 }
 
 .vsb7-signal small {
@@ -342,22 +344,22 @@
     font-size: 9px;
     font-weight: 900;
     letter-spacing: .12em;
-    margin-bottom: 4px
+    margin-bottom: 3px
 }
 
 .vsb7-signal b {
-    font-size: 14px;
+    font-size: 13px;
     color: #fff
 }
 
 .vsb7-signal.one {
-    left: 0;
-    bottom: 30px
+    left: 6px;
+    bottom: 14px
 }
 
 .vsb7-signal.two {
-    right: 0;
-    top: 70px
+    right: 6px;
+    top: 60px
 }
 
 .vsb7-mode-tabs {
@@ -1079,91 +1081,94 @@
 }
 
 .vsb7-verdict {
-    border-radius: 23px;
-    padding: 24px;
+    border-radius: 24px;
+    padding: 26px 24px;
     color: #fff;
     display: grid;
-    grid-template-columns: 58px 1fr auto;
-    gap: 18px;
+    grid-template-columns: 66px 1fr auto;
+    gap: 20px;
     align-items: center;
     margin-bottom: 18px;
-    box-shadow: 0 15px 38px #0e254526
+    box-shadow: 0 18px 48px #0e254538, 0 4px 14px #00000020
 }
 
 .vsb7-verdict.is-pass {
-    background: linear-gradient(125deg, #073e54, #087d78)
+    background: linear-gradient(128deg, #053646, #066f6a, #059a7a)
 }
 
 .vsb7-verdict.is-warn {
-    background: linear-gradient(125deg, #533407, #bf7414)
+    background: linear-gradient(128deg, #4a2e04, #b56a0e, #d4860c)
 }
 
 .vsb7-verdict.is-fail {
-    background: linear-gradient(125deg, #4f0926, #c02d63)
+    background: linear-gradient(128deg, #450820, #b02558, #d43070)
 }
 
 .vsb7-verdict.is-check {
-    background: linear-gradient(125deg, #172b59, #1769a9)
+    background: linear-gradient(128deg, #112451, #14609a, #1884c7)
 }
 
 .vsb7-verdict-icon {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
-    background: #ffffff17;
-    border: 1px solid #ffffff30;
+    width: 66px;
+    height: 66px;
+    border-radius: 20px;
+    background: #ffffff1a;
+    border: 1px solid #ffffff35;
     display: grid;
     place-items: center;
-    font-size: 31px;
-    font-weight: 900
+    font-size: 36px;
+    font-weight: 900;
+    box-shadow: inset 0 1px 0 #ffffff25
 }
 
 .vsb7-verdict span {
-    font-size: 9px;
-    letter-spacing: .14em;
+    font-size: 11px;
+    letter-spacing: .13em;
     font-weight: 900;
-    color: #d7ffff
+    color: #c8f5ff
 }
 
 .vsb7-verdict h4,
 .vsb7-verdict h4:is(.entry-content h4) {
     color: #fff !important;
-    font-size: 28px !important;
+    font-size: 27px !important;
     line-height: 1.1 !important;
-    margin: 4px 0 7px !important
+    margin: 5px 0 8px !important
 }
 
 .vsb7-verdict p {
-    color: #eef8ff;
+    color: #ddf3ff;
     margin: 0;
-    font-size: 12px
+    font-size: 13px;
+    line-height: 1.5
 }
 
 .vsb7-verdict dl {
     display: grid;
-    grid-template-columns: repeat(3, minmax(100px, 1fr));
+    grid-template-columns: repeat(3, minmax(95px, 1fr));
     gap: 8px;
     margin: 0
 }
 
 .vsb7-verdict dl div {
-    background: #ffffff10;
-    border: 1px solid #ffffff18;
-    border-radius: 13px;
-    padding: 10px
+    background: #ffffff12;
+    border: 1px solid #ffffff20;
+    border-radius: 14px;
+    padding: 11px 12px
 }
 
 .vsb7-verdict dt {
-    font-size: 8px;
-    letter-spacing: .08em;
-    color: #c9dded;
+    font-size: 10px;
+    letter-spacing: .07em;
+    color: #b8d8ee;
     text-transform: uppercase
 }
 
 .vsb7-verdict dd {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 900;
-    margin: 4px 0 0
+    color: #fff;
+    margin: 5px 0 0
 }
 
 .vsb7-confidence {
@@ -1225,14 +1230,15 @@
 
 .vsb7-bag-compare {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 126px 1fr;
     gap: 17px;
     align-items: center;
-    background: linear-gradient(145deg, #f9fcff, #eff8ff)
+    background: linear-gradient(145deg, #f9fcff, #edf8ff)
 }
 
 .vsb7-bag-outline {
-    height: 145px;
+    height: 130px;
+    margin-top: 32px;
     border: 2px solid #23cdd3;
     border-radius: 22px;
     position: relative;
@@ -1240,18 +1246,19 @@
     place-items: center;
     align-content: center;
     color: #0d568a;
-    background: #eaffff
+    background: #eaffff;
+    overflow: visible
 }
 
 .vsb7-bag-outline:before {
     content: "";
     position: absolute;
     width: 40px;
-    height: 28px;
+    height: 26px;
     border: 5px solid #23cdd3;
     border-bottom: 0;
     border-radius: 10px 10px 0 0;
-    top: -29px
+    top: -27px
 }
 
 .vsb7-bag-outline i {
@@ -1264,19 +1271,20 @@
 }
 
 .vsb7-bag-outline b {
-    font-size: 11px;
-    z-index: 1
+    font-size: 13px;
+    z-index: 1;
+    font-weight: 900
 }
 
 .vsb7-bag-outline small {
-    font-size: 10px;
+    font-size: 11px;
     z-index: 1;
     margin-top: 5px
 }
 
 .vsb7-bag-compare>div:last-child>span {
-    font-size: 8px;
-    letter-spacing: .13em;
+    font-size: 10px;
+    letter-spacing: .11em;
     color: #1385a4;
     font-weight: 900
 }
@@ -1291,7 +1299,7 @@
 }
 
 .vsb7-bag-compare p {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.55;
     color: var(--muted);
     margin: 0
@@ -1300,17 +1308,21 @@
 .vsb7-status-tile header {
     display: flex;
     justify-content: space-between;
-    gap: 7px
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 6px
 }
 
 .vsb7-status-tile header span {
-    font-size: 9px;
+    font-size: 10px;
     color: #6c7b92;
-    font-weight: 800
+    font-weight: 800;
+    letter-spacing: .04em
 }
 
 .vsb7-status-tile header b {
-    font-size: 10px
+    font-size: 12px;
+    white-space: nowrap
 }
 
 .vsb7-status-tile.is-pass header b {
@@ -1326,34 +1338,66 @@
 }
 
 .vsb7-status-tile p {
-    font-size: 10px;
-    line-height: 1.45;
+    font-size: 11px;
+    line-height: 1.5;
     color: #394d69;
-    min-height: 43px
+    min-height: 40px;
+    margin: 0 0 10px
 }
 
-.vsb7-status-tile>div {
-    height: 7px;
-    background: #ebf1f7;
-    border-radius: 99px;
-    overflow: hidden
+.vsb7-ring-wrap {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-top: 10px;
+    border-top: 1px solid #e8f0f8
 }
 
-.vsb7-status-tile>div i {
-    display: block;
-    height: 100%;
-    background: linear-gradient(90deg, #20d3cd, #3096f1)
+.vsb7-ring-wrap svg {
+    flex: 0 0 auto;
+    overflow: visible
 }
 
-.vsb7-status-tile.is-fail>div i {
-    background: linear-gradient(90deg, #f2a23b, #e54369)
+.vsb7-ring-wrap svg .ring-track {
+    stroke: #e4edf6
 }
 
-.vsb7-status-tile small {
-    display: block;
-    font-size: 8px;
-    color: #8090a6;
-    margin-top: 6px
+.vsb7-status-tile.is-pass .vsb7-ring-wrap svg .ring-fill {
+    stroke: #0ea870
+}
+
+.vsb7-status-tile.is-pass .vsb7-ring-wrap svg text {
+    fill: #0ea870
+}
+
+.vsb7-status-tile.is-warn .vsb7-ring-wrap svg .ring-fill {
+    stroke: #d4820d
+}
+
+.vsb7-status-tile.is-warn .vsb7-ring-wrap svg text {
+    fill: #d4820d
+}
+
+.vsb7-status-tile.is-fail .vsb7-ring-wrap svg .ring-fill {
+    stroke: #d62f5e
+}
+
+.vsb7-status-tile.is-fail .vsb7-ring-wrap svg text {
+    fill: #d62f5e
+}
+
+.vsb7-status-tile.is-check .vsb7-ring-wrap svg .ring-fill {
+    stroke: #1775cc
+}
+
+.vsb7-status-tile.is-check .vsb7-ring-wrap svg text {
+    fill: #1775cc
+}
+
+.vsb7-ring-wrap small {
+    font-size: 11px;
+    color: #7d8fa5;
+    line-height: 1.45
 }
 
 .vsb7-next-actions {
@@ -1444,7 +1488,7 @@
 
 .vsb7-more-detail summary span {
     display: block;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 900;
     letter-spacing: .1em;
     color: var(--muted)
@@ -1452,7 +1496,7 @@
 
 .vsb7-more-detail summary b {
     display: block;
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 2px;
     color: var(--ink)
 }
@@ -1531,21 +1575,21 @@
 .vsb7-bag-result summary b,
 .vsb7-flight-row summary b {
     display: block;
-    font-size: 12px
+    font-size: 13px
 }
 
 .vsb7-bag-result summary small,
 .vsb7-flight-row summary small {
-    font-size: 9px;
+    font-size: 11px;
     color: #6f7f94
 }
 
 .vsb7-bag-result summary em,
 .vsb7-flight-row summary em {
     font-style: normal;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 900;
-    padding: 6px 9px;
+    padding: 6px 11px;
     border-radius: 99px;
     background: #edf3f9
 }
@@ -1580,13 +1624,14 @@
 
 .vsb7-bag-result-body b {
     display: block;
-    font-size: 8px;
+    font-size: 10px;
     text-transform: uppercase;
-    color: #75849a
+    color: #75849a;
+    letter-spacing: .04em
 }
 
 .vsb7-bag-result-body span {
-    font-size: 10px;
+    font-size: 12px;
     color: #263b58
 }
 
@@ -1624,12 +1669,12 @@
 }
 
 .vsb7-flight-bags b {
-    font-size: 10px
+    font-size: 12px
 }
 
 .vsb7-flight-bags span {
-    font-size: 9px;
-    padding: 5px 7px;
+    font-size: 11px;
+    padding: 5px 9px;
     border-radius: 8px
 }
 
@@ -1727,22 +1772,22 @@
 }
 
 .vsb7-whatif-grid article span {
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 900;
-    letter-spacing: .12em;
+    letter-spacing: .11em;
     color: #1264e8
 }
 
 .vsb7-whatif-grid article b {
     display: block;
-    font-size: 11px;
-    margin: 4px 0 3px;
+    font-size: 13px;
+    margin: 5px 0 4px;
     color: var(--ink)
 }
 
 .vsb7-whatif-grid article p {
     margin: 0;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.5;
     color: var(--muted)
 }
@@ -1827,21 +1872,21 @@
 }
 
 .vsb7-enforcement span {
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 900;
-    letter-spacing: .12em;
+    letter-spacing: .11em;
     color: var(--muted)
 }
 
 .vsb7-enforcement b {
     display: block;
-    font-size: 12px;
-    margin: 2px 0
+    font-size: 13px;
+    margin: 3px 0
 }
 
 .vsb7-enforcement p {
     margin: 3px 0 0;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.5;
     color: var(--muted)
 }
@@ -1927,15 +1972,15 @@
 }
 
 .vsb7-fare-warning span {
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 900;
-    letter-spacing: .12em;
+    letter-spacing: .11em;
     color: #8a5600
 }
 
 .vsb7-fare-warning p {
     margin: 3px 0 0;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.5;
     color: #5c3a00
 }

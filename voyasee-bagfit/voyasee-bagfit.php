@@ -3,7 +3,7 @@
  * Plugin Name: Voyasee BagFit – Airline Carry-On Size Checker
  * Plugin URI: https://voyasee.com/
  * Description: A database-first airline baggage checker with Quick Check, full multi-bag trip analysis, reverse airline search, shared bag-size planning, 250 airline profiles and a global offline airport index.
- * Version: 7.9.0
+ * Version: 7.9.2
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-bagfit
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('VSB_VERSION', '7.9.0');
+define('VSB_VERSION', '7.9.2');
 define('VSB_FILE', __FILE__);
 define('VSB_DIR', plugin_dir_path(__FILE__));
 define('VSB_URL', plugin_dir_url(__FILE__));

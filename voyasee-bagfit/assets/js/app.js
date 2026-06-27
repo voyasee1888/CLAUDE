@@ -872,10 +872,21 @@
 
     function renderStatusTile(title, status, detail, percent, type) {
       const meta = statusLabel(status, type);
-      const width = Math.min(100, Math.max(0, Number(percent || 0)));
-      return '<article class="vsb7-status-tile is-' + meta[0] + '"><header><span>' + esc(title) + '</span><b>' + esc(
-        meta[1]) + '</b></header><p>' + esc(detail) + '</p>' + (percent == null ? '' : '<div><i style="width:' +
-        width + '%"></i></div><small>' + num(percent, 0) + '% of selected limit</small>') + '</article>';
+      const pct = Math.min(100, Math.max(0, Number(percent || 0)));
+      const r = 18;
+      const circ = +(2 * Math.PI * r).toFixed(2);
+      const offset = +(circ * (1 - pct / 100)).toFixed(2);
+      const ringHtml = percent == null ? '' :
+        '<div class="vsb7-ring-wrap">' +
+        '<svg width="48" height="48" viewBox="0 0 48 48">' +
+        '<circle class="ring-track" cx="24" cy="24" r="' + r + '" fill="none" stroke-width="5"/>' +
+        '<circle class="ring-fill" cx="24" cy="24" r="' + r + '" fill="none" stroke-width="5"' +
+        ' stroke-dasharray="' + circ + '" stroke-dashoffset="' + offset + '"' +
+        ' stroke-linecap="round" transform="rotate(-90 24 24)"/>' +
+        '<text x="24" y="28" text-anchor="middle" font-size="10" font-weight="900" font-family="inherit">' + num(pct, 0) + '%</text>' +
+        '</svg>' +
+        '<small>' + num(pct, 0) + '% of<br>selected limit</small></div>';
+      return '<article class="vsb7-status-tile is-' + meta[0] + '"><header><span>' + esc(title) + '</span><b>' + esc(meta[1]) + '</b></header><p>' + esc(detail) + '</p>' + ringHtml + '</article>';
     }
 
     function renderBagResult(item) {
