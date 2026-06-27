@@ -3,7 +3,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-/* ============ VOYASEE SMART TRAVEL HUB V21.2.2 — scoped, WordPress-safe ============ */
+/* ============ VOYASEE SMART TRAVEL HUB V21.2.4 — scoped, WordPress-safe ============ */
 .voyasee-hub{
   --ink:#060b16;--ink2:#0b1424;--ink3:#111d33;
   --paper:#f8f2e8;--paper2:#ece0cd;
@@ -599,29 +599,6 @@
 /* D7: Flag emoji in passport select */
 .voyasee-hub #vhPassport{font-size:.82rem}
 
-/* ---- Settings Modal ---- */
-.voyasee-hub .vh-settings-btn{position:fixed;bottom:22px;right:22px;width:46px;height:46px;border-radius:50%;background:rgba(10,19,34,.92);border:1px solid var(--border);color:var(--paper);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9990;box-shadow:0 4px 18px rgba(0,0,0,.4);transition:transform .22s;padding:0}
-.voyasee-hub .vh-settings-btn:hover{transform:rotate(35deg)}
-.vh-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10000;align-items:center;justify-content:center;padding:16px}
-.vh-modal-overlay.open{display:flex}
-.vh-modal{background:#0e1a2e;border:1px solid var(--border);border-radius:18px;padding:28px 26px 22px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.65)}
-.vh-modal h3{margin:0 0 5px;color:var(--paper);font-size:1.05rem;font-weight:700}
-.vh-modal .vh-modal-sub{color:var(--t3);font-size:.7rem;margin-bottom:18px;line-height:1.5}
-.vh-modal-section{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.vh-modal-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.vh-modal-section h4{color:var(--amber2);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px}
-.vh-modal-label{display:block;color:var(--t2);font-size:.7rem;margin-bottom:5px}
-.vh-modal-input{width:100%;background:rgba(6,11,22,.85);border:1px solid var(--border);border-radius:9px;color:var(--paper);font-size:.78rem;padding:9px 11px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color .15s}
-.vh-modal-input:focus{border-color:var(--amber2)}
-.vh-modal-hint{color:var(--t3);font-size:.63rem;margin-top:6px;line-height:1.5}
-.vh-modal-hint a{color:var(--jade2)}
-.vh-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-.vh-modal-actions .btn-save{background:var(--jade2);color:#030b17;border:none;border-radius:9px;padding:9px 22px;font-size:.8rem;font-weight:700;cursor:pointer;transition:background .15s}
-.vh-modal-actions .btn-cancel{background:transparent;border:1px solid var(--border);color:var(--t2);border-radius:9px;padding:9px 16px;font-size:.8rem;cursor:pointer;transition:border-color .15s,color .15s}
-.vh-modal-actions .btn-save:hover{background:#1fffc0}
-.vh-modal-actions .btn-cancel:hover{border-color:var(--paper);color:var(--paper)}
-.vh-settings-saved{color:var(--jade2);font-size:.7rem;margin-top:8px;display:none;animation:fadeIn .3s}
-.vh-settings-saved.show{display:block}
 </style>
 <div class="voyasee-hub" id="voyaseeHub">
 <canvas class="vh-canvas" id="vhCanvas" aria-hidden="true"></canvas>
@@ -750,7 +727,6 @@
     <button class="vh-tool-btn" type="button" id="vhLockCompare">⚖ Lock For Compare</button>
     <button class="vh-tool-btn" type="button" id="vhBuildItin">🗓 Build 3-Day Plan</button>
     <a class="vh-tool-btn" href="https://voyasee.com/book-cheap-flights/">✈ Compare Flights</a>
-    <button class="vh-tool-btn" type="button" id="vhSettingsBtn" title="Settings — API keys &amp; preferences">⚙️ Settings</button>
   </div>
 
   <div class="vh-main-grid">
@@ -1273,31 +1249,6 @@
     </div>
   </div>
 
-  <!-- Settings Modal -->
-  <div class="vh-modal-overlay" id="vhSettingsModal" role="dialog" aria-modal="true" aria-labelledby="vhSettingsTitle">
-    <div class="vh-modal">
-      <h3 id="vhSettingsTitle">⚙️ Voyasee Settings</h3>
-      <div class="vh-modal-sub">API keys are stored locally in your browser and never sent to Voyasee servers.</div>
-      <div class="vh-modal-section">
-        <h4>🌍 IP Geolocation — Auto-detect your country</h4>
-        <div class="vh-plugin-key-notice" id="vhPluginKeyNotice" style="display:none;margin-bottom:10px;padding:8px 12px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:6px;font-size:.78rem;color:#4ade80">
-          ✓ IPapi key configured by site admin — auto-detection is active.
-        </div>
-        <label class="vh-modal-label" for="vhIpapiKey">Your personal IPapi.com Key <span style="color:var(--t3)">(optional override)</span></label>
-        <input class="vh-modal-input" id="vhIpapiKey" type="text" placeholder="Paste your ipapi.com access_key here…" autocomplete="off" spellcheck="false">
-        <div class="vh-modal-hint">
-          Used to auto-detect your country and pre-fill the passport selector on load.<br>
-          Get a free key at <strong>ipapi.com</strong> (1,000 req/month — no credit card needed).<br>
-          Leave blank to use a keyless fallback (<em>ipapi.co</em> · 1,000/day free).
-        </div>
-        <div class="vh-settings-saved" id="vhSettingsSaved">✓ Settings saved</div>
-      </div>
-      <div class="vh-modal-actions">
-        <button class="btn-cancel" id="vhSettingsCancel" type="button">Cancel</button>
-        <button class="btn-save" id="vhSettingsSave" type="button">Save Settings</button>
-      </div>
-    </div>
-  </div>
 
 </div>
 </div>
@@ -1587,7 +1538,8 @@ async function fetchIntelligenceReport(geo){
   const ap=d.airports&&d.airports[0];if(ap){safeText("flightTips",`Nearest reference airport: ${ap.iata||ap.icao||"airport"} · ${ap.name||""}. Confirm ground transport to ${geo.name||geo.display}.`);safeText("flightMeta","Airport distance is straight-line only. No direct route, schedule or transfer time is implied.")}
   updateReadiness(geo.cc);renderBeforeBook(geo);renderRouteIntel(geo);renderContextualActions(geo);return d
 }
-function weatherIconFor(text){const t=(text||"").toLowerCase();if(t.includes("thunder"))return"⛈️";if(t.includes("snow"))return"❄️";if(t.includes("drizzle"))return"🌦️";if(t.includes("rain"))return"🌧️";if(t.includes("fog")||t.includes("mist")||t.includes("haze"))return"🌫️";if(t.includes("cloud")){if(t.includes("few")||t.includes("scattered")||t.includes("partly"))return"⛅";return"☁️"}if(t.includes("clear")||t.includes("sun"))return"☀️";return"🌡️"}
+function isNightTime(srHHMM,ssHHMM){if(!srHHMM||!ssHHMM)return false;try{const tz=currentTZ||"UTC";const lStr=new Intl.DateTimeFormat("en-GB",{timeZone:tz,hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date());const[lh,lm]=lStr.split(":").map(Number);const[sh,sm]=srHHMM.split(":").map(Number);const[eh,em]=ssHHMM.split(":").map(Number);const lMin=lh*60+lm,srMin=sh*60+sm,ssMin=eh*60+em;return lMin<srMin||lMin>ssMin}catch{return false}}
+function weatherIconFor(text,isNight){const t=(text||"").toLowerCase();if(t.includes("thunder"))return"⛈️";if(t.includes("snow"))return"❄️";if(t.includes("drizzle"))return"🌦️";if(t.includes("rain"))return"🌧️";if(t.includes("fog")||t.includes("mist")||t.includes("haze"))return"🌫️";if(t.includes("cloud")){if(t.includes("few")||t.includes("scattered")||t.includes("partly"))return"⛅";return"☁️"}if(t.includes("clear")||t.includes("sun"))return isNight?"🌙":"☀️";return isNight?"🌙":"🌡️"}
 function renderForecastVwb(days){
   dailyData={_days:days,time:days.map(d=>d.date),weather_code:[],temperature_2m_max:days.map(d=>d.tempMaxC),temperature_2m_min:days.map(d=>d.tempMinC),precipitation_probability_max:days.map(d=>d.precipitationProbabilityPct)};
   const dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -1826,26 +1778,41 @@ function renderForecast(data){if(data&&Array.isArray(data._days)){renderForecast
 async function fetchWeather(lat,lon,tz){
   setLoad("wLoad",true);setLoad("fcLoad",true);apiMark("weather","loading","Loading live forecast.","Live Conditions");
   let weatherSourceLabel="Voyasee Weather Bridge";
+  let condText="";
+  // --- Part 1: Current conditions (stops here if fails) ---
   try{
     const cur=await fetchJSON(VWB_BASE+"/current?lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lon));
     if(!cur||cur.ok===false)throw new Error("current unavailable");
     const c=cur.current||{};weatherSourceLabel=vwbAttribution(cur.attribution);
     currentTempC=Number.isFinite(Number(c.tempC))?Number(c.tempC):null;currentWeatherCode=null;
-    const condText=(c.condition&&(c.condition.text||c.condition.group))||"Weather update";currentWeatherText=condText;
-    safeText("wIco",weatherIconFor(condText));safeText("wDesc",condText);renderTemp();
+    condText=(c.condition&&(c.condition.text||c.condition.group))||"";currentWeatherText=condText;
+    const sr=c.sunriseLocal?String(c.sunriseLocal).slice(11,16):null,ss=c.sunsetLocal?String(c.sunsetLocal).slice(11,16):null;
+    const isNight=isNightTime(sr,ss);
+    safeText("wIco",weatherIconFor(condText,isNight));safeText("wDesc",condText||"Conditions loaded");renderTemp();
     const dirs=["N","NE","E","SE","S","SW","W","NW"],di=Math.round((Number(c.windDeg)||0)/45)%8;
     safeText("wWind",`💨 ${c.windKph??"--"}km/h ${dirs[di]}`);safeText("wHumid",`💧 ${c.humidityPct??"--"}%`);safeText("wVis",`👁 ${c.visibilityM?Math.round(c.visibilityM/1000):"--"}km`);safeText("wCloud",`☁️ ${c.cloudsPct??"--"}%`);safeText("wPrecip",`🌧 ${c.precipitationMmLastHour??"--"}mm`);
-    const sr=c.sunriseLocal?String(c.sunriseLocal).slice(11,16):null,ss=c.sunsetLocal?String(c.sunsetLocal).slice(11,16):null;
     safeText("wSunrise",sr||"--");safeText("wSunset",ss||"--");
     currentWeatherDetails={uv:null,wind:Number(c.windKph)||0,humidity:Number(c.humidityPct)||0,precip:Number(c.precipitationMmLastHour)||0,sunrise:sr,sunset:ss};
     if(sr&&ss){const[sh,sm]=sr.split(":").map(Number),[eh,endMin]=ss.split(":").map(Number),mins=(eh*60+endMin)-(sh*60+sm);safeText("wDaylen",mins>0?`${Math.floor(mins/60)}h ${mins%60}m`:"--")}else safeText("wDaylen","--");
+  }catch(e){
+    if(e&&e.name==="AbortError")throw e;
+    currentTempC=null;currentWeatherText="";currentWeatherDetails=null;dailyData=null;
+    safeText("wDesc","Weather unavailable");
+    $("fcRow").innerHTML='<div style="color:var(--t3);font-size:.85rem;padding:7px 0;grid-column:1/-1">Forecast unavailable. Check local meteorological alerts.</div>';
+    apiMark("weather","fallback","Weather unavailable in this session.","Live Conditions");
+    setLoad("wLoad",false);setLoad("fcLoad",false);return;
+  }
+  // --- Part 2: Forecast + UV (non-fatal — never overwrites current weather) ---
+  try{
     const extras=await Promise.allSettled([fetchJSON(VWB_BASE+"/forecast?lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lon)+"&days=5"),fetchJSON(VWB_BASE+"/uv?lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lon))]);
     const fc=extras[0].status==="fulfilled"?extras[0].value:null;
-    if(fc&&fc.ok!==false&&Array.isArray(fc.forecastDaily))renderForecastVwb(fc.forecastDaily);else $("fcRow").innerHTML='<div style="color:var(--t3);font-size:.85rem;padding:7px 0;grid-column:1/-1">Forecast unavailable right now.</div>';
+    const forecastDays=fc&&fc.ok!==false&&(Array.isArray(fc.forecastDaily)&&fc.forecastDaily||Array.isArray(fc.daily)&&fc.daily||Array.isArray(fc.forecast)&&fc.forecast||Array.isArray(fc.days)&&fc.days)||null;
+    if(forecastDays)renderForecastVwb(forecastDays);else $("fcRow").innerHTML='<div style="color:var(--t3);font-size:.85rem;padding:7px 0;grid-column:1/-1">Forecast unavailable right now.</div>';
     const uvRes=extras[1].status==="fulfilled"?extras[1].value:null;const uv=(uvRes&&uvRes.ok!==false&&uvRes.uv&&uvRes.uv.uvIndex!=null)?Number(uvRes.uv.uvIndex):null;
     safeText("uvVal",uv!=null?Math.round(uv*10)/10:"--");safeText("uvDesc",uv!=null?uvAdvice(uv):"UV data unavailable");if(currentWeatherDetails)currentWeatherDetails.uv=uv;
-    renderPacking(currentTempC,currentWeatherText);updateTodayConsole();apiMark("weather","live",`${weatherSourceLabel} · ${fmt(currentTempC)} · ${condText}`,"Live Conditions");
-  }catch(e){if(e&&e.name==="AbortError")throw e;currentTempC=null;currentWeatherText="";currentWeatherDetails=null;dailyData=null;safeText("wDesc","Weather unavailable");$("fcRow").innerHTML='<div style="color:var(--t3);font-size:.85rem;padding:7px 0;grid-column:1/-1">Forecast unavailable. Check local meteorological alerts.</div>';apiMark("weather","fallback","Weather unavailable in this session.","Live Conditions")}
+    renderPacking(currentTempC,currentWeatherText);updateTodayConsole();
+  }catch(e){if(e&&e.name==="AbortError")throw e}
+  apiMark("weather","live",`${weatherSourceLabel} · ${fmt(currentTempC)} · ${condText}`,"Live Conditions");
   setLoad("wLoad",false);setLoad("fcLoad",false);
 }
 async function fetchClimateBest(lat,lon){try{const r=await fetchJSON(VWB_BASE+"/climate-normals?lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lon),12000,false);if(!r||r.ok===false)return null;return r}catch{return null}}
@@ -1924,21 +1891,6 @@ function bindEvents(){
   renderSaved();
 }
 
-/* ============================================================
-   SETTINGS MODAL
-   ============================================================ */
-const VOYASEE_IPAPIKEY="voyaseeIpapiKey";
-function openSettings(){
-  const m=$("vhSettingsModal");if(!m)return;
-  const inp=$("vhIpapiKey");if(inp)inp.value=storageGet(VOYASEE_IPAPIKEY)||"";
-  const s=$("vhSettingsSaved");if(s)s.classList.remove("show");
-  const notice=$("vhPluginKeyNotice");
-  if(notice){const pk=((window.VoyaseeIntelligenceConfig||{}).ipapiKey||"").trim();notice.style.display=pk?"block":"none"}
-  m.classList.add("open")
-}
-function closeSettings(){const m=$("vhSettingsModal");if(m)m.classList.remove("open")}
-function saveSettings(){const inp=$("vhIpapiKey");if(inp)storageSet(VOYASEE_IPAPIKEY,(inp.value||"").trim());const s=$("vhSettingsSaved");if(s){s.classList.add("show");setTimeout(()=>s.classList.remove("show"),2200)}toast("Settings saved")}
-function bindSettingsEvents(){const btn=$("vhSettingsBtn");if(btn)btn.addEventListener("click",openSettings);const cancel=$("vhSettingsCancel");if(cancel)cancel.addEventListener("click",closeSettings);const save=$("vhSettingsSave");if(save)save.addEventListener("click",saveSettings);const overlay=$("vhSettingsModal");if(overlay)overlay.addEventListener("click",e=>{if(e.target===overlay)closeSettings()});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&overlay&&overlay.classList.contains("open"))closeSettings()})}
 
 /* ============================================================
    IP GEOLOCATION — auto-detect user country on first load
@@ -1947,10 +1899,8 @@ async function detectUserCountry(){
   try{
     const saved=storageGet(PROFILE_KEY);
     if(saved){try{const p=JSON.parse(saved);if(p&&p.passport&&p.passport!=="IN")return}catch{}}
-    // Plugin admin key takes priority over the per-user localStorage key.
-    const pluginKey=((window.VoyaseeIntelligenceConfig||{}).ipapiKey||"").trim();
-    const localKey=(storageGet(VOYASEE_IPAPIKEY)||"").trim();
-    const key=pluginKey||localKey;
+    // Uses plugin admin key only (site admin configures via VTI plugin settings).
+    const key=((window.VoyaseeIntelligenceConfig||{}).ipapiKey||"").trim();
     const url=key
       ?"https://api.ipapi.com/api/check?access_key="+encodeURIComponent(key)+"&fields=country_code"
       :"https://ipapi.co/json/";
@@ -1977,7 +1927,6 @@ function boot(){
   const shared=readShareLink();
   loadProfile();
   bindEvents();
-  bindSettingsEvents();
   detectUserCountry().catch(()=>{});
   renderDataTrust();
   if(shared){if($("cityInput"))$("cityInput").value=shared.q;if(shared.p&&$("vhPassport")){$("vhPassport").value=shared.p;currentPassport=shared.p}if(shared.s&&$("vhTripStyle")){$("vhTripStyle").value=shared.s;currentTripStyle=shared.s}if(shared.l&&$("vhTripLength")){$("vhTripLength").value=shared.l;currentTripLength=shared.l}if(shared.u&&$("vhUnits")){$("vhUnits").value=shared.u;isCelsius=shared.u!=="f"}const sv={vhArrivalDate:shared.ad,vhArrivalTime:shared.at,vhTravellerType:shared.tt,vhLuggage:shared.lg};Object.entries(sv).forEach(([id,v])=>{if(v!=null&&$(id))$(id).value=v});[["vhAqSensitive","aq"],["vhHeatSensitive","ht"],["vhLateArrival","la"],["vhMobility","mb"]].forEach(([id,k])=>{if($(id)&&shared[k]!=null)$(id).checked=!!shared[k]})}
