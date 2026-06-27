@@ -204,10 +204,9 @@
 
 .vsb7-hero-visual {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding: 52px 32px 28px;
+    justify-content: center;
+    padding: 52px 0 28px;
     position: relative;
     overflow: visible
 }
@@ -307,13 +306,18 @@
 .vsb7-hero-dims {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 8px 18px;
-    background: #ffffff10;
-    border: 1px solid #ffffff1e;
-    border-radius: 99px;
-    backdrop-filter: blur(8px)
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-top: 20px
+}
+
+.vsb7-hero-dims-label {
+    width: 100%;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .13em;
+    color: #70f0eb;
+    text-transform: uppercase
 }
 
 .vsb7-hero-dims span {
@@ -323,56 +327,26 @@
 }
 
 .vsb7-hero-dims b {
-    font-size: 15px;
+    font-size: 22px;
     font-weight: 900;
-    color: #fff
+    color: #fff;
+    line-height: 1
 }
 
 .vsb7-hero-dims small {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
-    color: #8de8f5;
-    letter-spacing: .06em
+    color: #8de8f5
 }
 
 .vsb7-hero-dims em {
     font-style: normal;
-    color: #ffffff40;
-    font-size: 13px
-}
-
-.vsb7-signal-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100%
+    color: #ffffff35;
+    font-size: 16px
 }
 
 .vsb7-signal {
-    flex: 1;
-    min-width: 120px;
-    max-width: 180px;
-    padding: 11px 15px;
-    border-radius: 15px;
-    background: #ffffff12;
-    border: 1px solid #65e8f460;
-    backdrop-filter: blur(14px);
-    box-shadow: 0 10px 28px #00123f66
-}
-
-.vsb7-signal small {
-    display: block;
-    color: #70f0eb;
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .12em;
-    margin-bottom: 3px
-}
-
-.vsb7-signal b {
-    font-size: 13px;
-    color: #fff
+    display: none
 }
 
 .vsb7-mode-tabs {
@@ -2685,14 +2659,12 @@
 }
 
 .vsb7.has-started .vsb7-hero-visual {
-    padding-top: 36px;
-    padding-bottom: 16px;
-    gap: 12px;
+    padding-top: 32px;
+    padding-bottom: 12px;
     transform: scale(.78);
     transform-origin: center top
 }
 
-.vsb7.has-started .vsb7-signal-row,
 .vsb7.has-started .vsb7-hero-dims {
     display: none
 }
@@ -2756,18 +2728,12 @@
     }
 
     .vsb7-hero-visual {
-        padding: 44px 20px 22px;
-        gap: 16px
+        padding: 44px 0 22px
     }
 
     .vsb7-scan-frame {
         transform: scale(.88);
         transform-origin: center center
-    }
-
-    .vsb7-signal {
-        max-width: 148px;
-        padding: 10px 13px
     }
 
     .vsb7-mode-tabs {
@@ -2864,8 +2830,7 @@
     }
 
     .vsb7-hero-visual {
-        padding: 38px 16px 18px;
-        gap: 12px
+        padding: 38px 0 18px
     }
 
     .vsb7-scan-frame {
@@ -2873,8 +2838,12 @@
         transform-origin: center center
     }
 
-    .vsb7-signal-row {
-        display: none
+    .vsb7-hero-dims {
+        gap: 6px 10px
+    }
+
+    .vsb7-hero-dims b {
+        font-size: 18px
     }
 
     .vsb7-mode-tabs {

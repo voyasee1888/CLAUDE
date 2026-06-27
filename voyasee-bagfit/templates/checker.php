@@ -14,20 +14,17 @@
                 <span><i>7,883</i><?php echo esc_html__('airport records', 'voyasee-bagfit'); ?></span>
                 <span><i>0</i><?php echo esc_html__('invented fees', 'voyasee-bagfit'); ?></span>
             </div>
+            <div class="vsb7-hero-dims">
+                <span class="vsb7-hero-dims-label"><?php echo esc_html__('Typical carry-on limit', 'voyasee-bagfit'); ?></span>
+                <span><b>55</b><small><?php echo esc_html__('cm H', 'voyasee-bagfit'); ?></small></span>
+                <em>×</em>
+                <span><b>40</b><small><?php echo esc_html__('cm W', 'voyasee-bagfit'); ?></small></span>
+                <em>×</em>
+                <span><b>23</b><small><?php echo esc_html__('cm D', 'voyasee-bagfit'); ?></small></span>
+            </div>
         </div>
         <div class="vsb7-hero-visual" aria-hidden="true">
             <div class="vsb7-scan-frame"><div class="vsb7-case"><i></i><i></i><i></i></div></div>
-            <div class="vsb7-signal-row">
-                <div class="vsb7-signal"><small><?php echo esc_html__('BAG CHECK', 'voyasee-bagfit'); ?></small><b><?php echo esc_html__('Size + weight', 'voyasee-bagfit'); ?></b></div>
-                <div class="vsb7-signal"><small><?php echo esc_html__('MULTI-FLIGHT', 'voyasee-bagfit'); ?></small><b><?php echo esc_html__('Strictest leg', 'voyasee-bagfit'); ?></b></div>
-            </div>
-            <div class="vsb7-hero-dims">
-                <span><b>55</b><small>cm H</small></span>
-                <em>×</em>
-                <span><b>40</b><small>cm W</small></span>
-                <em>×</em>
-                <span><b>23</b><small>cm D</small></span>
-            </div>
         </div>
     </header>
 
