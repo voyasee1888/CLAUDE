@@ -304,30 +304,41 @@
     box-shadow: 65px 0 #081a43, 65px 0 0 2px #4587cc
 }
 
-.vsb7-scan-frame>span {
-    position: absolute;
-    background: #fff;
-    color: #0b4c9e;
-    padding: 5px 8px;
-    border-radius: 8px;
+.vsb7-hero-dims {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 18px;
+    background: #ffffff10;
+    border: 1px solid #ffffff1e;
+    border-radius: 99px;
+    backdrop-filter: blur(8px)
+}
+
+.vsb7-hero-dims span {
+    display: flex;
+    align-items: baseline;
+    gap: 4px
+}
+
+.vsb7-hero-dims b {
+    font-size: 15px;
     font-weight: 900;
-    font-size: 10px;
-    box-shadow: 0 5px 16px #00255855
+    color: #fff
 }
 
-.vsb7-scan-frame .h {
-    left: -42px;
-    top: 38%
+.vsb7-hero-dims small {
+    font-size: 9px;
+    font-weight: 700;
+    color: #8de8f5;
+    letter-spacing: .06em
 }
 
-.vsb7-scan-frame .w {
-    bottom: -10px;
-    left: 35%
-}
-
-.vsb7-scan-frame .d {
-    right: -28px;
-    bottom: 18px
+.vsb7-hero-dims em {
+    font-style: normal;
+    color: #ffffff40;
+    font-size: 13px
 }
 
 .vsb7-signal-row {
@@ -2682,7 +2693,7 @@
 }
 
 .vsb7.has-started .vsb7-signal-row,
-.vsb7.has-started .vsb7-scan-frame .d {
+.vsb7.has-started .vsb7-hero-dims {
     display: none
 }
 

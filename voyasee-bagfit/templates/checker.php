@@ -16,10 +16,17 @@
             </div>
         </div>
         <div class="vsb7-hero-visual" aria-hidden="true">
-            <div class="vsb7-scan-frame"><div class="vsb7-case"><i></i><i></i><i></i></div><span class="h">55 cm</span><span class="w">40 cm</span><span class="d">23 cm</span></div>
+            <div class="vsb7-scan-frame"><div class="vsb7-case"><i></i><i></i><i></i></div></div>
             <div class="vsb7-signal-row">
                 <div class="vsb7-signal"><small><?php echo esc_html__('BAG CHECK', 'voyasee-bagfit'); ?></small><b><?php echo esc_html__('Size + weight', 'voyasee-bagfit'); ?></b></div>
                 <div class="vsb7-signal"><small><?php echo esc_html__('MULTI-FLIGHT', 'voyasee-bagfit'); ?></small><b><?php echo esc_html__('Strictest leg', 'voyasee-bagfit'); ?></b></div>
+            </div>
+            <div class="vsb7-hero-dims">
+                <span><b>55</b><small>cm H</small></span>
+                <em>×</em>
+                <span><b>40</b><small>cm W</small></span>
+                <em>×</em>
+                <span><b>23</b><small>cm D</small></span>
             </div>
         </div>
     </header>
