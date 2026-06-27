@@ -1,0 +1,895 @@
+<!-- VOYASEE TRAVEL MONTH PLANNER V6.6.0 — LIVE REVIEW HOTFIX
+WordPress-safe HTML frontend. No H1. External versioned JSON destination database.
+Live services: Voyasee Weather Bridge v1.3.0, Voyasee Country Intelligence v2.0.0,
+Frankfurter, Sunrise-Sunset.org and NOAA SWPC. NASA POWER monthly climatology is
+requested through the Weather Bridge and cached server-side. Current conditions only
+change the score when an exact departure date is inside the relevant forecast window.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+#voyaseeBestTime,#voyaseeBestTime *{box-sizing:border-box;min-width:0;overflow-wrap:break-word;word-break:break-word}
+#voyaseeBestTime{--bg:#050814;--bg2:#081225;--panel:rgba(13,22,48,.84);--panel3:rgba(18,31,68,.72);--soft:rgba(255,255,255,.055);--line:rgba(255,255,255,.13);--line2:rgba(255,255,255,.24);--text:#f6f1df;--muted:rgba(246,241,223,.74);--dim:rgba(246,241,223,.50);--gold:#e5bf63;--gold2:#f3d88b;--teal:#45e0cc;--sky:#6bb6ff;--green:#55d889;--amber:#f2b84b;--red:#ff5d6c;--violet:#a894ff;--serif:"Cormorant Garamond",Georgia,serif;--sans:"DM Sans",system-ui,-apple-system,Segoe UI,sans-serif;--mono:"DM Mono",ui-monospace,SFMono-Regular,monospace;position:relative;isolation:isolate;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.58;width:100%;border-radius:0;-webkit-font-smoothing:antialiased}
+#voyaseeBestTime::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 12% 8%,rgba(229,191,99,.20),transparent 30%),radial-gradient(circle at 85% 12%,rgba(69,224,204,.16),transparent 32%),radial-gradient(circle at 46% 92%,rgba(107,182,255,.15),transparent 38%),linear-gradient(180deg,#050814,#071126 52%,#050814)}
+#voyaseeBestTime::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.78),rgba(0,0,0,.08))}
+#voyaseeBestTime a{color:inherit}
+#voyaseeBestTime .vbt2-row a{color:var(--teal);font-weight:800;text-decoration:none}
+#voyaseeBestTime .vbt2-row a:hover{color:var(--gold2);text-decoration:underline}
+#voyaseeBestTime button,#voyaseeBestTime input,#voyaseeBestTime select{font-family:var(--sans)}
+#voyaseeBestTime :where(.vbt2-title,.vbt2-card-title,.vbt2-dest-name,.vbt2-score-num,.vbt2-seo-title,.vbt2-hero-title){color:var(--text)!important;-webkit-text-fill-color:var(--text)!important;text-shadow:0 3px 18px rgba(0,0,0,.62)}
+#voyaseeBestTime .vbt2-canvas{position:absolute;inset:0;width:100%;height:760px;z-index:0;pointer-events:none;opacity:.62}
+#voyaseeBestTime .vbt2-wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 24px;overflow-x:hidden}
+#voyaseeBestTime .vbt2-bridge{display:flex;align-items:center;gap:9px;padding:17px 0;border-bottom:1px solid rgba(229,191,99,.18);flex-wrap:wrap}
+#voyaseeBestTime .vbt2-bridge a{color:var(--gold2);text-decoration:none;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+#voyaseeBestTime .vbt2-bridge a:hover{color:var(--teal)}
+#voyaseeBestTime .vbt2-bridge span{color:var(--dim);font-size:11px}
+#voyaseeBestTime .vbt2-live-badge{margin-left:auto;display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border:1px solid rgba(69,224,204,.28);background:rgba(69,224,204,.09);border-radius:999px;color:var(--teal)!important;-webkit-text-fill-color:var(--teal)!important;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+#voyaseeBestTime .vbt2-live-badge i{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 12px var(--teal);animation:vbt2pulse 2.4s ease-in-out infinite}
+@keyframes vbt2pulse{0%,100%{opacity:1}50%{opacity:.35}}
+#voyaseeBestTime .vbt2-hero{position:relative;text-align:center;padding:60px 0 30px;isolation:isolate}
+#voyaseeBestTime .vbt2-hero::before{content:"";position:absolute;left:50%;top:24px;width:min(990px,calc(100% - 12px));height:calc(100% - 6px);transform:translateX(-50%);z-index:0;border-radius:28px;border:1px solid rgba(255,255,255,.11);background:linear-gradient(180deg,rgba(4,8,21,.83),rgba(7,14,30,.54));box-shadow:0 30px 100px rgba(0,0,0,.42);pointer-events:none}
+#voyaseeBestTime .vbt2-hero>*{position:relative;z-index:1}
+#voyaseeBestTime .vbt2-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;border-radius:999px;background:rgba(229,191,99,.12);border:1px solid rgba(229,191,99,.34);color:var(--gold2)!important;-webkit-text-fill-color:var(--gold2)!important;font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px}
+#voyaseeBestTime .vbt2-hero-title{font-family:var(--serif);font-size:clamp(2.6rem,7vw,5.4rem);line-height:.98;margin:0 0 14px;font-weight:700}
+#voyaseeBestTime .vbt2-hero-title em{font-style:italic;color:transparent!important;-webkit-text-fill-color:transparent!important;background:linear-gradient(120deg,var(--gold2),var(--teal),var(--sky));-webkit-background-clip:text;background-clip:text;text-shadow:none}
+#voyaseeBestTime .vbt2-sub{max-width:820px;margin:0 auto 14px;color:var(--muted)!important;-webkit-text-fill-color:var(--muted)!important;font-size:clamp(15px,2.2vw,19px);font-weight:500}
+#voyaseeBestTime .vbt2-hero-stats{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-top:14px}
+#voyaseeBestTime .vbt2-hero-stat{text-align:center}
+#voyaseeBestTime .vbt2-hero-stat b{display:block;font-family:var(--serif);font-size:1.7rem;color:var(--gold2)}
+#voyaseeBestTime .vbt2-hero-stat span{display:block;font-size:9.5px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+#voyaseeBestTime .vbt2-mono{font-family:var(--mono);font-size:12px;color:rgba(107,182,255,.86)!important;-webkit-text-fill-color:rgba(107,182,255,.86)!important;letter-spacing:.06em}
+#voyaseeBestTime .vbt2-shell{position:relative;z-index:2;background:linear-gradient(180deg,rgba(255,255,255,.066),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 32px 95px rgba(0,0,0,.42);backdrop-filter:blur(16px);margin-bottom:34px}
+#voyaseeBestTime .vbt2-search-card{background:var(--panel);border:1px solid var(--line2);border-radius:18px;padding:22px;position:relative;overflow:hidden}
+#voyaseeBestTime .vbt2-search-card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--teal),transparent)}
+#voyaseeBestTime .vbt2-search-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px}
+#voyaseeBestTime .vbt2-search-head h2{margin:0;font-family:var(--serif);font-size:1.9rem;font-style:italic;color:#f6f1df!important;-webkit-text-fill-color:#f6f1df!important;text-shadow:0 3px 18px rgba(0,0,0,.45)}
+#voyaseeBestTime .vbt2-search-head p{margin:4px 0 0;color:var(--dim);font-size:13px;font-weight:600}
+#voyaseeBestTime .vbt2-form{display:grid;grid-template-columns:1.25fr .72fr .92fr .65fr .68fr;gap:12px;align-items:end}
+#voyaseeBestTime .vbt2-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+#voyaseeBestTime .vbt2-label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:900;color:var(--dim)}
+#voyaseeBestTime input,#voyaseeBestTime select{width:100%;border:1px solid var(--line2);background:rgba(255,255,255,.07);color:var(--text);border-radius:11px;padding:13px 14px;font:700 14px/1.25 var(--sans);outline:none;min-height:45px}
+#voyaseeBestTime input:focus,#voyaseeBestTime select:focus{border-color:rgba(229,191,99,.68);box-shadow:0 0 0 3px rgba(229,191,99,.13)}
+#voyaseeBestTime option{background:#0a1226;color:#fff}
+#voyaseeBestTime .vbt2-btn{border:0;border-radius:12px;min-height:45px;padding:13px 18px;cursor:pointer;font:900 12px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(135deg,var(--gold),#b98524);color:#071126;box-shadow:0 12px 30px rgba(229,191,99,.26);transition:filter .2s ease, transform .2s ease}
+#voyaseeBestTime .vbt2-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+#voyaseeBestTime .vbt2-btn:disabled{opacity:.64;cursor:wait;transform:none}
+#voyaseeBestTime .vbt2-quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+#voyaseeBestTime .vbt2-chip{border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--muted);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:800;cursor:pointer}
+#voyaseeBestTime .vbt2-chip:hover{border-color:rgba(229,191,99,.48);color:var(--text)}
+#voyaseeBestTime .vbt2-status{display:none;margin-top:12px;padding:10px 12px;border:1px solid rgba(107,182,255,.26);background:rgba(107,182,255,.075);border-radius:12px;color:var(--muted);font-size:12px;font-weight:700}
+#voyaseeBestTime .vbt2-status.is-visible{display:block}
+#voyaseeBestTime .vbt2-results{display:none;animation:vbt2In .36s ease both}
+#voyaseeBestTime .vbt2-results.is-visible{display:block}
+@keyframes vbt2In{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#voyaseeBestTime .vbt2-dash{display:grid;grid-template-columns:1.08fr .92fr;gap:14px;margin-top:18px}
+#voyaseeBestTime .vbt2-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 20px 70px rgba(0,0,0,.23);max-width:100%;overflow-x:hidden}
+#voyaseeBestTime .vbt2-result-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(229,191,99,.16),rgba(69,224,204,.07)),var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px}
+#voyaseeBestTime .vbt2-result-hero::after{content:"";position:absolute;right:-70px;top:-70px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(69,224,204,.22),transparent 72%);pointer-events:none}
+#voyaseeBestTime .vbt2-result-kicker{display:block;color:var(--gold2)!important;-webkit-text-fill-color:var(--gold2)!important;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+#voyaseeBestTime .vbt2-dest-name{font-family:var(--serif);font-size:clamp(2.1rem,5vw,4rem);font-style:italic;line-height:1;margin-bottom:8px;position:relative;z-index:1}
+#voyaseeBestTime .vbt2-result-copy{position:relative;z-index:1;color:var(--muted);font-size:14px;font-weight:600;max-width:680px}
+#voyaseeBestTime .vbt2-score-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;margin-top:18px;position:relative;z-index:1}
+#voyaseeBestTime .vbt2-score-ring{--score-deg:0deg;--ring-col:var(--teal);width:142px;height:142px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ring-col) 0deg,var(--ring-col) var(--score-deg),rgba(255,255,255,.10) var(--score-deg),rgba(255,255,255,.10) 360deg);position:relative;box-shadow:0 0 36px rgba(69,224,204,.12);transition:--score-deg .6s ease}
+#voyaseeBestTime .vbt2-score-ring::after{content:"";position:absolute;inset:12px;border-radius:50%;background:#0a1226;border:1px solid rgba(255,255,255,.14)}
+#voyaseeBestTime .vbt2-score-num{position:relative;z-index:1;font-family:var(--serif);font-size:3.05rem;line-height:1;color:#fff}
+#voyaseeBestTime .vbt2-score-num small{display:block;font-family:var(--sans);font-size:9px;font-weight:900;letter-spacing:.16em;color:var(--dim);text-align:center;margin-top:2px}
+#voyaseeBestTime .vbt2-verdict{font-family:var(--serif);font-size:1.8rem;font-style:italic;line-height:1.1;margin-bottom:6px}
+#voyaseeBestTime .vbt2-verdict-sub{color:var(--muted);font-size:13px;font-weight:600}
+#voyaseeBestTime .vbt2-pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;max-width:100%}
+#voyaseeBestTime .vbt2-pill{border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);border-radius:999px;padding:5px 10px;color:var(--muted);font-size:12px;font-weight:800;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+#voyaseeBestTime .vbt2-pill.good{border-color:rgba(85,216,137,.36);color:rgba(170,255,205,.9);background:rgba(85,216,137,.08)}
+#voyaseeBestTime .vbt2-pill.warn{border-color:rgba(242,184,75,.42);color:rgba(255,225,165,.95);background:rgba(242,184,75,.08)}
+#voyaseeBestTime .vbt2-pill.bad{border-color:rgba(255,93,108,.40);color:rgba(255,176,185,.95);background:rgba(255,93,108,.08)}
+#voyaseeBestTime .vbt2-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#voyaseeBestTime .vbt2-metric{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:92px}
+#voyaseeBestTime .vbt2-metric b{display:block;color:var(--gold2);font-family:var(--serif);font-size:1.7rem;line-height:1}
+#voyaseeBestTime .vbt2-metric span{display:block;color:var(--dim);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+#voyaseeBestTime .vbt2-bar{height:7px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:10px}
+#voyaseeBestTime .vbt2-bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--teal));border-radius:999px;transition:width .55s ease,background .2s ease}
+#voyaseeBestTime .vbt2-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+#voyaseeBestTime .vbt2-card-title{font-family:var(--serif);font-size:1.35rem;font-style:italic;margin:0 0 4px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#voyaseeBestTime .vbt2-card-title .vbt2-tag{font-family:var(--sans);font-style:normal;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);border:1px solid rgba(69,224,204,.3);background:rgba(69,224,204,.08);border-radius:999px;padding:3px 8px}
+#voyaseeBestTime .vbt2-card-note{color:var(--dim);font-size:12px;font-weight:600;margin:0 0 12px}
+#voyaseeBestTime .vbt2-list{display:grid;gap:8px}
+#voyaseeBestTime .vbt2-list .vbt2-row{display:flex;gap:8px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:11px;padding:9px 10px;color:var(--muted);font-weight:700;font-size:13px;max-width:100%}
+#voyaseeBestTime .vbt2-row>span:first-child{flex:0 0 auto;line-height:1.3}
+#voyaseeBestTime .vbt2-row>span:last-child{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;word-break:break-word}
+#voyaseeBestTime .vbt2-row code{font-family:var(--mono);font-size:10px;color:var(--teal);background:rgba(69,224,204,.10);border-radius:5px;padding:2px 6px;white-space:normal;overflow-wrap:anywhere;letter-spacing:.04em}
+#voyaseeBestTime .vbt2-row strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}
+#voyaseeBestTime .vbt2-row small{display:block;color:var(--dim);font-size:12px;font-weight:700}
+#voyaseeBestTime .vbt2-next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#voyaseeBestTime .vbt2-next-card{display:block;min-height:112px;text-decoration:none;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;overflow:hidden;transition:border-color .2s ease,transform .2s ease}
+#voyaseeBestTime .vbt2-next-card:hover{border-color:rgba(229,191,99,.45);transform:translateY(-2px)}
+#voyaseeBestTime .vbt2-next-card b{display:block;color:var(--gold2);font-size:13px;margin-bottom:5px}
+#voyaseeBestTime .vbt2-next-card span{display:block;color:var(--muted);font-size:12px;font-weight:700;line-height:1.45}
+#voyaseeBestTime .vbt2-next-card em{display:inline-block;margin-top:10px;color:var(--teal);font-style:normal;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
+/* ---- Signature: month heatmap ---- */
+#voyaseeBestTime .vbt2-heat-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+#voyaseeBestTime .vbt2-heat-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--dim)}
+#voyaseeBestTime .vbt2-heat-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+#voyaseeBestTime .vbt2-month-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:7px}
+#voyaseeBestTime .vbt2-month{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:11px;min-height:78px;padding:8px 5px;text-align:center;cursor:pointer;color:var(--text);transition:transform .15s ease,box-shadow .15s ease}
+#voyaseeBestTime .vbt2-month:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+#voyaseeBestTime .vbt2-month strong{display:block;font-family:var(--mono);font-size:11px;color:var(--text)}
+#voyaseeBestTime .vbt2-month span{display:block;font-family:var(--serif);font-size:1.35rem;font-weight:700;line-height:1.1;margin-top:4px}
+#voyaseeBestTime .vbt2-month small{display:block;color:var(--dim);font-size:9px;font-weight:900;text-transform:uppercase;margin-top:3px}
+#voyaseeBestTime .vbt2-month.best{border-color:rgba(85,216,137,.55);background:rgba(85,216,137,.13)}
+#voyaseeBestTime .vbt2-month.good{border-color:rgba(69,224,204,.45);background:rgba(69,224,204,.10)}
+#voyaseeBestTime .vbt2-month.warn{border-color:rgba(242,184,75,.42);background:rgba(242,184,75,.09)}
+#voyaseeBestTime .vbt2-month.bad{border-color:rgba(255,93,108,.40);background:rgba(255,93,108,.09)}
+#voyaseeBestTime .vbt2-month.active{outline:2px solid rgba(229,191,99,.7);box-shadow:0 0 0 4px rgba(229,191,99,.10)}
+#voyaseeBestTime .vbt2-factor-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+#voyaseeBestTime .vbt2-factor{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:13px;padding:11px 10px;min-height:104px}
+#voyaseeBestTime .vbt2-factor b{display:block;color:var(--gold2);font-family:var(--serif);font-size:1.4rem;line-height:1}
+#voyaseeBestTime .vbt2-factor span{display:block;color:var(--text);font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:5px}
+#voyaseeBestTime .vbt2-factor small{display:block;color:var(--dim);font-size:11px;font-weight:700;line-height:1.35;margin-top:5px}
+#voyaseeBestTime .vbt2-factor .vbt2-fbar{height:5px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:8px}
+#voyaseeBestTime .vbt2-factor .vbt2-fbar i{display:block;height:100%;border-radius:999px}
+#voyaseeBestTime .vbt2-instead-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#voyaseeBestTime .vbt2-instead{border:1px solid var(--line);background:linear-gradient(145deg,rgba(69,224,204,.08),rgba(255,255,255,.035));border-radius:14px;padding:13px;text-decoration:none;min-height:112px;color:var(--text);cursor:pointer;text-align:left;font-family:var(--sans);transition:border-color .2s ease,transform .2s ease}
+#voyaseeBestTime .vbt2-instead:hover{border-color:rgba(69,224,204,.5);transform:translateY(-2px)}
+#voyaseeBestTime .vbt2-instead b{display:block;color:var(--text);font-size:13px;margin-bottom:4px}
+#voyaseeBestTime .vbt2-instead span{display:block;color:var(--muted);font-size:12px;font-weight:700;line-height:1.4}
+#voyaseeBestTime .vbt2-instead em{display:inline-block;margin-top:8px;color:var(--teal);font-style:normal;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+#voyaseeBestTime .vbt2-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+#voyaseeBestTime .vbt2-action-btn{border:1px solid rgba(69,224,204,.30);background:rgba(69,224,204,.08);color:var(--teal);border-radius:11px;padding:10px 12px;font:900 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+#voyaseeBestTime .vbt2-action-btn:hover{background:rgba(69,224,204,.16)}
+#voyaseeBestTime .vbt2-sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-top:6px}
+#voyaseeBestTime .vbt2-source{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:11px;padding:9px 10px}
+#voyaseeBestTime .vbt2-source i{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--dim)}
+#voyaseeBestTime .vbt2-source.on i{background:var(--green);box-shadow:0 0 9px var(--green)}
+#voyaseeBestTime .vbt2-source.off i{background:rgba(255,255,255,.18)}
+#voyaseeBestTime .vbt2-source.na i{background:rgba(168,148,255,.55);box-shadow:0 0 8px rgba(168,148,255,.4)}
+#voyaseeBestTime .vbt2-source.na span{color:rgba(168,148,255,.85)}
+#voyaseeBestTime .vbt2-source b{display:block;color:var(--text);font-size:11.5px;font-weight:800}
+#voyaseeBestTime .vbt2-source span{display:block;color:var(--dim);font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+#voyaseeBestTime .vbt2-seo{position:relative;z-index:2;max-width:1180px;margin:0 auto 36px;padding:0 24px;overflow-x:hidden}
+#voyaseeBestTime .vbt2-seo-card{background:rgba(13,22,48,.74);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.25);margin-top:14px}
+#voyaseeBestTime .vbt2-seo-title{font-family:var(--serif);font-size:1.8rem;font-style:italic;margin:0 0 8px;color:var(--text)!important;-webkit-text-fill-color:var(--text)!important}
+#voyaseeBestTime .vbt2-seo-copy{color:var(--muted);font-size:14px;font-weight:600;max-width:860px;margin:0 0 16px}
+#voyaseeBestTime .vbt2-seo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#voyaseeBestTime .vbt2-seo-item{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:13px;padding:14px}
+#voyaseeBestTime .vbt2-seo-item b{display:block;color:var(--gold2);font-size:13px;margin-bottom:5px}
+#voyaseeBestTime .vbt2-seo-item span{display:block;color:var(--muted);font-size:12.5px;font-weight:600;line-height:1.5}
+#voyaseeBestTime .vbt2-faq{margin-top:14px;display:grid;gap:9px}
+#voyaseeBestTime .vbt2-faq details{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+#voyaseeBestTime .vbt2-faq summary{cursor:pointer;color:var(--text);font-weight:800;font-size:13.5px;list-style:none}
+#voyaseeBestTime .vbt2-faq summary::-webkit-details-marker{display:none}
+#voyaseeBestTime .vbt2-faq summary::before{content:"+";color:var(--gold2);font-weight:900;margin-right:9px}
+#voyaseeBestTime .vbt2-faq details[open] summary::before{content:"–"}
+#voyaseeBestTime .vbt2-faq p{margin:9px 0 0;color:var(--muted);font-size:13px;font-weight:600;line-height:1.6}
+/* ---- Unique footer ---- */
+#voyaseeBestTime .vbt2-foot{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 24px 50px;overflow-x:hidden}
+#voyaseeBestTime .vbt2-foot-card{background:linear-gradient(180deg,rgba(13,22,48,.92),rgba(7,14,30,.92));border:1px solid var(--line2);border-radius:24px;padding:30px;position:relative;overflow:hidden}
+#voyaseeBestTime .vbt2-foot-card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--teal),var(--sky),transparent)}
+#voyaseeBestTime .vbt2-foot-top{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+#voyaseeBestTime .vbt2-foot-brand{font-family:var(--serif);font-size:2rem;font-style:italic;color:var(--text)}
+#voyaseeBestTime .vbt2-foot-brand b{font-style:normal;color:var(--gold2)}
+#voyaseeBestTime .vbt2-foot-tag{color:var(--dim);font-size:12.5px;font-weight:600;max-width:520px;margin-top:4px}
+#voyaseeBestTime .vbt2-foot-cta{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:linear-gradient(135deg,var(--gold),#b98524);color:#071126;border-radius:12px;padding:12px 18px;font:900 11px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;box-shadow:0 12px 30px rgba(229,191,99,.22)}
+#voyaseeBestTime .vbt2-foot-cols{display:grid;grid-template-columns:1.1fr 1.1fr 1fr;gap:24px}
+#voyaseeBestTime .vbt2-foot-col h4{margin:0 0 11px;font-size:10.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+#voyaseeBestTime .vbt2-foot-col a{display:block;text-decoration:none;color:var(--muted);font-size:13px;font-weight:600;padding:5px 0;line-height:1.4;transition:color .15s ease}
+#voyaseeBestTime .vbt2-foot-col a:hover{color:var(--gold2)}
+#voyaseeBestTime .vbt2-foot-col a small{display:block;color:var(--dim);font-size:10.5px;font-weight:600}
+#voyaseeBestTime .vbt2-foot-bottom{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+#voyaseeBestTime .vbt2-foot-bottom p{margin:0;color:var(--dim);font-size:11.5px;font-weight:600;max-width:680px;line-height:1.5}
+#voyaseeBestTime .vbt2-foot-bottom .vbt2-foot-links{display:flex;gap:14px;flex-wrap:wrap}
+#voyaseeBestTime .vbt2-foot-bottom .vbt2-foot-links a{color:var(--muted);text-decoration:none;font-size:11.5px;font-weight:800;letter-spacing:.04em}
+#voyaseeBestTime .vbt2-foot-bottom .vbt2-foot-links a:hover{color:var(--teal)}
+/* ---- Responsive ---- */
+@media(max-width:1080px){
+  #voyaseeBestTime .vbt2-form{grid-template-columns:1fr 1fr}
+  #voyaseeBestTime .vbt2-form .vbt2-field--dest{grid-column:1 / -1}
+  #voyaseeBestTime .vbt2-form .vbt2-field--btn{grid-column:1 / -1}
+  #voyaseeBestTime .vbt2-dash{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-foot-cols{grid-template-columns:1fr 1fr}
+}
+@media(max-width:820px){
+  #voyaseeBestTime .vbt2-wrap,#voyaseeBestTime .vbt2-seo,#voyaseeBestTime .vbt2-foot{padding-left:16px;padding-right:16px}
+  #voyaseeBestTime .vbt2-grid2{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-factor-grid{grid-template-columns:repeat(3,1fr)}
+  #voyaseeBestTime .vbt2-seo-grid{grid-template-columns:1fr 1fr}
+  #voyaseeBestTime .vbt2-instead-grid{grid-template-columns:1fr 1fr}
+  #voyaseeBestTime .vbt2-month-grid{grid-template-columns:repeat(6,1fr)}
+  #voyaseeBestTime .vbt2-score-row{grid-template-columns:118px 1fr;gap:14px}
+  #voyaseeBestTime .vbt2-score-ring{width:118px;height:118px}
+  #voyaseeBestTime .vbt2-score-num{font-size:2.5rem}
+}
+@media(max-width:560px){
+  #voyaseeBestTime .vbt2-form{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-next-grid{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-metrics{grid-template-columns:1fr 1fr}
+  #voyaseeBestTime .vbt2-factor-grid{grid-template-columns:1fr 1fr}
+  #voyaseeBestTime .vbt2-seo-grid{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-instead-grid{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-foot-cols{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-hero{padding:44px 0 24px}
+  #voyaseeBestTime .vbt2-month-grid{grid-template-columns:repeat(4,1fr)}
+  #voyaseeBestTime .vbt2-hero-stats{gap:18px}
+}
+@media (prefers-reduced-motion: reduce){
+  #voyaseeBestTime *{animation:none!important;transition:none!important}
+}
+
+/* ---- V6.5 final additions ---- */
+#voyaseeBestTime .vbt2-form{grid-template-columns:1.35fr .62fr .62fr .92fr .58fr .82fr .62fr .68fr}
+#voyaseeBestTime .vbt2-field--date input{color-scheme:dark}
+#voyaseeBestTime .vbt2-layer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+#voyaseeBestTime .vbt2-layer-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:rgba(255,255,255,.045);min-height:150px}
+#voyaseeBestTime .vbt2-layer-card.seasonal{border-color:rgba(229,191,99,.34);background:linear-gradient(145deg,rgba(229,191,99,.11),rgba(255,255,255,.035))}
+#voyaseeBestTime .vbt2-layer-card.current{border-color:rgba(85,216,137,.34);background:linear-gradient(145deg,rgba(85,216,137,.09),rgba(255,255,255,.035))}
+#voyaseeBestTime .vbt2-layer-card.confidence{border-color:rgba(168,148,255,.36);background:linear-gradient(145deg,rgba(168,148,255,.10),rgba(255,255,255,.035))}
+#voyaseeBestTime .vbt2-layer-card b{display:block;font-family:var(--serif);font-size:1.35rem;color:var(--text);margin-bottom:7px}
+#voyaseeBestTime .vbt2-layer-card p{margin:0;color:var(--muted);font-size:12.5px;font-weight:650;line-height:1.55}
+#voyaseeBestTime .vbt2-fresh{display:inline-flex;align-items:center;gap:6px;color:var(--green);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+#voyaseeBestTime .vbt2-fresh::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 9px var(--green)}
+#voyaseeBestTime .vbt2-data-note{margin-top:10px;padding:10px 12px;border:1px solid rgba(168,148,255,.28);background:rgba(168,148,255,.07);border-radius:11px;color:var(--muted);font-size:11.5px;font-weight:700}
+#voyaseeBestTime .vbt2-source-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#voyaseeBestTime .vbt2-source-links a{font-size:10.5px;font-weight:850;text-decoration:none;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:999px;padding:5px 9px;color:var(--muted)}
+#voyaseeBestTime .vbt2-source-links a:hover{color:var(--gold2);border-color:rgba(229,191,99,.4)}
+@media(max-width:1180px){#voyaseeBestTime .vbt2-form{grid-template-columns:repeat(4,minmax(0,1fr))}#voyaseeBestTime .vbt2-field--dest{grid-column:span 2}}
+@media(max-width:820px){#voyaseeBestTime .vbt2-form{grid-template-columns:1fr 1fr}#voyaseeBestTime .vbt2-field--dest{grid-column:1/-1}#voyaseeBestTime .vbt2-layer-grid{grid-template-columns:1fr}#voyaseeBestTime .vbt2-month-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}#voyaseeBestTime .vbt2-month{min-width:92px;scroll-snap-align:center}}
+@media(max-width:560px){#voyaseeBestTime .vbt2-form{grid-template-columns:1fr}#voyaseeBestTime .vbt2-field--dest{grid-column:auto}#voyaseeBestTime .vbt2-metrics{grid-template-columns:1fr 1fr}}
+
+
+/* ---- V6.5 Ultimate: comparison, recent reports, freshness and printing ---- */
+#voyaseeBestTime .vbt2-recent-wrap{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+#voyaseeBestTime .vbt2-recent-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+#voyaseeBestTime .vbt2-recent-head b{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+#voyaseeBestTime .vbt2-recent-clear{border:0;background:transparent;color:var(--teal);font:800 10px/1 var(--sans);cursor:pointer;text-transform:uppercase;letter-spacing:.08em;padding:4px}
+#voyaseeBestTime .vbt2-recent{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 5px;scrollbar-width:thin}
+#voyaseeBestTime .vbt2-recent button{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--muted);border-radius:999px;padding:7px 11px;font:800 11px/1 var(--sans);cursor:pointer;white-space:nowrap}
+#voyaseeBestTime .vbt2-recent button:hover{border-color:rgba(69,224,204,.48);color:var(--text)}
+#voyaseeBestTime .vbt2-compare-card{margin-top:14px;background:linear-gradient(145deg,rgba(107,182,255,.08),rgba(168,148,255,.055)),var(--panel)}
+#voyaseeBestTime .vbt2-compare-form{display:grid;grid-template-columns:.75fr 1.25fr auto;gap:10px;align-items:end;margin-top:12px}
+#voyaseeBestTime .vbt2-compare-results{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+#voyaseeBestTime .vbt2-compare-results.is-visible{display:grid}
+#voyaseeBestTime .vbt2-compare-panel{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:15px;padding:15px;min-width:0}
+#voyaseeBestTime .vbt2-compare-panel.winner{border-color:rgba(85,216,137,.48);background:rgba(85,216,137,.075)}
+#voyaseeBestTime .vbt2-compare-panel b{display:block;color:var(--gold2);font-family:var(--serif);font-size:1.45rem;line-height:1.1;margin-bottom:4px}
+#voyaseeBestTime .vbt2-compare-panel strong{display:block;color:var(--text);font-size:13px;margin-bottom:8px}
+#voyaseeBestTime .vbt2-compare-panel span{display:block;color:var(--muted);font-size:12px;font-weight:700;line-height:1.5}
+#voyaseeBestTime .vbt2-compare-verdict{grid-column:1/-1;border:1px solid rgba(229,191,99,.3);background:rgba(229,191,99,.075);border-radius:13px;padding:12px 14px;color:var(--muted);font-size:13px;font-weight:700}
+#voyaseeBestTime .vbt2-freshness{margin:11px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.035);color:var(--dim);font-size:11px;font-weight:700}
+#voyaseeBestTime .vbt2-action-btn.print{border-color:rgba(229,191,99,.35);background:rgba(229,191,99,.08);color:var(--gold2)}
+@media(max-width:760px){
+  #voyaseeBestTime .vbt2-compare-form{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-compare-results{grid-template-columns:1fr}
+  #voyaseeBestTime .vbt2-compare-verdict{grid-column:auto}
+}
+@media print{
+  body *{visibility:hidden!important}
+  #voyaseeBestTime,#voyaseeBestTime *{visibility:visible!important}
+  #voyaseeBestTime{position:absolute!important;left:0;top:0;width:100%!important;background:#fff!important;color:#111!important;overflow:visible!important}
+  #voyaseeBestTime::before,#voyaseeBestTime::after,#voyaseeBestTime .vbt2-canvas,#voyaseeBestTime .vbt2-bridge,#voyaseeBestTime .vbt2-search-card,#voyaseeBestTime .vbt2-seo,#voyaseeBestTime .vbt2-foot,#voyaseeBestTime .vbt2-actions,#voyaseeBestTime .vbt2-compare-card,#voyaseeBestTime #vbt2Instead{display:none!important}
+  #voyaseeBestTime .vbt2-results{display:block!important}
+  #voyaseeBestTime .vbt2-card,#voyaseeBestTime .vbt2-result-hero,#voyaseeBestTime .vbt2-layer-card{background:#fff!important;color:#111!important;border:1px solid #bbb!important;box-shadow:none!important;break-inside:avoid}
+  #voyaseeBestTime :where(.vbt2-title,.vbt2-card-title,.vbt2-dest-name,.vbt2-score-num){color:#111!important;-webkit-text-fill-color:#111!important;text-shadow:none!important}
+  #voyaseeBestTime p,#voyaseeBestTime span,#voyaseeBestTime small,#voyaseeBestTime strong,#voyaseeBestTime b{color:#111!important;-webkit-text-fill-color:#111!important}
+}
+
+/* ---- V6.6 infographics, flag, score bars ---- */
+#voyaseeBestTime .vbt2-infographic-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+#voyaseeBestTime .vbt2-radar-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 4px 4px}
+#voyaseeBestTime .vbt2-radar-svg{width:180px;height:180px;overflow:visible;display:block;margin:0 auto}
+#voyaseeBestTime .vbt2-spark-wrap{padding:10px 4px 4px}
+#voyaseeBestTime .vbt2-spark-svg{width:100%;height:64px;overflow:visible}
+#voyaseeBestTime .vbt2-daylength-wrap{padding:10px 4px 4px}
+#voyaseeBestTime .vbt2-dl-bar-wrap{display:flex;align-items:center;gap:7px;margin:7px 0}
+#voyaseeBestTime .vbt2-dl-bar{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden}
+#voyaseeBestTime .vbt2-dl-bar i{display:block;height:100%;background:linear-gradient(90deg,rgba(242,184,75,.5),var(--amber));border-radius:999px}
+#voyaseeBestTime .vbt2-dl-meta{display:flex;justify-content:space-between;color:var(--dim);font-size:10px;font-weight:800;margin-top:4px}
+#voyaseeBestTime .vbt2-packing-wrap{padding:10px 4px 4px}
+#voyaseeBestTime .vbt2-packing-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-top:8px}
+#voyaseeBestTime .vbt2-packing-badge.urgent{background:rgba(255,93,108,.12);border:1px solid rgba(255,93,108,.38);color:rgba(255,176,185,.95)}
+#voyaseeBestTime .vbt2-packing-badge.moderate{background:rgba(242,184,75,.10);border:1px solid rgba(242,184,75,.36);color:rgba(255,225,165,.95)}
+#voyaseeBestTime .vbt2-packing-badge.standard{background:rgba(85,216,137,.08);border:1px solid rgba(85,216,137,.28);color:rgba(170,255,205,.9)}
+#voyaseeBestTime .vbt2-packing-items{display:grid;gap:5px;margin-top:10px}
+#voyaseeBestTime .vbt2-packing-item{display:flex;gap:7px;align-items:center;font-size:11.5px;font-weight:700;color:var(--muted)}
+#voyaseeBestTime .vbt2-flag{font-size:2.6rem;margin-right:6px;display:inline-block;vertical-align:middle;line-height:1}
+#voyaseeBestTime .vbt2-instead-score-bar-wrap{margin-top:5px}
+#voyaseeBestTime .vbt2-instead-score-bar{width:100%;height:5px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:3px}
+#voyaseeBestTime .vbt2-instead-score-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--green));border-radius:999px}
+#voyaseeBestTime .vbt2-instead-score-label{display:flex;justify-content:space-between;align-items:center}
+#voyaseeBestTime .vbt2-instead-score-label b{color:var(--gold2);font-family:var(--serif);font-size:1.25rem}
+#voyaseeBestTime .vbt2-instead-score-label em{font-style:normal;color:var(--green);font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+@media(max-width:820px){#voyaseeBestTime .vbt2-infographic-row{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){#voyaseeBestTime .vbt2-infographic-row{grid-template-columns:1fr}}
+
+</style>
+
+<div id="voyaseeBestTime" data-vbt-data-url="/wp-content/uploads/voyasee-data/voyasee-travel-month-planner-v6.6.0-data.json">
+  <canvas class="vbt2-canvas" id="vbt2Globe" aria-hidden="true"></canvas>
+
+  <div class="vbt2-wrap">
+    <nav class="vbt2-bridge" aria-label="Voyasee tools">
+      <a href="https://voyasee.com/">Voyasee</a><span>/</span>
+      <a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a><span>/</span>
+      <a href="https://voyasee.com/interactive-travel-map/">Travel Map</a><span>/</span>
+      <a href="https://voyasee.com/trip-budget-calculator/">Budget</a>
+      <span class="vbt2-live-badge"><i></i> Live travel signals</span>
+    </nav>
+
+    <header class="vbt2-hero">
+      <span class="vbt2-badge">Travel Month Planner</span>
+      <p class="vbt2-hero-title vbt2-title">When should you <em>actually</em> go?</p>
+      <p class="vbt2-sub">Choose a destination, month and travel style. Voyasee separates long-term seasonal suitability from near-trip weather, holidays, air quality and other current signals, so future trips are not judged by today’s conditions.</p>
+      <div class="vbt2-hero-stats">
+        <div class="vbt2-hero-stat"><b id="vbt2StatDest">886</b><span>Destinations</span></div>
+        <div class="vbt2-hero-stat"><b>12</b><span>Months scored</span></div>
+        <div class="vbt2-hero-stat"><b>8</b><span>Travel styles</span></div>
+        <div class="vbt2-hero-stat"><b>3</b><span>Decision layers</span></div>
+      </div>
+    </header>
+
+    <section class="vbt2-shell" aria-label="Best time to visit search">
+      <div class="vbt2-search-card">
+        <div class="vbt2-search-head">
+          <div>
+            <h2>Find your perfect month</h2>
+            <p class="vbt2-mono">FREE · NO SIGN-UP · DATE-AWARE RESULTS</p>
+          </div>
+        </div>
+        <div class="vbt2-form">
+          <div class="vbt2-field vbt2-field--dest">
+            <label class="vbt2-label" for="vbt2DestInput">Destination</label>
+            <input id="vbt2DestInput" list="vbt2DestList" placeholder="Bali, Paris, Tokyo, Cape Town…" autocomplete="off" spellcheck="false">
+            <datalist id="vbt2DestList"></datalist>
+          </div>
+          <div class="vbt2-field">
+            <label class="vbt2-label" for="vbt2Month">Month</label>
+            <select id="vbt2Month"></select>
+          </div>
+          <div class="vbt2-field">
+            <label class="vbt2-label" for="vbt2Year">Year</label>
+            <select id="vbt2Year"></select>
+          </div>
+          <div class="vbt2-field vbt2-field--date">
+            <label class="vbt2-label" for="vbt2Date">Exact departure <span aria-hidden="true">·</span> optional</label>
+            <input id="vbt2Date" type="date">
+          </div>
+          <div class="vbt2-field">
+            <label class="vbt2-label" for="vbt2Days">Trip days</label>
+            <select id="vbt2Days"><option>3</option><option selected>7</option><option>10</option><option>14</option><option>21</option><option>30</option><option>45</option><option>60</option></select>
+          </div>
+          <div class="vbt2-field">
+            <label class="vbt2-label" for="vbt2Style">Travel style</label>
+            <select id="vbt2Style">
+              <option value="balanced">Balanced</option><option value="budget">Budget</option><option value="beach">Beach</option><option value="culture">Culture</option><option value="adventure">Adventure</option><option value="family">Family</option><option value="luxury">Luxury</option><option value="crowdless">Low Crowds</option>
+            </select>
+          </div>
+          <div class="vbt2-field">
+            <label class="vbt2-label" for="vbt2Currency">Your currency</label>
+            <select id="vbt2Currency"><option>USD</option><option>EUR</option><option>GBP</option><option>INR</option><option>AUD</option><option>CAD</option><option>JPY</option><option>SGD</option><option>AED</option><option>CNY</option><option>CHF</option><option>NZD</option><option>ZAR</option><option>THB</option><option>BRL</option></select>
+          </div>
+          <div class="vbt2-field vbt2-field--btn">
+            <label class="vbt2-label">&nbsp;</label>
+            <button class="vbt2-btn" type="button" data-vbt2-analyze>Build my timing report</button>
+          </div>
+        </div>
+        <div class="vbt2-quick" id="vbt2Quick"></div>
+        <div class="vbt2-recent-wrap" id="vbt2RecentWrap" hidden>
+          <div class="vbt2-recent-head"><b>Recent timing reports</b><button class="vbt2-recent-clear" type="button" data-vbt2-clear-recent>Clear</button></div>
+          <div class="vbt2-recent" id="vbt2Recent"></div>
+        </div>
+        <div class="vbt2-status" id="vbt2Status" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="vbt2-results" id="vbt2Results" aria-live="polite">
+        <div class="vbt2-dash">
+          <div class="vbt2-result-hero">
+            <span class="vbt2-result-kicker" id="vbt2ReportKicker">Timing Intelligence Report</span>
+            <div class="vbt2-dest-name vbt2-dest-name" id="vbt2DestName">—</div>
+            <p class="vbt2-result-copy" id="vbt2Summary"></p>
+            <div class="vbt2-score-row">
+              <div class="vbt2-score-ring" id="vbt2ScoreRing" role="img" aria-label="Timing score">
+                <div class="vbt2-score-num"><span id="vbt2Score">0</span><small>/ 100</small></div>
+              </div>
+              <div>
+                <div class="vbt2-verdict vbt2-title" id="vbt2Verdict">—</div>
+                <div class="vbt2-verdict-sub" id="vbt2VerdictSub"></div>
+                <div class="vbt2-pillrow" id="vbt2Pills"></div>
+              </div>
+            </div>
+          </div>
+          <div class="vbt2-card">
+            <div class="vbt2-metrics">
+              <div class="vbt2-metric"><b id="vbt2BaseScore">0</b><span>Seasonal base</span><div class="vbt2-bar"><i id="vbt2BaseBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2LiveAdjust">0</b><span>Near-trip impact</span><div class="vbt2-bar"><i id="vbt2LiveBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2Confidence">Base</b><span>Confidence</span><div class="vbt2-bar"><i id="vbt2ConfidenceBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2BookVerdict">—</b><span>Booking call</span><div class="vbt2-bar"><i id="vbt2BookBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2Temp">0°C</b><span>Typical comfort</span><div class="vbt2-bar"><i id="vbt2ComfortBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2Rain">Low</b><span>Rain signal</span><div class="vbt2-bar"><i id="vbt2RainBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2Range">—</b><span>Planning range</span><div class="vbt2-bar"><i id="vbt2RangeBar"></i></div></div>
+              <div class="vbt2-metric"><b id="vbt2DataGrade">—</b><span>Data grade</span><div class="vbt2-bar"><i id="vbt2DataGradeBar"></i></div></div>
+            </div>
+            <div class="vbt2-actions">
+              <button class="vbt2-action-btn" type="button" data-vbt2-share>Copy share link</button>
+              <button class="vbt2-action-btn" type="button" data-vbt2-download>Download report</button>
+              <button class="vbt2-action-btn print" type="button" data-vbt2-print>Print report</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="vbt2-layer-grid" aria-label="Report layers">
+          <div class="vbt2-layer-card seasonal"><b>Seasonal suitability</b><p id="vbt2SeasonalLayer">Long-term climate, rain, crowds, prices, daylight and recurring seasonal risks.</p></div>
+          <div class="vbt2-layer-card current"><b>Near-trip check</b><p id="vbt2CurrentLayer">Add an exact departure date to make current weather and short-range signals eligible to affect the result.</p></div>
+          <div class="vbt2-layer-card confidence"><b>Data confidence</b><p id="vbt2ConfidenceLayer">The report explains whether it used destination coordinates, NASA climatology, local fallbacks and live sources.</p></div>
+        </div>
+
+        <div class="vbt2-card vbt2-compare-card">
+          <div class="vbt2-card-title">Quick seasonal comparison <span class="vbt2-tag">No live-data mixing</span></div>
+          <p class="vbt2-card-note">Compare the current destination with another month, or enter a second destination and compare both seasonal fits before booking.</p>
+          <div class="vbt2-compare-form">
+            <div class="vbt2-field"><label class="vbt2-label" for="vbt2CompareMonth">Comparison month</label><select id="vbt2CompareMonth"></select></div>
+            <div class="vbt2-field"><label class="vbt2-label" for="vbt2CompareDest">Second destination · optional</label><input id="vbt2CompareDest" list="vbt2DestList" placeholder="Leave blank to compare another month"></div>
+            <div class="vbt2-field"><label class="vbt2-label">&nbsp;</label><button class="vbt2-action-btn" type="button" data-vbt2-compare>Compare seasonal fit</button></div>
+          </div>
+          <div class="vbt2-compare-results" id="vbt2CompareResults"></div>
+        </div>
+
+        <div class="vbt2-card" style="margin-top:14px">
+          <div class="vbt2-heat-head">
+            <div class="vbt2-card-title vbt2-card-title">12-Month Heatmap <span class="vbt2-tag">Tap a month</span></div>
+            <div class="vbt2-heat-legend">
+              <span><i style="background:var(--green)"></i>Best</span>
+              <span><i style="background:var(--teal)"></i>Good</span>
+              <span><i style="background:var(--amber)"></i>Mixed</span>
+              <span><i style="background:var(--red)"></i>Avoid</span>
+            </div>
+          </div>
+          <div class="vbt2-month-grid" id="vbt2MonthGrid" role="group" aria-label="Month-by-month scores"></div>
+        </div>
+
+        <div class="vbt2-grid2">
+          <div class="vbt2-card">
+            <div class="vbt2-card-title">Why this score</div>
+            <p class="vbt2-card-note">How each factor shaped the result for your travel style.</p>
+            <div class="vbt2-list" id="vbt2Why"></div>
+          </div>
+          <div class="vbt2-card">
+            <div class="vbt2-card-title">Your trip plan</div>
+            <p class="vbt2-card-note">Turn the timing into booking, packing and budget moves.</p>
+            <div class="vbt2-list" id="vbt2Plan"></div>
+          </div>
+        </div>
+
+        <div class="vbt2-card" style="margin-top:14px">
+          <div class="vbt2-card-title">Seasonal suitability</div>
+          <div class="vbt2-factor-grid" id="vbt2Factors"></div>
+        </div>
+
+        <div class="vbt2-card" style="margin-top:14px" id="vbt2InfographicsCard">
+          <div class="vbt2-card-title">Trip intelligence <span class="vbt2-tag">Calculations</span></div>
+          <div class="vbt2-infographic-row">
+            <div class="vbt2-card" style="padding:12px;min-height:240px" id="vbt2RadarWrap"></div>
+            <div class="vbt2-card" style="padding:12px;min-height:240px" id="vbt2SparkWrap"></div>
+            <div class="vbt2-card" style="padding:12px;min-height:240px" id="vbt2DayLengthWrap"></div>
+            <div class="vbt2-card" style="padding:12px;min-height:240px" id="vbt2PackingWrap"></div>
+          </div>
+        </div>
+
+        <div class="vbt2-grid2">
+          <div class="vbt2-card">
+            <div class="vbt2-card-title">Best months &amp; seasonal window</div>
+            <div class="vbt2-list" id="vbt2Alternatives"></div>
+          </div>
+          <div class="vbt2-card">
+            <div class="vbt2-card-title">Timing intelligence</div>
+            <div class="vbt2-list" id="vbt2Intel"></div>
+          </div>
+        </div>
+
+        <div class="vbt2-grid2">
+          <div class="vbt2-card">
+            <div class="vbt2-card-title">What changed the score?</div>
+            <p class="vbt2-card-note">A transparent record of seasonal and eligible near-trip adjustments.</p>
+            <div class="vbt2-list" id="vbt2Changed"></div>
+          </div>
+          <div class="vbt2-card">
+            <div class="vbt2-card-title">Data confidence</div>
+            <p class="vbt2-card-note">What was destination-specific, estimated, live or unavailable.</p>
+            <div class="vbt2-list" id="vbt2DataConfidence"></div>
+          </div>
+        </div>
+
+        <div class="vbt2-card" style="margin-top:14px">
+          <div class="vbt2-card-title">Near-trip check <span class="vbt2-tag" id="vbt2LiveTag">Waiting</span></div>
+          <p class="vbt2-card-note">Current conditions only affect the score when your exact departure date falls inside the available forecast window.</p>
+          <div class="vbt2-list" id="vbt2Live"></div>
+          <div class="vbt2-sources" id="vbt2SourceHealth" style="margin-top:12px"></div>
+          <p class="vbt2-freshness" id="vbt2Freshness">Seasonal database loaded. Current-source freshness will appear after a report is generated.</p>
+          <div class="vbt2-source-links" aria-label="Data-source acknowledgements">
+            <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a>
+            <a href="https://www.visualcrossing.com/weather-data" target="_blank" rel="noopener">Visual Crossing</a>
+            <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener">NASA POWER</a>
+            <a href="https://frankfurter.dev/" target="_blank" rel="noopener">Frankfurter</a>
+            <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA SWPC</a>
+          </div>
+        </div>
+
+        <div class="vbt2-card" style="margin-top:14px">
+          <div class="vbt2-card-title">Next steps with Voyasee</div>
+          <p class="vbt2-card-note">Free Voyasee tools and trusted partners to build the real trip.</p>
+          <div class="vbt2-next-grid" id="vbt2NextSteps"></div>
+        </div>
+
+        <div class="vbt2-card" style="margin-top:14px">
+          <div class="vbt2-card-title">Better in <span id="vbt2InsteadMonth" style="font-style:normal;color:var(--gold2)">this month</span></div>
+          <p class="vbt2-card-note">Similar, higher-scoring destinations for your selected month and travel style.</p>
+          <div class="vbt2-instead-grid" id="vbt2Instead"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="vbt2-seo" aria-label="About this tool">
+    <div class="vbt2-seo-card">
+      <p class="vbt2-seo-title vbt2-seo-title">How the three-layer timing report works</p>
+      <p class="vbt2-seo-copy">Voyasee keeps long-term seasonal suitability separate from current conditions. NASA POWER climatology can refine temperature, rainfall, humidity and wind for resolved coordinates. Current weather is informational. A forecast can alter the result only for the trip days it actually covers, and alerts only when their valid period overlaps the exact trip. Air quality and aurora readings remain separate context rather than changing long-range suitability.</p>
+      <div class="vbt2-seo-grid">
+        <div class="vbt2-seo-item"><b>Destination climate</b><span>NASA POWER gridded point climatology refines temperature, precipitation, humidity and wind at the resolved coordinates. Local coastlines, terrain and elevation can still differ.</span></div>
+        <div class="vbt2-seo-item"><b>Storm &amp; monsoon aware</b><span>Hurricane and monsoon windows are scored by region and month, not averaged away.</span></div>
+        <div class="vbt2-seo-item"><b>Shoulder-season value</b><span>Budget and low-crowd styles reward the sweet-spot months next to peak season.</span></div>
+        <div class="vbt2-seo-item"><b>Date-aware live checks</b><span>Short-range conditions cannot change a distant future month. The report states exactly when live data was eligible.</span></div>
+      </div>
+      <div class="vbt2-seo-item" style="margin-top:12px"><b>Accuracy notice</b><span>The score is a planning estimate, not a weather guarantee. NASA POWER is gridded climatology; estimated wet-day pressure is derived from precipitation; exact local terrain, coastlines and events still require verification.</span></div>
+      <div class="vbt2-faq">
+        <details><summary>Is this tool free?</summary><p>Yes. The public planner is free with no sign-up. The page reads a local Voyasee destination database and requests selected checks through Voyasee’s WordPress services.</p></details>
+        <details><summary>How accurate is the score?</summary><p>The report grades its own data quality. NASA POWER gridded point climatology is preferred after coordinates are resolved; regional fallbacks remain available and are labelled. Exact trips spanning two months are weighted by the number of trip days in each month. Near-trip data is date-gated and never treated as a long-range forecast.</p></details>
+        <details><summary>Can I search a place that isn't listed?</summary><p>Yes. Type a city or country. Voyasee first checks the local database, then uses the protected Weather Bridge geocoder when coordinates are missing. A fallback profile remains visible until destination-specific climatology loads.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <footer class="vbt2-foot" aria-label="Voyasee toolkit and partners">
+    <div class="vbt2-foot-card">
+      <div class="vbt2-foot-top">
+        <div>
+          <div class="vbt2-foot-brand">Voya<b>see</b></div>
+          <p class="vbt2-foot-tag">The free travel intelligence toolkit — timing, budgets, packing, safety and readiness, all in one place.</p>
+        </div>
+        <a class="vbt2-foot-cta" href="https://voyasee.com/free-smart-travel-hub/">Open the Smart Travel Hub →</a>
+      </div>
+      <div class="vbt2-foot-cols" id="vbt2FootCols"></div>
+      <div class="vbt2-foot-bottom">
+        <p>Voyasee is a planning assistant, not an official authority. Verify visa, health, safety, airline and entry rules with official sources before booking. Some partner links are affiliate links — using them never costs you extra and helps keep Voyasee tools free.</p>
+        <div class="vbt2-foot-links">
+          <a href="https://voyasee.com/">Home</a>
+          <a href="https://voyasee.com/best-time-to-visit-travel-planner/">Month Planner</a>
+          <a href="https://voyasee.com/travel-printables/">Printables</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function bootVoyaseeV660(){
+  "use strict";
+  var root=document.getElementById("voyaseeBestTime");
+  if(!root||root.__v660Booted)return; root.__v660Booted=true;
+  var $=function(s){return root.querySelector(s)};
+  var $$=function(s){return Array.prototype.slice.call(root.querySelectorAll(s))};
+  var MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var DATA_URL=root.getAttribute("data-vbt-data-url")||"/wp-content/uploads/voyasee-data/voyasee-travel-month-planner-v6.6.0-data.json";
+  var WEATHER_BASE=(window.VoyaseeWeather&&window.VoyaseeWeather.apiBase)||'/wp-json/voyasee-weather/v1';
+  var COUNTRY_BASE=(window.VoyaseeCountryData&&window.VoyaseeCountryData.apiBase)||'/wp-json/voyasee-data/v1';
+  var STYLE_WEIGHTS={
+    balanced:{temp:.22,rain:.18,humidity:.08,wind:.05,crowd:.12,price:.12,daylight:.08,storm:.10,event:.05},
+    budget:{temp:.16,rain:.13,humidity:.05,wind:.03,crowd:.15,price:.27,daylight:.06,storm:.09,event:.06},
+    beach:{temp:.22,rain:.25,humidity:.10,wind:.08,crowd:.05,price:.05,daylight:.07,storm:.15,event:.03},
+    culture:{temp:.18,rain:.13,humidity:.05,wind:.03,crowd:.10,price:.09,daylight:.10,storm:.07,event:.25},
+    adventure:{temp:.16,rain:.19,humidity:.07,wind:.11,crowd:.04,price:.04,daylight:.15,storm:.15,event:.09},
+    family:{temp:.22,rain:.20,humidity:.08,wind:.05,crowd:.12,price:.08,daylight:.10,storm:.12,event:.03},
+    luxury:{temp:.24,rain:.20,humidity:.08,wind:.06,crowd:.09,price:.03,daylight:.08,storm:.14,event:.08},
+    crowdless:{temp:.15,rain:.13,humidity:.05,wind:.03,crowd:.30,price:.12,daylight:.07,storm:.09,event:.06}
+  };
+  var state={db:null,dests:[],profiles:{},controller:null,request:0,current:null,climate:{},lastReport:null,memory:new Map()};
+
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+  function round(v,n){var p=Math.pow(10,n||0);return Math.round(v*p)/p}
+  function esc(v){return String(v==null?"":v).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"})[c]})}
+  function norm(v){return String(v||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
+  function safeDate(v){if(!v)return null;var d=new Date(v+"T12:00:00");return isNaN(d)?null:d}
+  function hasCoords(d){return !!d&&d.lat!==null&&d.lon!==null&&d.lat!==""&&d.lon!==""&&Number.isFinite(Number(d.lat))&&Number.isFinite(Number(d.lon))}
+  function metadataIsCurated(d){if(!d)return false;return d.semanticQuality==="high"||(d.semanticQuality==="medium"&&d.profileConfidence!=="limited")}
+  function monthValue(primary,fallback,m,def){var v=primary&&primary[m];if(v===null||v===undefined||v===""||!Number.isFinite(Number(v)))v=fallback&&fallback[m];return v===null||v===undefined||v===""||!Number.isFinite(Number(v))?def:Number(v)}
+  function localTimeLabel(v){if(!v)return"time unavailable";var d=new Date(v);return isNaN(d)?String(v):d.toLocaleString([], {dateStyle:"medium",timeStyle:"short"})}
+  function isoDate(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+  function daysBetween(a,b){return Math.floor((b-a)/86400000)}
+  function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
+  function midpointDate(year,month){return new Date(year,month,15,12,0,0)}
+  function ttlGet(key,ttl){try{var raw=localStorage.getItem("vbt660:"+key);if(!raw)return null;var j=JSON.parse(raw);if(Date.now()-j.t>ttl){localStorage.removeItem("vbt660:"+key);return null}return j.v}catch(e){return null}}
+  function ttlSet(key,v){try{localStorage.setItem("vbt660:"+key,JSON.stringify({t:Date.now(),v:v}))}catch(e){}}
+  function fetchJSON(url,opt){opt=opt||{};var key=opt.key||url;var ttl=opt.ttl||0;var local=ttl?ttlGet(key,ttl):null;if(local)return Promise.resolve(local);var ctl=opt.signal;return fetch(url,{signal:ctl,credentials:"same-origin",headers:{Accept:"application/json"}}).then(function(r){if(!r.ok)return r.json().catch(function(){return{}}).then(function(j){throw new Error((j.error&&j.error.message)||("Request failed: "+r.status))});return r.json()}).then(function(j){if(ttl)ttlSet(key,j);return j})}
+  function safe(p){return p.then(function(v){return{ok:true,value:v}},function(e){return{ok:false,error:e}})}
+  function showStatus(msg,isError){var el=$("#vbt2Status");el.textContent=msg;el.classList.add("is-visible");el.style.borderColor=isError?"rgba(255,93,108,.45)":"rgba(107,182,255,.26)"}
+  function hideStatus(){var el=$("#vbt2Status");el.classList.remove("is-visible")}
+  function row(icon,title,copy,code){return'<div class="vbt2-row"><span>'+esc(icon)+'</span><span><strong>'+esc(title)+'</strong><small>'+esc(copy||"")+'</small></span>'+(code?'<code>'+esc(code)+'</code>':'')+'</div>'}
+  function advisoryRow(){return '<div class="vbt2-row"><span>🏛️</span><span><strong>Official travel-advice directories</strong><small>Use the authority that applies to your passport: <a href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noopener">UK</a> · <a href="https://travel.state.gov/content/travel/en/international-travel.html" target="_blank" rel="noopener">US</a> · <a href="https://travel.gc.ca/travelling/advisories" target="_blank" rel="noopener">Canada</a> · <a href="https://www.smartraveller.gov.au/destinations" target="_blank" rel="noopener">Australia</a> · <a href="https://www.mea.gov.in/" target="_blank" rel="noopener">India</a>.</small></span><code>Official</code></div>'}
+  function setRows(el,rows){el.innerHTML=rows.join("")}
+  function setBar(id,val){var el=$(id);if(el)el.style.width=clamp(val,0,100)+"%"}
+
+  function populateControls(){
+    var now=new Date(), month=$("#vbt2Month"), year=$("#vbt2Year");
+    month.innerHTML=MONTHS.map(function(x,i){return'<option value="'+i+'"'+(i===now.getMonth()?' selected':'')+'>'+x+'</option>'}).join("");
+    var years=[];for(var y=now.getFullYear();y<=now.getFullYear()+4;y++)years.push('<option'+(y===now.getFullYear()?' selected':'')+'>'+y+'</option>');year.innerHTML=years.join("");
+    var date=$("#vbt2Date"),compare=$("#vbt2CompareMonth");date.min=isoDate(now);date.max=(now.getFullYear()+4)+"-12-31";
+    if(compare)compare.innerHTML=MONTHS.map(function(x,i){return'<option value="'+i+'">'+x+'</option>'}).join("");
+    function smartYear(){if(date.value)return;var selected=Number(month.value),target=selected<now.getMonth()?now.getFullYear()+1:now.getFullYear();if(Array.from(year.options).some(function(o){return Number(o.value||o.textContent)===target}))year.value=target}
+    date.addEventListener("change",function(){var d=safeDate(date.value);if(d){month.value=d.getMonth();year.value=d.getFullYear();if(compare)compare.value=(d.getMonth()+1)%12}});
+    month.addEventListener("change",function(){if(safeDate(date.value))date.value="";smartYear();if(compare&&Number(compare.value)===Number(month.value))compare.value=(Number(month.value)+1)%12});
+    year.addEventListener("change",function(){if(safeDate(date.value))date.value=""});
+    if(compare)compare.value=(now.getMonth()+1)%12;
+  }
+
+  function currentInputs(){
+    var date=safeDate($("#vbt2Date").value),month=Number($("#vbt2Month").value),year=Number($("#vbt2Year").value),days=Number($("#vbt2Days").value)||7;
+    if(date){month=date.getMonth();year=date.getFullYear()}
+    return{query:$("#vbt2DestInput").value.trim(),month:month,year:year,date:date,days:days,style:$("#vbt2Style").value||"balanced",currency:$("#vbt2Currency").value||"USD"};
+  }
+
+  function findLocal(q){var n=norm(q);if(!n)return null;var exact=state.dests.find(function(d){return norm(d.name)===n});if(exact)return exact;var starts=state.dests.filter(function(d){return norm(d.name).indexOf(n)===0});if(starts.length)return starts[0];var contains=state.dests.filter(function(d){return norm(d.name).indexOf(n)>=0});return contains[0]||null}
+  function inferRuntimeProfile(g){
+    var code=String(g.code||g.country||"").toUpperCase(),name=norm((g.name||"")+" "+(g.state||"")),lat=Number(g.lat||g.latitude||0),lon=Number(g.lon||g.longitude||0),abs=Math.abs(lat);
+    if(code==="TH")return /phuket|krabi|phi phi|lanta/.test(name)?"seasia_andaman":/samui|tao|phangan|hua hin/.test(name)?"seasia_gulf":"seAsia";
+    if(code==="IN")return /chennai|pondicherry|andaman/.test(name)?"india_east_monsoon":/goa|kerala|kochi|munnar|mumbai/.test(name)?"india_west_monsoon":/ladakh|leh|spiti/.test(name)?"highland_arid":"indiaMonsoon";
+    if(code==="JP")return abs>42?"japan_north":abs<31?"japan_south":"japan";
+    if(code==="KR"||code==="KP")return"korea_continental";
+    if(["KZ","KG","UZ","TJ","TM"].indexOf(code)>=0)return"central_asia_continental";
+    if(["GE","AM","AZ"].indexOf(code)>=0)return"caucasus_highland";
+    if(["AE","QA","BH","KW"].indexOf(code)>=0)return"arabian_coast_humid";
+    if(code==="ET")return"ethiopian_highland";
+    if(["ML","NE","BF","TD","MR"].indexOf(code)>=0)return"sahel";
+    if(["MU","RE","YT","KM","SC"].indexOf(code)>=0)return"indian_ocean_island";
+    if(code==="MX")return /cancun|tulum|playa|yucatan|cozumel/.test(name)?"mexico_yucatan":/mexico city|oaxaca|puebla|guanajuato/.test(name)?"mexico_highland":"tropicalDry";
+    if(["GT","SV","HN","NI","CR","PA"].indexOf(code)>=0)return /monteverde|boquete|antigua|atitlan|highland/.test(name)?"tropical_highland":"central_america_pacific";
+    if(["ID","MY","SG","BN","TL"].indexOf(code)>=0)return"equatorial_wet";
+    if(code==="AU")return lat>-26?"australia_tropical":lon<129?"australia_mediterranean":/uluru|alice|outback/.test(name)?"australia_arid":"southernHem";
+    if(code==="NZ")return"southern_oceanic";
+    if(abs>66)return"arctic";if(abs>55)return"northEurope";if(abs<12)return"equatorial_wet";if(abs<28)return"tropicalDry";if(abs>45)return"westEurope";return"med";
+  }
+  function geocodeCandidateScore(g,query,expectedCode){var q=norm(query),base=norm(String(query||"").split(",")[0]),text=norm([g.name,g.state,g.country].filter(Boolean).join(" ")),score=0,code=String(g.country||"").toUpperCase();if(expectedCode){score+=code===expectedCode?80:-120}if(norm(g.name)===base)score+=45;else if(norm(g.name).indexOf(base)>=0||base.indexOf(norm(g.name))>=0)score+=22;q.split(" ").filter(function(t){return t.length>2}).forEach(function(t){if(text.indexOf(t)>=0)score+=6});if(g.state&&q.indexOf(norm(g.state))>=0)score+=15;if(Number.isFinite(Number(g.lat))&&Number.isFinite(Number(g.lon)))score+=5;return score}
+  function selectGeocodeResult(results,query,expectedCode){var arr=(results||[]).slice();if(expectedCode&&arr.some(function(g){return String(g.country||"").toUpperCase()===expectedCode}))arr=arr.filter(function(g){return String(g.country||"").toUpperCase()===expectedCode});arr.sort(function(a,b){return geocodeCandidateScore(b,query,expectedCode)-geocodeCandidateScore(a,query,expectedCode)});return arr[0]||null}
+  function resolveDestination(q,signal){
+    var local=findLocal(q);if(local&&hasCoords(local)){var ready=Object.assign({},local);ready.resolvedAs=ready.name;ready.geocodeMatchScore=100;return Promise.resolve(ready)}
+    var query=local?(local.geocodeQuery||local.name):q;if(!query)return Promise.reject(new Error("Enter a destination."));
+    var expected=String(local&&local.code||"").toUpperCase(),url=WEATHER_BASE+"/geocode?q="+encodeURIComponent(query)+"&limit=5";
+    return fetchJSON(url,{signal:signal,ttl:30*86400000,key:"geo5:"+norm(query)+":"+expected}).then(function(j){var g=selectGeocodeResult(j&&j.results,query,expected);if(!g){if(local)return Object.assign({},local);throw new Error("Destination not found")}
+      var d=local?Object.assign({},local):{id:"runtime-"+norm([g.name,g.state,g.country].filter(Boolean).join("-")),name:[g.name,g.state,g.country].filter(Boolean).join(", "),country:g.country||"",code:String(g.country||"").toUpperCase(),description:"Live-resolved destination; local activity details have not been curated.",types:["general"],crowd:null,price:null,semanticQuality:"limited",profileConfidence:"limited",microclimateRisk:"medium",dataNotes:["Coordinates and destination label were resolved during this search."]};
+      var glat=g.lat!==undefined?g.lat:g.latitude,glon=g.lon!==undefined?g.lon:g.longitude;d.lat=glat==null?null:Number(glat);d.lon=glon==null?null:Number(glon);d.code=String(d.code||g.country||"").toUpperCase();d.country=d.country||g.countryName||g.country||"";d.state=d.state||g.state||"";d.profile=d.profile||inferRuntimeProfile({name:d.name,state:d.state,code:d.code,lat:d.lat,lon:d.lon});d.fallbackProfile=d.profile;var p=state.profiles[d.profile]||state.profiles.westEurope;d.crowd=Array.isArray(d.crowd)&&d.crowd.length===12?d.crowd:(p.crowd||[6,6,6,6,6,6,6,6,6,6,6,6]);d.price=Array.isArray(d.price)&&d.price.length===12?d.price:(p.price||[6,6,6,6,6,6,6,6,6,6,6,6]);d.stormRisk=Array.isArray(d.stormRisk)&&d.stormRisk.length===12?d.stormRisk:(p.stormRisk||[0,0,0,0,0,0,0,0,0,0,0,0]);d.seasonalAppeal=Array.isArray(d.seasonalAppeal)&&d.seasonalAppeal.length===12?d.seasonalAppeal:[55,55,55,55,55,55,55,55,55,55,55,55];d.coordinateQuality=hasCoords(d)?(local?"live-geocoded":"live-resolved"):"unresolved";d.dataConfidence=hasCoords(d)?"medium":"limited";d.resolvedAs=[g.name,g.state,g.country].filter(Boolean).join(", ");d.geocodeMatchScore=geocodeCandidateScore(g,query,expected);return d})
+  }
+
+  function computeAstroSun(lat,lon,year,month){
+    if(!Number.isFinite(lat)||!Number.isFinite(lon))return null;
+    var d15=new Date(Date.UTC(year,month,15));
+    var n=Math.floor((d15-new Date(Date.UTC(year,0,0)))/86400000);
+    var decl=23.44*Math.sin((2*Math.PI/365)*(n-81))*Math.PI/180;
+    var phi=clamp(lat,-89,89)*Math.PI/180;
+    var cosH=-Math.tan(phi)*Math.tan(decl);
+    if(cosH<=-1)return{sunrise:null,sunset:null,dayLength:24,note:'Midnight sun'};
+    if(cosH>=1)return{sunrise:null,sunset:null,dayLength:0,note:'Polar night'};
+    var H=Math.acos(cosH)*(180/Math.PI);
+    var B=(360/365)*(n-81)*Math.PI/180;
+    var eot=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);
+    var noonMin=720-4*lon-eot;
+    var riseMin=noonMin-4*H,setMin=noonMin+4*H;
+    function hhmm(m){m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mm=Math.round(m%60);if(mm===60){h++;mm=0}return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0')}
+    return{sunrise:hhmm(riseMin),sunset:hhmm(setMin),dayLength:(H*2*4)/60}
+  }
+  function countryFlag(code){
+    if(!code||code.length!==2)return'';
+    try{var A=0x1F1E6;return String.fromCodePoint(A+code.charCodeAt(0)-65)+String.fromCodePoint(A+code.charCodeAt(1)-65)}catch(e){return''}
+  }
+  function packingUrgency(s){
+    var score=0;
+    if(s.rain>120)score+=2;else if(s.rain>80)score+=1;
+    if(s.rainDays>14)score+=2;else if(s.rainDays>9)score+=1;
+    if(s.temp>32||s.temp<5)score+=2;
+    if(s.storm>=6)score+=2;
+    if(s.humidity>80)score+=1;
+    if(score>=5)return{level:'urgent',label:'Pack for tough conditions'};
+    if(score>=3)return{level:'moderate',label:'Pack thoughtfully'};
+    return{level:'standard',label:'Standard kit applies'}
+  }
+  function packingItems(s){
+    var items=[];
+    if(s.temp>30)items.push('☀️ Sun cream SPF 50+, light breathable fabrics');
+    else if(s.temp<10)items.push('🧥 Insulating layers, wind-proof outer shell');
+    if(s.rain>100||s.rainDays>10)items.push('☂️ Compact waterproof jacket, quick-dry fabrics');
+    if(s.humidity>80)items.push('💧 Moisture-wicking base layers, anti-fungal footwear');
+    if(s.storm>=6)items.push('⚡ Flexible bookings, offline itinerary backup');
+    if(s.wind>30)items.push('🌬️ Wind-resistant outer layer');
+    if(!items.length)items.push('✓ No special kit flags for this timing');
+    return items
+  }
+  function dayLength(lat,year,month){
+    if(!Number.isFinite(lat))return 12;var date=new Date(Date.UTC(year,month,15)),start=new Date(Date.UTC(year,0,0));var n=Math.floor((date-start)/86400000);var decl=23.44*Math.sin((2*Math.PI/365)*(n-81))*Math.PI/180;var phi=clamp(lat,-89,89)*Math.PI/180;var cosH=-Math.tan(phi)*Math.tan(decl);if(cosH<=-1)return 24;if(cosH>=1)return 0;return 24*Math.acos(cosH)/Math.PI
+  }
+  function plateau(v,lo,hi,soft){if(v>=lo&&v<=hi)return 100;var dist=v<lo?lo-v:v-hi;return clamp(100-(dist/(soft||10))*100,0,100)}
+  function tempScore(t,style){var r={balanced:[18,29,12],budget:[16,30,14],beach:[24,31,10],culture:[12,28,14],adventure:[10,25,13],family:[18,28,10],luxury:[20,29,10],crowdless:[15,29,14]}[style]||[18,29,12];return plateau(t,r[0],r[1],r[2])}
+  function humidityScore(h,style){var upper={beach:78,adventure:68,family:70,luxury:72,culture:72}[style]||73,lower=style==="adventure"?30:28;if(h>=lower&&h<=upper)return 100;if(h>upper)return clamp(100-(h-upper)*3.6,10,100);return clamp(100-(lower-h)*2.1,35,100)}
+  function windScore(kph,style){var soft={beach:18,adventure:28,family:20,luxury:20,culture:24}[style]||23;if(kph<=5)return 92;if(kph<=soft)return 100;if(kph<=soft+10)return clamp(100-(kph-soft)*4.5,45,100);return clamp(55-(kph-soft-10)*5,5,55)}
+  function daylightScore(hours,style){var targets={adventure:[6,9,12],family:[6.5,9,12],beach:[7,9.5,12],culture:[5.5,8,10.5],luxury:[6,8.5,11],balanced:[6,8.5,11],budget:[6,8.5,11],crowdless:[6,8.5,11]},r=targets[style]||targets.balanced;if(hours<=r[0])return clamp(15+(hours/r[0])*25,5,40);if(hours<r[1])return 40+((hours-r[0])/(r[1]-r[0]))*35;if(hours<r[2])return 75+((hours-r[1])/(r[2]-r[1]))*25;return 100}
+  function rainReliabilityScore(rain,days,style){var mm=style==="beach"?.27:style==="adventure"?.22:style==="family"?.20:.16,dd=style==="beach"?1.65:style==="adventure"?1.45:style==="family"?1.35:1.05;return clamp(108-rain*mm-days*dd,0,100)}
+  function tripMonthWeights(inp){if(!inp.date)return[{year:inp.year,month:inp.month,days:inp.days}];var map={},total=Math.max(1,inp.days);for(var i=0;i<total;i++){var dt=addDays(inp.date,i),key=dt.getFullYear()+"-"+dt.getMonth();if(!map[key])map[key]={year:dt.getFullYear(),month:dt.getMonth(),days:0};map[key].days++}return Object.keys(map).map(function(k){return map[k]})}
+  function scoreTripPeriod(d,inp){var parts=tripMonthWeights(inp),total=parts.reduce(function(a,x){return a+x.days},0),scored=parts.map(function(x){return{x:x,s:scoreMonth(d,x.month,inp.style,x.year)}});if(scored.length===1){var only=scored[0].s;only.monthShares=scored.map(function(z){return{year:z.x.year,month:z.x.month,days:z.x.days}});return only}function av(path){return scored.reduce(function(sum,z){var v=path(z.s);return sum+Number(v||0)*z.x.days},0)/total}var keys=Object.keys(scored[0].s.factors),f={};keys.forEach(function(k){f[k]=av(function(s){return s.factors[k]})});return{score:Math.round(av(function(s){return s.score})),factors:f,temp:av(function(s){return s.temp}),rain:av(function(s){return s.rain}),rainDays:av(function(s){return s.rainDays}),humidity:av(function(s){return s.humidity}),wind:av(function(s){return s.wind}),crowd:av(function(s){return s.crowd}),price:av(function(s){return s.price}),daylight:av(function(s){return s.daylight}),storm:av(function(s){return s.storm}),source:scored.every(function(z){return /NASA POWER/.test(z.s.source)})?"NASA POWER gridded point climatology":"Mixed destination climatology and seasonal fallback",monthShares:scored.map(function(z){return{year:z.x.year,month:z.x.month,days:z.x.days}}),rainDaysEstimated:true}}
+  function scoreUncertainty(d,climateLoaded){var u=climateLoaded?4:8;if(d.coordinateQuality!=="curated")u+=2;if(d.profileConfidence==="limited")u+=3;else if(d.profileConfidence==="medium")u+=1;if(d.semanticQuality==="limited")u+=2;if(d.microclimateRisk==="high")u+=2;return clamp(u,4,15)}
+  function dataGrade(d,climateLoaded){var u=scoreUncertainty(d,climateLoaded);return u<=5?"A":u<=7?"B":u<=10?"C":"D"}
+  function eventScore(d,m,style){var v=monthValue(d.seasonalAppeal,null,m,55);if(v>60&&style==="culture"&&(d.types||[]).indexOf("culture")>=0)v+=7;if(v>60&&style==="adventure"&&((d.types||[]).indexOf("adventure")>=0||(d.types||[]).indexOf("winter")>=0||(d.types||[]).indexOf("safari")>=0))v+=6;if(v>60&&style==="luxury")v+=3;return clamp(v,25,100)}
+  function climateFor(d){var p=state.profiles[d.profile]||state.profiles[d.fallbackProfile]||state.profiles.westEurope,nasa=state.climate[d.id];if(!nasa)return{tMean:p.tMean,rainMm:p.rainMm,rainDays:p.rainDays,humidityPct:p.humidityPct,windKph:p.windKph,source:"regional seasonal fallback",rainDaysEstimated:true};function merged(a,b,def){return MONTHS.map(function(_,m){return monthValue(a,b,m,def)})}return{tMean:merged(nasa.tMean,p.tMean,20),tMax:merged(nasa.tMax,p.tMean,25),tMin:merged(nasa.tMin,p.tMean,15),rainMm:merged(nasa.rainMm,p.rainMm,70),rainDays:merged(nasa.rainDays,p.rainDays,8),humidityPct:merged(nasa.humidityPct,p.humidityPct,65),windKph:merged(nasa.windKph,p.windKph,12),solar:nasa.solar||[],source:"NASA POWER gridded point climatology with local gap fill",rainDaysEstimated:true}}
+  function scoreMonth(d,m,style,year){
+    var p=state.profiles[d.profile]||state.profiles[d.fallbackProfile]||state.profiles.westEurope,c=climateFor(d),t=monthValue(c.tMean,p.tMean,m,20),rain=monthValue(c.rainMm,p.rainMm,m,70),rd=monthValue(c.rainDays,p.rainDays,m,8),hum=monthValue(c.humidityPct,p.humidityPct,m,65),wind=monthValue(c.windKph,p.windKph,m,12),crowd=monthValue(d.crowd,p.crowd,m,6),price=monthValue(d.price,p.price,m,6),storm=monthValue(d.stormRisk,p.stormRisk,m,0),day=hasCoords(d)?dayLength(Number(d.lat),year,m):12;
+    var f={temp:tempScore(t,style),rain:rainReliabilityScore(rain,rd,style),humidity:humidityScore(hum,style),wind:windScore(wind,style),crowd:clamp(110-crowd*10,5,100),price:clamp(110-price*10,5,100),daylight:daylightScore(day,style),storm:clamp(100-storm*9.5,5,100),event:eventScore(d,m,style)};
+    var w=STYLE_WEIGHTS[style]||STYLE_WEIGHTS.balanced,score=0;Object.keys(w).forEach(function(k){score+=f[k]*w[k]});score=clamp(Math.round(score),1,99);
+    return{score:score,factors:f,temp:t,rain:rain,rainDays:rd,humidity:hum,wind:wind,crowd:crowd,price:price,daylight:day,storm:storm,source:c.source||"regional seasonal fallback",rainDaysEstimated:true}
+  }
+  function allScores(d,style,year){return MONTHS.map(function(_,m){return scoreMonth(d,m,style,year)})}
+  function verdict(s){if(s>=86)return["Excellent timing","Strong seasonal fit for this travel style.","good"];if(s>=76)return["Very good month","A strong choice with manageable trade-offs.","good"];if(s>=65)return["Good with planning","The trip can work well if you plan around the weaker factors.","warn"];if(s>=52)return["Mixed timing","Flexible bookings and a backup plan are recommended.","warn"];return["Consider another window","A nearby month or similar destination is likely to feel easier.","bad"]}
+  function bookingCall(s,d,m){if(s.score>=82&&Math.max(s.crowd,s.price)>=8)return"Book early";if(s.score>=72)return"Good to book";if(s.score>=58)return"Keep flexible";return"Compare dates"}
+  function bestWindow(all){var vals=all.map(function(x){return x.score}),best=Math.max.apply(null,vals),good=vals.map(function(v){return v>=best-5});if(good.every(Boolean))return"All year";var maxLen=0,end=-1,run=0;for(var i=0;i<24;i++){if(good[i%12]){run=Math.min(run+1,12);if(run>maxLen){maxLen=run;end=i}}else run=0}if(!maxLen)return"No clear window";var start=(end-maxLen+1)%12,finish=end%12;return maxLen===1?MONTHS[start]:SHORT[start]+"–"+SHORT[finish]}
+
+  function renderMonthGrid(d,all,selected){var box=$("#vbt2MonthGrid");box.innerHTML="";all.forEach(function(s,i){var b=document.createElement("button"),cls=s.score>=82?"best":s.score>=70?"good":s.score>=55?"warn":"bad";b.type="button";b.className="vbt2-month "+cls+(i===selected?" active":"");b.innerHTML='<strong>'+SHORT[i]+'</strong><span>'+s.score+'</span><small>'+(s.score>=82?'Best':s.score>=70?'Good':s.score>=55?'Mixed':'Weak')+'</small>';b.addEventListener("click",function(){$("#vbt2Month").value=i;$("#vbt2Date").value="";analyze()});box.appendChild(b)});var active=box.querySelector(".active");if(active&&active.scrollIntoView)active.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"})}
+  function renderFactors(s){var defs=[['Comfort',s.factors.temp,'🌡️'],['Rain reliability',s.factors.rain,'🌧️'],['Humidity',s.factors.humidity,'💧'],['Wind',s.factors.wind,'🌬️'],['Crowds',s.factors.crowd,'👥'],['Price pressure',s.factors.price,'💳'],['Daylight',s.factors.daylight,'☀️'],['Storm season',s.factors.storm,'🌀'],['Seasonal appeal',s.factors.event,'🎉']];$("#vbt2Factors").innerHTML=defs.map(function(x){var col=x[1]>=75?'var(--green)':x[1]>=55?'var(--amber)':'var(--red)',msg=x[1]>=85?'Strong fit':x[1]>=70?'Good fit':x[1]>=55?'Noticeable trade-off':x[1]>=35?'Strong caution':'Major limitation';return'<div class="vbt2-factor"><b>'+x[2]+' '+Math.round(x[1])+'</b><span>'+x[0]+'</span><small>'+msg+'</small><div class="vbt2-fbar"><i style="width:'+clamp(x[1],0,100)+'%;background:'+col+'"></i></div></div>'}).join("")}
+  function renderSourceHealth(status){var defs=[['database','Local destination JSON'],['climate','NASA POWER climate'],['weather','Current weather'],['forecast','Five-day forecast'],['air','Air quality + UV'],['alerts','Weather alerts'],['holiday','Public holidays'],['country','Country context'],['currency','Currency reference'],['sun','Daylight check'],['aurora','Aurora outlook'],['advisory','Official advisory']];var ok=0,app=0;$("#vbt2SourceHealth").innerHTML=defs.map(function(x){var v=status[x[0]],cls=v===true?'on':v===false?'off':v==='na'?'na':'';if(v===true)ok++;if(v!=='na')app++;return'<div class="vbt2-source '+cls+'"><i></i><div><b>'+x[1]+'</b><span>'+(v===true?'Available':v===false?'Unavailable':v==='na'?'Not applicable':'Checking')+'</span></div></div>'}).join("");$("#vbt2LiveTag").textContent=ok+" / "+app+" available"}
+
+  function seasonalRows(d,s,all,style){var ranked=all.map(function(x,i){return{m:i,score:x.score}}).sort(function(a,b){return b.score-a.score}).slice(0,3),shares=(s.monthShares||[]).map(function(x){return SHORT[x.month]+' '+x.year+': '+x.days+' day'+(x.days===1?'':'s')}).join(' · ');return[
+    row('🗓️','Best seasonal window',bestWindow(all),'Seasonal'),
+    row('🏆','Top months',ranked.map(function(x){return SHORT[x.m]+' '+x.score}).join(' · '),'12 months'),
+    shares?row('📆','Trip-month weighting',shares,'Exact dates'):row('🌡️','Typical comfort',round(s.temp,1)+'°C · humidity '+Math.round(s.humidity)+'%','Climate'),
+    row('🌧️','Estimated wet-day pressure',Math.round(s.rain)+' mm/month · roughly '+Math.round(s.rainDays)+' wet days; the wet-day count is derived, not observed.','Estimate'),
+    row('☀️','Usable daylight',round(s.daylight,1)+' hours around the trip period','Calculated'),
+    row('🌀','Seasonal storm pressure',s.storm>=7?'High seasonal window':s.storm>=4?'Elevated seasonal window':'Low in the model','Seasonal')
+  ]}
+  function whyRows(s,style){var f=s.factors,arr=Object.keys(f).map(function(k){return{k:k,v:f[k]}}).sort(function(a,b){return a.v-b.v});var labels={temp:'temperature comfort',rain:'rain reliability',humidity:'humidity comfort',wind:'wind comfort',crowd:'crowd pressure',price:'price pressure',daylight:'daylight',storm:'seasonal storm risk',event:'seasonal events'};return arr.slice(0,4).map(function(x,i){return row(i?'•':'⚖️',(i?'Also considered: ':'Main trade-off: ')+labels[x.k],Math.round(x.v)+'/100 for '+style+' travel')})}
+  function planRows(d,s,inp){var a=[];if(s.rain>120||s.rainDays>14)a.push(row('☂️','Keep weather-sensitive plans flexible','Choose refundable outdoor activities and keep an indoor backup.'));if(s.crowd>=8||s.price>=8)a.push(row('⏰','Reserve high-demand items early','Hotels, landmark tickets and popular day trips may fill sooner.'));if(s.temp>32)a.push(row('💧','Plan around heat','Use early mornings, shaded routes and indoor afternoon breaks.'));if(s.storm>=6)a.push(row('🌀','Check official warnings close to departure','Use flexible transport and accommodation conditions.'));a.push(row('🧳','Turn timing into preparation','Use Voyasee packing, budget, transit and readiness tools for the next decisions.'));return a}
+  function confidenceRows(d,climateOk,status,inp){var rows=[],metaOk=metadataIsCurated(d),unc=scoreUncertainty(d,climateOk);rows.push(row(d.coordinateQuality==='curated'?'📍':'🧭','Location precision',d.coordinateQuality==='curated'?'Stored destination coordinates were used.':'Resolved as '+(d.resolvedAs||d.name)+'. Review the place label before booking, especially when names are shared by multiple locations.',d.coordinateQuality||'Unknown'));rows.push(row(climateOk?'🛰️':'🧩','Seasonal climate source',climateOk?'NASA POWER gridded point climatology loaded. Local terrain, islands and coastlines can differ from the grid cell.':'A labelled regional fallback remains in use.',climateOk?'Point grid':'Regional fallback'));rows.push(row(metaOk?'🏷️':'📝','Destination context',metaOk?'Destination categories and seasonal profile passed the curated quality check.':'Destination categories or seasonal profile remain broad; activity-specific interpretation should be cautious.',d.semanticQuality||'Unknown'));rows.push(row('🌧️','Wet-day method','Wet-day pressure is estimated from monthly precipitation; it is not an observed count of rainy days.','Derived estimate'));rows.push(row(inp.date?'📅':'🗓️','Date precision',inp.date?'Exact dates enabled trip-month weighting and overlap checks.':'Month-only mode prevents short-range conditions changing a future month.',inp.date?'Exact dates':'Month only'));rows.push(row('↔️','Planning range','The score uncertainty is approximately ±'+unc+' points based on location, climate and metadata quality.','Grade '+dataGrade(d,climateOk)));return rows}
+
+  function similarAlternatives(d,m,style,year){var types=d.types||[],base=scoreMonth(d,m,style,year);return state.dests.filter(function(x){return x.id!==d.id}).map(function(x){var s=scoreMonth(x,m,style,year),xt=x.types||[],shared=xt.filter(function(t){return types.indexOf(t)>=0}).length,union=Array.from(new Set(types.concat(xt))).length||1,jaccard=shared/union,sameRegion=(x.region&&d.region&&x.region===d.region)?1:0,quality=x.profileConfidence==="high"?2:x.profileConfidence==="medium"?1:0,improvement=s.score-base.score,rank=s.score+jaccard*18+sameRegion*3+quality+(improvement>0?Math.min(improvement,10):improvement*2);return{d:x,s:s,rank:rank,similar:shared,jaccard:jaccard,improvement:improvement}}).filter(function(x){return x.improvement>=3&&x.jaccard>=.2&&x.d.semanticQuality!=="limited"}).sort(function(a,b){return b.rank-a.rank}).slice(0,4)}
+  function renderAlternatives(d,m,style,year){var arr=similarAlternatives(d,m,style,year);$("#vbt2InsteadMonth").textContent=MONTHS[m];$("#vbt2Instead").innerHTML=arr.length?arr.map(function(x){var shared=(x.d.types||[]).filter(function(t){return(d.types||[]).indexOf(t)>=0}).slice(0,2).join(' + ')||'similar trip';var flag=x.d.code?countryFlag(x.d.code):'';var barW=clamp(x.s.score,0,100);var col=x.s.score>=82?'var(--green)':x.s.score>=70?'var(--teal)':x.s.score>=55?'var(--amber)':'var(--red)';return'<button class="vbt2-instead" type="button" data-name="'+esc(x.d.name)+'">'+(flag?'<span style="font-size:1.5rem;margin-right:4px;line-height:1">'+flag+'</span>':'')+esc(x.d.name)+'<div class="vbt2-instead-score-bar-wrap"><div class="vbt2-instead-score-label"><b>'+x.s.score+'/100</b><em>+'+x.improvement+' pts</em></div><div class="vbt2-instead-score-bar"><i style="width:'+barW+'%;background:'+col+'"></i></div></div><span style="font-size:11px;margin-top:4px;display:block;color:var(--muted)">'+esc(shared)+' trip · Check →</span></button>'}).join(""):'<div class="vbt2-row"><span>✓</span><span><strong>No clearly better close match</strong><small>The tool did not find a sufficiently similar destination that improves the score by at least three points.</small></span></div>';$$('.vbt2-instead').forEach(function(b){b.addEventListener('click',function(){$("#vbt2DestInput").value=b.getAttribute('data-name');analyze()})})}
+
+  function renderRadarChart(s){
+    var wrap=$("#vbt2RadarWrap");if(!wrap)return;
+    var factors=[{label:'Comfort',key:'temp'},{label:'Rain',key:'rain'},{label:'Humidity',key:'humidity'},{label:'Wind',key:'wind'},{label:'Crowds',key:'crowd'},{label:'Daylight',key:'daylight'}];
+    var n=factors.length,cx=90,cy=90,r=64;
+    function pt(i,val){var angle=(2*Math.PI/n)*i-Math.PI/2,rv=r*val/100;return[cx+rv*Math.cos(angle),cy+rv*Math.sin(angle)]}
+    function ringPath(pct){var pts=factors.map(function(_,i){return pt(i,pct)});return pts.map(function(p,i){return(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)}).join('')+'Z'}
+    var gridHTML=['<polygon points="'+factors.map(function(_,i){var p=pt(i,100);return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="1"/>','<polygon points="'+factors.map(function(_,i){var p=pt(i,75);return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>','<polygon points="'+factors.map(function(_,i){var p=pt(i,50);return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>','<polygon points="'+factors.map(function(_,i){var p=pt(i,25);return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>'].join('');
+    var axesHTML=factors.map(function(f,i){var end=pt(i,100),lp=pt(i,118);return'<line x1="'+cx+'" y1="'+cy+'" x2="'+end[0].toFixed(1)+'" y2="'+end[1].toFixed(1)+'" stroke="rgba(255,255,255,.10)" stroke-width="1"/><text x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+3.5).toFixed(1)+'" text-anchor="middle" font-size="7.5" font-weight="700" font-family="DM Sans,sans-serif" fill="rgba(246,241,223,.52)" letter-spacing="0.06em">'+f.label+'</text>'}).join('');
+    var dataPts=factors.map(function(f,i){return pt(i,clamp(s.factors[f.key]||0,0,100))});
+    var dataPath=dataPts.map(function(p,i){return(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)}).join('')+'Z';
+    var dotsHTML=dataPts.map(function(p){return'<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.5" fill="var(--gold)" stroke="rgba(229,191,99,.4)" stroke-width="1"/>'}).join('');
+    var avg=Math.round(factors.reduce(function(sum,f){return sum+(s.factors[f.key]||0)},0)/n);
+    wrap.innerHTML='<div class="vbt2-radar-wrap"><div class="vbt2-card-title" style="margin-bottom:6px;font-size:1.1rem">Factor radar <span class="vbt2-tag">6 axes</span></div><svg class="vbt2-radar-svg" viewBox="0 0 180 180" style="width:180px;height:180px">'+gridHTML+axesHTML+'<path d="'+dataPath+'" fill="rgba(69,224,204,.15)" stroke="var(--teal)" stroke-width="1.8"/>'+dotsHTML+'</svg><div style="color:var(--dim);font-size:10.5px;font-weight:700;text-align:center;margin-top:4px">Avg factor: <span style="color:var(--gold2)">'+avg+'</span>/100</div></div>'
+  }
+  function renderSparkline(d,inp){
+    var wrap=$("#vbt2SparkWrap");if(!wrap)return;
+    var all=allScores(d,inp.style,inp.year);
+    var W=220,H=54,bW=Math.floor(W/12)-2;
+    var bars=all.map(function(s,i){var bh=Math.max(4,Math.round((s.score/100)*(H-12))),by=H-bh-8,col=s.score>=82?'#55d889':s.score>=70?'#45e0cc':s.score>=55?'#f2b84b':'#ff5d6c',op=i===inp.month?1:0.55,x=i*(bW+2);return'<rect x="'+x+'" y="'+by+'" width="'+bW+'" height="'+bh+'" rx="2" fill="'+col+'" opacity="'+op+'"/><text x="'+(x+bW/2)+'" y="'+(H-1)+'" text-anchor="middle" font-size="7" font-family="DM Mono,monospace" fill="rgba(246,241,223,'+(i===inp.month?.85:.38)+')" font-weight="'+(i===inp.month?'700':'400')+'">'+SHORT[i].slice(0,1)+'</text>'+(i===inp.month?'<text x="'+(x+bW/2)+'" y="'+(by-2)+'" text-anchor="middle" font-size="7" font-family="DM Mono,monospace" fill="#f3d88b" font-weight="700">'+s.score+'</text>':'')}).join('');
+    var bestM=all.reduce(function(b,s,i){return s.score>b.score?{score:s.score,i:i}:b},{score:0,i:0});
+    wrap.innerHTML='<div class="vbt2-spark-wrap"><div class="vbt2-card-title" style="margin-bottom:6px;font-size:1.1rem">12-month scores <span class="vbt2-tag">'+esc(inp.style)+'</span></div><svg style="width:100%;height:'+H+'px;overflow:visible" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+bars+'</svg><div style="display:flex;justify-content:space-between;color:var(--dim);font-size:10.5px;font-weight:700;margin-top:6px"><span>Gold = selected</span><span>Best: <span style="color:var(--green)">'+SHORT[bestM.i]+' '+bestM.score+'</span></span></div></div>'
+  }
+  function renderDayLengthBar(d,inp,s){
+    var wrap=$("#vbt2DayLengthWrap");if(!wrap)return;
+    var dl=s.daylight,pct=Math.round((dl/24)*100);
+    var astro=hasCoords(d)?computeAstroSun(Number(d.lat),Number(d.lon),inp.year,inp.month):null;
+    var season=inp.month>=4&&inp.month<=8?'Summer half':'Winter half';
+    wrap.innerHTML='<div class="vbt2-daylength-wrap"><div class="vbt2-card-title" style="margin-bottom:6px;font-size:1.1rem">Daylight <span class="vbt2-tag">Astronomical</span></div><div style="color:var(--muted);font-size:22px;font-family:var(--serif);font-weight:700;line-height:1;margin-bottom:8px">'+round(dl,1)+' <span style="font-size:13px;color:var(--dim)">hours in '+MONTHS[inp.month]+'</span></div><div class="vbt2-dl-bar-wrap"><span style="color:var(--dim);font-size:9px;font-weight:800">0h</span><div class="vbt2-dl-bar"><i style="width:'+pct+'%"></i></div><span style="color:var(--dim);font-size:9px;font-weight:800">24h</span></div>'+(astro&&astro.sunrise?'<div class="vbt2-dl-meta"><span>☀️ ~'+astro.sunrise+' UTC</span><span>~'+astro.sunset+' UTC 🌙</span></div>':'')+(astro&&astro.note?'<div style="color:var(--amber);font-size:11px;font-weight:700;margin-top:5px">'+astro.note+'</div>':'')+'<div style="color:var(--dim);font-size:10.5px;font-weight:700;margin-top:8px">'+season+' · lat '+round(Number(d.lat)||0,1)+'° · UTC approx.</div></div>'
+  }
+  function renderPackingGuide(s){
+    var wrap=$("#vbt2PackingWrap");if(!wrap)return;
+    var urg=packingUrgency(s),items=packingItems(s);
+    wrap.innerHTML='<div class="vbt2-packing-wrap"><div class="vbt2-card-title" style="margin-bottom:6px;font-size:1.1rem">Packing signals <span class="vbt2-tag">Climate-based</span></div><div class="vbt2-packing-badge '+urg.level+'">'+urg.label+'</div><div class="vbt2-packing-items">'+items.map(function(x){return'<div class="vbt2-packing-item">'+esc(x)+'</div>'}).join('')+'</div></div>'
+  }
+  function renderInfographics(d,inp,s){
+    renderRadarChart(s);
+    renderSparkline(d,inp);
+    if(hasCoords(d))renderDayLengthBar(d,inp,s);
+    else{var w=$("#vbt2DayLengthWrap");if(w)w.innerHTML='<div class="vbt2-daylength-wrap" style="color:var(--dim);font-size:12px;padding:14px">Daylight estimate requires destination coordinates.</div>'}
+    renderPackingGuide(s);
+  }
+  function renderBase(d,inp,liveImpact){var all=allScores(d,inp.style,inp.year),s=scoreTripPeriod(d,inp),final=clamp(s.score+(liveImpact||0),1,99),v=verdict(final),book=bookingCall(s,d,inp.month),climateLoaded=!!state.climate[d.id],unc=scoreUncertainty(d,climateLoaded),grade=dataGrade(d,climateLoaded),range=[clamp(final-unc,1,99),clamp(final+unc,1,99)];state.lastReport={d:d,inp:inp,seasonal:s,all:all,final:final,liveImpact:liveImpact||0,range:range,grade:grade};
+    $("#vbt2Results").classList.add('is-visible');var flag=d.code?countryFlag(d.code):'';$("#vbt2DestName").innerHTML=(flag?'<span class="vbt2-flag" aria-hidden="true">'+flag+'</span>':'')+esc(d.name);var dateLabel=inp.date?isoDate(inp.date)+' to '+isoDate(addDays(inp.date,inp.days-1)):MONTHS[inp.month]+' '+inp.year;$("#vbt2ReportKicker").textContent=dateLabel+' · '+inp.style+' timing report';$("#vbt2Summary").textContent=d.description+' The final score separates seasonal suitability from date-eligible current information.';
+    $("#vbt2Score").textContent=final;var ring=$("#vbt2ScoreRing");ring.style.setProperty('--score-deg',(final*3.6)+'deg');ring.style.setProperty('--ring-col',final>=76?'var(--green)':final>=55?'var(--amber)':'var(--red)');ring.setAttribute('aria-label','Timing score '+final+' out of 100; planning range '+range[0]+' to '+range[1]);
+    $("#vbt2Verdict").textContent=v[0];$("#vbt2VerdictSub").textContent=v[1];$("#vbt2Pills").innerHTML='<span class="vbt2-pill '+v[2]+'">'+esc(dateLabel)+'</span><span class="vbt2-pill">'+inp.style+'</span><span class="vbt2-pill">'+(inp.date?'Exact dates':'Month mode')+'</span><span class="vbt2-pill">'+inp.days+' days</span>'+(d.resolvedAs&&d.resolvedAs!==d.name?'<span class="vbt2-pill">Resolved: '+esc(d.resolvedAs)+'</span>':'');
+    $("#vbt2BaseScore").textContent=s.score;$("#vbt2LiveAdjust").textContent=(liveImpact>0?'+':'')+(liveImpact||0);$("#vbt2BookVerdict").textContent=book;$("#vbt2Temp").textContent=round(s.temp,1)+'°C';$("#vbt2Rain").textContent=s.rainDays>=16?'Frequent':s.rainDays>=10?'Mixed':'Lower';$("#vbt2Range").textContent=range[0]+'–'+range[1];$("#vbt2DataGrade").textContent=grade;setBar('#vbt2BaseBar',s.score);setBar('#vbt2LiveBar',50+(liveImpact||0)*3);setBar('#vbt2BookBar',final);setBar('#vbt2ComfortBar',s.factors.temp);setBar('#vbt2RainBar',s.factors.rain);setBar('#vbt2RangeBar',100-unc*4);setBar('#vbt2DataGradeBar',{A:95,B:80,C:62,D:40}[grade]);
+    $("#vbt2SeasonalLayer").textContent='Seasonal score '+s.score+'/100. Planning range '+range[0]+'–'+range[1]+'. Best window: '+bestWindow(all)+'. Source: '+s.source+'.';$("#vbt2CurrentLayer").textContent=inp.date?'Only forecast days and alerts overlapping '+dateLabel+' can affect the result. Current AQI and aurora remain informational.':'Month-only mode: current conditions are informational and cannot change the score.';$("#vbt2ConfidenceLayer").textContent='Data grade '+grade+' · coordinates '+(d.coordinateQuality||'unknown')+' · profile '+(d.profileConfidence||'unknown')+' · microclimate risk '+(d.microclimateRisk||'unknown')+'.';
+    renderMonthGrid(d,all,inp.month);renderFactors(s);renderInfographics(d,inp,s);setRows($("#vbt2Why"),whyRows(s,inp.style));setRows($("#vbt2Plan"),planRows(d,s,inp));setRows($("#vbt2Alternatives"),seasonalRows(d,s,all,inp.style));setRows($("#vbt2Intel"),[row('🧠','Travel-style logic','This result uses '+inp.style+' weights rather than one universal best month.'),row('📊','Demand balance','Crowd '+round(s.crowd,1)+'/10 · price pressure '+round(s.price,1)+'/10.'),row('🌍','Destination type',(d.types||[]).join(', ')||'general travel'),row('🧭','Microclimate caution',d.microclimateRisk==='high'?'Terrain, coast or elevation can differ materially inside this destination.':d.microclimateRisk==='medium'?'Some local variation is possible.':'Lower local-variation flag in the destination metadata.')]);renderAlternatives(d,inp.month,inp.style,inp.year);updateUrl(d,inp);return s}
+
+  function updateConfidence(label,pct){$("#vbt2Confidence").textContent=label;setBar('#vbt2ConfidenceBar',pct)}
+  function forecastEligibility(inp,forecast){if(!inp.date||!forecast||!forecast.length)return{eligible:false,reason:'No exact date inside forecast range.',overlapDays:0,coverage:0};var dates=forecast.map(function(x){return x.date}).filter(Boolean).sort();if(!dates.length)return{eligible:false,reason:'Forecast dates were unavailable.',overlapDays:0,coverage:0};var start=isoDate(inp.date),end=isoDate(addDays(inp.date,inp.days-1)),over=dates.filter(function(x){return x>=start&&x<=end});return{eligible:over.length>0,start:start,end:end,first:dates[0],last:dates[dates.length-1],overlapDays:over.length,coverage:over.length/Math.max(1,inp.days)}}
+  function alertSeverity(a){var given=norm(a&&a.severity),txt=norm([a&&a.event,a&&a.headline,a&&a.description].join(' '));if(/extreme/.test(given)||/tornado|major hurricane|catastrophic|extreme/.test(txt))return'extreme';if(/severe/.test(given)||/hurricane|typhoon|blizzard|flash flood|severe storm/.test(txt))return'severe';if(/moderate/.test(given)||/storm warning|flood warning|heat warning|winter storm/.test(txt))return'moderate';return'minor'}
+  function alertOverlapsTrip(a,inp){if(!inp.date)return false;var ts=isoDate(inp.date),te=isoDate(addDays(inp.date,inp.days-1)),as=a&&a.onsetAt?String(a.onsetAt).slice(0,10):null,ae=a&&a.endsAt?String(a.endsAt).slice(0,10):null;if(as&&ae)return as<=te&&ae>=ts;if(as)return as<=te&&as>=isoDate(addDays(inp.date,-1));return false}
+  function liveAdjustment(bundle,alerts,holidays,aurora,inp,s){var impact=0,rows=[],changes=[],elig=forecastEligibility(inp,bundle&&bundle.forecastDaily);if(bundle&&bundle.current)rows.push(row('🌤️','Current conditions',round(bundle.current.tempC,1)+'°C · feels '+round(bundle.current.feelsLikeC,1)+'°C · '+((bundle.current.condition&&bundle.current.condition.description)||'weather available'),'Current only'));
+    if(elig.eligible){var days=(bundle.forecastDaily||[]).filter(function(x){return x.date>=elig.start&&x.date<=elig.end});if(days.length){var rain=Math.max.apply(null,days.map(function(x){return Number(x.precipitationProbabilityPct)||0})),max=Math.max.apply(null,days.map(function(x){return Number(x.tempMaxC)||0})),min=Math.min.apply(null,days.map(function(x){return Number(x.tempMinC)||99})),raw=0;if(rain>=75)raw-=7;else if(rain<=25)raw+=2;if(max>=36)raw-=7;else if(max>=32)raw-=3;if(min>=14&&max<=29)raw+=3;var adj=Math.round(raw*elig.coverage);impact+=adj;rows.push(row('📆','Forecast coverage',days.length+' of '+inp.days+' trip day(s) · '+min+'–'+max+'°C · peak rain chance '+rain+'%','Coverage '+Math.round(elig.coverage*100)+'%'));if(adj!==0)changes.push(row(adj>0?'➕':'➖','Forecast adjustment',(adj>0?'+':'')+adj+' points after scaling the short forecast to its '+Math.round(elig.coverage*100)+'% trip coverage.','Date + coverage gated'))}}
+    else if(bundle&&bundle.forecastDaily&&bundle.forecastDaily.length)rows.push(row('ℹ️','Forecast shown as context','Available forecast '+(elig.first||'')+' to '+(elig.last||'')+' does not overlap the selected trip.','No score change'));
+    if(bundle&&bundle.airQuality){var aq=Number(bundle.airQuality.usAqiEstimate);rows.push(row('🫁','Current air quality',Number.isFinite(aq)?'US AQI estimate '+Math.round(aq)+' · '+(bundle.airQuality.usAqiCategory||'')+'. This instantaneous estimate does not change the trip score.':'Air-quality reading available','Current context'))}
+    var overlapping=(alerts||[]).filter(function(a){return alertOverlapsTrip(a,inp)});if(overlapping.length){var sev=alertSeverity(overlapping[0]),pen={extreme:-10,severe:-7,moderate:-4,minor:-2}[sev]||-2;impact+=pen;rows.push(row('⚠️','Weather alert overlaps the trip',(overlapping[0].headline||overlapping[0].event||'Provider alert')+' · severity '+sev,'Exact overlap'));changes.push(row('➖','Weather-alert adjustment',pen+' points because the provider alert validity overlaps the exact trip.','Severity + overlap gated'))}else if(alerts&&alerts.length)rows.push(row('ℹ️','Active alert outside the trip',alerts[0].headline||alerts[0].event||'Provider alert','No score change'));
+    if(holidays&&holidays.length){var inMonth=holidays.filter(function(h){return String(h.date||'').slice(5,7)===String(inp.month+1).padStart(2,'0')});if(inMonth.length){rows.push(row('🎊','Public holidays in '+MONTHS[inp.month],inMonth.slice(0,3).map(function(h){return h.date+' '+(h.name||'Public holiday')}).join(' · '),'Selected year'));if(inp.date){var tripEnd=isoDate(addDays(inp.date,inp.days-1)),over=inMonth.some(function(h){return h.date>=isoDate(inp.date)&&h.date<=tripEnd});if(over){var hAdj=inp.style==='culture'?2:(inp.style==='crowdless'||inp.style==='budget'||inp.style==='family'?-4:-2);impact+=hAdj;changes.push(row(hAdj>=0?'➕':'➖','Holiday overlap',(hAdj>=0?'+':'')+hAdj+' points for the selected travel style.','Exact dates'))}}}}
+    if(aurora&&Number.isFinite(aurora.maxKp))rows.push(row('🌌','NOAA aurora outlook','Peak Kp '+round(aurora.maxKp,1)+' in the near-term outlook. It remains informational because cloud, darkness and local viewing conditions determine visibility.','No score change'));
+    return{impact:clamp(Math.round(impact),-15,8),rows:rows,changes:changes,forecastEligible:elig.eligible,coverage:elig.coverage}}
+  
+
+  function fetchClimate(d,signal){
+    if(!hasCoords(d))return Promise.resolve(null);
+    var cacheKey='climate660:'+round(d.lat,2)+':'+round(d.lon,2);
+    var vwbUrl=WEATHER_BASE+'/climate-normals?lat='+encodeURIComponent(d.lat)+'&lon='+encodeURIComponent(d.lon);
+    var nasaUrl='https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,RH2M,WS2M&community=RE&longitude='+d.lon+'&latitude='+d.lat+'&format=JSON';
+    function applyNormals(n,src){
+      var wind=(n.windSpeedMps||[]).map(function(x){return x==null?null:round(x*3.6,1)});
+      var c={tMean:n.temperatureMeanC||[],tMax:n.temperatureMaxC||[],tMin:n.temperatureMinC||[],rainMm:n.precipitationMmMonth||[],rainDays:n.estimatedRainDays||[],humidityPct:n.relativeHumidityPct||[],windKph:wind,solar:n.solarRadiationKwhM2Day||[],source:src||'NASA POWER gridded point climatology',rainDaysEstimated:true};
+      state.climate[d.id]=c;return c
+    }
+    function tryNasaDirect(){
+      return fetchJSON(nasaUrl,{signal:signal,ttl:90*86400000,key:cacheKey+':nasa'}).then(function(j){
+        var p=j&&j.properties&&j.properties.parameter;
+        if(!p)return null;
+        var months=[1,2,3,4,5,6,7,8,9,10,11,12];
+        function mArr(param){return months.map(function(m){var v=p[param]&&p[param][String(m).padStart(2,'0')+'13'];return(v==null||v===-999)?null:Number(v)})}
+        var precMm=mArr('PRECTOTCORR').map(function(v){return v==null?null:round(v*30,1)});
+        var n2={temperatureMeanC:mArr('T2M'),temperatureMaxC:mArr('T2M_MAX'),temperatureMinC:mArr('T2M_MIN'),precipitationMmMonth:precMm,estimatedRainDays:precMm.map(function(v){return v==null?null:round(v/6,1)}),relativeHumidityPct:mArr('RH2M'),windSpeedMps:mArr('WS2M'),solarRadiationKwhM2Day:[]};
+        return applyNormals(n2,'NASA POWER direct climatology')
+      })
+    }
+    return fetchJSON(vwbUrl,{signal:signal,ttl:90*86400000,key:cacheKey}).then(function(j){
+      var n=j&&j.climateNormals;
+      if(!n)return tryNasaDirect();
+      return applyNormals(n,'NASA POWER via Weather Bridge')
+    }).catch(function(){return tryNasaDirect()})
+  }
+  function fetchCountry(d,inp,signal){
+    if(!d.code)return Promise.resolve(null);
+    var c=d.code,ce=encodeURIComponent(c),year=inp.year;
+    var vci=window.VoyaseeCountryData;
+    if(vci&&typeof vci.getCountry==='function'&&typeof vci.getHolidays==='function'&&typeof vci.getLongWeekends==='function'){
+      return Promise.all([safe(Promise.resolve(vci.getCountry(c))),safe(Promise.resolve(vci.getHolidays(c,year))),safe(Promise.resolve(vci.getLongWeekends(c,year)))]).then(function(r){return{country:r[0].ok?r[0].value:null,holiday:r[1].ok?r[1].value:null,longWeekend:r[2].ok?r[2].value:null}})
+    }
+    return Promise.all([safe(fetchJSON(COUNTRY_BASE+'/country/'+ce,{signal:signal,ttl:12*3600000,key:'country:'+c+':'+year})),safe(fetchJSON(COUNTRY_BASE+'/holidays/'+ce+'?year='+year,{signal:signal,ttl:24*3600000,key:'hol:'+c+':'+year})),safe(fetchJSON(COUNTRY_BASE+'/long-weekends/'+ce+'?year='+year,{signal:signal,ttl:24*3600000,key:'lw:'+c+':'+year}))]).then(function(r){return{country:r[0].ok?r[0].value:null,holiday:r[1].ok?r[1].value:null,longWeekend:r[2].ok?r[2].value:null}})
+  }
+  function fetchFx(d,inp,signal){if(!d.currency||d.currency===inp.currency)return Promise.resolve(null);return fetchJSON('https://api.frankfurter.dev/v1/latest?base='+encodeURIComponent(inp.currency)+'&symbols='+encodeURIComponent(d.currency),{signal:signal,ttl:6*3600000,key:'fx:'+inp.currency+':'+d.currency})}
+  function fetchSun(d,inp){if(!hasCoords(d))return Promise.resolve(null);var dt=inp.date||midpointDate(inp.year,inp.month);return Promise.resolve(computeAstroSun(Number(d.lat),Number(d.lon),dt.getFullYear(),dt.getMonth()))}
+  function fetchAurora(d,inp,signal){var near=inp.date?daysBetween(new Date(new Date().toDateString()),inp.date):999;if(!Number.isFinite(d.lat)||Math.abs(d.lat)<55||near<0||near>3)return Promise.resolve(null);return fetchJSON('https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json',{signal:signal,ttl:30*60000,key:'aurora'}).then(function(j){var nums=(j||[]).slice(1).map(function(r){return Number(r[1])}).filter(Number.isFinite);return{maxKp:nums.length?Math.max.apply(null,nums):null}})}
+  function fetchAlerts(d,inp,signal){var near=inp.date?daysBetween(new Date(new Date().toDateString()),inp.date):999;if(near<0||near>7)return Promise.resolve(null);return fetchJSON(WEATHER_BASE+'/alerts?lat='+d.lat+'&lon='+d.lon,{signal:signal,ttl:15*60000,key:'alerts:'+round(d.lat,2)+':'+round(d.lon,2)}).then(function(j){return j.alerts||[]})}
+
+  function enhance(d,inp,signal,request){var status={database:true,climate:null,weather:null,forecast:null,air:null,alerts:inp.date?null:'na',holiday:d.code?null:'na',country:d.code?null:'na',currency:d.currency&&d.currency!==inp.currency?null:'na',sun:null,aurora:(Number.isFinite(d.lat)&&Math.abs(d.lat)>=55&&inp.date)?null:'na',advisory:true};renderSourceHealth(status);setRows($("#vbt2Live"),[row('⏳','Checking relevant data','Seasonal climatology, near-trip conditions and selected-year country context are loading.')]);
+    var hasGeo=hasCoords(d),climateP=safe(fetchClimate(d,signal)),bundleP=hasGeo?safe(fetchJSON(WEATHER_BASE+'/bundle?lat='+d.lat+'&lon='+d.lon+'&days=5&include_air=true',{signal:signal,ttl:10*60000,key:'bundle:'+round(d.lat,2)+':'+round(d.lon,2)})):Promise.resolve({ok:true,value:null}),countryP=safe(fetchCountry(d,inp,signal)),fxP=safe(fetchFx(d,inp,signal)),sunP=hasGeo?safe(fetchSun(d,inp)):Promise.resolve({ok:true,value:null}),auroraP=hasGeo?safe(fetchAurora(d,inp,signal)):Promise.resolve({ok:true,value:null}),alertsP=hasGeo?safe(fetchAlerts(d,inp,signal)):Promise.resolve({ok:true,value:null}),startedAt=Date.now();
+    Promise.all([climateP,bundleP,countryP,fxP,sunP,auroraP,alertsP]).then(function(res){if(request!==state.request)return;var climate=res[0].ok&&res[0].value,bundle=res[1].ok?res[1].value:null,country=res[2].ok?res[2].value:null,fx=res[3].ok?res[3].value:null,sun=res[4].ok?res[4].value:null,aurora=res[5].ok?res[5].value:null,alerts=res[6].ok?res[6].value:null;
+      status.climate=!!climate;status.weather=!!(bundle&&bundle.current);status.forecast=!!(bundle&&bundle.forecastDaily&&bundle.forecastDaily.length);status.air=!!(bundle&&bundle.airQuality);status.alerts=inp.date?(alerts!==null):'na';status.country=!!(country&&country.country);status.holiday=!!(country&&country.holiday);status.currency=d.currency&&d.currency!==inp.currency?!!fx:'na';status.sun=!!(sun&&sun.sunrise);status.aurora=(Number.isFinite(d.lat)&&Math.abs(d.lat)>=55&&inp.date)?!!aurora:'na';renderSourceHealth(status);
+      var base=renderBase(d,inp,0),holidayRows=country&&country.holiday&&(country.holiday.holidays||[]),live=liveAdjustment(bundle,alerts,holidayRows||[],aurora,inp,base);base=renderBase(d,inp,live.impact);var rows=live.rows;
+      if(climate)rows.unshift(row('🛰️','Destination climatology loaded','NASA POWER monthly temperature, precipitation, humidity and wind replaced the regional fallback.','Seasonal'));
+      else rows.unshift(row('🧩','Regional climate fallback','Destination climatology was unavailable; the report kept its labelled fallback profile.','Fallback'));
+      if(country&&country.country){var core=country.country.core||{};rows.push(row('🌍','Country context',(core.names&&core.names.common?core.names.common:d.country)+' · '+((core.currencies&&core.currencies[0]&&core.currencies[0].code)||d.currency||'currency unavailable'),'Voyasee data'))}
+      if(country&&country.longWeekend&&country.longWeekend.longWeekends){var lw=country.longWeekend.longWeekends.filter(function(w){return String(w.startDate||'').slice(5,7)===String(inp.month+1).padStart(2,'0')});if(lw.length)rows.push(row('🗓️','Long-weekend pressure',lw[0].startDate+' to '+lw[0].endDate+' · '+lw[0].dayCount+' days','Selected year'))}
+      if(fx&&fx.rates&&d.currency&&fx.rates[d.currency])rows.push(row('💱','Currency reference','1 '+inp.currency+' ≈ '+round(fx.rates[d.currency],3)+' '+d.currency+' · '+(fx.date||'latest reference date'),'Frankfurter'));
+      if(sun&&sun.sunrise){rows.push(row('🌅','Daylight estimate','Sunrise ~'+sun.sunrise+' · sunset ~'+sun.sunset+' UTC (15th of month) · '+round(sun.dayLength,1)+' hours','Astronomical calc'))}else if(sun&&sun.note){rows.push(row('🌅','Daylight note',sun.note+' — astronomical calculation for lat '+round(Number(d.lat)||0,1)+'°','Astronomical calc'))}
+      rows.push(advisoryRow());
+      if(!rows.length)rows=[row('ℹ️','No near-trip signal available','The seasonal report remains available without a live adjustment.')];setRows($("#vbt2Live"),rows);setRows($("#vbt2Changed"),live.changes.length?live.changes:[row('✓','No eligible live score change','Current information was unavailable, outside its valid date range, or informational only.','Transparent')]);
+      var metaOk=metadataIsCurated(d),unc=scoreUncertainty(d,!!climate);var conf=22+(d.coordinateQuality==='curated'?18:hasCoords(d)?10:0)+(climate?28:0)+(d.profileConfidence==='high'?10:d.profileConfidence==='medium'?6:1)+(d.semanticQuality==='high'?8:d.semanticQuality==='medium'?4:0)+(status.country?3:0)+(status.holiday?2:0)+(status.sun?2:0)+(inp.date?2:0);if(d.microclimateRisk==='high')conf-=7;else if(d.microclimateRisk==='medium')conf-=3;if(d.coordinateQuality!=='curated')conf=Math.min(conf,88);if(d.semanticQuality==='limited')conf=Math.min(conf,74);if(!climate)conf=Math.min(conf,72);conf=clamp(Math.round(conf),20,96);var label=conf>=85?'High':conf>=70?'Good':conf>=52?'Medium':'Limited';updateConfidence(label,conf);setRows($('#vbt2DataConfidence'),confidenceRows(d,!!climate,status,inp));$('#vbt2ConfidenceLayer').textContent=label+' confidence ('+conf+'%) · data grade '+dataGrade(d,!!climate)+' · planning uncertainty about ±'+unc+' points.';$('#vbt2CurrentLayer').textContent=inp.date?(live.forecastEligible?'The forecast covered '+Math.round((live.coverage||0)*100)+'% of the trip. Final near-trip impact: '+(live.impact>0?'+':'')+live.impact+'.':'The exact dates did not overlap the short forecast. Current data stayed informational.'):'Month-only mode protected the score from today’s short-range conditions.';var generated=(bundle&&bundle.meta&&bundle.meta.generatedAt)||(climate&&climate.meta&&climate.meta.generatedAt)||new Date().toISOString();$('#vbt2Freshness').textContent='Report checked '+localTimeLabel(generated)+' · completed in '+((Date.now()-startedAt)/1000).toFixed(1)+' seconds · seasonal JSON version '+((state.db._meta&&state.db._meta.version)||'6.6.0')+'.';saveRecent(d,inp);hideStatus();
+    }).catch(function(){if(request!==state.request)return;hideStatus()})}
+
+  function recentKey(){return"vbt651:recent-reports"}
+  function readRecent(){try{return JSON.parse(localStorage.getItem(recentKey())||"[]")}catch(e){return[]}}
+  function saveRecent(d,inp){var item={name:d.name,month:inp.month,year:inp.year,style:inp.style,currency:inp.currency,days:inp.days,date:inp.date?isoDate(inp.date):"",savedAt:Date.now()},all=readRecent().filter(function(x){return !(x.name===item.name&&x.month===item.month&&x.year===item.year&&x.style===item.style&&x.date===item.date)});all.unshift(item);try{localStorage.setItem(recentKey(),JSON.stringify(all.slice(0,6)))}catch(e){}renderRecent()}
+  function renderRecent(){var all=readRecent(),wrap=$("#vbt2RecentWrap"),box=$("#vbt2Recent");if(!wrap||!box)return;wrap.hidden=!all.length;box.innerHTML=all.map(function(x,i){return'<button type="button" data-recent="'+i+'">'+esc(x.name.split(',')[0])+' · '+SHORT[x.month]+' '+x.year+'</button>'}).join("");box.querySelectorAll('[data-recent]').forEach(function(b){b.addEventListener('click',function(){var x=readRecent()[Number(b.getAttribute('data-recent'))];if(!x)return;$("#vbt2DestInput").value=x.name;$("#vbt2Month").value=x.month;$("#vbt2Year").value=x.year;$("#vbt2Style").value=x.style;$("#vbt2Currency").value=x.currency;$("#vbt2Days").value=x.days;$("#vbt2Date").value=x.date||"";analyze()})})}
+  function comparisonPanel(d,s,m,year,winning){return'<div class="vbt2-compare-panel '+(winning?'winner':'')+'"><b>'+s.score+'/100</b><strong>'+esc(d.name)+' · '+MONTHS[m]+' '+year+'</strong><span>Typical '+round(s.temp,1)+'°C · '+Math.round(s.rain)+' mm rain · about '+Math.round(s.rainDays)+' rain days</span><span>Crowds '+s.crowd+'/10 · price '+s.price+'/10 · daylight '+round(s.daylight,1)+' h</span><span>Source: '+esc(s.source)+'</span></div>'}
+  function resetComparison(){var box=$("#vbt2CompareResults");if(box){box.innerHTML="";box.classList.remove('is-visible')}var second=$("#vbt2CompareDest");if(second)second.value=""}
+  function compareSeasonal(){if(!state.current||!state.lastReport){showStatus('Build a timing report first.',true);return}var inp=currentInputs(),m=Number($("#vbt2CompareMonth").value),q=$("#vbt2CompareDest").value.trim(),aD=state.current,aS=scoreMonth(aD,inp.month,inp.style,inp.year),box=$("#vbt2CompareResults"),btn=$('[data-vbt2-compare]');btn.disabled=true;showStatus('Building a seasonal comparison…');var otherP=q?resolveDestination(q,state.controller?state.controller.signal:null):Promise.resolve(aD);otherP.then(function(bD){return fetchClimate(bD,state.controller?state.controller.signal:null).catch(function(){return null}).then(function(){return bD})}).then(function(bD){var bS=scoreMonth(bD,m,inp.style,inp.year),diff=Math.abs(aS.score-bS.score),aw=aS.score>=bS.score,bw=bS.score>aS.score;box.innerHTML=comparisonPanel(aD,aS,inp.month,inp.year,aw)+comparisonPanel(bD,bS,m,inp.year,bw)+'<div class="vbt2-compare-verdict"><strong>'+(diff<3?'Very close seasonal match':(aw?aD.name:bD.name)+' leads by '+diff+' points')+'.</strong> This comparison uses the same '+esc(inp.style)+' scoring model and keeps current weather outside the comparison.</div>';box.classList.add('is-visible');hideStatus()}).catch(function(e){showStatus(e.message||'Comparison could not be completed.',true)}).finally(function(){btn.disabled=false})}
+
+  function updateUrl(d,inp){try{var u=new URL(location.href);u.searchParams.set('destination',d.name);u.searchParams.set('month',inp.month+1);u.searchParams.set('year',inp.year);u.searchParams.set('style',inp.style);u.searchParams.set('days',inp.days);u.searchParams.set('currency',inp.currency);if(inp.date)u.searchParams.set('date',isoDate(inp.date));else u.searchParams.delete('date');history.replaceState({},'',u)}catch(e){}}
+  function loadUrl(){try{var q=new URLSearchParams(location.search),d=q.get('destination');if(d)$("#vbt2DestInput").value=d;if(q.get('month'))$("#vbt2Month").value=clamp(Number(q.get('month'))-1,0,11);if(q.get('year'))$("#vbt2Year").value=q.get('year');if(q.get('style'))$("#vbt2Style").value=q.get('style');if(q.get('days'))$("#vbt2Days").value=q.get('days');if(q.get('currency'))$("#vbt2Currency").value=q.get('currency');if(q.get('date'))$("#vbt2Date").value=q.get('date')}catch(e){}}
+  function reportText(){var r=state.lastReport;if(!r)return'';return['VOYASEE TRAVEL MONTH REPORT',r.d.name,(r.inp.date?isoDate(r.inp.date)+' to '+isoDate(addDays(r.inp.date,r.inp.days-1)):MONTHS[r.inp.month]+' '+r.inp.year)+' · '+r.inp.style+' · '+r.inp.days+' days','Final timing score: '+r.final+'/100','Planning range: '+r.range[0]+'–'+r.range[1]+' · data grade '+r.grade,'Seasonal score: '+r.seasonal.score+'/100','Near-trip impact: '+(r.liveImpact>0?'+':'')+r.liveImpact,'Best seasonal window: '+bestWindow(r.all),'Typical temperature: '+round(r.seasonal.temp,1)+'°C','Precipitation: '+Math.round(r.seasonal.rain)+' mm/month · estimated wet-day pressure '+Math.round(r.seasonal.rainDays),'Crowd pressure: '+round(r.seasonal.crowd,1)+'/10','Price pressure: '+round(r.seasonal.price,1)+'/10','Climate source: '+r.seasonal.source,'Generated: '+new Date().toLocaleString(),'Planning guidance only. NASA POWER is gridded climatology; local terrain and weather can differ. Verify official entry, safety, weather, medical and airline information.','VOYASEE.COM'].join('\n')}
+  function buildFooter(){var cols=[{h:'Find your destination',l:[['Smart Travel Hub','https://voyasee.com/free-smart-travel-hub/'],['Interactive Travel Map','https://voyasee.com/interactive-travel-map/'],['Destination Quiz','https://voyasee.com/destination-quiz/'],['Destination Comparison','https://voyasee.com/travel-destination-comparison-tool/']]},{h:'Get the trip ready',l:[['Travel Passport','https://voyasee.com/trip-readiness-checklist/'],['Trip Budget Calculator','https://voyasee.com/trip-budget-calculator/'],['Smart Packing List','https://voyasee.com/packing-list-generator/'],['Transit & Layover Risk','https://voyasee.com/transit-visa-layover-risk-checker/'],['Medicine Checker','https://voyasee.com/medicine-restricted-item-checker/'],['Jet Lag Planner','https://voyasee.com/jet-lag-recovery-planner/']]},{h:'Book after planning',l:[['Compare flights','https://voyasee.com/book-cheap-flights/'],['Book tours','https://voyasee.com/book-tours/'],['Travel printables','https://voyasee.com/travel-printables/']]}];$("#vbt2FootCols").innerHTML=cols.map(function(c){return'<div class="vbt2-foot-col"><h4>'+c.h+'</h4>'+c.l.map(function(x){return'<a href="'+x[1]+'">'+x[0]+'</a>'}).join('')+'</div>'}).join('')}
+  function buildNext(){var l=[['Travel Passport','Check documents, arrival friction and readiness.','https://voyasee.com/trip-readiness-checklist/'],['Destination Comparison','Compare two places before paying.','https://voyasee.com/travel-destination-comparison-tool/'],['Trip Budget Calculator','Turn the month into a realistic cost plan.','https://voyasee.com/trip-budget-calculator/'],['Packing List Generator','Build a climate-aware luggage list.','https://voyasee.com/packing-list-generator/'],['Transit Risk Checker','Check layover and separate-ticket risk.','https://voyasee.com/transit-visa-layover-risk-checker/'],['Travel Printables','Keep an offline copy of the plan.','https://voyasee.com/travel-printables/']];$("#vbt2NextSteps").innerHTML=l.map(function(x){return'<a class="vbt2-next-card" href="'+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span><em>Open tool →</em></a>'}).join('')}
+  function quickChips(){var names=['Tokyo, Japan','Bali, Indonesia','Paris, France','Dubai, UAE','Cape Town, South Africa','Reykjavik, Iceland'];$("#vbt2Quick").innerHTML=names.map(function(n){return'<button class="vbt2-chip" type="button" data-name="'+n+'">'+n.split(',')[0]+'</button>'}).join('');$$(".vbt2-chip").forEach(function(b){b.addEventListener('click',function(){$("#vbt2DestInput").value=b.getAttribute('data-name');analyze()})})}
+  function analyze(){var inp=currentInputs(),btn=$("[data-vbt2-analyze]");if(!inp.query){showStatus('Enter a destination first.',true);return}resetComparison();var compareMonth=$("#vbt2CompareMonth");if(compareMonth)compareMonth.value=(inp.month+1)%12;if(state.controller)state.controller.abort();state.controller=new AbortController();var signal=state.controller.signal,request=++state.request;btn.disabled=true;showStatus('Loading destination data and building the seasonal report…');resolveDestination(inp.query,signal).then(function(d){if(request!==state.request)return;state.current=d;$("#vbt2DestInput").value=d.name;renderBase(d,inp,0);setRows($("#vbt2Changed"),[row('⏳','Waiting for eligible checks','Only date-relevant live information can change the final score.')]);setRows($("#vbt2DataConfidence"),confidenceRows(d,false,{database:true},inp));buildNext();enhance(d,inp,signal,request)}).catch(function(e){if(e.name==='AbortError')return;showStatus(e.message||'Destination could not be loaded.',true)}).finally(function(){if(request===state.request)btn.disabled=false})}
+  function initData(){showStatus('Loading the Voyasee destination database…');return fetchJSON(DATA_URL,{ttl:24*3600000,key:'database-v660-accuracy'}).then(function(db){if(!db||!Array.isArray(db.destinations)||!db.profiles)throw new Error('The V6.6.0 JSON database could not be read.');state.db=db;state.dests=db.destinations;state.profiles=db.profiles;$("#vbt2StatDest").textContent=db.destinations.length;$("#vbt2DestList").innerHTML=db.destinations.map(function(d){return'<option value="'+esc(d.name)+'"></option>'}).join('');renderSourceHealth({database:true,climate:null,weather:null,forecast:null,air:null,alerts:'na',holiday:null,country:null,currency:null,sun:null,aurora:'na',advisory:true});hideStatus()})}
+
+  $("[data-vbt2-analyze]").addEventListener('click',analyze);$("#vbt2DestInput").addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();analyze()}});$("[data-vbt2-share]").addEventListener('click',function(){navigator.clipboard&&navigator.clipboard.writeText(location.href).then(function(){showStatus('Share link copied.')},function(){showStatus('Copy the page URL from your browser.')})});$("[data-vbt2-download]").addEventListener('click',function(){var text=reportText();if(!text)return;var blob=new Blob([text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='voyasee-travel-month-report.txt';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)});$("[data-vbt2-print]").addEventListener('click',function(){if(!state.lastReport){showStatus('Build a timing report first.',true);return}window.print()});$("[data-vbt2-compare]").addEventListener('click',compareSeasonal);$("[data-vbt2-clear-recent]").addEventListener('click',function(){try{localStorage.removeItem(recentKey())}catch(e){}renderRecent()});
+  populateControls();buildFooter();quickChips();renderRecent();loadUrl();initData().then(function(){if($("#vbt2DestInput").value)analyze()}).catch(function(e){showStatus(e.message,true)});
+})();
+</script>
