@@ -389,6 +389,61 @@
   .vdq7 .v7-crow>strong{grid-column:1}
 }
 
+/* ---- RADAR CHART ---- */
+.vdq7 .v8-radar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0 10px}
+.vdq7 .v8-radar-wrap svg{overflow:visible;max-width:220px;display:block;margin:0 auto}
+.vdq7 .v8-dims-dual{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:580px){.vdq7 .v8-dims-dual{grid-template-columns:1fr}}
+
+/* ---- MONTH SPARKLINE ---- */
+.vdq7 .v8-sparkline{margin-top:14px;padding-top:12px;border-top:1px solid var(--line2)}
+.vdq7 .v8-spark-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:7px}
+.vdq7 .v8-sparkline svg{overflow:visible;display:block;width:100%}
+
+/* ---- IMPROVED CONFIDENCE PANEL ---- */
+.vdq7 .v8-confidence{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:12px}
+.vdq7 .v8-confidence-item{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line2);border-radius:12px;padding:11px 13px;background:var(--card);transition:border-color .2s}
+.vdq7 .v8-confidence-item:hover{border-color:var(--line)}
+.vdq7 .v8-ci-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.vdq7 .v8-ci-dot.ok{background:var(--mint);box-shadow:0 0 10px rgba(94,240,176,.6);animation:v7pulse 2s infinite}
+.vdq7 .v8-ci-dot.warn{background:var(--gold);box-shadow:0 0 8px rgba(245,185,66,.5)}
+.vdq7 .v8-ci-dot.na{background:rgba(255,255,255,.2)}
+.vdq7 .v8-confidence-item small{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:3px}
+.vdq7 .v8-confidence-item b{display:block;font-size:.82rem;line-height:1.3}
+
+/* ---- IMPROVED ALT CARD WITH MINI-BAR ---- */
+.vdq7 .v7-alts{display:flex;flex-direction:column;gap:6px}
+.vdq7 .v7-alt{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:11px 14px;border-radius:13px;border:1px solid var(--line2);background:var(--card);transition:border-color .18s,background .18s,transform .18s}
+.vdq7 .v7-alt:hover{border-color:rgba(31,211,196,.4);background:var(--card2);transform:translateX(3px)}
+.vdq7 .v7-alt>span:first-child{min-width:0}
+.vdq7 .v7-alt strong{display:block;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vdq7 .v7-alt span>span{display:block;font-size:.68rem;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.vdq7 .v7-alt .pc{font-family:var(--disp);font-size:1.1rem;font-weight:600;color:var(--teal);white-space:nowrap}
+.vdq7 .v7-alt-bar{height:3px;margin-top:6px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden}
+.vdq7 .v7-alt-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--teal),var(--sky))}
+
+/* ---- LOADING SCAN COUNTER ---- */
+.vdq7 .v7-loading{text-align:center;padding:60px 20px}
+.vdq7 .v7-scan-ct{font-family:var(--disp);font-size:3.2rem;font-weight:600;color:var(--teal);line-height:1;margin:16px 0 4px;letter-spacing:-.02em;transition:none}
+.vdq7 .v7-scan-lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:20px}
+
+/* ---- IMPROVED WINNER CARD ---- */
+.vdq7 .v7-wflag{font-size:2rem;line-height:1;margin-bottom:6px;display:block}
+.vdq7 .v7-wname{font-family:var(--disp);font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:.98;letter-spacing:-.02em;margin:8px 0 10px}
+.vdq7 .v7-wdesc{color:var(--muted);margin:0 0 14px;font-size:.96rem;max-width:420px}
+
+/* ---- SUMMARY TILE CARBON HIGHLIGHT ---- */
+.vdq7 .v8-tile.carbon strong{color:var(--mint)}
+
+/* ---- SOURCE NOTE LINK STYLE ---- */
+.vdq7 .v8-source-note a{color:var(--teal);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.vdq7 .v8-source-note a:hover{color:var(--mint)}
+
+@media(max-width:520px){
+  .vdq7 .v8-confidence{grid-template-columns:1fr 1fr}
+  .vdq7 .v7-scan-ct{font-size:2.4rem}
+}
+
 </style>
 
 <div class="v7-route" aria-hidden="true"><svg viewBox="0 0 1000 480" preserveAspectRatio="none">
@@ -458,8 +513,10 @@
   <!-- LOADING -->
   <div class="v7-screen v7-loading" role="status" aria-live="polite" aria-busy="true">
     <div class="v7-radar"><i></i><i></i><i></i></div>
-    <div class="h" role="heading" aria-level="2">Scanning 600 destinations&hellip;</div>
-    <p>Matching your style, season, budget, flight comfort and deal-breakers.</p>
+    <div class="v7-scan-ct" data-v7-scan-ct aria-hidden="true">0</div>
+    <div class="v7-scan-lbl" aria-hidden="true">destinations scanned</div>
+    <div class="h" role="heading" aria-level="2">Finding your best match&hellip;</div>
+    <p>Scoring style, season, budget, flight tolerance and deal-breakers across 600 profiles.</p>
   </div>
 
   <!-- RESULTS -->
@@ -634,9 +691,13 @@ function getJsonTimeout(url,timeoutMs,opts){
 function fetchClimate(d){
   if(d._climateMonths)return Promise.resolve({ok:true,months:d._climateMonths,source:'NASA POWER',cached:true});
   if(d._climatePromise)return d._climatePromise;
-  d._climatePromise=getJsonTimeout(climateEndpoint(d),10000).catch(function(){
-    var u='https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,RH2M,WS2M,ALLSKY_SFC_SW_DWN&community=RE&longitude='+encodeURIComponent(d.lon)+'&latitude='+encodeURIComponent(d.lat)+'&format=JSON';
-    return getJsonTimeout(u,15000,{credentials:'omit'}).then(parseNasaClimate);
+  var VWB='/wp-json/voyasee-weather/v1';
+  var vwbNormals=VWB+'/climate-normals?lat='+encodeURIComponent(d.lat)+'&lon='+encodeURIComponent(d.lon);
+  d._climatePromise=getJsonTimeout(vwbNormals,12000).catch(function(){
+    return getJsonTimeout(climateEndpoint(d),10000).catch(function(){
+      var u='https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,RH2M,WS2M,ALLSKY_SFC_SW_DWN&community=RE&longitude='+encodeURIComponent(d.lon)+'&latitude='+encodeURIComponent(d.lat)+'&format=JSON';
+      return getJsonTimeout(u,15000,{credentials:'omit'}).then(parseNasaClimate);
+    });
   }).then(function(data){var months=data&&((data.climatology&&data.climatology.months)||data.months);if(months)d._climateMonths=months;return data;}).finally(function(){d._climatePromise=null;});
   return d._climatePromise;
 }
@@ -673,6 +734,46 @@ function cap(t){return t?t.charAt(0).toUpperCase()+t.slice(1):t;}
 var PALETTES={tropical:['#0f766e','#14b8a6','#f59e0b'],warm:['#b45309','#f59e0b','#ef4444'],temperate:['#1e40af','#3b82f6','#14b8a6'],cool:['#155e63','#0e7490','#22c55e'],cold:['#1e3a5f','#3b5b8c','#7dd3fc']};
 function hashStr(s){var h=0;for(var i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0;}return Math.abs(h);}
 function destGradient(d){var pal=PALETTES[d.climate]||PALETTES.temperate;var h=hashStr(d.n);return "linear-gradient(135deg,"+pal[0]+" 0%,"+pal[1]+" "+(45+(h%20))+"%,"+pal[2]+" 100%)";}
+
+/* ---------- INFOGRAPHIC GENERATORS ---------- */
+function svgRadarChart(dims){
+  var keys=['Style','Climate','Budget','Timing','Flight','Ease'],labels=['Style','Climate','Budget','Timing','Reach','Ease'];
+  var cx=110,cy=110,r=78,n=6,PI=Math.PI;
+  function ang(i){return i*2*PI/n-PI/2;}
+  function pt(i,pct){var a=ang(i),rd=r*pct;return [cx+rd*Math.cos(a),cy+rd*Math.sin(a)];}
+  var grids=[0.25,0.5,0.75,1].map(function(p){
+    var pts=keys.map(function(_,i){return pt(i,p).join(',');}).join(' ');
+    return '<polygon points="'+pts+'" fill="none" stroke="rgba(255,255,255,'+(p===1?.15:.07)+')" stroke-width="'+(p===1?1.5:1)+'"/>';
+  }).join('');
+  var axes=keys.map(function(_,i){var p=pt(i,1);return '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="rgba(255,255,255,.1)" stroke-width="1"/>';}).join('');
+  var dataPts=keys.map(function(k,i){return pt(i,(dims[k]||0)/100);});
+  var poly=dataPts.map(function(p){return p.join(',');}).join(' ');
+  var dots=dataPts.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#1fd3c4" stroke="#06111f" stroke-width="1.5"/>';}).join('');
+  var lbls=labels.map(function(lbl,i){
+    var a=ang(i),lx=cx+(r+20)*Math.cos(a),ly=cy+(r+20)*Math.sin(a);
+    var anch=Math.abs(Math.cos(a))<.15?'middle':Math.cos(a)>0?'start':'end';
+    var val=dims[keys[i]]||0;
+    return '<text x="'+lx+'" y="'+(ly-5)+'" text-anchor="'+anch+'" fill="rgba(244,247,255,.5)" font-size="8.5" font-family="IBM Plex Mono,ui-monospace,monospace" letter-spacing=".06em">'+lbl+'</text>'+
+      '<text x="'+lx+'" y="'+(ly+8)+'" text-anchor="'+anch+'" fill="rgba(244,247,255,.9)" font-size="10" font-weight="700" font-family="IBM Plex Mono,ui-monospace,monospace">'+val+'</text>';
+  }).join('');
+  return '<svg viewBox="0 0 220 220" width="100%" aria-label="Match fingerprint radar chart">'+
+    '<defs><linearGradient id="vr7g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1fd3c4" stop-opacity=".32"/><stop offset="1" stop-color="#f5b942" stop-opacity=".18"/></linearGradient></defs>'+
+    grids+axes+'<polygon points="'+poly+'" fill="url(#vr7g)" stroke="#1fd3c4" stroke-width="1.8" stroke-linejoin="round"/>'+
+    dots+lbls+'</svg>';
+}
+function svgMonthSparkline(d,s){
+  if(!d._climateMonths)return '';
+  var MSHORT=['J','F','M','A','M','J','J','A','S','O','N','D'],scores=[],i;
+  for(i=1;i<=12;i++)scores.push(climateMonthScore(d,i,s));
+  var bW=14,bG=2,tw=12*(bW+bG)-bG+2,mH=50,lblY=72;
+  var bars=scores.map(function(sc,idx){
+    var mon=idx+1,isSel=mon===s.month,h=sc!=null?Math.max(3,Math.round(sc*mH)):3,y=mH-h+8,x=1+idx*(bW+bG);
+    var fill=isSel?'#f5b942':(sc>=.7?'#1fd3c4':sc>=.5?'#5aa0ff':'rgba(255,255,255,.2)');
+    return '<rect x="'+x+'" y="'+y+'" width="'+bW+'" height="'+h+'" rx="2" fill="'+fill+'" opacity="'+(sc!=null?1:.4)+'"/>'+
+      '<text x="'+(x+bW/2)+'" y="'+lblY+'" text-anchor="middle" fill="rgba(244,247,255,'+(isSel?.9:.38)+')" font-size="'+(isSel?8:7)+'" font-weight="'+(isSel?700:400)+'" font-family="IBM Plex Mono,ui-monospace,monospace">'+MSHORT[idx]+'</text>';
+  }).join('');
+  return '<div class="v8-sparkline"><div class="v8-spark-label">12-month climate fit · selected month highlighted</div><svg viewBox="0 0 '+tw+' 78" width="100%">'+bars+'</svg></div>';
+}
 
 /* ---------- SCORING ENGINE ---------- */
 function climateMonthScore(d,m,s){
@@ -844,6 +945,7 @@ function updateTimingAfterClimate(d,s,top,runId){
   var timing=Math.round(monthFit(d,s.month,s)*100);top.dims.Timing=timing;
   var tile=$('[data-v8-summary-timing]');if(tile){var strong=tile.querySelector('strong'),copy=tile.querySelector('.v8-tile-copy');if(strong)strong.textContent=timing+'/100';if(copy)copy.textContent='NASA climate-informed selected-month fit';}
   var timingBar=$('[data-dim-key="Timing"] i'),timingNum=$('[data-dim-key="Timing"] b');if(timingBar)timingBar.style.width=timing+'%';if(timingNum)timingNum.textContent=timing;
+  var radarEl=$('[data-v8-radar]');if(radarEl)radarEl.innerHTML=svgRadarChart(top.dims);
   renderClimatePanel(d,s,top);renderConfidence(d,top,_lastLiveData);
 }
 function renderResults(runId){
@@ -871,11 +973,12 @@ function renderResults(runId){
     ['Main trade-off',tradeoffLabel(top),'Read before booking',' class="v8-tradeoff"']
   ];
   if(co2Tile)summaryTiles.push(co2Tile);
-  $('[data-v8-summary]').innerHTML=summaryTiles.map(function(x){return '<div class="v8-tile"'+x[3]+'><span class="ey">'+x[0]+'</span><strong>'+x[1]+'</strong><span class="v8-tile-copy">'+x[2]+'</span></div>';}).join('');
+  $('[data-v8-summary]').innerHTML=summaryTiles.map(function(x,idx){var cls='v8-tile'+(x[3]||'')+(idx===summaryTiles.length-1&&co2Tile?' carbon':'');return '<div class="'+cls.trim()+'"><span class="ey">'+x[0]+'</span><strong>'+x[1]+'</strong><span class="v8-tile-copy">'+x[2]+'</span></div>';}).join('');
   var whyArr=top.why.length?top.why:['balanced fit across your selected preferences'];
   $('[data-v7-why]').innerHTML=whyArr.map(function(w){return '<div class="row"><span class="tick" aria-hidden="true">&#10003;</span><span>'+esc(cap(w))+'</span></div>';}).join('');
   var order=['Style','Climate','Budget','Timing','Flight','Ease'];
-  $('[data-v7-dims]').innerHTML=order.map(function(k){var v=top.dims[k],label=k==='Flight'?'Reach':k;return '<div class="v7-dim" data-dim-key="'+k+'"><span>'+label+'</span><div class="bar"><i data-w="'+v+'"></i></div><b>'+v+'</b></div>';}).join('');
+  var barsHtml=order.map(function(k){var v=top.dims[k],label=k==='Flight'?'Reach':k;return '<div class="v7-dim" data-dim-key="'+k+'"><span>'+label+'</span><div class="bar"><i data-w="'+v+'"></i></div><b>'+v+'</b></div>';}).join('');
+  $('[data-v7-dims]').innerHTML='<div class="v8-dims-dual"><div class="v8-radar-wrap"><div data-v8-radar>'+svgRadarChart(top.dims)+'</div></div><div>'+barsHtml+'</div></div>';
   requestAnimationFrame(function(){$$('.v7-dim i').forEach(function(i){i.style.width=i.dataset.w+'%';});});
   renderClimatePanel(d,s,top);renderWhySecond(top,second);renderCompare(results.slice(0,3));renderRegret(top,s);renderSwaps(results,s);renderAlts(results.slice(3,10));renderTools(d,s);renderAffs(d,s);
   $('[data-v7-route]').textContent=d.route;renderConfidence(d,top,null);
@@ -906,6 +1009,7 @@ function renderClimatePanel(d,s,top){
     '<div class="v8-cmetric"><small>Climate source</small><b>NASA POWER</b></div>'+
     '<div class="v8-cmetric"><small>Spatial note</small><b>Area baseline</b></div>'+
     bestMonthHtml+'</div>'+
+    svgMonthSparkline(d,s)+
     '<div class="v8-source-note">Historical climate values are model- and satellite-based grid averages, not an exact street-level forecast. Mountain, island and coastal microclimates can differ.</div>';
 }
 function renderWhySecond(top,second){
@@ -917,12 +1021,16 @@ function renderWhySecond(top,second){
 function renderConfidence(d,top,live){
   var box=$('[data-v8-confidence]');if(!box)return;
   var complete=['n','country','region','desc','tags','budget','climate','months','lat','lon','currency'].filter(function(k){return d[k]!=null&&d[k]!=='';}).length;
-  var profile=complete>=10?'High completeness':'Partial';
-  var climate=d._climateMonths?'NASA baseline loaded':'Profile timing only';
-  var weather=live&&live.current?'Live observation loaded':'Pending or unavailable';
-  box.innerHTML=[
-    ['Destination profile',profile],['Selected-month climate',climate],['Live weather',weather],['Budget','Curated estimate'],['Entry','Official check required']
-  ].map(function(x){return '<div class="v8-confidence-item"><small>'+x[0]+'</small><b>'+x[1]+'</b></div>';}).join('')+'<div class="v8-source-note" style="grid-column:1/-1">Sources used when available: Voyasee Country Intelligence for country facts, <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener">NASA POWER</a> for climate, the configured weather provider for live conditions, and <a href="https://frankfurter.dev/" target="_blank" rel="noopener">Frankfurter</a> for reference exchange rates. Curated destination facts are estimates and should be checked before booking.</div>';
+  var profileOk=complete>=10,climateOk=!!d._climateMonths,weatherOk=!!(live&&live.current);
+  function item(label,value,status){return '<div class="v8-confidence-item"><div class="v8-ci-dot '+status+'"></div><div><small>'+label+'</small><b>'+value+'</b></div></div>';}
+  box.innerHTML='<div class="v8-confidence">'+
+    item('Destination profile',profileOk?'High completeness':'Partial profile',profileOk?'ok':'warn')+
+    item('Selected-month climate',climateOk?'NASA baseline loaded':'Profile timing only',climateOk?'ok':'warn')+
+    item('Live weather',weatherOk?'Live observation loaded':live===null?'Pending…':'Unavailable',weatherOk?'ok':live===null?'warn':'na')+
+    item('Budget','Curated estimate','warn')+
+    item('Entry','Official check required','na')+
+    '</div>'+
+    '<div class="v8-source-note" style="grid-column:1/-1">Sources: Voyasee Country Intelligence (country facts) · <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener">NASA POWER</a> (climate) · configured weather provider (live) · <a href="https://frankfurter.dev/" target="_blank" rel="noopener">Frankfurter</a> (FX). Curated destination facts are estimates — check before booking.</div>';
 }
 
 function renderCompare(list){
@@ -953,7 +1061,7 @@ function renderAlts(list){
   var s=state();
   $('[data-v7-alts]').innerHTML=list.map(function(x){
     var slug=x.d.url||('https://voyasee.com/destination/'+destSlug(x.d));
-    return '<a class="v7-alt" href="'+esc(slug)+'"><span><strong>'+esc(x.d.n)+'</strong><span>'+esc(x.d.region)+' · '+esc(MONTHS[s.month])+' fit '+x.dims.Timing+'/100</span></span><span class="pc">'+x.score+'/100</span></a>';
+    return '<a class="v7-alt" href="'+esc(slug)+'">'+'<span><strong>'+esc(x.d.n)+'</strong><span>'+esc(x.d.region)+' · '+esc(MONTHS[s.month])+' fit '+x.dims.Timing+'/100</span><div class="v7-alt-bar"><i style="width:'+x.score+'%"></i></div></span><span class="pc">'+x.score+'</span></a>';
   }).join('');
 }
 function renderTools(d,s){
@@ -990,6 +1098,8 @@ function renderCountryPractical(result,runId,holidayData,travelMonth){
   var panel=$('[data-v8-country-panel]'),box=$('[data-v8-practical]');
   if(!panel||!box||!result||!result.core)return;
   var core=result.core||{},travel=result.travel||{},safety=result.safety||{},cards=[];
+  var flagEmoji=core.flag&&core.flag.emoji;
+  if(flagEmoji){var wname=$('[data-v7-winner] .v7-wname');if(wname&&!wname.dataset.flagged){wname.dataset.flagged='1';wname.insertAdjacentHTML('beforebegin','<span class="v7-wflag" aria-hidden="true">'+esc(flagEmoji)+'</span>');}}
   var currencies=(core.currencies||[]).map(function(x){return x.code+(x.symbol?' ('+x.symbol+')':'');}).filter(Boolean);
   var languages=(core.languages||[]).map(function(x){return x.name;}).filter(Boolean).slice(0,3);
   var zones=(core.timezones&&core.timezones.iana||[]).slice(0,2);
@@ -1059,7 +1169,7 @@ root.addEventListener('click',function(ev){
   if(btn.matches('[data-v7-share]')){ev.preventDefault();var url=location.href.split('#')[0]+(location.hash||'');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){var orig=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=orig;},2000);}).catch(function(){});}else{try{var ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var orig=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=orig;},2000);}catch(e){}}return;}
   if(btn.matches('[data-v7-start]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}renderQuestion();setScreen('quiz');return;}
   if(btn.matches('[data-v7-back]')){ev.preventDefault();if(step>0){step--;renderQuestion();}return;}
-  if(btn.matches('[data-v7-next]')){ev.preventDefault();if(!answers[step])return;if(step<Q.length-1){step++;renderQuestion();}else{var runId=++activeRun;setScreen('loading');resetAsyncPanels();setTimeout(function(){if(runId!==activeRun)return;try{renderResults(runId);setScreen('results');}catch(err){$('[data-v7-rtitle]').textContent='We could not build the match report';$('[data-v7-rsub]').textContent='Please retake the quiz. Your answers were not sent anywhere.';setScreen('results');}},320);}return;}
+  if(btn.matches('[data-v7-next]')){ev.preventDefault();if(!answers[step])return;if(step<Q.length-1){step++;renderQuestion();}else{var runId=++activeRun;setScreen('loading');resetAsyncPanels();(function(){var ct=$('[data-v7-scan-ct]'),t0=null,total=DEST.length||600,dur=290;function tick(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);if(ct)ct.textContent=Math.round(p*total);if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);})();setTimeout(function(){if(runId!==activeRun)return;try{renderResults(runId);setScreen('results');}catch(err){$('[data-v7-rtitle]').textContent='We could not build the match report';$('[data-v7-rsub]').textContent='Please retake the quiz. Your answers were not sent anywhere.';setScreen('results');}},320);}return;}
   if(btn.matches('[data-v7-retake]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}renderQuestion();setScreen('quiz');}
 });
 buildPips();
