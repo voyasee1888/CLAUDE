@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,12 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: the globe failed to render at all on a fresh install with zero
+  destinations added yet (it was incorrectly hidden whenever the marker
+  list was empty, instead of only skipping the now-empty set of clickable
+  hotspots). The ambient globe now always renders once WebGL is available.
 
 = 1.0.0 =
 * Plugin scaffold, destinations custom table, admin CRUD screen, and a Settings

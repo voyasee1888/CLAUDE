@@ -60,7 +60,10 @@ function initRoot(root) {
   const sidebarClose = root.querySelector("[data-v3datlas-sidebar-close]");
   if (!mount) return;
 
-  if (!markers.length || !supportsWebGL()) {
+  // The ambient globe renders regardless of whether any destinations exist
+  // yet -- only the clickable hotspots depend on markers.length, and that
+  // array is simply empty in that case (nothing further to guard here).
+  if (!supportsWebGL()) {
     mount.style.display = "none";
     return;
   }
