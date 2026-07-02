@@ -78,6 +78,7 @@ final class V3DA_Admin {
         }
         update_option('v3da_settings', $settings, false);
 
+        self::maybe_purge_page_cache();
         wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas-settings', 'v3da_notice' => 'saved'], admin_url('admin.php')));
         exit;
     }
@@ -146,6 +147,7 @@ final class V3DA_Admin {
             exit;
         }
 
+        self::maybe_purge_page_cache();
         wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas', 'v3da_notice' => 'saved'], admin_url('admin.php')));
         exit;
     }
@@ -157,7 +159,23 @@ final class V3DA_Admin {
 
         if ($id) V3DA_DB::delete($id);
 
+        self::maybe_purge_page_cache();
         wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas', 'v3da_notice' => 'deleted'], admin_url('admin.php')));
         exit;
+    }
+
+    /**
+     * Destinations are rendered server-side into the shortcode's HTML, so any
+     * page carrying [voyasee_3d_atlas] can be served stale by a full-page
+     * cache (LiteSpeed Cache / QUIC.cloud) after an admin edit. LiteSpeed's
+     * own plugin listens for this action to purge both its local disk cache
+     * and the QUIC.cloud CDN edge together -- it's a documented no-op action
+     * that does nothing if LiteSpeed Cache isn't installed, so this is safe
+     * to call unconditionally on any host.
+     */
+    private static function maybe_purge_page_cache(): void {
+        if (has_action('litespeed_purge_all')) {
+            do_action('litespeed_purge_all');
+        }
     }
 }

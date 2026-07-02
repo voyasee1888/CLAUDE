@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,19 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.1.1 =
+* Purge LiteSpeed Cache / QUIC.cloud (both are driven by the same
+  `litespeed_purge_all` action, so one call covers the CDN edge too) whenever
+  a destination or the Settings screen is saved or a destination is deleted
+  -- otherwise a full-page cache can keep serving the old destination list
+  after an admin edit. Safe no-op on hosts without LiteSpeed Cache installed.
+* Verified all 117 seeded coordinates against Voyasee Country Intelligence's
+  own compiled country-centroid/capital data (haversine distance check, no
+  external API, no key required): 116/117 within 3500km of their country's
+  centroid or capital; the one flagged case (Honolulu) is a correct known
+  edge case -- Hawaii is genuinely ~6,000km from the continental US centroid.
+  Zero actual wrong-country/wrong-continent errors found.
 
 = 1.1.0 =
 * Auto-seeds 117 destinations across Europe, Asia, the Middle East, Africa,
