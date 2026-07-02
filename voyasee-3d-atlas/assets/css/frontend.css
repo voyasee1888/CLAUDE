@@ -1,0 +1,77 @@
+.v3datlas-root {
+    --v3datlas-navy-950: #0b1220;
+    --v3datlas-navy-900: #111827;
+    --v3datlas-navy-800: #1a2436;
+    --v3datlas-gold: #c9a24b;
+    --v3datlas-gold-soft: #e8cf86;
+    --v3datlas-cream: #f6f1e6;
+    --v3datlas-cream-dim: #cfc8b8;
+    --v3datlas-glass-bg: rgba(17, 24, 39, 0.78);
+    --v3datlas-radius-lg: 20px;
+    --v3datlas-radius-md: 12px;
+    --v3datlas-font-display: 'Cormorant Garamond', Georgia, serif;
+    --v3datlas-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    display: block;
+    width: 100%;
+    background: linear-gradient(180deg, var(--v3datlas-navy-950), var(--v3datlas-navy-900));
+    color: var(--v3datlas-cream);
+    font-family: var(--v3datlas-font-body);
+    padding: 48px 24px;
+    box-sizing: border-box;
+}
+
+.v3datlas-root *,
+.v3datlas-root *::before,
+.v3datlas-root *::after {
+    box-sizing: inherit;
+}
+
+.v3datlas-hero {
+    max-width: 720px;
+    margin: 0 auto 32px;
+    text-align: center;
+}
+
+.v3datlas-eyebrow {
+    font-family: var(--v3datlas-font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+    color: var(--v3datlas-gold-soft);
+    margin: 0 0 12px;
+}
+
+.v3datlas-title {
+    font-family: var(--v3datlas-font-display);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: var(--v3datlas-cream);
+}
+
+.v3datlas-intro {
+    font-size: 16px;
+    color: var(--v3datlas-cream-dim);
+    margin: 0;
+}
+
+.v3datlas-globe-mount {
+    max-width: 800px;
+    min-height: 280px;
+    margin: 0 auto;
+}
+
+.v3datlas-destination-list {
+    max-width: 960px;
+    margin: 32px auto 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v3datlas-root * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
