@@ -64,13 +64,57 @@ class WTSM_REST_API {
 			);
 		}
 
+		$top = $result['matches'][0];
+
+		$weather = voyasee_ni_maybe_get_weather( $destination['lat'], $destination['lng'], $answers['travel_date'] );
+
+		$holiday = ! empty( $answers['travel_date'] )
+			? voyasee_ni_maybe_get_holiday_overlap( $destination['country_code'] ?? '', $answers['travel_date'], $answers['nights'] )
+			: null;
+
+		$country_intel = voyasee_ni_maybe_get_country_intel( $destination['country_code'] ?? '' );
+
+		$currency = null;
+		$cur_code = null;
+		$cur_symbol = '';
+		// Country Intelligence's exact nested currency shape isn't a field
+		// this plugin owns -- defensively handle both a plain array of
+		// {code,symbol} entries and a REST-Countries-style object keyed by
+		// currency code, and simply skip the currency feature (rather than
+		// erroring) if neither shape matches what's actually there.
+		$raw_currencies = $country_intel['core']['currencies'] ?? null;
+		if ( is_array( $raw_currencies ) && ! empty( $raw_currencies ) ) {
+			$first_key = array_key_first( $raw_currencies );
+			$first     = $raw_currencies[ $first_key ];
+			if ( is_array( $first ) && ! empty( $first['code'] ) ) {
+				$cur_code   = $first['code'];
+				$cur_symbol = $first['symbol'] ?? '';
+			} elseif ( is_array( $first ) && is_string( $first_key ) ) {
+				$cur_code   = $first_key;
+				$cur_symbol = $first['symbol'] ?? '';
+			}
+		}
+		if ( $cur_code ) {
+			$currency = WTSM_Currency::estimate_nightly_range( $top['price_band'] ?? 3, $cur_code, $cur_symbol );
+			if ( $currency ) {
+				$currency['code'] = $cur_code;
+			}
+		}
+
+		$similar_elsewhere = VNI_Data::find_similar_neighborhoods_elsewhere( $top['archetype'] ?? '', $destination['id'], 3 );
+
 		return new WP_REST_Response(
 			array(
-				'destination' => $destination,
-				'matches'     => $result['matches'],
-				'explored'    => $result['explored'],
-				'data_tier'   => $result['data_tier'],
-				'split_stay'  => $result['split_stay'],
+				'destination'        => $destination,
+				'matches'            => $result['matches'],
+				'explored'           => $result['explored'],
+				'data_tier'          => $result['data_tier'],
+				'split_stay'         => $result['split_stay'],
+				'weather'            => $weather,
+				'holiday_overlap'    => $holiday,
+				'country_intel'      => $country_intel,
+				'currency_estimate'  => $currency,
+				'similar_elsewhere'  => $similar_elsewhere,
 			),
 			200
 		);
@@ -102,7 +146,15 @@ class WTSM_REST_API {
 			$luggage = 'medium';
 		}
 
+		// Optional -- only a plain Y-m-d date is accepted; anything else is
+		// dropped rather than passed through to strtotime() downstream.
+		$travel_date = '';
+		if ( ! empty( $raw['travel_date'] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', (string) $raw['travel_date'] ) ) {
+			$travel_date = sanitize_text_field( $raw['travel_date'] );
+		}
+
 		return array(
+			'travel_date'             => $travel_date,
 			'nights'                  => isset( $raw['nights'] ) ? absint( $raw['nights'] ) : 0,
 			'traveler_type'           => $traveler_type,
 			'first_visit'             => ! empty( $raw['first_visit'] ),

@@ -32,6 +32,7 @@ class VNI_DB {
 			slug VARCHAR(191) NOT NULL,
 			name VARCHAR(191) NOT NULL,
 			country VARCHAR(191) NOT NULL DEFAULT '',
+			country_code CHAR(2) NOT NULL DEFAULT '',
 			lat DECIMAL(10,6) NOT NULL DEFAULT 0,
 			lng DECIMAL(10,6) NOT NULL DEFAULT 0,
 			airport_name VARCHAR(191) NOT NULL DEFAULT '',
@@ -81,14 +82,24 @@ class VNI_DB {
 			nightlife_score TINYINT UNSIGNED NOT NULL DEFAULT 50,
 			transit_score TINYINT UNSIGNED NOT NULL DEFAULT 50,
 			poi_last_synced DATETIME NULL,
+			poi_supermarket_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+			poi_pharmacy_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+			poi_cafe_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+			poi_park_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+			convenience_score TINYINT UNSIGNED NOT NULL DEFAULT 50,
 			boundary_geojson LONGTEXT NULL,
 			boundary_last_synced DATETIME NULL,
+			nearby_landmarks TEXT NULL,
+			landmarks_last_synced DATETIME NULL,
+			discovery_status VARCHAR(20) NOT NULL DEFAULT 'published',
+			discovery_source VARCHAR(50) NOT NULL DEFAULT '',
 			last_reviewed DATE NULL,
 			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY  (id),
 			KEY destination_id (destination_id),
 			KEY archetype (archetype),
+			KEY discovery_status (discovery_status),
 			UNIQUE KEY dest_slug (destination_id, slug)
 		) {$charset_collate};";
 
@@ -98,6 +109,16 @@ class VNI_DB {
 		update_option( 'vni_db_version', VNI_DB_VERSION );
 
 		self::maybe_seed_starter_data();
+
+		// Best-effort, idempotent backfill for destinations that have a
+		// free-text country name but no ISO code yet (either pre-4.0 rows,
+		// or newly imported ones that didn't set it) -- cheap to re-run on
+		// every activation since it only touches rows with an empty
+		// country_code.
+		if ( ! class_exists( 'WTSM_Country_Codes' ) ) {
+			require_once VNI_PLUGIN_DIR . 'includes/class-wtsm-country-codes.php';
+		}
+		WTSM_Country_Codes::backfill_destination_codes();
 	}
 
 	/**

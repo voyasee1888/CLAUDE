@@ -15,7 +15,7 @@ class VNI_Data {
 	 * Fields that are stored as JSON in the DB but should be exposed as
 	 * arrays everywhere else.
 	 */
-	private static $json_fields = array( 'best_for', 'why_fits', 'why_caution' );
+	private static $json_fields = array( 'best_for', 'why_fits', 'why_caution', 'nearby_landmarks' );
 
 	/* ------------------------------------------------------------------
 	 * Destinations
@@ -133,6 +133,7 @@ class VNI_Data {
 			'slug'           => sanitize_title( $data['slug'] ?? $data['name'] ),
 			'name'           => sanitize_text_field( $data['name'] ?? '' ),
 			'country'        => sanitize_text_field( $data['country'] ?? '' ),
+			'country_code'   => isset( $data['country_code'] ) ? strtoupper( substr( sanitize_text_field( $data['country_code'] ), 0, 2 ) ) : '',
 			'lat'            => isset( $data['lat'] ) ? (float) $data['lat'] : 0,
 			'lng'            => isset( $data['lng'] ) ? (float) $data['lng'] : 0,
 			'airport_name'   => sanitize_text_field( $data['airport_name'] ?? '' ),
@@ -146,6 +147,14 @@ class VNI_Data {
 		);
 
 		$existing = self::get_destination_by_slug( $row['slug'] );
+
+		// Don't let a CSV re-import or any other caller that omits
+		// country_code silently wipe out a value that was set separately
+		// (by hand, or by the activation-time backfill) -- only overwrite
+		// it when the caller actually supplied one.
+		if ( $existing && ! isset( $data['country_code'] ) ) {
+			$row['country_code'] = $existing['country_code'];
+		}
 
 		if ( $existing ) {
 			$wpdb->update( $table, $row, array( 'id' => $existing['id'] ) );
@@ -182,17 +191,57 @@ class VNI_Data {
 		return $row ? self::decode_json_fields( $row ) : null;
 	}
 
+	/**
+	 * Neighborhoods the quiz is allowed to match against -- excludes
+	 * 'draft' rows created by OSM-assisted discovery that an admin hasn't
+	 * reviewed and published yet, so an unedited, editorially-empty draft
+	 * can never reach a visitor.
+	 */
 	public static function get_neighborhoods_for_destination( $destination_id ) {
 		global $wpdb;
 		$table = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
 		$rows  = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE destination_id = %d ORDER BY name ASC",
+				"SELECT * FROM {$table} WHERE destination_id = %d AND discovery_status = 'published' ORDER BY name ASC",
 				absint( $destination_id )
 			),
 			ARRAY_A
 		);
 		return array_map( array( __CLASS__, 'decode_json_fields' ), $rows );
+	}
+
+	/** Draft neighborhoods awaiting admin review, optionally scoped to one destination. */
+	public static function list_draft_neighborhoods( $destination_id = 0 ) {
+		global $wpdb;
+		$nb_table   = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
+		$dest_table = $wpdb->prefix . VNI_TABLE_DESTINATIONS;
+
+		$where  = "n.discovery_status = 'draft'";
+		$params = array();
+		if ( $destination_id > 0 ) {
+			$where   .= ' AND n.destination_id = %d';
+			$params[] = absint( $destination_id );
+		}
+
+		$sql = "SELECT n.*, d.name AS destination_name, d.slug AS destination_slug
+				FROM {$nb_table} n LEFT JOIN {$dest_table} d ON d.id = n.destination_id
+				WHERE {$where} ORDER BY d.name ASC, n.name ASC";
+
+		$rows = $params ? $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A ) : $wpdb->get_results( $sql, ARRAY_A );
+		return array_map( array( __CLASS__, 'decode_json_fields' ), $rows );
+	}
+
+	public static function count_draft_neighborhoods() {
+		global $wpdb;
+		$table = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
+		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE discovery_status = 'draft'" );
+	}
+
+	/** Move a draft neighborhood into the published, quiz-visible set. */
+	public static function publish_neighborhood( $id ) {
+		global $wpdb;
+		$table = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
+		return $wpdb->update( $table, array( 'discovery_status' => 'published' ), array( 'id' => absint( $id ) ) );
 	}
 
 	public static function list_neighborhoods( $args = array() ) {
@@ -306,6 +355,25 @@ class VNI_Data {
 			$existing = $existing_row ?: null;
 		}
 
+		// discovery_status/discovery_source are only ever set explicitly by
+		// WTSM_Neighborhood_Discovery when it creates a draft; every other
+		// caller (the admin edit form, CSV import) omits them, in which
+		// case an existing row keeps its current status -- so an admin
+		// editing/saving a draft to fill in why_fits/why_caution doesn't
+		// accidentally publish or un-publish it as a side effect, and a
+		// brand-new hand-added neighborhood defaults to 'published' like
+		// every neighborhood did before this column existed.
+		if ( isset( $data['discovery_status'] ) ) {
+			$row['discovery_status'] = sanitize_key( $data['discovery_status'] );
+			$row['discovery_source'] = sanitize_text_field( $data['discovery_source'] ?? '' );
+		} elseif ( $existing ) {
+			$row['discovery_status'] = $existing['discovery_status'];
+			$row['discovery_source'] = $existing['discovery_source'];
+		} else {
+			$row['discovery_status'] = 'published';
+			$row['discovery_source'] = '';
+		}
+
 		if ( $existing ) {
 			$wpdb->update( $table, $row, array( 'id' => $existing['id'] ) );
 			return (int) $existing['id'];
@@ -334,14 +402,43 @@ class VNI_Data {
 		$wpdb->update(
 			$table,
 			array(
-				'poi_restaurant_count' => absint( $scores['restaurant_count'] ?? 0 ),
-				'poi_bar_count'        => absint( $scores['bar_count'] ?? 0 ),
-				'poi_attraction_count' => absint( $scores['attraction_count'] ?? 0 ),
-				'poi_transit_count'    => absint( $scores['transit_count'] ?? 0 ),
-				'walkability_score'    => self::clamp( $scores['walkability_score'] ?? 50, 0, 100 ),
-				'nightlife_score'      => self::clamp( $scores['nightlife_score'] ?? 50, 0, 100 ),
-				'transit_score'        => self::clamp( $scores['transit_score'] ?? 50, 0, 100 ),
-				'poi_last_synced'      => current_time( 'mysql' ),
+				'poi_restaurant_count'  => absint( $scores['restaurant_count'] ?? 0 ),
+				'poi_bar_count'         => absint( $scores['bar_count'] ?? 0 ),
+				'poi_attraction_count'  => absint( $scores['attraction_count'] ?? 0 ),
+				'poi_transit_count'     => absint( $scores['transit_count'] ?? 0 ),
+				'poi_supermarket_count' => absint( $scores['supermarket_count'] ?? 0 ),
+				'poi_pharmacy_count'    => absint( $scores['pharmacy_count'] ?? 0 ),
+				'poi_cafe_count'        => absint( $scores['cafe_count'] ?? 0 ),
+				'poi_park_count'        => absint( $scores['park_count'] ?? 0 ),
+				'walkability_score'     => self::clamp( $scores['walkability_score'] ?? 50, 0, 100 ),
+				'nightlife_score'       => self::clamp( $scores['nightlife_score'] ?? 50, 0, 100 ),
+				'transit_score'         => self::clamp( $scores['transit_score'] ?? 50, 0, 100 ),
+				'convenience_score'     => self::clamp( $scores['convenience_score'] ?? 50, 0, 100 ),
+				'poi_last_synced'       => current_time( 'mysql' ),
+			),
+			array( 'id' => absint( $id ) )
+		);
+	}
+
+	/**
+	 * Store nearby named landmarks (title + Wikipedia page ID pairs)
+	 * fetched by WTSM_Landmark_Sync. Kept separate from
+	 * upsert_neighborhood() for the same reason as update_poi_scores()/
+	 * update_boundary() -- this is sync-job-written data, not an
+	 * editorial field.
+	 *
+	 * @param int    $id
+	 * @param string $landmarks_json Already-encoded JSON array of {title,pageid}.
+	 */
+	public static function update_landmarks( $id, $landmarks_json ) {
+		global $wpdb;
+		$table = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
+
+		$wpdb->update(
+			$table,
+			array(
+				'nearby_landmarks'      => $landmarks_json,
+				'landmarks_last_synced' => current_time( 'mysql' ),
 			),
 			array( 'id' => absint( $id ) )
 		);
@@ -369,6 +466,53 @@ class VNI_Data {
 			),
 			array( 'id' => absint( $id ) )
 		);
+	}
+
+	/**
+	 * Find published neighborhoods of the same archetype in OTHER
+	 * destinations -- pure internal computation, no external data --
+	 * for the "similar neighborhoods elsewhere" cross-destination
+	 * suggestion. Prefers Tier 1 (fully curated) rows and varies the
+	 * destination so the same city doesn't dominate the results.
+	 *
+	 * @return array Rows shaped like get_neighborhoods_for_destination(), plus destination_name/destination_slug.
+	 */
+	public static function find_similar_neighborhoods_elsewhere( $archetype, $exclude_destination_id, $limit = 3 ) {
+		global $wpdb;
+		$nb_table   = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
+		$dest_table = $wpdb->prefix . VNI_TABLE_DESTINATIONS;
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT n.*, d.name AS destination_name, d.slug AS destination_slug
+				 FROM {$nb_table} n
+				 INNER JOIN {$dest_table} d ON d.id = n.destination_id
+				 WHERE n.archetype = %s AND n.destination_id != %d AND n.discovery_status = 'published'
+				 ORDER BY n.data_tier ASC, RAND()
+				 LIMIT %d",
+				self::sanitize_archetype( $archetype ),
+				absint( $exclude_destination_id ),
+				absint( $limit ) * 3 // over-fetch, then dedupe by destination below
+			),
+			ARRAY_A
+		);
+
+		// Keep at most one pick per destination so three results mean
+		// three different cities, not the same city three times.
+		$seen_destinations = array();
+		$picks              = array();
+		foreach ( $rows as $row ) {
+			if ( isset( $seen_destinations[ $row['destination_id'] ] ) ) {
+				continue;
+			}
+			$seen_destinations[ $row['destination_id'] ] = true;
+			$picks[]                                     = self::decode_json_fields( $row );
+			if ( count( $picks ) >= $limit ) {
+				break;
+			}
+		}
+
+		return $picks;
 	}
 
 	/* ------------------------------------------------------------------

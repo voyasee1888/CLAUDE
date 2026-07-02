@@ -1223,3 +1223,65 @@
 	text-decoration: none; color: var(--vwtsm-cream); transition: border-color 0.15s ease;
 }
 .vwtsm-cross-tool-card:hover { border-color: var(--vwtsm-gold); }
+
+/* -------------------------------------------------------------------------
+   v4.0: Trip Facts strip (jet lag / weather / holiday overlap)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-optional-tag { font-weight: 400; color: var(--vwtsm-cream-dim); font-size: 0.82em; text-transform: none; letter-spacing: 0; }
+
+.vwtsm-fact-strip { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
+.vwtsm-fact-chip {
+	display: flex; align-items: flex-start; gap: 0.5rem;
+	background: rgba(10, 15, 28, 0.4); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm); padding: 0.6rem 0.9rem;
+	font-size: 0.82rem; color: var(--vwtsm-cream-dim); flex: 1 1 220px;
+}
+.vwtsm-fact-chip a { color: var(--vwtsm-gold-soft); }
+.vwtsm-fact-chip em { font-style: italic; opacity: 0.75; }
+.vwtsm-fact-chip-icon { flex-shrink: 0; font-size: 1rem; line-height: 1.3; }
+.vwtsm-fact-chip-warning { border-color: rgba(220, 154, 77, 0.5); background: rgba(220, 154, 77, 0.08); color: var(--vwtsm-cream); }
+
+/* -------------------------------------------------------------------------
+   v4.0: Practical Facts panel (Country Intelligence)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-practical-facts {
+	background: rgba(10, 15, 28, 0.4); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-md); padding: 1.2rem 1.4rem; margin-bottom: 2rem;
+}
+.vwtsm-practical-facts .vwtsm-subheading { margin-bottom: 0.9rem; }
+.vwtsm-flag-emoji { font-size: 1.1rem; }
+.vwtsm-practical-facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.7rem; }
+.vwtsm-practical-fact {
+	display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.85rem; color: var(--vwtsm-cream-dim);
+}
+.vwtsm-practical-fact strong { color: var(--vwtsm-cream); }
+.vwtsm-practical-fact em { font-style: italic; opacity: 0.7; }
+
+/* -------------------------------------------------------------------------
+   v4.0: Similar neighborhoods elsewhere
+   ------------------------------------------------------------------------- */
+
+.vwtsm-similar-elsewhere { margin: 2rem 0; }
+.vwtsm-similar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+.vwtsm-similar-card {
+	display: flex; align-items: center; gap: 0.7rem;
+	background: rgba(10,15,28,0.45); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm); padding: 0.8rem 0.95rem;
+}
+.vwtsm-similar-swatch { width: 8px; align-self: stretch; border-radius: 4px; flex-shrink: 0; }
+.vwtsm-similar-card div { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.vwtsm-similar-card strong { font-family: var(--vwtsm-font-display); font-size: 1rem; color: var(--vwtsm-cream); }
+.vwtsm-similar-card span { font-size: 0.76rem; color: var(--vwtsm-cream-dim); }
+
+/* -------------------------------------------------------------------------
+   v4.0: Landmark chips (match card) + daily-convenience row (detail panel)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-landmark-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem; }
+.vwtsm-landmark-chip {
+	font-size: 0.68rem; color: var(--vwtsm-cream-dim); background: rgba(255,255,255,0.06);
+	border-radius: 999px; padding: 0.2rem 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;
+}
+.vwtsm-convenience-row { margin: 0.9rem 0; }

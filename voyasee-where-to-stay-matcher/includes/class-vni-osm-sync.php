@@ -137,10 +137,18 @@ class VNI_OSM_Sync {
 		$radius = self::SEARCH_RADIUS_M;
 
 		$categories = array(
-			'restaurant_count' => "node[\"amenity\"=\"restaurant\"](around:{$radius},{$lat},{$lng});",
-			'bar_count'        => "node[\"amenity\"~\"^(bar|pub|nightclub)$\"](around:{$radius},{$lat},{$lng});",
-			'attraction_count' => "node[\"tourism\"~\"^(attraction|museum)$\"](around:{$radius},{$lat},{$lng});",
-			'transit_count'    => "node[\"public_transport\"=\"station\"](around:{$radius},{$lat},{$lng});node[\"highway\"=\"bus_stop\"](around:{$radius},{$lat},{$lng});",
+			'restaurant_count'  => "node[\"amenity\"=\"restaurant\"](around:{$radius},{$lat},{$lng});",
+			'bar_count'         => "node[\"amenity\"~\"^(bar|pub|nightclub)$\"](around:{$radius},{$lat},{$lng});",
+			'attraction_count'  => "node[\"tourism\"~\"^(attraction|museum)$\"](around:{$radius},{$lat},{$lng});",
+			'transit_count'     => "node[\"public_transport\"=\"station\"](around:{$radius},{$lat},{$lng});node[\"highway\"=\"bus_stop\"](around:{$radius},{$lat},{$lng});",
+			// "Daily convenience" categories -- can I actually live here for
+			// a week, not just visit. Same Overpass connection already in
+			// use, just more categories in the same batched, cached, daily
+			// sync -- no new licensing surface.
+			'supermarket_count' => "node[\"shop\"~\"^(supermarket|convenience)$\"](around:{$radius},{$lat},{$lng});",
+			'pharmacy_count'    => "node[\"amenity\"=\"pharmacy\"](around:{$radius},{$lat},{$lng});",
+			'cafe_count'        => "node[\"amenity\"=\"cafe\"](around:{$radius},{$lat},{$lng});",
+			'park_count'        => "node[\"leisure\"~\"^(park|garden)$\"](around:{$radius},{$lat},{$lng});way[\"leisure\"~\"^(park|garden)$\"](around:{$radius},{$lat},{$lng});",
 		);
 
 		$counts = array();
@@ -192,10 +200,18 @@ class VNI_OSM_Sync {
 
 		$transit = $this->scale( $counts['transit_count'], 0, 15, 100 );
 
+		// "Can I actually live here for a week" -- groceries and a
+		// pharmacy matter more than cafes/parks for that question, so
+		// they're weighted higher in this simple blend. Same
+		// directionally-useful-not-precise philosophy as the other scores.
+		$convenience_inputs = ( $counts['supermarket_count'] * 2 ) + ( $counts['pharmacy_count'] * 2 ) + $counts['cafe_count'] + $counts['park_count'];
+		$convenience        = $this->scale( $convenience_inputs, 0, 40, 100 );
+
 		return array(
 			'walkability_score' => $walkability,
 			'nightlife_score'   => $nightlife,
 			'transit_score'     => $transit,
+			'convenience_score' => $convenience,
 		);
 	}
 

@@ -8,6 +8,8 @@
 /** @var array|null $boundary_result */
 /** @var int $with_boundary */
 /** @var int $boundary_unattempted */
+/** @var array|null $landmark_result */
+/** @var int $missing_landmarks */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 ?>
 <div class="wrap vni-wrap">
@@ -143,5 +145,51 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 		<?php wp_nonce_field( 'wtsm_boundary_sync_now', 'wtsm_boundary_sync_nonce' ); ?>
 		<?php submit_button( __( 'Look up next batch now (15 neighborhoods)', 'voyasee-ni' ) ); ?>
 	</form>
+
+	<hr style="margin:32px 0" />
+
+	<h2><?php esc_html_e( 'Nearby landmarks (Wikipedia)', 'voyasee-wtsm' ); ?></h2>
+	<p class="description">
+		<?php esc_html_e( 'Looks up real, named points of interest near each neighborhood via Wikipedia\'s GeoSearch API (titles and coordinates only -- never article text), shown as small landmark chips on match cards. Free, no API key, commercial use permitted. Runs automatically once a day in small batches.', 'voyasee-wtsm' ); ?>
+	</p>
+
+	<?php if ( null !== $landmark_result ) : ?>
+		<div class="notice notice-success">
+			<p>
+				<?php
+				printf(
+					/* translators: 1: processed count, 2: skipped count */
+					esc_html__( 'Looked up %1$d neighborhoods. Skipped: %2$d (network/API issue -- they\'ll retry next batch).', 'voyasee-wtsm' ),
+					(int) $landmark_result['processed'],
+					(int) $landmark_result['skipped']
+				);
+				?>
+			</p>
+		</div>
+	<?php endif; ?>
+
+	<table class="widefat" style="max-width:600px">
+		<tbody>
+			<tr>
+				<td><?php esc_html_e( 'Neighborhoods without landmarks yet', 'voyasee-wtsm' ); ?></td>
+				<td><strong><?php echo esc_html( $missing_landmarks ); ?></strong></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<form method="post" style="margin-top:20px">
+		<?php wp_nonce_field( 'wtsm_landmark_sync_now', 'wtsm_landmark_sync_nonce' ); ?>
+		<?php submit_button( __( 'Look up landmarks now (20 neighborhoods)', 'voyasee-wtsm' ) ); ?>
+	</form>
+
+	<p class="description">
+		<?php
+		printf(
+			/* translators: %s: link to the Neighborhood Discovery screen */
+			esc_html__( 'To find candidate neighborhood names/coordinates for a destination automatically from OpenStreetMap (reviewed by you before anything is published), see %s.', 'voyasee-wtsm' ),
+			'<a href="' . esc_url( admin_url( 'admin.php?page=wtsm-discovery' ) ) . '">' . esc_html__( 'Neighborhood Discovery', 'voyasee-wtsm' ) . '</a>'
+		);
+		?>
+	</p>
 </div>
 

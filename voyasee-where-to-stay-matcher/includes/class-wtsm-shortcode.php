@@ -98,6 +98,7 @@ class WTSM_Shortcode {
 				'statsUrl'        => rest_url( 'voyasee-wtsm/v1/stats' ),
 				'nonce'           => wp_create_nonce( 'wp_rest' ),
 				'bookingUrl'      => WTSM_Settings::get( 'booking_affiliate_url', '' ),
+				'jetlagPlannerUrl' => WTSM_Settings::get( 'tool_jetlag_planner_url', '' ),
 				'archetypeLabels' => array(
 					'historic'           => __( 'Historic / Old Town', 'voyasee-wtsm' ),
 					'beach'              => __( 'Beach / Waterfront', 'voyasee-wtsm' ),

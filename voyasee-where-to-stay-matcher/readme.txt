@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 3.4.0
+Stable tag: 4.0.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -63,6 +63,15 @@ Or pre-fill a destination on a landing page:
    - Your About blurb.
    Any field left blank simply won't appear -- nothing is guessed.
 4. Add the shortcode to a page.
+5. Optional (new in 4.0.0): if you also run Voyasee Weather Bridge and/or
+   Voyasee Country Intelligence, this plugin detects and uses them
+   automatically -- no settings to configure here. Weather Bridge powers
+   the weather snapshot; Country Intelligence powers the "Good to know"
+   panel, currency-aware pricing, and public-holiday overlap warning.
+   Neither is required -- everything else works exactly the same without
+   them. Each destination needs a 2-letter country code for these to
+   activate (Voyasee Where to Stay > Destinations > edit a destination);
+   it's auto-filled from the existing Country field where recognized.
 
 == Design ==
 
@@ -164,6 +173,50 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.0.0 =
+* Fixed: the optional Weather Bridge integration stub called a function
+  name (voyasee_wb_get_forecast) that never existed in that plugin, so it
+  had silently returned nothing since it was written. Now calls Weather
+  Bridge's real functions -- a near-term (up to 15-day) forecast when a
+  travel date is close, or NASA POWER climate normals (free, keyless,
+  never fails for lack of an API key) for "typical weather this month"
+  when the trip is further out.
+* Added: an optional "Travel start date" field on Step 1. Powers a new
+  Trip Facts strip on the results page -- a weather snapshot, a
+  jet-lag-at-a-glance readout (pure client-side time-zone math, no API),
+  and a public-holiday overlap warning for your dates.
+* Added: optional integration with Voyasee Country Intelligence, if
+  active -- a "Good to know" panel with driving side, plug type, tipping
+  guidance, and emergency numbers for the destination's country, plus a
+  currency-aware price estimate (via Country Intelligence's currency data
+  + Frankfurter's free, no-key exchange rates) alongside the existing
+  $-$$$$$ price band. A destination now stores an ISO country code
+  (auto-filled from its existing country name where recognized) to power
+  this.
+* Added: real named landmarks near each neighborhood (a new daily-batched
+  sync against Wikipedia's GeoSearch API -- titles and coordinates only,
+  never article text) shown as small chips on match cards.
+* Added: a "daily convenience" signal -- supermarket/pharmacy/cafe/park
+  counts folded into the existing OpenStreetMap POI sync, shown as a
+  walking-distance stat in each match's detail panel. Informational only,
+  not folded into the Match Score weighting.
+* Added: "Similar neighborhoods elsewhere" -- a cross-destination
+  suggestion (same archetype as your top match, in a different city),
+  computed entirely from data already in your own database.
+* Added: OSM-assisted Neighborhood Discovery (Voyasee Where to Stay >
+  Neighborhood Discovery) -- finds candidate neighborhood names and
+  coordinates for a destination from OpenStreetMap and adds them as
+  review-queue drafts. A draft is never visible to visitors and never
+  auto-publishes; an admin still sets the real archetype and writes
+  why_fits/why_caution by hand before publishing, exactly like adding a
+  neighborhood any other way. Meant to remove the slowest step in growing
+  destination coverage (finding out what a city's neighborhoods are even
+  called), not the editorial judgment.
+* All of the above are optional, soft-dependency integrations
+  (function_exists-gated) -- nothing above requires a paid API, and
+  nothing breaks or looks broken if Weather Bridge/Country Intelligence
+  aren't installed, or if a destination has no country code set yet.
 
 = 3.4.0 =
 * Fixed: the Step 1 destination and "how many nights" fields could render

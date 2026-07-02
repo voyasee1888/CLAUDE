@@ -11,6 +11,7 @@ $n = $neighborhood ?: array(
 	'distance_center_km' => '', 'time_center_min' => '', 'distance_airport_km' => '', 'time_airport_min' => '',
 	'best_for' => array(), 'why_fits' => array(), 'why_caution' => array(), 'local_tip' => '',
 	'hero_image_url' => '', 'hero_image_credit' => '', 'data_tier' => 2, 'last_reviewed' => '',
+	'discovery_status' => 'published',
 );
 
 $to_csv = function ( $value ) {
@@ -24,6 +25,12 @@ $archetypes = VNI_Data::archetype_labels();
 
 	<?php if ( $notice ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php echo esc_html( $notice ); ?></p></div>
+	<?php endif; ?>
+
+	<?php if ( 'draft' === $n['discovery_status'] ) : ?>
+		<div class="notice notice-warning inline">
+			<p><?php esc_html_e( 'This is an unreviewed OSM-discovery draft -- it is NOT visible to visitors yet. Fill in the fields below, then use the Publish action on the Neighborhood Discovery screen to make it live.', 'voyasee-wtsm' ); ?></p>
+		</div>
 	<?php endif; ?>
 
 	<form method="post">

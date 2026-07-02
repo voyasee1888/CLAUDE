@@ -66,10 +66,22 @@ class VNI_Admin {
 			'vni-sync',
 			array( $this, 'render_sync_page' )
 		);
+
+		add_submenu_page(
+			'vni-destinations',
+			__( 'Neighborhood Discovery', 'voyasee-wtsm' ),
+			__( 'Neighborhood Discovery', 'voyasee-wtsm' ),
+			'manage_options',
+			'wtsm-discovery',
+			array( $this, 'render_discovery_page' )
+		);
 	}
 
 	public function maybe_enqueue_assets( $hook ) {
-		if ( strpos( $hook, 'vni-' ) === false && strpos( (string) ( $_GET['page'] ?? '' ), 'vni-' ) === false ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$page = (string) ( $_GET['page'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$is_plugin_page = strpos( $hook, 'vni-' ) !== false || strpos( $page, 'vni-' ) !== false
+			|| strpos( $hook, 'wtsm-' ) !== false || strpos( $page, 'wtsm-' ) !== false;
+		if ( ! $is_plugin_page ) {
 			return;
 		}
 		wp_enqueue_style( 'vni-admin', VNI_PLUGIN_URL . 'assets/css/admin.css', array(), VNI_VERSION );
@@ -124,6 +136,7 @@ class VNI_Admin {
 			'name'           => sanitize_text_field( $_POST['name'] ?? '' ),
 			'slug'           => sanitize_title( $_POST['slug'] ?? ( $_POST['name'] ?? '' ) ),
 			'country'        => sanitize_text_field( $_POST['country'] ?? '' ),
+			'country_code'   => sanitize_text_field( $_POST['country_code'] ?? '' ),
 			'lat'            => (float) ( $_POST['lat'] ?? 0 ),
 			'lng'            => (float) ( $_POST['lng'] ?? 0 ),
 			'airport_name'   => sanitize_text_field( $_POST['airport_name'] ?? '' ),
@@ -318,6 +331,12 @@ class VNI_Admin {
 			$boundary_result = WTSM_Boundary_Sync::instance()->run_batch( false );
 		}
 
+		$landmark_result = null;
+
+		if ( isset( $_POST['wtsm_landmark_sync_nonce'] ) && wp_verify_nonce( $_POST['wtsm_landmark_sync_nonce'], 'wtsm_landmark_sync_now' ) ) {
+			$landmark_result = WTSM_Landmark_Sync::instance()->run_batch( false );
+		}
+
 		global $wpdb;
 		$table               = $wpdb->prefix . VNI_TABLE_NEIGHBORHOODS;
 		$total               = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
@@ -326,6 +345,7 @@ class VNI_Admin {
 		$missing_photos      = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE hero_image_url = '' OR hero_image_url IS NULL" );
 		$with_boundary       = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE boundary_geojson IS NOT NULL" );
 		$boundary_unattempted = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE boundary_last_synced IS NULL" );
+		$missing_landmarks   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table} WHERE landmarks_last_synced IS NULL" );
 
 		$this->render_view(
 			'sync',
@@ -339,6 +359,49 @@ class VNI_Admin {
 				'boundary_result'      => $boundary_result,
 				'with_boundary'        => $with_boundary,
 				'boundary_unattempted' => $boundary_unattempted,
+				'landmark_result'      => $landmark_result,
+				'missing_landmarks'    => $missing_landmarks,
+			)
+		);
+	}
+
+	/* ------------------------------------------------------------------
+	 * Neighborhood Discovery (OSM-assisted, draft review queue)
+	 * ------------------------------------------------------------------ */
+
+	public function render_discovery_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'voyasee-wtsm' ) );
+		}
+
+		$discovery_result = null;
+
+		if ( isset( $_POST['wtsm_discovery_nonce'] ) && wp_verify_nonce( $_POST['wtsm_discovery_nonce'], 'wtsm_discovery_run' ) ) {
+			$destination_id   = absint( $_POST['destination_id'] ?? 0 );
+			$discovery_result = WTSM_Neighborhood_Discovery::instance()->discover_for_destination( $destination_id );
+		}
+
+		if ( isset( $_GET['action'], $_GET['id'] ) && 'publish' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$id = absint( $_GET['id'] );
+			check_admin_referer( 'wtsm_publish_draft_' . $id );
+			VNI_Data::publish_neighborhood( $id );
+		}
+
+		if ( isset( $_GET['action'], $_GET['id'] ) && 'discard' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$id = absint( $_GET['id'] );
+			check_admin_referer( 'wtsm_discard_draft_' . $id );
+			VNI_Data::delete_neighborhood( $id );
+		}
+
+		$destinations = VNI_Data::list_destinations( array( 'per_page' => 500 ) );
+		$drafts       = VNI_Data::list_draft_neighborhoods();
+
+		$this->render_view(
+			'neighborhood-discovery',
+			array(
+				'destinations'      => $destinations,
+				'drafts'            => $drafts,
+				'discovery_result'  => $discovery_result,
 			)
 		);
 	}

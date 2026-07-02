@@ -4,7 +4,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 $d = $destination ?: array(
-	'id' => 0, 'name' => '', 'slug' => '', 'country' => '',
+	'id' => 0, 'name' => '', 'slug' => '', 'country' => '', 'country_code' => '',
 	'lat' => '', 'lng' => '', 'airport_name' => '', 'airport_lat' => '', 'airport_lng' => '',
 	'tier' => 2, 'timezone' => '', 'cost_index' => 3, 'source_dataset' => '',
 );
@@ -34,6 +34,13 @@ $d = $destination ?: array(
 			<tr>
 				<th><label for="country"><?php esc_html_e( 'Country', 'voyasee-ni' ); ?></label></th>
 				<td><input type="text" id="country" name="country" class="regular-text" value="<?php echo esc_attr( $d['country'] ); ?>" /></td>
+			</tr>
+			<tr>
+				<th><label for="country_code"><?php esc_html_e( 'Country code (ISO 3166-1 alpha-2)', 'voyasee-ni' ); ?></label></th>
+				<td>
+					<input type="text" id="country_code" name="country_code" maxlength="2" style="width:70px;text-transform:uppercase" value="<?php echo esc_attr( $d['country_code'] ); ?>" placeholder="e.g. JP" />
+					<p class="description"><?php esc_html_e( 'Auto-filled from Country on activation when recognized; set/correct by hand if needed. Powers the optional Voyasee Country Intelligence integration (currency, driving side, emergency numbers, public holidays) and Voyasee Weather Bridge climate data, if those plugins are active.', 'voyasee-ni' ); ?></p>
+				</td>
 			</tr>
 			<tr>
 				<th><label for="lat"><?php esc_html_e( 'Latitude / Longitude', 'voyasee-ni' ); ?></label></th>

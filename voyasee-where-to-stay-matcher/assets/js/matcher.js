@@ -86,6 +86,47 @@
 	};
 	function metricIcon( key ) { return '<span class="vwtsm-metric-icon" style="color:' + metricColor( key ) + '">' + ( METRIC_ICONS[ key ] || '' ) + '</span>'; }
 
+	/**
+	 * UTC offset (in minutes) for an IANA time zone at this moment, via
+	 * Intl -- no API call, no library, works entirely client-side. Returns
+	 * null if the browser can't resolve the zone (unrecognized string,
+	 * very old browser).
+	 */
+	function utcOffsetMinutes( timeZone ) {
+		try {
+			var parts = new Intl.DateTimeFormat( 'en-US', { timeZone: timeZone, timeZoneName: 'shortOffset' } ).formatToParts( new Date() );
+			var tzPart = parts.filter( function ( p ) { return p.type === 'timeZoneName'; } )[ 0 ];
+			if ( ! tzPart ) { return null; }
+			var m = tzPart.value.match( /GMT([+-]\d{1,2})(?::?(\d{2}))?/ );
+			if ( ! m ) { return tzPart.value.indexOf( 'GMT' ) === 0 ? 0 : null; } // bare "GMT" == UTC+0
+			var hours = parseInt( m[ 1 ], 10 );
+			var mins = m[ 2 ] ? parseInt( m[ 2 ], 10 ) : 0;
+			return ( hours < 0 ? -1 : 1 ) * ( Math.abs( hours ) * 60 + mins );
+		} catch ( e ) {
+			return null;
+		}
+	}
+
+	/** Reads the first present value among several candidate dot-paths -- used against the
+	 *  Country Intelligence record, whose exact nested field names this plugin doesn't own. */
+	function pick( obj, paths ) {
+		for ( var i = 0; i < paths.length; i++ ) {
+			var parts = paths[ i ].split( '.' );
+			var cur = obj;
+			var ok = true;
+			for ( var j = 0; j < parts.length; j++ ) {
+				if ( cur && typeof cur === 'object' && parts[ j ] in cur ) {
+					cur = cur[ parts[ j ] ];
+				} else {
+					ok = false;
+					break;
+				}
+			}
+			if ( ok && cur !== null && cur !== undefined && cur !== '' ) { return cur; }
+		}
+		return null;
+	}
+
 	/** Simple word-wrap for canvas fillText, used by the downloadable match card. */
 	function wrapCanvasText( ctx, text, x, y, maxWidth, lineHeight ) {
 		var words = text.split( ' ' );
@@ -123,6 +164,7 @@
 			accessibility_needs: false,
 			interests: [],
 			safety_comfort: 3,
+			travel_date: '', // optional; powers weather, holiday-overlap, and jet-lag display
 		};
 		this.result = null;
 		this.compareExtra = null; // an optional 4th neighborhood promoted into the compare scorecard.
@@ -191,6 +233,8 @@
 		this.answers.safety_comfort = clamp( parseInt( params.get( 'vwtsm_safety' ), 10 ) || 3, 1, 5 );
 		var interests = params.get( 'vwtsm_interests' );
 		this.answers.interests = interests ? interests.split( ',' ).filter( Boolean ) : [];
+		var date = params.get( 'vwtsm_date' );
+		this.answers.travel_date = ( date && /^\d{4}-\d{2}-\d{2}$/.test( date ) ) ? date : '';
 
 		return true;
 	};
@@ -216,6 +260,7 @@
 		params.set( 'vwtsm_access', a.accessibility_needs ? '1' : '0' );
 		params.set( 'vwtsm_safety', a.safety_comfort );
 		if ( a.interests.length ) { params.set( 'vwtsm_interests', a.interests.join( ',' ) ); }
+		if ( a.travel_date ) { params.set( 'vwtsm_date', a.travel_date ); }
 
 		var newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
 		try {
@@ -252,6 +297,12 @@
 			'<div class="vwtsm-field-group">' +
 				'<label class="vwtsm-field-label" for="vwtsm-nights">How many nights?</label>' +
 				'<input type="number" id="vwtsm-nights" class="vwtsm-input" min="1" max="60" value="' + this.answers.nights + '" style="max-width:140px" />' +
+			'</div>' +
+
+			'<div class="vwtsm-field-group">' +
+				'<label class="vwtsm-field-label" for="vwtsm-travel-date">Travel start date <span class="vwtsm-optional-tag">(optional)</span></label>' +
+				'<input type="date" id="vwtsm-travel-date" class="vwtsm-input" value="' + escapeHtml( this.answers.travel_date ) + '" style="max-width:200px" />' +
+				'<p class="vwtsm-field-hint">Unlocks a weather snapshot, a public-holiday heads-up, and jet-lag info on your results.</p>' +
 			'</div>' +
 
 			'<div class="vwtsm-field-group">' +
@@ -333,6 +384,8 @@
 
 		nextBtn.addEventListener( 'click', function () {
 			self.answers.nights = clamp( parseInt( self.container.querySelector( '#vwtsm-nights' ).value, 10 ) || 3, 1, 60 );
+			var dateInput = self.container.querySelector( '#vwtsm-travel-date' );
+			self.answers.travel_date = ( dateInput && /^\d{4}-\d{2}-\d{2}$/.test( dateInput.value ) ) ? dateInput.value : '';
 			if ( ! self.answers.destination_slug ) { return; }
 			self.renderStep2();
 		} );
@@ -581,9 +634,13 @@
 
 			this.buildTripRealityStrip( matches[0] ) +
 
+			this.buildTripFactsStrip( data ) +
+
 			( data.split_stay ? this.buildSplitStaySuggestion( data.split_stay ) : '' ) +
 
 			'<div class="vwtsm-match-grid" data-vwtsm-match-grid></div>' +
+
+			this.buildPracticalFactsPanel( data.country_intel, data.currency_estimate ) +
 
 			'<h3 class="vwtsm-subheading">' + escapeHtml( VWTSM.i18n.compareTable ) + '</h3>' +
 			'<div data-vwtsm-compare-scorecard>' + this.buildCompareScorecard( matches ) + '</div>' +
@@ -593,6 +650,8 @@
 			mapCaption +
 			this.buildOverviewMap( mappable ) +
 			this.buildOverviewLegend( mappable ) +
+
+			this.buildSimilarElsewhere( data.similar_elsewhere, archetypeLabel( matches[0] && matches[0].archetype ) ) +
 
 			( explored.length ? this.buildAccordionShell( explored.length ) : '' ) +
 
@@ -700,6 +759,28 @@
 		return escapeHtml( str ).replace( /"/g, '%22' ).replace( /'/g, '%27' );
 	}
 
+	/** Up to 2 named-landmark pills, from the Wikidata/Wikipedia landmark sync. */
+	VoyaseeMatcher.prototype.buildLandmarkChips = function ( landmarks ) {
+		if ( ! Array.isArray( landmarks ) || ! landmarks.length ) { return ''; }
+		var picks = landmarks.slice( 0, 2 );
+		return '<div class="vwtsm-landmark-chips">' +
+			picks.map( function ( l ) { return '<span class="vwtsm-landmark-chip">' + escapeHtml( l.title || '' ) + '</span>'; } ).join( '' ) +
+		'</div>';
+	};
+
+	/** "Can I actually live here" stat row -- supermarkets/pharmacies/cafes/parks within the OSM sync radius. */
+	VoyaseeMatcher.prototype.buildConvenienceRow = function ( n ) {
+		if ( ! n.poi_last_synced ) { return ''; }
+		var stats = [
+			{ label: 'supermarket', count: parseInt( n.poi_supermarket_count, 10 ) || 0 },
+			{ label: 'pharmacy', count: parseInt( n.poi_pharmacy_count, 10 ) || 0 },
+			{ label: 'cafe', count: parseInt( n.poi_cafe_count, 10 ) || 0 },
+			{ label: 'park', count: parseInt( n.poi_park_count, 10 ) || 0 },
+		];
+		var parts = stats.map( function ( s ) { return s.count + ' ' + s.label + ( s.count === 1 ? '' : 's' ); } );
+		return '<p class="vwtsm-field-hint vwtsm-convenience-row">Within a ~10 min walk: ' + escapeHtml( parts.join( ' · ' ) ) + '</p>';
+	};
+
 	VoyaseeMatcher.prototype.buildMatchCard = function ( n, idx ) {
 		var color = archetypeColor( n.archetype );
 		var hero = n.hero_image_url
@@ -723,6 +804,7 @@
 				'<div class="vwtsm-card-body">' +
 					'<h3 class="vwtsm-card-name">' + escapeHtml( n.name ) + '</h3>' +
 					'<div class="vwtsm-card-archetype-label">' + escapeHtml( archetypeLabel( n.archetype ) ) + '</div>' +
+					this.buildLandmarkChips( n.nearby_landmarks ) +
 				'</div>' +
 				'<div class="vwtsm-ticket-seam">' +
 					'<span class="vwtsm-ticket-notch vwtsm-notch-left"></span>' +
@@ -802,6 +884,7 @@
 						freshnessBadge +
 					'</div>' +
 					( n.local_tip ? '<p class="vwtsm-local-tip">' + escapeHtml( n.local_tip ) + '</p>' : '' ) +
+					this.buildConvenienceRow( n ) +
 					'<div class="vwtsm-cta-row">' + bookingBtn +
 						'<button type="button" class="vwtsm-btn-secondary" data-vwtsm-download-card>Download match card</button>' +
 						( showAddCompare ? '<button type="button" class="vwtsm-btn-secondary" data-vwtsm-add-compare>Add to comparison</button>' : '' ) +
@@ -970,6 +1053,188 @@
 					'</div>' +
 				'</div>' +
 				'<div class="vwtsm-reality-chips">' + chipsHtml + '</div>' +
+			'</div>'
+		);
+	};
+
+	/* ---------------------------------------------------------------------
+	 * Trip Facts -- jet lag, weather/best-months, and holiday-overlap.
+	 * All either zero-API (jet lag, pure Intl computation) or sourced from
+	 * sibling Voyasee plugins (Weather Bridge, Country Intelligence) if
+	 * active; each fact renders only when its data is actually available,
+	 * never a placeholder.
+	 * ------------------------------------------------------------------- */
+
+	VoyaseeMatcher.prototype.buildTripFactsStrip = function ( data ) {
+		var chips = [];
+
+		var jetLag = this.buildJetLagFact( data.destination && data.destination.timezone );
+		if ( jetLag ) { chips.push( jetLag ); }
+
+		var weather = this.buildWeatherFact( data.weather );
+		if ( weather ) { chips.push( weather ); }
+
+		var holiday = this.buildHolidayFact( data.holiday_overlap );
+		if ( holiday ) { chips.push( holiday ); }
+
+		if ( ! chips.length ) { return ''; }
+
+		return '<div class="vwtsm-fact-strip">' + chips.join( '' ) + '</div>';
+	};
+
+	VoyaseeMatcher.prototype.buildJetLagFact = function ( destinationTimezone ) {
+		if ( ! destinationTimezone ) { return ''; }
+		var localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		if ( ! localTz ) { return ''; }
+
+		var destOffset = utcOffsetMinutes( destinationTimezone );
+		var localOffset = utcOffsetMinutes( localTz );
+		if ( destOffset === null || localOffset === null ) { return ''; }
+
+		var diffHours = ( destOffset - localOffset ) / 60;
+		var text;
+		if ( Math.abs( diffHours ) < 0.5 ) {
+			text = 'Same time zone as you -- no jet lag to plan for.';
+		} else {
+			var rounded = Math.round( Math.abs( diffHours ) * 2 ) / 2;
+			text = rounded + ( rounded === 1 ? ' hour ' : ' hours ' ) + ( diffHours > 0 ? 'ahead of' : 'behind' ) + ' your time zone.';
+			if ( VWTSM.jetlagPlannerUrl ) {
+				text += ' <a href="' + escapeHtml( VWTSM.jetlagPlannerUrl ) + '" target="_blank" rel="noopener noreferrer">Plan for it &rarr;</a>';
+			}
+		}
+
+		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#128337;</span><span>' + text + '</span></div>';
+	};
+
+	VoyaseeMatcher.prototype.buildWeatherFact = function ( weather ) {
+		if ( ! weather ) { return ''; }
+
+		if ( 'forecast' === weather.type && weather.day ) {
+			var d = weather.day;
+			var lo = ( d.tempMinC !== undefined && d.tempMinC !== null ) ? Math.round( d.tempMinC ) : null;
+			var hi = ( d.tempMaxC !== undefined && d.tempMaxC !== null ) ? Math.round( d.tempMaxC ) : null;
+			if ( null === lo && null === hi ) { return ''; }
+			var range = ( null !== lo && null !== hi && lo !== hi ) ? ( lo + '–' + hi + '°C' ) : ( ( hi !== null ? hi : lo ) + '°C' );
+			var cond = ( d.condition && d.condition.text ) ? ' · ' + escapeHtml( d.condition.text ) : '';
+			return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127780;</span><span>Forecast for your dates: ' + range + cond + '</span></div>';
+		}
+
+		if ( 'climate_normals' === weather.type && weather.month && null !== weather.month.temp_mean_c ) {
+			var mean = Math.round( weather.month.temp_mean_c );
+			var rainDays = weather.month.rain_days_est;
+			var rainText = ( rainDays !== null && rainDays !== undefined ) ? ', ~' + Math.round( rainDays ) + ' rainy days' : '';
+			return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127780;</span><span>' +
+				'Typical for ' + escapeHtml( weather.month.label || 'this month' ) + ': avg ' + mean + '°C' + rainText +
+				' <em>(long-term average, not a forecast)</em></span></div>';
+		}
+
+		return '';
+	};
+
+	VoyaseeMatcher.prototype.buildHolidayFact = function ( holiday ) {
+		if ( ! holiday || ! holiday.name ) { return ''; }
+		return '<div class="vwtsm-fact-chip vwtsm-fact-chip-warning"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127881;</span>' +
+			'<span>Your trip overlaps <strong>' + escapeHtml( holiday.name ) + '</strong> (' + escapeHtml( holiday.date ) + ') -- expect higher prices and crowds.</span></div>';
+	};
+
+	/* ---------------------------------------------------------------------
+	 * Practical Facts -- plug type, driving side, currency, emergency
+	 * numbers, sourced from Voyasee Country Intelligence if active. Every
+	 * field is read defensively (pick() tries several plausible key
+	 * shapes) and simply omitted if not present -- never shown as blank
+	 * or "undefined".
+	 * ------------------------------------------------------------------- */
+
+	VoyaseeMatcher.prototype.buildPracticalFactsPanel = function ( countryIntel, currencyEstimate ) {
+		if ( ! countryIntel ) { return ''; }
+
+		var facts = [];
+
+		var flagEmoji = pick( countryIntel, [ 'core.flag.emoji', 'flag.emoji', 'core.flagEmoji' ] );
+		var countryName = pick( countryIntel, [ 'core.name.common', 'core.name', 'name.common', 'name' ] );
+
+		var driving = pick( countryIntel, [ 'core.drivingSide', 'travel.drivingSide', 'core.driving_side' ] );
+		if ( driving ) {
+			facts.push( { icon: '&#128663;', text: 'Drives on the <strong>' + escapeHtml( String( driving ) ) + '</strong>' } );
+		}
+
+		var plugTypes = pick( countryIntel, [ 'travel.electrical.plugTypes', 'travel.electrical.plug_types', 'core.electrical.plugTypes' ] );
+		var voltage = pick( countryIntel, [ 'travel.electrical.voltage', 'core.electrical.voltage' ] );
+		if ( plugTypes || voltage ) {
+			var plugList = Array.isArray( plugTypes ) ? plugTypes.join( '/' ) : plugTypes;
+			facts.push( { icon: '&#128268;', text: 'Plug type ' + ( plugList ? '<strong>' + escapeHtml( String( plugList ) ) + '</strong>' : '' ) + ( voltage ? ' · ' + escapeHtml( String( voltage ) ) : '' ) } );
+		}
+
+		var tipping = pick( countryIntel, [ 'travel.tipping.guidance', 'travel.tipping', 'travel.tippingGuidance' ] );
+		if ( tipping && typeof tipping === 'string' ) {
+			facts.push( { icon: '&#128176;', text: escapeHtml( tipping ) } );
+		}
+
+		if ( currencyEstimate && currencyEstimate.low ) {
+			facts.push( {
+				icon: '&#128181;',
+				text: 'Roughly this match\'s price band ≈ <strong>' + escapeHtml( currencyEstimate.symbol ) + currencyEstimate.low + '–' + escapeHtml( currencyEstimate.symbol ) + currencyEstimate.high + '</strong> ' + escapeHtml( currencyEstimate.code ) + '/night',
+			} );
+		}
+
+		var emergency = pick( countryIntel, [ 'safety.emergencyNumbers', 'safety.emergency_numbers' ] );
+		if ( emergency && typeof emergency === 'object' ) {
+			var numbers = [];
+			[ 'general', 'police', 'ambulance', 'fire', 'touristPolice' ].forEach( function ( key ) {
+				if ( emergency[ key ] ) {
+					var label = key === 'touristPolice' ? 'Tourist police' : ( key.charAt( 0 ).toUpperCase() + key.slice( 1 ) );
+					numbers.push( label + ' ' + emergency[ key ] );
+				}
+			} );
+			if ( numbers.length ) {
+				facts.push( { icon: '&#128222;', text: 'Emergency: ' + escapeHtml( numbers.join( ' · ' ) ) + ' <em>(verify locally)</em>' } );
+			}
+		}
+
+		if ( ! facts.length ) { return ''; }
+
+		return (
+			'<div class="vwtsm-practical-facts">' +
+				'<h3 class="vwtsm-subheading">' + ( flagEmoji ? '<span class="vwtsm-flag-emoji">' + escapeHtml( flagEmoji ) + '</span> ' : '' ) +
+					'Good to know' + ( countryName ? ' about ' + escapeHtml( String( countryName ) ) : '' ) +
+				'</h3>' +
+				'<div class="vwtsm-practical-facts-grid">' +
+					facts.map( function ( f ) {
+						return '<div class="vwtsm-practical-fact"><span class="vwtsm-fact-chip-icon" aria-hidden="true">' + f.icon + '</span><span>' + f.text + '</span></div>';
+					} ).join( '' ) +
+				'</div>' +
+				'<p class="vwtsm-field-hint">Reference facts, not a live legal/safety verdict -- always check current official guidance before you travel.</p>' +
+			'</div>'
+		);
+	};
+
+	/* ---------------------------------------------------------------------
+	 * Similar neighborhoods elsewhere -- pure internal computation, no
+	 * external data, a cross-destination suggestion based on the top
+	 * match's archetype.
+	 * ------------------------------------------------------------------- */
+
+	VoyaseeMatcher.prototype.buildSimilarElsewhere = function ( list, topArchetypeLabel ) {
+		if ( ! list || ! list.length ) { return ''; }
+
+		var cards = list.map( function ( n ) {
+			var color = archetypeColor( n.archetype );
+			return (
+				'<div class="vwtsm-similar-card">' +
+					'<div class="vwtsm-similar-swatch" style="background:' + color + '"></div>' +
+					'<div>' +
+						'<strong>' + escapeHtml( n.name ) + '</strong>' +
+						'<span>' + escapeHtml( n.destination_name || '' ) + '</span>' +
+					'</div>' +
+				'</div>'
+			);
+		} ).join( '' );
+
+		return (
+			'<div class="vwtsm-similar-elsewhere">' +
+				'<h3 class="vwtsm-subheading">Similar ' + escapeHtml( ( topArchetypeLabel || 'neighborhoods' ).toLowerCase() ) + ' energy, elsewhere</h3>' +
+				'<p class="vwtsm-field-hint">Other cities with a neighborhood in the same archetype as your top match, in case you\'re flexible on destination.</p>' +
+				'<div class="vwtsm-similar-grid">' + cards + '</div>' +
 			'</div>'
 		);
 	};
