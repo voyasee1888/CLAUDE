@@ -40,6 +40,19 @@
 	--vwtsm-arch-luxury: #b8973f;
 	--vwtsm-arch-airport_transit: #63708a;
 
+	/* Metric/dimension identity colors -- a fixed-order categorical set,
+	   distinct from the archetype palette above, so a score's *kind*
+	   (budget vs. walkability vs. safety...) reads at a glance across the
+	   Trip Reality strip and comparison scorecard, independent of which
+	   neighborhood it belongs to. Validated colorblind-safe against this
+	   navy surface with scripts/validate_palette.js from the dataviz
+	   skill; every use also carries a direct text label, never color alone. */
+	--vwtsm-metric-airport: #3987e5;
+	--vwtsm-metric-walkability: #199e70;
+	--vwtsm-metric-budget: #c98500;
+	--vwtsm-metric-safety: #008300;
+	--vwtsm-metric-nightlife: #9085e9;
+
 	max-width: 1040px;
 	margin: 2rem auto;
 	font-family: var(--vwtsm-font-body);
@@ -363,19 +376,40 @@
 .vwtsm-step-progress span.is-complete { background: linear-gradient(90deg, var(--vwtsm-gold), var(--vwtsm-gold-soft)); }
 
 .vwtsm-field-group { margin-bottom: 1.85rem; }
-.vwtsm-field-label { display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.6rem; }
+.vwtsm-root .vwtsm-field-label { display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.6rem; color: var(--vwtsm-cream) !important; }
 .vwtsm-field-hint { font-size: 0.8rem; color: var(--vwtsm-cream-dim); margin-top: 0.4rem; }
 
-.vwtsm-input, .vwtsm-select {
+/* Defensive, same reasoning as the h1-h6 rule above: WordPress themes very
+   commonly ship their own input[type=...] styling (often with higher
+   selector specificity than a single .vwtsm-input class, e.g. Astra's own
+   form-field defaults), which can silently repaint our destination/nights
+   fields as a plain white box with default text -- unreadable against this
+   tool's dark cards and visually broken regardless. Force the essentials so
+   this class of bug can't recur here the way it once did for headings. */
+.vwtsm-root .vwtsm-input,
+.vwtsm-root .vwtsm-select {
 	width: 100%;
-	background: rgba(10, 15, 28, 0.55);
-	border: 1px solid var(--vwtsm-navy-700);
+	background: rgba(10, 15, 28, 0.55) !important;
+	border: 1px solid var(--vwtsm-navy-700) !important;
 	border-radius: var(--vwtsm-radius-sm);
 	padding: 0.75rem 1rem;
-	color: var(--vwtsm-cream);
+	color: var(--vwtsm-cream) !important;
 	font-family: var(--vwtsm-font-body);
 	font-size: 0.95rem;
 	transition: border-color 0.15s ease;
+	-webkit-text-fill-color: var(--vwtsm-cream);
+	box-shadow: none !important;
+}
+.vwtsm-root .vwtsm-input::placeholder { color: var(--vwtsm-cream-dim); opacity: 0.7; }
+/* Chrome/Edge autofill paints its own yellow/white background+ink over any
+   CSS via an internal UA shadow layer -- neutralize it with the documented
+   long-transition trick so an autofilled destination field doesn't revert
+   to an unstyled white box the moment a browser suggestion is picked. */
+.vwtsm-root .vwtsm-input:-webkit-autofill,
+.vwtsm-root .vwtsm-input:-webkit-autofill:hover,
+.vwtsm-root .vwtsm-input:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--vwtsm-cream);
+	transition: background-color 600000s 0s, color 600000s 0s;
 }
 
 .vwtsm-input:focus, .vwtsm-select:focus, .vwtsm-root button:focus-visible {
@@ -561,7 +595,8 @@
 	min-width: 240px;
 }
 
-.vwtsm-reality-chip { display: flex; flex-direction: column; gap: 0.4rem; }
+.vwtsm-reality-chip { display: flex; align-items: flex-start; gap: 0.55rem; }
+.vwtsm-reality-chip-body { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-width: 0; }
 .vwtsm-reality-chip span { font-size: 0.7rem; color: var(--vwtsm-cream-dim); }
 .vwtsm-reality-chip-bg {
 	height: 6px;
@@ -570,6 +605,11 @@
 	overflow: hidden;
 }
 .vwtsm-reality-chip-fill { height: 100%; border-radius: 999px; }
+.vwtsm-metric-icon {
+	flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px;
+	display: inline-flex; opacity: 0.9;
+}
+.vwtsm-metric-icon svg { width: 100%; height: 100%; }
 
 @media (max-width: 640px) {
 	.vwtsm-reality-chips { grid-template-columns: repeat(2, 1fr); }
@@ -816,7 +856,12 @@
    ------------------------------------------------------------------------- */
 
 .vwtsm-compare-scorecard { margin-bottom: 2.25rem; }
-.vwtsm-compare-row-label { font-size: 0.78rem; color: var(--vwtsm-cream-dim); text-transform: uppercase; letter-spacing: 0.04em; grid-column: 1 / -1; margin-top: 0.6rem; }
+.vwtsm-compare-row-label {
+	display: flex; align-items: center; gap: 0.45rem;
+	font-size: 0.78rem; color: var(--vwtsm-cream-dim); text-transform: uppercase; letter-spacing: 0.04em;
+	grid-column: 1 / -1; margin-top: 1.1rem; margin-bottom: 0.15rem;
+}
+.vwtsm-compare-row-label .vwtsm-metric-icon { width: 14px; height: 14px; opacity: 1; }
 .vwtsm-compare-bars { display: flex; flex-direction: column; gap: 0.4rem; grid-column: 1 / -1; }
 .vwtsm-compare-bar-track { display: grid; grid-template-columns: 110px 1fr 42px; align-items: center; gap: 0.6rem; font-size: 0.82rem; }
 .vwtsm-compare-bar-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -838,6 +883,27 @@
 @media (max-width: 560px) {
 	.vwtsm-compare-bar-track { grid-template-columns: 86px 1fr 36px; }
 	.vwtsm-compare-bar-track-pending { grid-template-columns: 86px 1fr; }
+}
+
+/* Price & Logistics row -- colored icon pills instead of a single plain
+   concatenated text string, so this row carries the same infographic
+   language (metric identity color + icon) as the score bars above it. */
+.vwtsm-compare-pills { display: flex; flex-direction: column; gap: 0.55rem; grid-column: 1 / -1; }
+.vwtsm-compare-pill-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.7rem; }
+.vwtsm-compare-pill-row .vwtsm-compare-bar-name { flex: 0 0 110px; font-size: 0.82rem; }
+.vwtsm-compare-pills-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.vwtsm-logistics-pill {
+	display: inline-flex; align-items: center; gap: 0.35rem;
+	font-size: 0.74rem; color: var(--vwtsm-cream);
+	background: color-mix(in srgb, var(--pill-color) 16%, transparent);
+	border: 1px solid color-mix(in srgb, var(--pill-color) 45%, transparent);
+	border-radius: 999px; padding: 0.28rem 0.7rem 0.28rem 0.5rem;
+	font-variant-numeric: tabular-nums;
+}
+.vwtsm-logistics-pill .vwtsm-metric-icon { width: 13px; height: 13px; color: var(--pill-color); opacity: 1; }
+
+@media (max-width: 560px) {
+	.vwtsm-compare-pill-row .vwtsm-compare-bar-name { flex-basis: 100%; }
 }
 
 /* -------------------------------------------------------------------------
@@ -1024,18 +1090,48 @@
    ------------------------------------------------------------------------- */
 
 .vwtsm-footer {
+	position: relative;
 	margin-top: 1.75rem;
 	background: linear-gradient(180deg, var(--vwtsm-navy-900), var(--vwtsm-navy-950));
 	border: 1px solid rgba(232, 207, 134, 0.14);
 	border-radius: var(--vwtsm-radius-lg);
 	overflow: hidden;
+	isolation: isolate;
+}
+/* A thin, brand-consistent gradient seam across the top -- the same
+   treatment a boarding pass gives its tear line -- so the footer reads as
+   a deliberate, designed close to the tool rather than a plain text slab. */
+.vwtsm-footer::before {
+	content: '';
+	position: absolute;
+	top: 0; left: 0; right: 0; height: 3px;
+	background: linear-gradient(90deg, transparent, var(--vwtsm-gold) 20%, var(--vwtsm-gold-soft) 50%, var(--vwtsm-gold) 80%, transparent);
+	opacity: 0.85;
+}
+/* Faint echo of the hero's globe-grid + a soft glow, so the footer isn't a
+   flat color block -- kept subtle enough to stay legible under the text. */
+.vwtsm-footer-texture {
+	position: absolute; inset: 0; z-index: 0; pointer-events: none;
+	background:
+		radial-gradient(ellipse 70% 50% at 15% 0%, rgba(201,162,75,0.08), transparent 60%),
+		repeating-linear-gradient(90deg, rgba(232,207,134,0.035) 0, rgba(232,207,134,0.035) 1px, transparent 1px, transparent 64px),
+		repeating-linear-gradient(0deg, rgba(232,207,134,0.035) 0, rgba(232,207,134,0.035) 1px, transparent 1px, transparent 64px);
 }
 
 .vwtsm-footer-inner {
+	position: relative; z-index: 1;
 	display: grid;
 	grid-template-columns: 1.3fr 1fr 1fr 1fr 1.1fr;
 	gap: 1.75rem;
 	padding: 2.25rem 2rem;
+}
+
+/* Thin vertical seams between columns on wide layouts -- a quiet structural
+   detail rather than just whitespace, echoing the perforated-ticket motif
+   used on the match cards. */
+.vwtsm-footer-col + .vwtsm-footer-col {
+	border-left: 1px dashed rgba(232, 207, 134, 0.14);
+	padding-left: 1.75rem;
 }
 
 @media (max-width: 1000px) {
@@ -1043,20 +1139,24 @@
 }
 @media (max-width: 640px) {
 	.vwtsm-footer-inner { grid-template-columns: 1fr 1fr; }
+	.vwtsm-footer-col + .vwtsm-footer-col { border-left: none; padding-left: 0; }
 }
 @media (max-width: 420px) {
 	.vwtsm-footer-inner { grid-template-columns: 1fr; padding: 1.6rem 1.3rem; }
 }
 
 .vwtsm-root .vwtsm-footer-col h4 {
+	display: flex; align-items: center; gap: 0.5rem;
 	font-family: var(--vwtsm-font-display);
 	font-size: 1.05rem;
 	font-weight: 600;
 	color: var(--vwtsm-gold-soft) !important;
 	margin: 0 0 0.9rem;
 }
+.vwtsm-footer-col-icon { flex-shrink: 0; width: 17px; height: 17px; color: var(--vwtsm-gold); opacity: 0.9; }
 
 .vwtsm-footer-wordmark {
+	display: flex; align-items: center; gap: 0.5rem;
 	font-family: var(--vwtsm-font-display);
 	font-style: italic;
 	font-size: 1.6rem;
@@ -1064,6 +1164,7 @@
 	color: var(--vwtsm-cream);
 	margin: 0 0 0.6rem;
 }
+.vwtsm-footer-emblem { width: 22px; height: 22px; color: var(--vwtsm-gold-soft); flex-shrink: 0; }
 
 .vwtsm-footer-about p {
 	font-size: 0.85rem;
@@ -1074,15 +1175,21 @@
 
 .vwtsm-footer-links { list-style: none; margin: 0; padding: 0; }
 .vwtsm-footer-links li { margin-bottom: 0.6rem; }
-.vwtsm-footer-links a { color: var(--vwtsm-cream-dim); text-decoration: none; font-size: 0.85rem; transition: color 0.15s ease; }
+.vwtsm-footer-links a {
+	display: inline-flex; align-items: center; gap: 0.4rem;
+	color: var(--vwtsm-cream-dim); text-decoration: none; font-size: 0.85rem;
+	transition: color 0.15s ease;
+}
+.vwtsm-footer-link-arrow { display: inline-block; transition: transform 0.15s ease; color: var(--vwtsm-gold); }
 .vwtsm-footer-links a:hover { color: var(--vwtsm-gold-soft); }
+.vwtsm-footer-links a:hover .vwtsm-footer-link-arrow { transform: translateX(3px); }
 
 .vwtsm-footer-legal p { font-size: 0.76rem; color: var(--vwtsm-cream-dim); line-height: 1.55; margin: 0 0 0.7rem; }
 .vwtsm-footer-legal a { font-size: inherit; }
 .vwtsm-affiliate-disclosure { font-style: italic; }
 
 .vwtsm-trust-badge {
-	display: inline-block;
+	display: inline-flex; align-items: center; gap: 0.4rem;
 	background: rgba(232, 207, 134, 0.1);
 	border: 1px solid rgba(232, 207, 134, 0.25);
 	border-radius: 999px;
@@ -1090,8 +1197,14 @@
 	font-size: 0.72rem;
 	color: var(--vwtsm-gold-soft);
 }
+.vwtsm-trust-badge::before {
+	content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+	background: var(--vwtsm-success);
+	box-shadow: 0 0 6px 1px rgba(103,179,137,0.7);
+}
 
 .vwtsm-footer-bottom {
+	position: relative; z-index: 1;
 	border-top: 1px solid rgba(255,255,255,0.07);
 	padding: 0.9rem 2rem;
 	text-align: center;

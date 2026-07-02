@@ -100,17 +100,30 @@ $tool_groups = array(
 	</div>
 
 	<footer class="vwtsm-footer">
+		<div class="vwtsm-footer-texture" aria-hidden="true"></div>
 		<div class="vwtsm-footer-inner">
 
 			<div class="vwtsm-footer-col vwtsm-footer-about">
-				<p class="vwtsm-footer-wordmark">Voyasee</p>
+				<p class="vwtsm-footer-wordmark">
+					<svg class="vwtsm-footer-emblem" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2"/><path d="M50 12 L56 44 L50 50 L44 44 Z" fill="currentColor"/><path d="M50 88 L44 56 L50 50 L56 56 Z" fill="currentColor" opacity="0.5"/><path d="M12 50 L44 44 L50 50 L44 56 Z" fill="currentColor" opacity="0.7"/><path d="M88 50 L56 56 L50 50 L56 44 Z" fill="currentColor" opacity="0.7"/></svg>
+					Voyasee
+				</p>
 				<p><?php echo esc_html( $about_text ); ?></p>
 				<p class="vwtsm-trust-badge" data-vwtsm-coverage-counter><?php esc_html_e( 'Loading coverage stats...', 'voyasee-wtsm' ); ?></p>
 			</div>
 
-			<?php foreach ( $tool_groups as $group_key => $group_label ) : ?>
+			<?php
+			$group_icons = array(
+				'plan'   => '<path d="M3 11l18-8-8 18-2-8-8-2z"/>',
+				'safety' => '<path d="M12 3l7 3v5c0 4.5-3 7.7-7 10-4-2.3-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+			);
+			foreach ( $tool_groups as $group_key => $group_label ) :
+				?>
 				<div class="vwtsm-footer-col">
-					<h4><?php echo esc_html( $group_label ); ?></h4>
+					<h4>
+						<svg class="vwtsm-footer-col-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><?php echo $group_icons[ $group_key ] ?? ''; ?></svg>
+						<?php echo esc_html( $group_label ); ?>
+					</h4>
 					<ul class="vwtsm-footer-links">
 						<?php
 						foreach ( $tool_fields as $key => $field ) :
@@ -122,14 +135,17 @@ $tool_groups = array(
 								continue;
 							}
 							?>
-							<li><a href="<?php echo esc_url( $url ); ?>">&rarr; <?php echo esc_html( $field['label'] ); ?></a></li>
+							<li><a href="<?php echo esc_url( $url ); ?>"><span class="vwtsm-footer-link-arrow">&rarr;</span> <?php echo esc_html( $field['label'] ); ?></a></li>
 						<?php endforeach; ?>
 					</ul>
 				</div>
 			<?php endforeach; ?>
 
 			<div class="vwtsm-footer-col">
-				<h4><?php esc_html_e( 'Travel Partners', 'voyasee-wtsm' ); ?></h4>
+				<h4>
+					<svg class="vwtsm-footer-col-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8 12a4 4 0 1 1 8 0v3l2 2-2 2v0a4 4 0 0 1-8 0v0l-2-2 2-2z"/><path d="M8 8V6a2 2 0 0 1 2-2h1M16 16v2a2 2 0 0 1-2 2h-1"/></svg>
+					<?php esc_html_e( 'Travel Partners', 'voyasee-wtsm' ); ?>
+				</h4>
 				<ul class="vwtsm-footer-links">
 					<?php
 					foreach ( $affiliate_fields as $key => $field ) :
@@ -139,13 +155,16 @@ $tool_groups = array(
 						}
 						$label = ( 'booking_affiliate_url' === $key ) ? 'Booking.com' : $field['fixed_label'];
 						?>
-						<li><a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="nofollow sponsored noopener">&rarr; <?php echo esc_html( $label ); ?></a></li>
+						<li><a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="nofollow sponsored noopener"><span class="vwtsm-footer-link-arrow">&rarr;</span> <?php echo esc_html( $label ); ?></a></li>
 					<?php endforeach; ?>
 				</ul>
 			</div>
 
 			<div class="vwtsm-footer-col vwtsm-footer-legal">
-				<h4><?php esc_html_e( 'Good to know', 'voyasee-wtsm' ); ?></h4>
+				<h4>
+					<svg class="vwtsm-footer-col-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+					<?php esc_html_e( 'Good to know', 'voyasee-wtsm' ); ?>
+				</h4>
 				<p>
 					<?php esc_html_e( 'Neighborhood data is general guidance built from curated research and OpenStreetMap point-of-interest density -- not a guarantee. Use normal travel precautions and check current local conditions before booking.', 'voyasee-wtsm' ); ?>
 				</p>

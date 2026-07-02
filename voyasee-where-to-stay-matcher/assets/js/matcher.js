@@ -57,6 +57,35 @@
 	function archetypeColor( a ) { return ARCHETYPE_COLORS[ a ] || '#8a8a8a'; }
 	function archetypeLabel( a ) { return ( VWTSM.archetypeLabels && VWTSM.archetypeLabels[ a ] ) || a; }
 
+	/**
+	 * Metric/dimension identity colors -- a fixed-order categorical palette
+	 * distinct from the per-neighborhood archetype colors above, so a
+	 * score's *kind* (budget vs. walkability vs. safety...) reads
+	 * consistently across the Trip Reality strip and comparison scorecard
+	 * regardless of which neighborhood it belongs to. Values mirror the
+	 * --vwtsm-metric-* custom properties in matcher.css (kept as JS
+	 * literals too since these get interpolated into inline SVG/style
+	 * strings, not just class names).
+	 */
+	var METRIC_COLORS = {
+		budget: '#c98500',
+		walkability: '#199e70',
+		nightlife: '#9085e9',
+		airport: '#3987e5',
+		safety: '#008300',
+	};
+	function metricColor( key ) { return METRIC_COLORS[ key ] || '#8a8a8a'; }
+
+	/** Small inline-SVG glyphs, one per metric, for the infographic chips/rows. */
+	var METRIC_ICONS = {
+		budget: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1.1 1.1-2 2.5-2s2.5.7 2.5 1.8c0 2.4-5 1.3-5 3.7 0 1.1 1.1 1.8 2.5 1.8s2.5-.9 2.5-2"/></svg>',
+		walkability: '<svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="9" cy="4.5" rx="1.8" ry="2.2"/><path d="M7 9c-.5 2.5-1.5 4-3 5.5l1.4 1.4C7 14.3 8 12.5 8.5 10.5l1 3-1.8 6.5h2.1l1.6-5 1.7 2 .9 3h2.1l-1.4-5-1.8-2.7.7-4c1 1 2.3 1.7 4 1.9v-2c-1.7-.2-2.7-1-3.5-2.1-.8-1.1-1.5-1.4-2.4-1.1L7 9z"/></svg>',
+		nightlife: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',
+		airport: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 15l-7-2.5V6a2 2 0 0 0-4 0v6.5L3 15v2l7-1.5V19l-2 1.2V22l3-.8 3 .8v-1.8L12 19v-3.5l7 1.5z"/></svg>',
+		safety: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 10-4-2.3-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+	};
+	function metricIcon( key ) { return '<span class="vwtsm-metric-icon" style="color:' + metricColor( key ) + '">' + ( METRIC_ICONS[ key ] || '' ) + '</span>'; }
+
 	/** Simple word-wrap for canvas fillText, used by the downloadable match card. */
 	function wrapCanvasText( ctx, text, x, y, maxWidth, lineHeight ) {
 		var words = text.split( ' ' );
@@ -902,25 +931,31 @@
 		var walkabilityPending = false === confidence.walkability;
 
 		var chips = [
-			{ label: 'Budget fit', value: dims.budget || 0 },
-			{ label: 'Walkability', value: dims.walkability || 0, pending: walkabilityPending },
-			{ label: 'Airport ease', value: dims.airport || 0 },
-			{ label: 'Safety comfort', value: dims.safety || 0 },
+			{ key: 'budget', label: 'Budget fit', value: dims.budget || 0 },
+			{ key: 'walkability', label: 'Walkability', value: dims.walkability || 0, pending: walkabilityPending },
+			{ key: 'airport', label: 'Airport ease', value: dims.airport || 0 },
+			{ key: 'safety', label: 'Safety comfort', value: dims.safety || 0 },
 		];
 
 		var chipsHtml = chips.map( function ( c ) {
 			if ( c.pending ) {
 				return (
 					'<div class="vwtsm-reality-chip">' +
-						'<div class="vwtsm-reality-chip-bg vwtsm-compare-bar-pending"></div>' +
-						'<span>' + escapeHtml( c.label ) + ' <em>(' + escapeHtml( VWTSM.i18n.notSynced.toLowerCase() ) + ')</em></span>' +
+						metricIcon( c.key ) +
+						'<div class="vwtsm-reality-chip-body">' +
+							'<div class="vwtsm-reality-chip-bg vwtsm-compare-bar-pending"></div>' +
+							'<span>' + escapeHtml( c.label ) + ' <em>(' + escapeHtml( VWTSM.i18n.notSynced.toLowerCase() ) + ')</em></span>' +
+						'</div>' +
 					'</div>'
 				);
 			}
 			return (
 				'<div class="vwtsm-reality-chip">' +
-					'<div class="vwtsm-reality-chip-bg"><div class="vwtsm-reality-chip-fill" style="width:' + c.value + '%;background:' + color + '"></div></div>' +
-					'<span>' + escapeHtml( c.label ) + '</span>' +
+					metricIcon( c.key ) +
+					'<div class="vwtsm-reality-chip-body">' +
+						'<div class="vwtsm-reality-chip-bg"><div class="vwtsm-reality-chip-fill" style="width:' + c.value + '%;background:' + metricColor( c.key ) + '"></div></div>' +
+						'<span>' + escapeHtml( c.label ) + '</span>' +
+					'</div>' +
 				'</div>'
 			);
 		} ).join( '' );
@@ -1053,21 +1088,29 @@
 	VoyaseeMatcher.prototype.buildCompareScorecard = function ( matches ) {
 		// Both Walkability and Nightlife are read from the same OpenStreetMap
 		// POI sync, so they share one confidence flag (scoring.confidence.walkability).
+		// Each row's bars are colored by the metric's own identity color
+		// (not the neighborhood's archetype color) so the same metric reads
+		// as the same color down the whole comparison, and Match Score --
+		// the "hero" figure shown everywhere else as gold -- stays gold
+		// here too instead of joining the categorical set.
 		var metrics = [
-			{ label: 'Match Score', get: function ( n ) { return n.match_score || 0; } },
-			{ label: 'Walkability', get: function ( n ) { return n.walkability_score || 0; }, confidenceKey: 'walkability' },
-			{ label: 'Nightlife', get: function ( n ) { return n.nightlife_score || 0; }, confidenceKey: 'walkability' },
-			{ label: 'Safety Comfort', get: function ( n ) { return ( n.safety_tier || 0 ) * 20; } },
+			{ key: 'match_score', label: 'Match Score', get: function ( n ) { return n.match_score || 0; } },
+			{ key: 'walkability', label: 'Walkability', get: function ( n ) { return n.walkability_score || 0; }, confidenceKey: 'walkability' },
+			{ key: 'nightlife', label: 'Nightlife', get: function ( n ) { return n.nightlife_score || 0; }, confidenceKey: 'walkability' },
+			{ key: 'safety', label: 'Safety Comfort', get: function ( n ) { return ( n.safety_tier || 0 ) * 20; } },
 		];
 
 		var html = '<div class="vwtsm-compare-scorecard">';
 
 		metrics.forEach( function ( metric ) {
-			html += '<div class="vwtsm-compare-row-label">' + escapeHtml( metric.label ) + '</div><div class="vwtsm-compare-bars">';
+			var rowColor = 'match_score' === metric.key ? '#c9a24b' : metricColor( metric.key );
+			html += '<div class="vwtsm-compare-row-label">' +
+				( 'match_score' === metric.key ? '' : metricIcon( metric.key ) ) +
+				'<span>' + escapeHtml( metric.label ) + '</span>' +
+			'</div><div class="vwtsm-compare-bars">';
 			matches.forEach( function ( n ) {
 				var confidence = ( n.scoring && n.scoring.confidence ) || {};
 				var notSynced = metric.confidenceKey && false === confidence[ metric.confidenceKey ];
-				var color = archetypeColor( n.archetype );
 				if ( notSynced ) {
 					// A dedicated 2-column layout (not the 3-column numeric
 					// layout below) so the pending label gets the full
@@ -1082,20 +1125,22 @@
 				var val = clamp( metric.get( n ), 0, 100 );
 				html += '<div class="vwtsm-compare-bar-track">' +
 					'<span class="vwtsm-compare-bar-name">' + escapeHtml( n.name ) + '</span>' +
-					'<span class="vwtsm-compare-bar-bg"><span class="vwtsm-compare-bar-fill" style="width:' + val + '%;background:' + color + '"></span></span>' +
+					'<span class="vwtsm-compare-bar-bg"><span class="vwtsm-compare-bar-fill" style="width:' + val + '%;background:' + rowColor + '"></span></span>' +
 					'<span class="vwtsm-compare-bar-value">' + Math.round( val ) + '</span>' +
 				'</div>';
 			} );
 			html += '</div>';
 		} );
 
-		html += '<div class="vwtsm-compare-row-label">Price &amp; Logistics</div><div class="vwtsm-compare-bars">';
+		html += '<div class="vwtsm-compare-row-label"><span>Price &amp; Logistics</span></div><div class="vwtsm-compare-pills">';
 		matches.forEach( function ( n ) {
-			html += '<div class="vwtsm-compare-bar-track" style="grid-template-columns:110px 1fr">' +
+			html += '<div class="vwtsm-compare-pill-row">' +
 				'<span class="vwtsm-compare-bar-name">' + escapeHtml( n.name ) + '</span>' +
-				'<span class="vwtsm-compare-bar-value" style="text-align:left">' +
-					'$'.repeat( n.price_band || 0 ) + ' &middot; Airport ' + ( n.time_airport_min || '?' ) + 'min &middot; Center ' + ( n.time_center_min || '?' ) + 'min' +
-				'</span>' +
+				'<div class="vwtsm-compare-pills-group">' +
+					'<span class="vwtsm-logistics-pill" style="--pill-color:' + metricColor( 'budget' ) + '">' + metricIcon( 'budget' ) + '$'.repeat( n.price_band || 0 ) + '</span>' +
+					'<span class="vwtsm-logistics-pill" style="--pill-color:' + metricColor( 'airport' ) + '">' + metricIcon( 'airport' ) + 'Airport ' + ( n.time_airport_min || '?' ) + 'min</span>' +
+					'<span class="vwtsm-logistics-pill" style="--pill-color:' + metricColor( 'walkability' ) + '">' + metricIcon( 'walkability' ) + 'Center ' + ( n.time_center_min || '?' ) + 'min</span>' +
+				'</div>' +
 			'</div>';
 		} );
 		html += '</div>';

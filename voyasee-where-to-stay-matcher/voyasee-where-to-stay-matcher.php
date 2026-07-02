@@ -3,7 +3,7 @@
  * Plugin Name:       Voyasee Where to Stay Matcher
  * Plugin URI:        https://voyasee.com
  * Description:       All-in-one neighborhood-matching tool: self-hosted destination/neighborhood dataset, OpenStreetMap POI sync, admin CRUD + CSV import, and the interactive 2-step "where should I stay" quiz with an explainable Match Score and the signature Wrong Area Warning -- all in a single plugin, operated through one shortcode.
- * Version:           3.3.0
+ * Version:           3.4.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Voyasee
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ----------------------------------------------------------------------
  * Constants
  * -------------------------------------------------------------------- */
-define( 'WTSM_VERSION', '3.3.0' );
+define( 'WTSM_VERSION', '3.4.0' );
 define( 'WTSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WTSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 

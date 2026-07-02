@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 3.3.0
+Stable tag: 3.4.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -164,6 +164,31 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 3.4.0 =
+* Fixed: the Step 1 destination and "how many nights" fields could render
+  as a plain unstyled white box with default browser text instead of the
+  tool's dark glass-style input -- the same class of bug already fixed for
+  headings in 2.1.0 (a WordPress theme's own input styling, or Chrome's
+  autofill layer, silently beating the plugin's styling), just never
+  hardened for form fields until now. Input background/border/text color
+  are now defensively protected the same way headings already are, plus a
+  fix for Chrome's autofill repainting the field white after a suggestion
+  is picked.
+* Improved: the results page is now a genuine multi-color infographic
+  instead of a single-hue navy/gold scorecard. Each scoring dimension
+  (Budget, Walkability, Nightlife, Airport, Safety) now has its own fixed
+  identity color and icon -- validated colorblind-safe against this
+  plugin's navy surface -- used consistently in the Trip Reality strip and
+  the comparison scorecard, so the same metric reads as the same color
+  everywhere it appears. The Price & Logistics row is now a row of colored
+  icon pills instead of a single plain text string. Match Score stays gold
+  everywhere, matching its "hero number" role.
+* Improved: the footer is more visually distinct -- a brand-gold gradient
+  seam across the top, a subtle grid/glow texture, a compass emblem next
+  to the Voyasee wordmark, a small icon on every column heading, dashed
+  vertical seams between columns (echoing the match card's perforated
+  ticket seam), and an animated arrow on link hover.
 
 = 3.3.0 =
 * Replaced the "Where these areas sit" overview map's abstract dot-grid
