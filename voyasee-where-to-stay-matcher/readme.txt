@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.1.0
+Stable tag: 4.1.1
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -173,6 +173,27 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.1.1 =
+* Fixed: the destination field could go invisible (cream text on a
+  white background) while actively being typed into, on themes that ship
+  their own input:focus style. The field's normal (correct, dark) styling
+  only reasserted itself once the field lost focus -- e.g. right after
+  clicking an autocomplete suggestion -- which read as "my typing doesn't
+  show up, but the picked result does."
+* Fixed: the date field's native calendar icon had no styling at all, so
+  browsers drew it in their default near-black ink -- invisible against
+  this tool's dark fields.
+* Changed: the Pexels photo sync now runs hourly (was daily) and fetches
+  50 neighborhoods per run (was 20). Pexels is a dedicated, generously-
+  quota'd commercial key (200 req/hour, 20,000/month) rather than a
+  shared community resource like the OpenStreetMap/Wikipedia syncs, so
+  there was no reason for it to be this conservative -- at the old pace a
+  full destination catalog's first photo pass took weeks, which looked
+  like "photos are broken everywhere except the one destination that
+  happened to sync first" rather than "still catching up." Existing
+  installs are migrated to the faster schedule automatically, no action
+  needed.
 
 = 4.1.0 =
 * Added: a plain-language "why this topped your matches" narrative on the

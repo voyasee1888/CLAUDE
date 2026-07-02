@@ -416,6 +416,31 @@
 	outline: 2px solid var(--vwtsm-gold-soft);
 	outline-offset: 2px;
 }
+/* Some themes ship their own input:focus rule (often a plain white
+   background to show "active field") with enough specificity/!important
+   to win over the base .vwtsm-input rule above the instant a field is
+   focused -- invisible cream-on-white text while actively typing, which
+   then "fixes itself" the moment the field blurs (e.g. after picking an
+   autocomplete result) and the base rule applies again. Re-assert the
+   same colors here so focus can never repaint this field. */
+.vwtsm-root .vwtsm-input:focus,
+.vwtsm-root .vwtsm-select:focus {
+	background: rgba(10, 15, 28, 0.7) !important;
+	color: var(--vwtsm-cream) !important;
+	-webkit-text-fill-color: var(--vwtsm-cream);
+}
+
+/* The native date-input calendar glyph is drawn by the browser in its
+   default (usually near-black) ink color, which is invisible against
+   this tool's dark navy fields with no styling at all applied to it. */
+.vwtsm-root .vwtsm-input[type="date"]::-webkit-calendar-picker-indicator {
+	filter: invert(1) brightness(1.5);
+	cursor: pointer;
+	opacity: 0.85;
+}
+.vwtsm-root .vwtsm-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+	opacity: 1;
+}
 
 .vwtsm-autocomplete { position: relative; }
 .vwtsm-autocomplete-results {

@@ -32,8 +32,19 @@ class WTSM_Photo_Sync {
 
 	const CRON_HOOK = 'wtsm_photo_sync_event';
 
-	/** How many neighborhoods to fetch a photo for per run. */
-	const BATCH_SIZE = 20;
+	/**
+	 * How many neighborhoods to fetch a photo for per run. Unlike the OSM
+	 * POI/boundary and Wikipedia landmark syncs, Pexels is a dedicated,
+	 * commercially-licensed key with a generous quota (200 req/hour,
+	 * 20,000/month on the default free key) -- not a shared community
+	 * resource -- so this can run a much larger batch than those without
+	 * any fair-use concern. A larger batch also matters in practice: at
+	 * the old batch of 20/day, a full destination catalog of a few
+	 * hundred neighborhoods took weeks to finish its very first pass,
+	 * which read as "photos are broken" for every destination not yet
+	 * reached rather than "still catching up."
+	 */
+	const BATCH_SIZE = 50;
 
 	const PEXELS_SEARCH_ENDPOINT = 'https://api.pexels.com/v1/search';
 
@@ -49,8 +60,26 @@ class WTSM_Photo_Sync {
 	public function register_cron() {
 		add_action( self::CRON_HOOK, array( $this, 'run_batch' ) );
 
-		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
-			wp_schedule_event( time() + ( 2 * HOUR_IN_SECONDS ), 'daily', self::CRON_HOOK );
+		$scheduled = wp_get_scheduled_event( self::CRON_HOOK );
+
+		// Sites upgrading from an earlier version already have this event
+		// scheduled on the old 'daily' recurrence; wp_next_scheduled() alone
+		// would see it as "already scheduled" and never pick up the faster
+		// interval below. Reschedule in place whenever the recurrence on
+		// record doesn't match what this version wants.
+		if ( $scheduled && 'hourly' !== $scheduled->schedule ) {
+			wp_unschedule_event( $scheduled->timestamp, self::CRON_HOOK );
+			$scheduled = false;
+		}
+
+		if ( ! $scheduled ) {
+			// 'hourly' (not 'daily') for the same reason the batch size was
+			// raised above: this key has ample quota to spare, and clearing
+			// the initial backlog across an entire catalog in hours rather
+			// than weeks is what makes "runs automatically" actually feel
+			// automatic instead of stuck. Once every neighborhood has a
+			// photo, each run's query returns nothing and does no work.
+			wp_schedule_event( time() + ( 10 * MINUTE_IN_SECONDS ), 'hourly', self::CRON_HOOK );
 		}
 	}
 

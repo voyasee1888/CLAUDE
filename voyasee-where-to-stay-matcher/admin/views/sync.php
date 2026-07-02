@@ -70,7 +70,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 		</div>
 	<?php else : ?>
 		<p class="description">
-			<?php esc_html_e( 'Fetches one real photo per neighborhood from Pexels for neighborhoods that don\'t have one yet. Runs automatically once a day in small batches (never on a live visitor request), and can also be triggered manually below. The photographer is credited automatically wherever a photo appears.', 'voyasee-ni' ); ?>
+			<?php esc_html_e( 'Fetches one real photo per neighborhood from Pexels for neighborhoods that don\'t have one yet. Runs automatically about once an hour, 50 at a time (never on a live visitor request), and can also be triggered manually below. A full catalog typically finishes its first pass within a day rather than weeks. The photographer is credited automatically wherever a photo appears.', 'voyasee-ni' ); ?>
 		</p>
 
 		<?php if ( null !== $photo_result ) : ?>
@@ -102,7 +102,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 		<form method="post" style="margin-top:20px">
 			<?php wp_nonce_field( 'wtsm_photo_sync_now', 'wtsm_photo_sync_nonce' ); ?>
-			<?php submit_button( __( 'Fetch neighborhood photos now (20 neighborhoods)', 'voyasee-ni' ) ); ?>
+			<?php submit_button( __( 'Fetch neighborhood photos now (50 neighborhoods)', 'voyasee-ni' ) ); ?>
 		</form>
 	<?php endif; ?>
 
