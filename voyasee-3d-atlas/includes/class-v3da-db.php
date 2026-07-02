@@ -13,12 +13,36 @@ final class V3DA_DB {
     public static function activate(): void {
         self::install();
         update_option('v3da_db_version', self::DB_VERSION, false);
+        self::maybe_seed_defaults();
     }
 
     public static function maybe_upgrade(): void {
-        if (get_option('v3da_db_version') === self::DB_VERSION) return;
-        self::install();
-        update_option('v3da_db_version', self::DB_VERSION, false);
+        if (get_option('v3da_db_version') !== self::DB_VERSION) {
+            self::install();
+            update_option('v3da_db_version', self::DB_VERSION, false);
+        }
+        // Runs on every plugins_loaded until the destinations table has ever
+        // held a row, so sites that activated before this dataset existed
+        // get it automatically on their next page load too -- not just on
+        // a fresh install. The 'v3da_seeded' flag makes this a cheap option
+        // read (no query against the destinations table) once it has run.
+        self::maybe_seed_defaults();
+    }
+
+    private static function maybe_seed_defaults(): void {
+        if (get_option('v3da_seeded')) return;
+        if (!empty(self::get_all())) {
+            update_option('v3da_seeded', 1, false);
+            return;
+        }
+        $defaults = require V3DA_DIR . 'includes/data/default-destinations.php';
+        foreach ($defaults as $row) {
+            $row['content_taxonomy'] = 'category';
+            $row['content_term_slug'] = sanitize_title($row['name']);
+            $row['status'] = 'active';
+            self::insert($row);
+        }
+        update_option('v3da_seeded', 1, false);
     }
 
     private static function install(): void {

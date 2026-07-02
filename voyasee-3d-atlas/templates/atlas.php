@@ -56,7 +56,7 @@ $visa_url = $settings['affiliate_visa'] ?? '';
                 <ul class="v3datlas-region-list">
                     <?php foreach ($items as $d):
                         $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
-                        if (!$link) continue;
+                        if (!$link) $link = add_query_arg('s', rawurlencode($d['name']), home_url('/'));
                     ?>
                         <li><a href="<?php echo esc_url($link); ?>"><?php echo esc_html($d['name']); ?></a>, <?php echo esc_html($d['country']); ?></li>
                     <?php endforeach; ?>

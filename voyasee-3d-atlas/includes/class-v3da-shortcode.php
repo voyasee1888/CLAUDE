@@ -88,11 +88,12 @@ final class V3DA_Shortcode {
         $items = [];
         foreach ($destinations as $i => $d) {
             $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
+            if (!$link) $link = add_query_arg('s', rawurlencode($d['name']), home_url('/'));
             $items[] = [
                 '@type' => 'ListItem',
                 'position' => $i + 1,
                 'name' => $d['name'] . ', ' . $d['country'],
-                'url' => $link ?: home_url('/'),
+                'url' => $link,
             ];
         }
         $schema = [

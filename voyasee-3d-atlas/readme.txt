@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,22 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.1.0 =
+* Auto-seeds 117 destinations across Europe, Asia, the Middle East, Africa,
+  North America, the Caribbean, South America, and Oceania on first
+  activation (or on the next page load for sites that already activated an
+  earlier version) — no manual entry required. See
+  includes/data/default-destinations.php.
+* Each seeded destination's "content term slug" defaults to its own slug as
+  a placeholder, since this plugin cannot know this site's real category
+  taxonomy. Edit it per destination in 3D Atlas → Destinations once a
+  matching category/tag exists, to connect real related articles.
+* Fix: the visible "Browse all destinations A–Z" list and the ItemList
+  structured data no longer silently drop a destination just because its
+  content term slug doesn't match a real category yet — they now fall back
+  to a site search link for that destination's name so every destination
+  always has a working, crawlable link.
 
 = 1.0.1 =
 * Fix: the globe failed to render at all on a fresh install with zero
