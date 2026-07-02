@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.1.1
+Stable tag: 4.1.2
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -173,6 +173,16 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.1.2 =
+* Fixed: the 4.1.1 fix for the invisible destination-field text while typing
+  wasn't strong enough on this site -- a class-based CSS rule
+  (.vwtsm-root .vwtsm-input:focus) can still lose a specificity contest
+  against certain theme/page-builder styling (Elementor in particular
+  scopes its own CSS to auto-generated container IDs, which outrank plain
+  class selectors). Re-anchored the fix directly to each field's own
+  #id (#vwtsm-destination, #vwtsm-nights, #vwtsm-travel-date), which beats
+  virtually any class-based competitor regardless of where it comes from.
 
 = 4.1.1 =
 * Fixed: the destination field could go invisible (cream text on a

@@ -416,18 +416,27 @@
 	outline: 2px solid var(--vwtsm-gold-soft);
 	outline-offset: 2px;
 }
-/* Some themes ship their own input:focus rule (often a plain white
-   background to show "active field") with enough specificity/!important
-   to win over the base .vwtsm-input rule above the instant a field is
-   focused -- invisible cream-on-white text while actively typing, which
-   then "fixes itself" the moment the field blurs (e.g. after picking an
-   autocomplete result) and the base rule applies again. Re-assert the
-   same colors here so focus can never repaint this field. */
+/* Some themes/page builders (Elementor in particular scopes its own
+   widget CSS to an auto-generated container ID) ship their own
+   input:focus rule -- often a plain white "active field" background --
+   with enough specificity to beat a class-based !important rule once the
+   selectors are compared, because two equally-important declarations
+   are decided by specificity/source order, not just the presence of
+   !important. A first attempt at re-asserting colors via
+   ".vwtsm-root .vwtsm-input:focus" (two classes) was not enough to win
+   against that. Anchor to the field's own #id instead: an ID selector
+   outweighs virtually any class-based selector a theme or builder is
+   likely to use, so this wins regardless of where else on the page
+   competing focus styling comes from. */
 .vwtsm-root .vwtsm-input:focus,
-.vwtsm-root .vwtsm-select:focus {
+.vwtsm-root .vwtsm-select:focus,
+#vwtsm-destination:focus,
+#vwtsm-nights:focus,
+#vwtsm-travel-date:focus {
 	background: rgba(10, 15, 28, 0.7) !important;
 	color: var(--vwtsm-cream) !important;
-	-webkit-text-fill-color: var(--vwtsm-cream);
+	-webkit-text-fill-color: var(--vwtsm-cream) !important;
+	border-color: var(--vwtsm-gold-soft) !important;
 }
 
 /* The native date-input calendar glyph is drawn by the browser in its
