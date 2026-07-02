@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.0.0
+Stable tag: 4.1.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -173,6 +173,38 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.1.0 =
+* Added: a plain-language "why this topped your matches" narrative on the
+  results page -- one sentence built entirely from the traveler's own
+  answers and the same dimension scores already shown in the radar chart,
+  naming the single strongest reason a neighborhood matched. Not a
+  generic description; it changes with the answers and the neighborhood.
+* Added: a qualitative match-confidence label (Excellent/Strong/Good/Fair
+  fit) plus a count of genuinely strong, confirmed-data dimensions,
+  shown next to the Match Score.
+* Added: a "good for a late-night arrival" badge, derived from a
+  neighborhood's existing airport-time and safety data -- no new
+  data source, just an honest recombination of numbers already scored.
+* Added: an optional per-destination "seasonal note" field (admin-written,
+  e.g. cherry-blossom crowds or typhoon season) shown alongside the
+  weather snapshot when set; the weather snapshot's own wording now also
+  flags a "notably rainy" or "typically dry" month using the real
+  rain-day estimate already fetched, rather than a bare number.
+* Added: a walking-distance ring (~10 min) around each matched
+  neighborhood on the overview map, and an airport marker when the
+  destination has one on record -- both using coordinates already stored,
+  no new data source.
+* Added two more trust badges to the hero header (no login required,
+  free/no account needed).
+* Considered and deliberately skipped: granular fabricated cost estimates
+  (average taxi/coffee/metro prices) -- no free, reliable, per-city
+  source for this exists (the same conclusion reached researching a
+  cost-of-living index for v4.0), and inventing plausible-sounding numbers
+  would undermine the tool's core "never guess where data doesn't exist"
+  principle. The existing currency-aware nightly price *range* (from the
+  destination's own price_band + a real live exchange rate) is a
+  defensible estimate; a fabricated daily-expense breakdown is not.
 
 = 4.0.0 =
 * Fixed: the optional Weather Bridge integration stub called a function

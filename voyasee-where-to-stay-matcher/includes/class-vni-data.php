@@ -134,6 +134,7 @@ class VNI_Data {
 			'name'           => sanitize_text_field( $data['name'] ?? '' ),
 			'country'        => sanitize_text_field( $data['country'] ?? '' ),
 			'country_code'   => isset( $data['country_code'] ) ? strtoupper( substr( sanitize_text_field( $data['country_code'] ), 0, 2 ) ) : '',
+			'seasonal_note'  => isset( $data['seasonal_note'] ) ? sanitize_textarea_field( $data['seasonal_note'] ) : '',
 			'lat'            => isset( $data['lat'] ) ? (float) $data['lat'] : 0,
 			'lng'            => isset( $data['lng'] ) ? (float) $data['lng'] : 0,
 			'airport_name'   => sanitize_text_field( $data['airport_name'] ?? '' ),

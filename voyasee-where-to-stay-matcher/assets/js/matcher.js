@@ -668,7 +668,7 @@
 		} );
 
 		this.animateMatchCardsIn( grid );
-		this.initOverviewMap( mappable );
+		this.initOverviewMap( mappable, destination );
 
 		if ( explored.length ) { this.bindAccordion( explored ); }
 
@@ -871,16 +871,27 @@
 				( unsyncedAxes.length > 1 ? 'are' : 'is' ) + ' an estimate -- OpenStreetMap sync hasn\'t run for this area yet.</p>'
 			: '';
 
+		var scoring = n.scoring || {};
+		var narrativeBlock = scoring.narrative
+			? '<p class="vwtsm-detail-narrative">' + escapeHtml( scoring.narrative ) + '</p>'
+			: '';
+		var lateArrivalBadge = scoring.late_arrival_friendly
+			? '<span class="vwtsm-badge vwtsm-badge-freshness">Good for a late-night arrival</span>'
+			: '';
+
 		return (
 			'<div class="vwtsm-detail-grid">' +
+				narrativeBlock +
 				'<div>' +
 					'<div class="vwtsm-radar-wrap"><canvas></canvas></div>' +
 					radarNote +
 					'<div class="vwtsm-price-band" style="margin-top:1rem">' + priceHtml + '</div>' +
 					'<div class="vwtsm-badge-row">' +
+						( scoring.confidence_label ? '<span class="vwtsm-badge vwtsm-badge-confidence">' + escapeHtml( scoring.confidence_label ) + '</span>' : '' ) +
 						'<span class="vwtsm-badge">Family fit: ' + ( n.family_suitability || 0 ) + '/100</span>' +
 						'<span class="vwtsm-badge">Solo fit: ' + ( n.solo_suitability || 0 ) + '/100</span>' +
 						'<span class="vwtsm-badge">Safety comfort: ' + ( n.safety_tier || 0 ) + '/5</span>' +
+						lateArrivalBadge +
 						freshnessBadge +
 					'</div>' +
 					( n.local_tip ? '<p class="vwtsm-local-tip">' + escapeHtml( n.local_tip ) + '</p>' : '' ) +
@@ -1043,16 +1054,30 @@
 			);
 		} ).join( '' );
 
+		var scoring = top.scoring || {};
+		var confidenceLabel = scoring.confidence_label
+			? '<span class="vwtsm-confidence-label">' + escapeHtml( scoring.confidence_label ) +
+				( scoring.strong_factor_count ? ' · ' + scoring.strong_factor_count + ( scoring.strong_factor_count === 1 ? ' strong factor' : ' strong factors' ) : '' ) +
+			'</span>'
+			: '';
+		var narrative = scoring.narrative
+			? '<p class="vwtsm-reality-narrative">' + escapeHtml( scoring.narrative ) + '</p>'
+			: '';
+
 		return (
 			'<div class="vwtsm-reality-strip">' +
-				'<div class="vwtsm-reality-gauge">' +
-					'<div class="vwtsm-reality-gauge-ring" style="--score:' + top.match_score + ';--ring-color:' + color + '"><span>' + top.match_score + '</span></div>' +
-					'<div class="vwtsm-reality-gauge-label">' +
-						'<span class="vwtsm-eyebrow">Top match</span>' +
-						'<strong>' + escapeHtml( top.name ) + '</strong>' +
+				'<div class="vwtsm-reality-top">' +
+					'<div class="vwtsm-reality-gauge">' +
+						'<div class="vwtsm-reality-gauge-ring" style="--score:' + top.match_score + ';--ring-color:' + color + '"><span>' + top.match_score + '</span></div>' +
+						'<div class="vwtsm-reality-gauge-label">' +
+							'<span class="vwtsm-eyebrow">Top match</span>' +
+							'<strong>' + escapeHtml( top.name ) + '</strong>' +
+							confidenceLabel +
+						'</div>' +
 					'</div>' +
+					'<div class="vwtsm-reality-chips">' + chipsHtml + '</div>' +
 				'</div>' +
-				'<div class="vwtsm-reality-chips">' + chipsHtml + '</div>' +
+				narrative +
 			'</div>'
 		);
 	};
@@ -1073,6 +1098,9 @@
 
 		var weather = this.buildWeatherFact( data.weather );
 		if ( weather ) { chips.push( weather ); }
+
+		var seasonal = this.buildSeasonalFact( data.destination && data.destination.seasonal_note );
+		if ( seasonal ) { chips.push( seasonal ); }
 
 		var holiday = this.buildHolidayFact( data.holiday_overlap );
 		if ( holiday ) { chips.push( holiday ); }
@@ -1122,13 +1150,26 @@
 		if ( 'climate_normals' === weather.type && weather.month && null !== weather.month.temp_mean_c ) {
 			var mean = Math.round( weather.month.temp_mean_c );
 			var rainDays = weather.month.rain_days_est;
-			var rainText = ( rainDays !== null && rainDays !== undefined ) ? ', ~' + Math.round( rainDays ) + ' rainy days' : '';
+			var rainText = '';
+			if ( rainDays !== null && rainDays !== undefined ) {
+				var rounded = Math.round( rainDays );
+				// A qualitative read on the same number, not a second
+				// invented statistic -- purely a wording aid over the same
+				// rain_days_est already fetched.
+				var qualifier = rounded >= 15 ? ' (a notably rainy month)' : ( rounded <= 3 ? ' (typically dry)' : '' );
+				rainText = ', ~' + rounded + ' rainy days' + qualifier;
+			}
 			return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127780;</span><span>' +
 				'Typical for ' + escapeHtml( weather.month.label || 'this month' ) + ': avg ' + mean + '°C' + rainText +
 				' <em>(long-term average, not a forecast)</em></span></div>';
 		}
 
 		return '';
+	};
+
+	VoyaseeMatcher.prototype.buildSeasonalFact = function ( seasonalNote ) {
+		if ( ! seasonalNote ) { return ''; }
+		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127800;</span><span>' + escapeHtml( seasonalNote ) + '</span></div>';
 	};
 
 	VoyaseeMatcher.prototype.buildHolidayFact = function ( holiday ) {
@@ -1438,7 +1479,7 @@
 	 * reason -- this mirrors the same defensive pattern already used for
 	 * Chart.js (renderRadarChart) elsewhere in this file.
 	 */
-	VoyaseeMatcher.prototype.initOverviewMap = function ( neighborhoods ) {
+	VoyaseeMatcher.prototype.initOverviewMap = function ( neighborhoods, destination ) {
 		var container = this.container.querySelector( '[data-vwtsm-overview-map]' );
 		if ( ! container || ! neighborhoods.length ) { return; }
 
@@ -1449,7 +1490,7 @@
 		}
 
 		try {
-			this.renderOverviewMapLeaflet( container, neighborhoods );
+			this.renderOverviewMapLeaflet( container, neighborhoods, destination );
 		} catch ( err ) {
 			console.error( 'Voyasee matcher: the real map failed to initialize -- showing the relative-position diagram instead.', err );
 			if ( this._leafletMap ) { try { this._leafletMap.remove(); } catch ( e2 ) {} this._leafletMap = null; }
@@ -1458,7 +1499,7 @@
 		}
 	};
 
-	VoyaseeMatcher.prototype.renderOverviewMapLeaflet = function ( container, neighborhoods ) {
+	VoyaseeMatcher.prototype.renderOverviewMapLeaflet = function ( container, neighborhoods, destination ) {
 		var map = L.map( container, {
 			scrollWheelZoom: false, // don't trap page-scroll inside an embedded map
 			attributionControl: true,
@@ -1493,6 +1534,19 @@
 			} catch ( e ) { /* malformed geometry -- skip silently, pin still shows */ }
 		} );
 
+		// A faint "~10 min walk" ring (800m, matching the OSM POI sync's own
+		// search radius) around each match -- a quick visual sense of how
+		// much is genuinely walkable from here, not just a bare dot.
+		neighborhoods.forEach( function ( n ) {
+			var color = archetypeColor( n.archetype );
+			L.circle( [ parseFloat( n.lat ), parseFloat( n.lng ) ], {
+				radius: 800,
+				color: color, weight: 1, opacity: 0.35,
+				fillColor: color, fillOpacity: 0.05,
+				interactive: false,
+			} ).addTo( map );
+		} );
+
 		neighborhoods.forEach( function ( n ) {
 			var color = archetypeColor( n.archetype );
 			var icon = L.divIcon( {
@@ -1505,6 +1559,20 @@
 				.bindTooltip( escapeHtml( n.name ), { permanent: true, direction: 'top', offset: [ 0, -4 ], className: 'vwtsm-leaflet-tooltip' } )
 				.addTo( map );
 		} );
+
+		// The airport, when the destination has one on record -- context
+		// for the "airport ease" dimension already scored for each match.
+		if ( destination && destination.airport_lat && destination.airport_lng ) {
+			var airportIcon = L.divIcon( {
+				className: 'vwtsm-leaflet-pin-wrap',
+				html: '<span class="vwtsm-airport-pin">' + ( METRIC_ICONS.airport || '' ) + '</span>',
+				iconSize: [ 20, 20 ],
+				iconAnchor: [ 10, 10 ],
+			} );
+			L.marker( [ parseFloat( destination.airport_lat ), parseFloat( destination.airport_lng ) ], { icon: airportIcon, keyboard: false } )
+				.bindTooltip( escapeHtml( destination.airport_name || 'Airport' ), { direction: 'top', offset: [ 0, -8 ], className: 'vwtsm-leaflet-tooltip' } )
+				.addTo( map );
+		}
 
 		// A visitor has to click before scroll-wheel zoom activates, so
 		// scrolling the results page past the map doesn't get hijacked.

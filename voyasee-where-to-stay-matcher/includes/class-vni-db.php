@@ -33,6 +33,7 @@ class VNI_DB {
 			name VARCHAR(191) NOT NULL,
 			country VARCHAR(191) NOT NULL DEFAULT '',
 			country_code CHAR(2) NOT NULL DEFAULT '',
+			seasonal_note TEXT NULL,
 			lat DECIMAL(10,6) NOT NULL DEFAULT 0,
 			lng DECIMAL(10,6) NOT NULL DEFAULT 0,
 			airport_name VARCHAR(191) NOT NULL DEFAULT '',

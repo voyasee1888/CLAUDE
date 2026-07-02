@@ -88,7 +88,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	<h2><?php esc_html_e( 'Expected columns', 'voyasee-ni' ); ?></h2>
 
 	<h3><?php esc_html_e( 'Destinations CSV', 'voyasee-ni' ); ?></h3>
-	<code>name, country, country_code, lat, lng, airport_name, airport_lat, airport_lng, tier, timezone, cost_index, source_dataset</code>
+	<code>name, country, country_code, seasonal_note, lat, lng, airport_name, airport_lat, airport_lng, tier, timezone, cost_index, source_dataset</code>
 	<p class="description">
 		<?php esc_html_e( 'cost_index is a 1-5 relative cost-of-living scale used to make budget matching fair across destinations (1 = cheap relative to the global average, 5 = expensive). Defaults to 3 if left blank.', 'voyasee-ni' ); ?>
 	</p>

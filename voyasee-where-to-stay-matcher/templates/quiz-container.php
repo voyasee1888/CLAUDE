@@ -89,6 +89,8 @@ $tool_groups = array(
 				<span class="vwtsm-hero-badge"><?php esc_html_e( 'Coordinate-based matching', 'voyasee-wtsm' ); ?></span>
 				<span class="vwtsm-hero-badge"><?php esc_html_e( 'OpenStreetMap-powered', 'voyasee-wtsm' ); ?></span>
 				<span class="vwtsm-hero-badge"><?php esc_html_e( 'Explainable Match Score', 'voyasee-wtsm' ); ?></span>
+				<span class="vwtsm-hero-badge"><?php esc_html_e( 'No login required', 'voyasee-wtsm' ); ?></span>
+				<span class="vwtsm-hero-badge"><?php esc_html_e( 'Free, no account needed', 'voyasee-wtsm' ); ?></span>
 			</div>
 		</div>
 

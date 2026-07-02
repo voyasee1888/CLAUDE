@@ -4,7 +4,7 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 $d = $destination ?: array(
-	'id' => 0, 'name' => '', 'slug' => '', 'country' => '', 'country_code' => '',
+	'id' => 0, 'name' => '', 'slug' => '', 'country' => '', 'country_code' => '', 'seasonal_note' => '',
 	'lat' => '', 'lng' => '', 'airport_name' => '', 'airport_lat' => '', 'airport_lng' => '',
 	'tier' => 2, 'timezone' => '', 'cost_index' => 3, 'source_dataset' => '',
 );
@@ -87,6 +87,13 @@ $d = $destination ?: array(
 						<option value="5" <?php selected( $d['cost_index'], 5 ); ?>><?php esc_html_e( '5 -- Very expensive relative to global average', 'voyasee-ni' ); ?></option>
 					</select>
 					<p class="description"><?php esc_html_e( 'Used to make budget matching fair across destinations -- a neighborhood\'s 1-5 price band is read relative to this, so "$$$" means something different in a cheap destination vs. an expensive one.', 'voyasee-ni' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="seasonal_note"><?php esc_html_e( 'Seasonal / best-time-to-visit note', 'voyasee-wtsm' ); ?></label></th>
+				<td>
+					<textarea id="seasonal_note" name="seasonal_note" rows="2" class="large-text" placeholder="<?php esc_attr_e( 'e.g. Cherry blossom late March-early April draws crowds and higher prices; typhoon season is Aug-Oct.', 'voyasee-wtsm' ); ?>"><?php echo esc_textarea( $d['seasonal_note'] ); ?></textarea>
+					<p class="description"><?php esc_html_e( 'Optional, written in your own words -- shown alongside the weather snapshot on the results page when set. Left blank, nothing appears here (the weather snapshot itself still works independently, if Weather Bridge is active).', 'voyasee-wtsm' ); ?></p>
 				</td>
 			</tr>
 			<tr>

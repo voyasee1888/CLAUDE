@@ -137,6 +137,7 @@ class VNI_Admin {
 			'slug'           => sanitize_title( $_POST['slug'] ?? ( $_POST['name'] ?? '' ) ),
 			'country'        => sanitize_text_field( $_POST['country'] ?? '' ),
 			'country_code'   => sanitize_text_field( $_POST['country_code'] ?? '' ),
+			'seasonal_note'  => sanitize_textarea_field( $_POST['seasonal_note'] ?? '' ),
 			'lat'            => (float) ( $_POST['lat'] ?? 0 ),
 			'lng'            => (float) ( $_POST['lng'] ?? 0 ),
 			'airport_name'   => sanitize_text_field( $_POST['airport_name'] ?? '' ),

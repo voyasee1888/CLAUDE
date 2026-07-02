@@ -127,6 +127,7 @@ class WTSM_Matching_Engine {
 		}
 
 		$confidence = $this->dimension_confidence( $n, $answers );
+		$persona    = $this->build_persona_label( $answers );
 
 		$n['scoring'] = array(
 			'match_score' => (int) round( $total ),
@@ -146,10 +147,144 @@ class WTSM_Matching_Engine {
 			'any_unsynced' => in_array( false, $confidence, true ),
 			'why_fits'    => $this->build_why_fits( $n, $dims, $answers, $confidence ),
 			'why_caution' => $this->build_why_caution( $n, $dims, $answers, $confidence ),
+			// Qualitative label + a count of dimensions that are genuinely
+			// strong (>=75) AND confirmed (not a coincidental unsynced
+			// default) -- both derived directly from the same numbers
+			// already computed above, not a separate invented metric.
+			'confidence_label'    => $this->confidence_label( $total ),
+			'strong_factor_count' => $this->count_strong_factors( $dims, $confidence ),
+			'persona'             => $persona,
+			'narrative'           => $this->build_narrative( $n, $dims, $confidence, $answers, $persona ),
+			'late_arrival_friendly' => (int) ( $n['time_airport_min'] ?? 999 ) <= 25 && (int) ( $n['safety_tier'] ?? 3 ) >= 3,
 		);
 		$n['match_score'] = $n['scoring']['match_score']; // convenience top-level for sort.
 
 		return $n;
+	}
+
+	/**
+	 * A short, qualitative label for the overall match_score -- purely a
+	 * restatement of the number in words, not a second opinion.
+	 */
+	private function confidence_label( $total_score ) {
+		$score = (int) round( $total_score );
+		if ( $score >= 90 ) { return __( 'Excellent fit', 'voyasee-wtsm' ); }
+		if ( $score >= 75 ) { return __( 'Strong fit', 'voyasee-wtsm' ); }
+		if ( $score >= 60 ) { return __( 'Good fit', 'voyasee-wtsm' ); }
+		return __( 'Fair fit', 'voyasee-wtsm' );
+	}
+
+	/**
+	 * How many dimensions are genuinely strong (>=75) with confirmed data
+	 * behind them -- an unsynced dimension landing high by coincidence of
+	 * the neutral default doesn't count, same discipline as build_why_fits().
+	 */
+	private function count_strong_factors( $dims, $confidence ) {
+		$count = 0;
+		foreach ( $dims as $key => $val ) {
+			if ( $val >= 75 && ( $confidence[ $key ] ?? true ) ) {
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	/**
+	 * A short "kind of traveler" descriptor built entirely from the
+	 * traveler's own answers (traveler type + budget + vibe + interests +
+	 * the walkability toggle) -- a plain-language restatement of inputs
+	 * already collected, not an inferred/guessed classification.
+	 */
+	private function build_persona_label( $answers ) {
+		$traits = array();
+
+		$budget = (int) ( $answers['budget_band'] ?? 3 );
+		if ( $budget <= 2 ) {
+			$traits[] = __( 'budget-conscious', 'voyasee-wtsm' );
+		} elseif ( $budget >= 4 ) {
+			$traits[] = __( 'upscale', 'voyasee-wtsm' );
+		}
+
+		$vibe = (int) ( $answers['vibe_slider'] ?? 50 );
+		if ( $vibe >= 65 ) {
+			$traits[] = __( 'nightlife-seeking', 'voyasee-wtsm' );
+		} elseif ( $vibe <= 35 ) {
+			$traits[] = __( 'quiet-neighborhood-loving', 'voyasee-wtsm' );
+		}
+
+		$interests = is_array( $answers['interests'] ?? null ) ? $answers['interests'] : array();
+		if ( in_array( 'food_nightlife', $interests, true ) ) {
+			$traits[] = __( 'food-loving', 'voyasee-wtsm' );
+		} elseif ( in_array( 'museums_culture', $interests, true ) || in_array( 'historic', $interests, true ) ) {
+			$traits[] = __( 'culture-curious', 'voyasee-wtsm' );
+		} elseif ( in_array( 'beach', $interests, true ) ) {
+			$traits[] = __( 'beach-loving', 'voyasee-wtsm' );
+		} elseif ( in_array( 'shopping', $interests, true ) ) {
+			$traits[] = __( 'shopping-focused', 'voyasee-wtsm' );
+		}
+
+		if ( ! empty( $answers['walkability_importance'] ) ) {
+			$traits[] = __( 'walkability-focused', 'voyasee-wtsm' );
+		}
+
+		$traveler_labels = array(
+			'solo'     => __( 'solo traveler', 'voyasee-wtsm' ),
+			'couple'   => __( 'couple', 'voyasee-wtsm' ),
+			'family'   => __( 'family', 'voyasee-wtsm' ),
+			'group'    => __( 'group', 'voyasee-wtsm' ),
+			'business' => __( 'business traveler', 'voyasee-wtsm' ),
+		);
+		$traveler = $traveler_labels[ $answers['traveler_type'] ?? 'solo' ] ?? __( 'traveler', 'voyasee-wtsm' );
+
+		// At most two descriptors, so this reads as a sentence rather than a tag dump.
+		$traits = array_slice( $traits, 0, 2 );
+
+		return $traits ? implode( ' ', $traits ) . ' ' . $traveler : $traveler;
+	}
+
+	/**
+	 * One plain-language sentence explaining the single strongest reason
+	 * this neighborhood scored where it did -- built entirely from the
+	 * dimension scores and answers already computed, the same underlying
+	 * facts the radar chart and why_fits list already show, just narrated
+	 * as a sentence. Skips a dimension whose data isn't confirmed yet,
+	 * same discipline as build_why_fits().
+	 */
+	private function build_narrative( $n, $dims, $confidence, $answers, $persona ) {
+		$ranked = $dims;
+		arsort( $ranked );
+
+		$top_dim = null;
+		foreach ( $ranked as $key => $val ) {
+			if ( $confidence[ $key ] ?? true ) {
+				$top_dim = $key;
+				break;
+			}
+		}
+		if ( null === $top_dim ) {
+			return '';
+		}
+
+		$dim_phrases = array(
+			'budget'      => __( 'fits the budget you selected', 'voyasee-wtsm' ),
+			'vibe'        => __( 'matches the pace you\'re after', 'voyasee-wtsm' ),
+			'attractions' => __( 'lines up with the interests you picked', 'voyasee-wtsm' ),
+			'walkability' => __( 'is easy to get around on foot', 'voyasee-wtsm' ),
+			'airport'     => __( 'keeps you close to the airport', 'voyasee-wtsm' ),
+			'suitability' => __( 'suits how you\'re traveling', 'voyasee-wtsm' ),
+			'safety'      => __( 'matches the safety comfort you asked for', 'voyasee-wtsm' ),
+		);
+
+		$nights = (int) ( $answers['nights'] ?? 0 );
+
+		return sprintf(
+			/* translators: 1: persona e.g. "budget-conscious couple", 2: nights, 3: neighborhood name, 4: reason phrase */
+			__( 'As a %1$s planning %2$d night(s), %3$s %4$s -- the strongest reason it topped your matches.', 'voyasee-wtsm' ),
+			$persona,
+			$nights,
+			$n['name'],
+			$dim_phrases[ $top_dim ] ?? ''
+		);
 	}
 
 	/**
