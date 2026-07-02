@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 3.2.0
+Stable tag: 3.3.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -164,6 +164,22 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 3.3.0 =
+* Replaced the "Where these areas sit" overview map's abstract dot-grid
+  diagram with a real, geographically accurate interactive map (Leaflet +
+  a free CARTO "Dark Matter" basemap -- no API key required, CC-BY/BSD-3
+  licensed, free for any use with attribution, styled to match the tool's
+  dark navy design). Real neighbourhood boundary polygons (already fetched
+  by the boundary sync job) now draw in their true geographic position
+  instead of being projected onto a non-geographic grid, pins sit at their
+  true coordinates, and you can pan/zoom/scroll the map itself. We
+  deliberately did not call tile.openstreetmap.org's raster tiles directly
+  -- that service's usage policy forbids "heavy use" from a redistributed
+  plugin, which this basemap choice avoids. If the map CDN can't load (an
+  ad-blocker, restrictive CSP, offline preview), the tool automatically
+  falls back to the previous relative-position diagram -- nothing breaks
+  either way.
 
 = 3.2.0 =
 * Fixed: a destination-relative long-trip (8+ nights) weighting bug where

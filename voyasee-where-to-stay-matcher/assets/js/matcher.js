@@ -506,6 +506,15 @@
 		this._lastMatches = matches;
 		this.updateShareUrl();
 
+		// The previous result's map container (if any) is about to be
+		// discarded via innerHTML replacement below -- tear down its Leaflet
+		// instance first so its window resize listener doesn't leak across
+		// repeated searches (Back / Start Over / a new destination).
+		if ( this._leafletMap ) {
+			this._leafletMap.remove();
+			this._leafletMap = null;
+		}
+
 		var tierNote = '';
 		if ( data.data_tier && data.data_tier > 1 ) {
 			tierNote = '<p class="vwtsm-data-tier-note">' +
@@ -571,6 +580,7 @@
 		} );
 
 		this.animateMatchCardsIn( grid );
+		this.initOverviewMap( mappable );
 
 		if ( explored.length ) { this.bindAccordion( explored ); }
 
@@ -1098,9 +1108,104 @@
 	 * Overview map
 	 * ------------------------------------------------------------------- */
 
+	/**
+	 * Returns an empty placeholder container only -- the real map is built
+	 * by initOverviewMap() afterwards, once this markup is actually
+	 * attached to the document (Leaflet requires a live, sized DOM element
+	 * to measure before it can draw tiles).
+	 */
 	VoyaseeMatcher.prototype.buildOverviewMap = function ( neighborhoods ) {
-		var pts = neighborhoods.filter( function ( n ) { return n.lat && n.lng; } );
-		if ( ! pts.length ) { return '<div class="vwtsm-overview-map"></div>'; }
+		if ( ! neighborhoods.length ) { return '<div class="vwtsm-overview-map"></div>'; }
+		return '<div class="vwtsm-overview-map" data-vwtsm-overview-map></div>';
+	};
+
+	/**
+	 * Draw a real, geographically accurate map (Leaflet + a free CARTO dark
+	 * basemap, see class-wtsm-shortcode.php for the licensing note) with a
+	 * pin and, where OpenStreetMap has one mapped, a real boundary polygon
+	 * for each neighborhood. Falls back to the previous relative-position
+	 * diagram if Leaflet failed to load or fails to initialize for any
+	 * reason -- this mirrors the same defensive pattern already used for
+	 * Chart.js (renderRadarChart) elsewhere in this file.
+	 */
+	VoyaseeMatcher.prototype.initOverviewMap = function ( neighborhoods ) {
+		var container = this.container.querySelector( '[data-vwtsm-overview-map]' );
+		if ( ! container || ! neighborhoods.length ) { return; }
+
+		if ( typeof L === 'undefined' ) {
+			console.error( 'Voyasee matcher: Leaflet did not load (likely blocked by an ad-blocker, content-security-policy, or a CDN network issue) -- showing the relative-position diagram instead.' );
+			this.renderOverviewMapFallback( container, neighborhoods );
+			return;
+		}
+
+		try {
+			this.renderOverviewMapLeaflet( container, neighborhoods );
+		} catch ( err ) {
+			console.error( 'Voyasee matcher: the real map failed to initialize -- showing the relative-position diagram instead.', err );
+			if ( this._leafletMap ) { try { this._leafletMap.remove(); } catch ( e2 ) {} this._leafletMap = null; }
+			container.innerHTML = '';
+			this.renderOverviewMapFallback( container, neighborhoods );
+		}
+	};
+
+	VoyaseeMatcher.prototype.renderOverviewMapLeaflet = function ( container, neighborhoods ) {
+		var map = L.map( container, {
+			scrollWheelZoom: false, // don't trap page-scroll inside an embedded map
+			attributionControl: true,
+		} );
+
+		L.tileLayer( 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>',
+			subdomains: 'abcd',
+			maxZoom: 19,
+		} ).addTo( map );
+
+		var latLngs = neighborhoods.map( function ( n ) { return [ parseFloat( n.lat ), parseFloat( n.lng ) ]; } );
+		var bounds = L.latLngBounds( latLngs );
+		if ( latLngs.length === 1 || ! bounds.isValid() || bounds.getNorthEast().equals( bounds.getSouthWest() ) ) {
+			map.setView( latLngs[ 0 ], 13 );
+		} else {
+			map.fitBounds( bounds, { padding: [ 34, 34 ], maxZoom: 15 } );
+		}
+
+		// Real neighbourhood boundary shapes where OpenStreetMap has them
+		// mapped (honest best-effort -- coverage varies by city); areas
+		// without one simply keep their pin only, nothing looks broken.
+		neighborhoods.forEach( function ( n ) {
+			if ( ! n.boundary_geojson ) { return; }
+			try {
+				var geo = JSON.parse( n.boundary_geojson );
+				var color = archetypeColor( n.archetype );
+				L.geoJSON( geo, {
+					style: { color: color, weight: 1.5, fillColor: color, fillOpacity: 0.22 },
+					interactive: false,
+				} ).addTo( map );
+			} catch ( e ) { /* malformed geometry -- skip silently, pin still shows */ }
+		} );
+
+		neighborhoods.forEach( function ( n ) {
+			var color = archetypeColor( n.archetype );
+			var icon = L.divIcon( {
+				className: 'vwtsm-leaflet-pin-wrap',
+				html: '<span class="vwtsm-overview-pin" style="position:static;transform:none;background:' + color + ';color:' + color + '"></span>',
+				iconSize: [ 13, 13 ],
+				iconAnchor: [ 7, 7 ],
+			} );
+			L.marker( [ parseFloat( n.lat ), parseFloat( n.lng ) ], { icon: icon, keyboard: false } )
+				.bindTooltip( escapeHtml( n.name ), { permanent: true, direction: 'top', offset: [ 0, -4 ], className: 'vwtsm-leaflet-tooltip' } )
+				.addTo( map );
+		} );
+
+		// A visitor has to click before scroll-wheel zoom activates, so
+		// scrolling the results page past the map doesn't get hijacked.
+		container.addEventListener( 'click', function () { map.scrollWheelZoom.enable(); }, { once: true } );
+
+		this._leafletMap = map;
+	};
+
+	/** Previous relative-position diagram -- kept as an automatic fallback. */
+	VoyaseeMatcher.prototype.renderOverviewMapFallback = function ( container, pts ) {
+		container.classList.add( 'is-fallback' );
 
 		var lats = pts.map( function ( n ) { return parseFloat( n.lat ); } );
 		var lngs = pts.map( function ( n ) { return parseFloat( n.lng ); } );
@@ -1108,7 +1213,6 @@
 		var minLng = Math.min.apply( null, lngs ), maxLng = Math.max.apply( null, lngs );
 		var latSpan = maxLat - minLat || 0.01, lngSpan = maxLng - minLng || 0.01;
 
-		var self = this;
 		var project = function ( lat, lng ) {
 			return {
 				x: 12 + ( ( lng - minLng ) / lngSpan ) * 76,
@@ -1116,11 +1220,6 @@
 			};
 		};
 
-		// Real neighbourhood shapes where OpenStreetMap has them (honest
-		// best-effort -- coverage varies by city). Rendered as a translucent
-		// SVG polygon layer beneath the existing dot markers, which still
-		// render for every neighborhood regardless, so nothing looks broken
-		// where a boundary isn't available.
 		var polygons = '';
 		pts.forEach( function ( n ) {
 			if ( ! n.boundary_geojson ) { return; }
@@ -1167,7 +1266,7 @@
 			);
 		} ).join( '' );
 
-		return '<div class="vwtsm-overview-map">' + svgOverlay + pins + '</div>';
+		container.innerHTML = svgOverlay + pins;
 	};
 
 	VoyaseeMatcher.prototype.buildOverviewLegend = function ( neighborhoods ) {

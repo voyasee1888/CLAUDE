@@ -70,11 +70,24 @@ class WTSM_Shortcode {
 			null
 		);
 
-		wp_enqueue_style( 'vwtsm-matcher', WTSM_PLUGIN_URL . 'assets/css/matcher.css', array(), WTSM_VERSION );
+		// Leaflet (MIT license) + a free, no-API-key CARTO "Dark Matter" basemap
+		// (OSM data, CC-BY/BSD-3, free for any use with attribution -- see
+		// https://carto.com/basemaps) gives the overview map a real,
+		// geographically accurate map instead of an abstract dot grid. We
+		// deliberately don't call tile.openstreetmap.org's raster tiles
+		// directly -- that service's usage policy forbids "heavy use" from a
+		// redistributed plugin/app, whereas CARTO's basemap CDN is built for
+		// exactly this kind of embedding. If either CDN fails to load (an
+		// ad-blocker, offline admin preview, restrictive CSP), the frontend
+		// falls back to the previous relative-position diagram automatically.
+		wp_enqueue_style( 'leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css', array(), '1.9.4' );
+		wp_enqueue_script( 'leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js', array(), '1.9.4', true );
+
+		wp_enqueue_style( 'vwtsm-matcher', WTSM_PLUGIN_URL . 'assets/css/matcher.css', array( 'leaflet' ), WTSM_VERSION );
 
 		wp_enqueue_script( 'chart-js', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js', array(), '4.4.4', true );
 
-		wp_enqueue_script( 'vwtsm-matcher', WTSM_PLUGIN_URL . 'assets/js/matcher.js', array( 'chart-js' ), WTSM_VERSION, true );
+		wp_enqueue_script( 'vwtsm-matcher', WTSM_PLUGIN_URL . 'assets/js/matcher.js', array( 'chart-js', 'leaflet' ), WTSM_VERSION, true );
 
 		wp_localize_script(
 			'vwtsm-matcher',

@@ -150,7 +150,7 @@ $tool_groups = array(
 					<?php esc_html_e( 'Neighborhood data is general guidance built from curated research and OpenStreetMap point-of-interest density -- not a guarantee. Use normal travel precautions and check current local conditions before booking.', 'voyasee-wtsm' ); ?>
 				</p>
 				<p>
-					<?php esc_html_e( 'Map data', 'voyasee-wtsm' ); ?> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> <?php esc_html_e( 'contributors, ODbL.', 'voyasee-wtsm' ); ?>
+					<?php esc_html_e( 'Map data', 'voyasee-wtsm' ); ?> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> <?php esc_html_e( 'contributors, ODbL. Basemap style by', 'voyasee-wtsm' ); ?> <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>.
 				</p>
 				<p class="vwtsm-affiliate-disclosure">
 					<?php esc_html_e( 'Some links on this page are affiliate links. If you book through them, Voyasee may earn a small commission at no extra cost to you.', 'voyasee-wtsm' ); ?>
