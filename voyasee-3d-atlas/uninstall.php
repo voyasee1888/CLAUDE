@@ -6,3 +6,4 @@ $table = $wpdb->prefix . 'v3da_destinations';
 $wpdb->query("DROP TABLE IF EXISTS {$table}");
 
 delete_option('v3da_db_version');
+delete_option('v3da_settings');

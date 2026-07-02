@@ -4,10 +4,20 @@ defined('ABSPATH') || exit;
 final class V3DA_Admin {
     private const CAP = 'manage_options';
 
+    private const SETTINGS_FIELDS = [
+        'tool_interactive_map',
+        'tool_destination_quiz',
+        'tool_smart_travel_hub',
+        'affiliate_booking_eu',
+        'affiliate_booking_apac',
+        'affiliate_visa',
+    ];
+
     public static function init(): void {
         add_action('admin_menu', [self::class, 'register_menu']);
         add_action('admin_post_v3da_save_destination', [self::class, 'handle_save']);
         add_action('admin_post_v3da_delete_destination', [self::class, 'handle_delete']);
+        add_action('admin_post_v3da_save_settings', [self::class, 'handle_save_settings']);
         add_action('admin_enqueue_scripts', [self::class, 'maybe_enqueue']);
     }
 
@@ -21,13 +31,55 @@ final class V3DA_Admin {
             'dashicons-admin-site-alt3',
             58
         );
+        add_submenu_page(
+            'voyasee-3d-atlas',
+            __('Voyasee 3D Atlas — Settings', 'voyasee-3d-atlas'),
+            __('Settings', 'voyasee-3d-atlas'),
+            self::CAP,
+            'voyasee-3d-atlas-settings',
+            [self::class, 'render_settings']
+        );
     }
 
     public static function maybe_enqueue(string $hook): void {
-        if ('toplevel_page_voyasee-3d-atlas' !== $hook) return;
+        if (!in_array($hook, ['toplevel_page_voyasee-3d-atlas', '3d-atlas_page_voyasee-3d-atlas-settings'], true)) return;
         wp_enqueue_style('v3da-admin', V3DA_URL . 'assets/css/admin.css', [], V3DA_VERSION);
         wp_enqueue_media();
         wp_enqueue_script('v3da-admin', V3DA_URL . 'assets/js/admin.js', ['jquery'], V3DA_VERSION, true);
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    public static function get_settings(): array {
+        $settings = get_option('v3da_settings', []);
+        if (!is_array($settings)) $settings = [];
+        $out = [];
+        foreach (self::SETTINGS_FIELDS as $field) {
+            $out[$field] = isset($settings[$field]) ? esc_url_raw((string) $settings[$field]) : '';
+        }
+        return $out;
+    }
+
+    public static function render_settings(): void {
+        if (!current_user_can(self::CAP)) return;
+        $settings = self::get_settings();
+        $notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_notice'])) : '';
+        include V3DA_DIR . 'admin/views/settings.php';
+    }
+
+    public static function handle_save_settings(): void {
+        if (!current_user_can(self::CAP)) wp_die(esc_html__('You are not allowed to do this.', 'voyasee-3d-atlas'));
+        check_admin_referer('v3da_save_settings');
+
+        $settings = [];
+        foreach (self::SETTINGS_FIELDS as $field) {
+            $settings[$field] = esc_url_raw((string) wp_unslash($_POST[$field] ?? ''));
+        }
+        update_option('v3da_settings', $settings, false);
+
+        wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas-settings', 'v3da_notice' => 'saved'], admin_url('admin.php')));
+        exit;
     }
 
     public static function render(): void {
