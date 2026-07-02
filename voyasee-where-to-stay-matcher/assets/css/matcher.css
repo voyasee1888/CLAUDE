@@ -1,0 +1,1067 @@
+/* ==========================================================================
+   Voyasee Where to Stay Matcher -- Design System v2
+   Cormorant Garamond + DM Sans, deep navy/gold dark-editorial palette.
+   Signature element: an original animated travel scene (drifting clouds,
+   a flight path, a plane on a motion path) behind glass-effect cards --
+   no external images, so it's crisp at any resolution and carries zero
+   licensing risk. Everything is scoped under .vwtsm-root.
+   ========================================================================== */
+
+.vwtsm-root {
+	--vwtsm-navy-950: #0a0f1c;
+	--vwtsm-navy-900: #121b30;
+	--vwtsm-navy-800: #1c2944;
+	--vwtsm-navy-700: #2c3c61;
+	--vwtsm-gold: #c9a24b;
+	--vwtsm-gold-soft: #e8cf86;
+	--vwtsm-cream: #f6f1e6;
+	--vwtsm-cream-dim: #cfc8b8;
+	--vwtsm-success: #67b389;
+	--vwtsm-warning: #dc9a4d;
+	/* "We don't know yet" -- a distinct, muted slate so an unsynced data
+	   point never reads as either a genuine caution (warning amber) or a
+	   confirmed positive (success green). Used consistently everywhere the
+	   data-confidence system needs to disclose an estimate. */
+	--vwtsm-pending: #9aa3b8;
+	--vwtsm-glass-bg: rgba(18, 27, 48, 0.78);
+	--vwtsm-radius-lg: 20px;
+	--vwtsm-radius-md: 12px;
+	--vwtsm-radius-sm: 7px;
+	--vwtsm-font-display: 'Cormorant Garamond', Georgia, serif;
+	--vwtsm-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+	--vwtsm-arch-historic: #c97a47;
+	--vwtsm-arch-beach: #45a3b3;
+	--vwtsm-arch-nightlife: #8a5184;
+	--vwtsm-arch-business: #c9a24b;
+	--vwtsm-arch-residential_quiet: #739572;
+	--vwtsm-arch-family_suburban: #82a87d;
+	--vwtsm-arch-budget_backpacker: #c08458;
+	--vwtsm-arch-luxury: #b8973f;
+	--vwtsm-arch-airport_transit: #63708a;
+
+	max-width: 1040px;
+	margin: 2rem auto;
+	font-family: var(--vwtsm-font-body);
+	color: var(--vwtsm-cream);
+	box-sizing: border-box;
+}
+
+.vwtsm-root *,
+.vwtsm-root *::before,
+.vwtsm-root *::after { box-sizing: inherit; }
+
+.vwtsm-root img { max-width: 100%; display: block; }
+.vwtsm-root button { font-family: inherit; cursor: pointer; }
+.vwtsm-root a { color: var(--vwtsm-gold-soft); }
+
+/* Defensive reset: WordPress themes (Astra/Elementor) apply their own
+   color to bare h1-h6 selectors, and depending on cache/load-order that
+   can occasionally beat a plugin class of equal specificity, making text
+   invisible against our dark cards (this happened with the card names).
+   This forces every heading inside the tool to always be visible first;
+   specific classes below still layer their own colors on top safely. */
+.vwtsm-root h1,
+.vwtsm-root h2,
+.vwtsm-root h3,
+.vwtsm-root h4,
+.vwtsm-root h5,
+.vwtsm-root h6 {
+	color: var(--vwtsm-cream) !important;
+	margin: 0;
+	font-family: inherit;
+}
+
+/* -------------------------------------------------------------------------
+   Hero scene -- the animated travel illustration behind the quiz card
+   ------------------------------------------------------------------------- */
+
+.vwtsm-hero-scene {
+	position: relative;
+	border-radius: var(--vwtsm-radius-lg);
+	overflow: hidden;
+	isolation: isolate;
+	box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.55);
+}
+
+.vwtsm-bg-scene {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.vwtsm-bg-gradient {
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(ellipse 80% 60% at 70% 0%, rgba(201, 162, 75, 0.16), transparent 60%),
+		linear-gradient(165deg, #0c1426 0%, #121b30 38%, #1c2944 75%, #233252 100%);
+}
+
+/* Faint globe/map graticule -- suggests a world map grid without being a
+   literal (and copyright-risky) map illustration. */
+.vwtsm-globe-grid {
+	position: absolute;
+	inset: -10%;
+	background-image:
+		repeating-linear-gradient(90deg, rgba(232, 207, 134, 0.05) 0, rgba(232, 207, 134, 0.05) 1px, transparent 1px, transparent 90px),
+		repeating-linear-gradient(0deg, rgba(232, 207, 134, 0.05) 0, rgba(232, 207, 134, 0.05) 1px, transparent 1px, transparent 90px);
+	-webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, #000 30%, transparent 75%);
+	mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, #000 30%, transparent 75%);
+}
+
+.vwtsm-stars {
+	position: absolute;
+	inset: 0;
+	background-image:
+		radial-gradient(1.5px 1.5px at 12% 18%, rgba(246,241,230,0.55), transparent),
+		radial-gradient(1px 1px at 28% 8%, rgba(246,241,230,0.4), transparent),
+		radial-gradient(1.5px 1.5px at 52% 14%, rgba(246,241,230,0.5), transparent),
+		radial-gradient(1px 1px at 73% 6%, rgba(246,241,230,0.35), transparent),
+		radial-gradient(1.5px 1.5px at 87% 20%, rgba(246,241,230,0.45), transparent),
+		radial-gradient(1px 1px at 95% 35%, rgba(246,241,230,0.3), transparent);
+	opacity: 0.8;
+}
+
+/* Signature element: a flight-route network, like an airline route map --
+   dashed great-circle-style arcs between node "cities" with a soft light
+   traveling along each one. Vector-based (SVG + CSS), so it stays crisp
+   at any resolution ("HD") and is inexpensive to animate smoothly. */
+.vwtsm-route-network {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.vwtsm-route-arc {
+	fill: none;
+	stroke: rgba(232, 207, 134, 0.32);
+	stroke-width: 1.25;
+	stroke-dasharray: 2 7;
+	stroke-linecap: round;
+}
+
+.vwtsm-route-node {
+	fill: var(--vwtsm-gold-soft);
+	opacity: 0.6;
+}
+
+.vwtsm-route-pulse {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--vwtsm-gold-soft);
+	box-shadow: 0 0 16px 4px rgba(232, 207, 134, 0.9), 0 0 30px 10px rgba(232, 207, 134, 0.35);
+	offset-rotate: 0deg;
+	offset-distance: 0%;
+}
+
+.vwtsm-pulse-1 { offset-path: path("M -30,420 C 180,180 320,470 560,240"); }
+.vwtsm-pulse-2 { offset-path: path("M 120,60 C 320,260 520,20 780,200"); }
+.vwtsm-pulse-3 { offset-path: path("M -20,140 C 220,40 380,150 640,40"); }
+
+/* Large, very faint compass-rose watermark -- a quiet textural detail in
+   the corner rather than a competing focal point. */
+.vwtsm-compass-emblem {
+	position: absolute;
+	bottom: -8%;
+	right: -6%;
+	width: 320px;
+	height: 320px;
+	color: var(--vwtsm-gold-soft);
+	opacity: 0.06;
+}
+
+/* Small floating travel-icon glyphs -- the "movable objects" of the
+   scene: a passport/document, a location pin, a luggage tag. Each
+   drifts slowly on its own path so the background never feels static. */
+.vwtsm-float-icon {
+	position: absolute;
+	width: 26px;
+	height: 26px;
+	color: rgba(232, 207, 134, 0.4);
+	filter: drop-shadow(0 0 4px rgba(232, 207, 134, 0.25));
+}
+.vwtsm-float-icon svg { width: 100%; height: 100%; }
+
+.vwtsm-float-1 { top: 14%; left: 8%; }
+.vwtsm-float-2 { top: 62%; right: 12%; width: 22px; height: 22px; }
+.vwtsm-float-3 { top: 38%; right: 30%; width: 24px; height: 24px; }
+
+@media (prefers-reduced-motion: no-preference) {
+	.vwtsm-float-1 { animation: vwtsm-float-bob 9s ease-in-out infinite; }
+	.vwtsm-float-2 { animation: vwtsm-float-bob 11s ease-in-out infinite -3s; }
+	.vwtsm-float-3 { animation: vwtsm-float-bob 8s ease-in-out infinite -5.5s; }
+}
+
+@keyframes vwtsm-float-bob {
+	0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+	50% { transform: translateY(-14px) rotate(6deg); opacity: 0.85; }
+}
+
+/* -------------------------------------------------------------------------
+   Hero header -- branded title block above the quiz card
+   ------------------------------------------------------------------------- */
+
+.vwtsm-hero-header {
+	position: relative;
+	z-index: 1;
+	text-align: center;
+	padding: 2.75rem 1.5rem 1.5rem;
+}
+
+.vwtsm-hero-title {
+	font-family: var(--vwtsm-font-display);
+	font-weight: 600;
+	font-size: clamp(1.9rem, 5vw + 1rem, 2.6rem);
+	line-height: 1.15;
+	color: var(--vwtsm-cream) !important;
+	margin: 0 0 0.6rem;
+}
+.vwtsm-hero-title em {
+	font-style: italic;
+	color: var(--vwtsm-gold-soft);
+}
+
+.vwtsm-hero-tagline {
+	font-size: 1rem;
+	color: var(--vwtsm-cream-dim);
+	max-width: 460px;
+	margin: 0 auto 1.4rem;
+}
+
+.vwtsm-hero-badges {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.6rem;
+}
+
+.vwtsm-hero-badge {
+	font-size: 0.74rem;
+	letter-spacing: 0.02em;
+	color: var(--vwtsm-gold-soft);
+	background: rgba(232, 207, 134, 0.1);
+	border: 1px solid rgba(232, 207, 134, 0.28);
+	border-radius: 999px;
+	padding: 0.4rem 0.95rem;
+}
+
+@media (max-width: 600px) {
+	.vwtsm-hero-header { padding: 2rem 1rem 1rem; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.vwtsm-route-arc-1 { animation: vwtsm-dash-drift 14s linear infinite; }
+	.vwtsm-route-arc-2 { animation: vwtsm-dash-drift 18s linear infinite reverse; }
+	.vwtsm-route-arc-3 { animation: vwtsm-dash-drift 16s linear infinite; }
+	.vwtsm-route-arc-4 { animation: vwtsm-dash-drift 20s linear infinite reverse; }
+	.vwtsm-route-node { animation: vwtsm-node-pulse 3.6s ease-in-out infinite; }
+	.vwtsm-pulse-1 { animation: vwtsm-fly 12s linear infinite; }
+	.vwtsm-pulse-2 { animation: vwtsm-fly 16s linear infinite -4s; }
+	.vwtsm-pulse-3 { animation: vwtsm-fly 14s linear infinite -8s; }
+	.vwtsm-stars { animation: vwtsm-twinkle 6s ease-in-out infinite; }
+	.vwtsm-compass-emblem { animation: vwtsm-emblem-turn 180s linear infinite; }
+}
+
+@keyframes vwtsm-dash-drift {
+	from { stroke-dashoffset: 0; }
+	to { stroke-dashoffset: -90; }
+}
+
+@keyframes vwtsm-node-pulse {
+	0%, 100% { opacity: 0.35; }
+	50% { opacity: 0.9; }
+}
+
+@keyframes vwtsm-fly {
+	0% { offset-distance: 0%; opacity: 0; }
+	8% { opacity: 1; }
+	92% { opacity: 1; }
+	100% { offset-distance: 100%; opacity: 0; }
+}
+
+@keyframes vwtsm-twinkle {
+	0%, 100% { opacity: 0.8; }
+	50% { opacity: 0.45; }
+}
+
+@keyframes vwtsm-emblem-turn {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+
+/* -------------------------------------------------------------------------
+   Cards / surfaces (glass effect over the scene)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-card {
+	position: relative;
+	z-index: 1;
+	background: var(--vwtsm-glass-bg);
+	border: 1px solid rgba(232, 207, 134, 0.16);
+	border-radius: var(--vwtsm-radius-lg);
+	padding: 2.25rem;
+	backdrop-filter: blur(14px) saturate(140%);
+	-webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.vwtsm-card::before {
+	content: '';
+	position: absolute;
+	inset: 7px;
+	border: 1px solid rgba(232, 207, 134, 0.08);
+	border-radius: calc(var(--vwtsm-radius-lg) - 6px);
+	pointer-events: none;
+}
+
+@media (max-width: 600px) {
+	.vwtsm-card { padding: 1.4rem; border-radius: var(--vwtsm-radius-md); }
+}
+
+.vwtsm-eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 0.14em;
+	font-size: 0.72rem;
+	font-weight: 500;
+	color: var(--vwtsm-gold-soft);
+	margin: 0 0 0.5rem;
+}
+
+.vwtsm-root .vwtsm-heading {
+	font-family: var(--vwtsm-font-display);
+	font-weight: 600;
+	font-size: clamp(1.5rem, 3vw + 1rem, 2.1rem);
+	line-height: 1.18;
+	margin: 0 0 1.5rem;
+	color: var(--vwtsm-cream) !important;
+}
+
+.vwtsm-root .vwtsm-subheading {
+	font-family: var(--vwtsm-font-display);
+	font-style: italic;
+	font-weight: 500;
+	font-size: 1.3rem;
+	color: var(--vwtsm-gold-soft) !important;
+	margin: 0 0 1rem;
+}
+
+/* -------------------------------------------------------------------------
+   Step screens
+   ------------------------------------------------------------------------- */
+
+.vwtsm-step-progress { display: flex; gap: 0.5rem; margin-bottom: 1.75rem; }
+.vwtsm-step-progress span { flex: 1; height: 3px; background: var(--vwtsm-navy-700); border-radius: 2px; overflow: hidden; }
+.vwtsm-step-progress span.is-active,
+.vwtsm-step-progress span.is-complete { background: linear-gradient(90deg, var(--vwtsm-gold), var(--vwtsm-gold-soft)); }
+
+.vwtsm-field-group { margin-bottom: 1.85rem; }
+.vwtsm-field-label { display: block; font-weight: 500; font-size: 0.95rem; margin-bottom: 0.6rem; }
+.vwtsm-field-hint { font-size: 0.8rem; color: var(--vwtsm-cream-dim); margin-top: 0.4rem; }
+
+.vwtsm-input, .vwtsm-select {
+	width: 100%;
+	background: rgba(10, 15, 28, 0.55);
+	border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm);
+	padding: 0.75rem 1rem;
+	color: var(--vwtsm-cream);
+	font-family: var(--vwtsm-font-body);
+	font-size: 0.95rem;
+	transition: border-color 0.15s ease;
+}
+
+.vwtsm-input:focus, .vwtsm-select:focus, .vwtsm-root button:focus-visible {
+	outline: 2px solid var(--vwtsm-gold-soft);
+	outline-offset: 2px;
+}
+
+.vwtsm-autocomplete { position: relative; }
+.vwtsm-autocomplete-results {
+	position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px;
+	background: var(--vwtsm-navy-900);
+	border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm);
+	box-shadow: 0 16px 32px -12px rgba(0,0,0,0.5);
+	z-index: 20; max-height: 240px; overflow-y: auto; display: none;
+}
+.vwtsm-autocomplete-results.is-open { display: block; }
+.vwtsm-autocomplete-result { padding: 0.65rem 1rem; cursor: pointer; font-size: 0.9rem; }
+.vwtsm-autocomplete-result:hover, .vwtsm-autocomplete-result.is-highlighted { background: var(--vwtsm-navy-800); }
+
+.vwtsm-segmented { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.vwtsm-segmented button {
+	flex: 1 1 auto; min-width: 90px;
+	background: rgba(10, 15, 28, 0.4);
+	border: 1px solid var(--vwtsm-navy-700);
+	color: var(--vwtsm-cream-dim);
+	border-radius: var(--vwtsm-radius-sm);
+	padding: 0.6rem 0.85rem; font-size: 0.85rem;
+	transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.vwtsm-segmented button.is-selected {
+	border-color: var(--vwtsm-gold);
+	color: var(--vwtsm-navy-950);
+	background: linear-gradient(180deg, var(--vwtsm-gold-soft), var(--vwtsm-gold));
+	font-weight: 500;
+}
+
+.vwtsm-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.vwtsm-chip {
+	background: rgba(10, 15, 28, 0.4);
+	border: 1px solid var(--vwtsm-navy-700);
+	color: var(--vwtsm-cream-dim);
+	border-radius: 999px; padding: 0.5rem 1.1rem; font-size: 0.82rem;
+	transition: all 0.15s ease;
+}
+.vwtsm-chip.is-selected {
+	border-color: var(--vwtsm-gold);
+	color: var(--vwtsm-navy-950);
+	background: linear-gradient(180deg, var(--vwtsm-gold-soft), var(--vwtsm-gold));
+	font-weight: 500;
+}
+
+.vwtsm-slider-row { display: flex; align-items: center; gap: 0.85rem; }
+.vwtsm-slider-row span { font-size: 0.78rem; color: var(--vwtsm-cream-dim); white-space: nowrap; }
+.vwtsm-slider { flex: 1; accent-color: var(--vwtsm-gold); }
+
+.vwtsm-toggle-row {
+	display: flex; align-items: center; justify-content: space-between;
+	padding: 0.65rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.vwtsm-toggle-row:last-child { border-bottom: none; }
+.vwtsm-toggle {
+	position: relative; width: 42px; height: 24px; border-radius: 999px;
+	background: var(--vwtsm-navy-700); border: none; flex-shrink: 0;
+}
+.vwtsm-toggle::after {
+	content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+	border-radius: 50%; background: var(--vwtsm-cream-dim);
+	transition: left 0.15s ease, background 0.15s ease;
+}
+.vwtsm-toggle.is-on { background: linear-gradient(90deg, var(--vwtsm-gold), var(--vwtsm-gold-soft)); }
+.vwtsm-toggle.is-on::after { left: 21px; background: var(--vwtsm-navy-950); }
+
+.vwtsm-btn-primary, .vwtsm-btn-secondary {
+	display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+	border-radius: var(--vwtsm-radius-sm); padding: 0.8rem 1.7rem;
+	font-weight: 500; font-size: 0.95rem; border: 1px solid transparent;
+	transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.vwtsm-btn-primary {
+	background: linear-gradient(180deg, var(--vwtsm-gold-soft), var(--vwtsm-gold));
+	color: var(--vwtsm-navy-950);
+	box-shadow: 0 8px 22px -8px rgba(201,162,75,0.55);
+}
+.vwtsm-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 28px -8px rgba(201,162,75,0.7); }
+.vwtsm-btn-secondary { background: transparent; border-color: var(--vwtsm-navy-700); color: var(--vwtsm-cream); }
+.vwtsm-btn-secondary:hover { border-color: var(--vwtsm-gold); }
+
+.vwtsm-step-actions { display: flex; justify-content: space-between; margin-top: 1.75rem; }
+
+/* -------------------------------------------------------------------------
+   Loading
+   ------------------------------------------------------------------------- */
+
+.vwtsm-loading { text-align: center; padding: 3.5rem 1rem; }
+.vwtsm-loading-spinner {
+	width: 38px; height: 38px; margin: 0 auto 1.1rem; border-radius: 50%;
+	border: 3px solid var(--vwtsm-navy-700); border-top-color: var(--vwtsm-gold);
+	animation: vwtsm-spin 0.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .vwtsm-loading-spinner { animation: none; } }
+@keyframes vwtsm-spin { to { transform: rotate(360deg); } }
+
+/* -------------------------------------------------------------------------
+   Results header
+   ------------------------------------------------------------------------- */
+
+.vwtsm-results-header {
+	display: flex; justify-content: space-between; align-items: flex-end;
+	flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;
+}
+.vwtsm-results-header .vwtsm-heading { margin-bottom: 0.25rem; }
+.vwtsm-results-header-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.vwtsm-data-tier-note { font-size: 0.78rem; color: var(--vwtsm-cream-dim); font-style: italic; }
+
+/* -------------------------------------------------------------------------
+   Trip Reality strip -- glanceable gauge + stat chips for the top match
+   ------------------------------------------------------------------------- */
+
+.vwtsm-reality-strip {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+	background: rgba(10, 15, 28, 0.4);
+	border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-md);
+	padding: 1.1rem 1.4rem;
+	margin-bottom: 1.75rem;
+}
+
+.vwtsm-reality-gauge {
+	display: flex;
+	align-items: center;
+	gap: 0.9rem;
+	flex-shrink: 0;
+}
+
+.vwtsm-reality-gauge-ring {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: conic-gradient(var(--ring-color, var(--vwtsm-gold)) calc(var(--score) * 1%), rgba(255,255,255,0.08) 0);
+}
+.vwtsm-reality-gauge-ring::before {
+	content: '';
+	position: absolute;
+	inset: 5px;
+	border-radius: 50%;
+	background: var(--vwtsm-navy-900);
+}
+.vwtsm-reality-gauge-ring span {
+	position: relative;
+	font-family: var(--vwtsm-font-display);
+	font-weight: 700;
+	font-size: 1.2rem;
+	color: var(--vwtsm-cream);
+	font-variant-numeric: tabular-nums;
+}
+
+.vwtsm-reality-gauge-label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+}
+.vwtsm-reality-gauge-label .vwtsm-eyebrow { margin: 0; }
+.vwtsm-reality-gauge-label strong {
+	font-family: var(--vwtsm-font-display);
+	font-size: 1.2rem;
+	color: var(--vwtsm-cream);
+}
+
+.vwtsm-reality-chips {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(90px, 1fr));
+	gap: 0.9rem;
+	flex: 1;
+	min-width: 240px;
+}
+
+.vwtsm-reality-chip { display: flex; flex-direction: column; gap: 0.4rem; }
+.vwtsm-reality-chip span { font-size: 0.7rem; color: var(--vwtsm-cream-dim); }
+.vwtsm-reality-chip-bg {
+	height: 6px;
+	border-radius: 999px;
+	background: rgba(255,255,255,0.08);
+	overflow: hidden;
+}
+.vwtsm-reality-chip-fill { height: 100%; border-radius: 999px; }
+
+@media (max-width: 640px) {
+	.vwtsm-reality-chips { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* -------------------------------------------------------------------------
+   Match cards grid
+   ------------------------------------------------------------------------- */
+
+.vwtsm-match-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin-bottom: 2.25rem; }
+@media (max-width: 800px) { .vwtsm-match-grid { grid-template-columns: 1fr; } }
+
+.vwtsm-match-card {
+	background: rgba(10, 15, 28, 0.45);
+	border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-md);
+	overflow: hidden; cursor: pointer;
+	transition: border-color 0.15s ease, transform 0.28s cubic-bezier(.16,.84,.44,1), box-shadow 0.28s ease, opacity 0.4s ease;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 24px -18px rgba(0,0,0,0.6);
+}
+/* Entrance state: visible by default (fail-safe if JS never runs); JS
+   briefly adds this class right after inserting each card, then removes
+   it a beat later to trigger a staggered fade/rise-in. Skipped entirely
+   under prefers-reduced-motion. */
+.vwtsm-match-card.is-entering { opacity: 0; transform: translateY(16px) scale(0.98); }
+.vwtsm-match-card:hover {
+	border-color: var(--vwtsm-gold);
+	transform: translateY(-4px) scale(1.01);
+	box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 20px 36px -18px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,207,134,0.25);
+}
+.vwtsm-match-card.is-expanded { border-color: var(--vwtsm-gold); box-shadow: 0 0 0 1px var(--vwtsm-gold); }
+
+@media (prefers-reduced-motion: reduce) {
+	.vwtsm-match-card { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+	.vwtsm-match-card.is-entering { opacity: 1; transform: none; }
+	.vwtsm-match-card:hover { transform: none; }
+}
+
+.vwtsm-card-archetype-bar { height: 5px; width: 100%; flex-shrink: 0; }
+.vwtsm-card-hero {
+	position: relative; aspect-ratio: 16 / 10; background-size: cover; background-position: center;
+	background-color: var(--vwtsm-navy-800);
+	flex-shrink: 0;
+}
+.vwtsm-card-hero-credit {
+	position: absolute; bottom: 4px; right: 6px; font-size: 0.6rem;
+	color: rgba(246,241,230,0.85); background: rgba(10,15,28,0.65); padding: 2px 7px; border-radius: 4px;
+	max-width: calc(100% - 12px);
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.vwtsm-card-hero-credit a { color: inherit; text-decoration: underline; }
+
+.vwtsm-card-body { padding: 1rem 1.1rem 0.9rem; flex: 1; }
+.vwtsm-root .vwtsm-card-name {
+	font-family: var(--vwtsm-font-display);
+	font-weight: 600;
+	font-size: 1.4rem;
+	margin: 0 0 0.2rem;
+	color: var(--vwtsm-cream) !important;
+}
+.vwtsm-card-archetype-label { font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--vwtsm-cream-dim); }
+
+/* Ticket perforation seam -- the ticket/boarding-pass signature detail
+   that separates the destination content from the "stub" of quick facts. */
+.vwtsm-ticket-seam {
+	position: relative;
+	height: 0;
+	margin: 0 18px;
+	border-top: 2px dashed rgba(232, 207, 134, 0.35);
+	flex-shrink: 0;
+}
+.vwtsm-ticket-notch {
+	position: absolute;
+	top: 50%;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--vwtsm-navy-950);
+	box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+	transform: translateY(-50%);
+}
+.vwtsm-notch-left { left: -9px; }
+.vwtsm-notch-right { right: -9px; }
+
+.vwtsm-ticket-stub {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	padding: 0.85rem 1.1rem 1rem;
+	background: rgba(6, 10, 20, 0.4);
+	flex-shrink: 0;
+}
+
+.vwtsm-ticket-stamp {
+	position: relative;
+	width: 58px;
+	height: 58px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: conic-gradient(var(--vwtsm-gold) calc(var(--score) * 1%), rgba(10, 15, 28, 0.5) 0);
+	transform: rotate(-8deg);
+	box-shadow: 0 0 0 2px rgba(232, 207, 134, 0.22), 0 6px 14px -4px rgba(0,0,0,0.55);
+}
+/* A neighborhood whose overall score includes an estimated (unsynced)
+   dimension gets a dashed outer ring instead of the normal solid glow, so
+   "confirmed" vs. "partly estimated" is visible at a glance even on the
+   card people see first, not just in the detail panel. */
+.vwtsm-ticket-stamp.has-estimate {
+	box-shadow: 0 0 0 2px rgba(154,163,184,0.35), 0 6px 14px -4px rgba(0,0,0,0.55);
+}
+.vwtsm-ticket-estimate {
+	position: absolute;
+	bottom: -3px;
+	right: -3px;
+	font-size: 0.5rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--vwtsm-navy-950);
+	background: var(--vwtsm-pending);
+	border: 2px solid var(--vwtsm-navy-950);
+	border-radius: 999px;
+	padding: 1px 5px;
+	transform: rotate(8deg); /* counter-rotate against the stamp's own -8deg tilt */
+	line-height: 1.3;
+}
+.vwtsm-ticket-stamp::before {
+	content: '';
+	position: absolute;
+	inset: 5px;
+	border-radius: 50%;
+	background: var(--vwtsm-navy-950);
+	border: 1px dashed rgba(232, 207, 134, 0.45);
+}
+.vwtsm-ticket-stamp span {
+	position: relative;
+	font-family: var(--vwtsm-font-display);
+	font-weight: 700;
+	font-size: 1.15rem;
+	color: var(--vwtsm-cream);
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+.vwtsm-ticket-stamp small {
+	position: relative;
+	font-size: 0.48rem;
+	letter-spacing: 0.09em;
+	color: var(--vwtsm-gold-soft);
+	text-transform: uppercase;
+	margin-top: 2px;
+}
+
+.vwtsm-ticket-price {
+	font-family: var(--vwtsm-font-display);
+	font-size: 1.05rem;
+	letter-spacing: 0.04em;
+	flex-shrink: 0;
+}
+.vwtsm-ticket-price .vwtsm-price-filled { color: var(--vwtsm-gold); }
+.vwtsm-ticket-price .vwtsm-price-empty { color: var(--vwtsm-navy-700); }
+
+.vwtsm-ticket-barcode {
+	flex: 1;
+	height: 26px;
+	min-width: 30px;
+	background: repeating-linear-gradient(
+		90deg,
+		rgba(232, 207, 134, 0.6) 0px, rgba(232, 207, 134, 0.6) 2px,
+		transparent 2px, transparent 4px,
+		rgba(232, 207, 134, 0.35) 4px, rgba(232, 207, 134, 0.35) 5px,
+		transparent 5px, transparent 8px
+	);
+	opacity: 0.55;
+	border-radius: 2px;
+}
+
+/* -------------------------------------------------------------------------
+   Expanded detail panel
+   ------------------------------------------------------------------------- */
+
+.vwtsm-detail-panel {
+	grid-column: 1 / -1;
+	background: rgba(10, 15, 28, 0.5);
+	border: 1px solid var(--vwtsm-gold);
+	border-radius: var(--vwtsm-radius-md);
+	padding: 1.6rem;
+	margin-top: -0.4rem;
+}
+.vwtsm-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+@media (max-width: 700px) { .vwtsm-detail-grid { grid-template-columns: 1fr; } }
+
+.vwtsm-radar-wrap {
+	background: rgba(6, 10, 20, 0.5);
+	border-radius: var(--vwtsm-radius-sm);
+	padding: 0.8rem;
+	position: relative;
+	height: 280px;
+}
+.vwtsm-radar-wrap canvas { max-width: 100%; }
+
+.vwtsm-list-fits, .vwtsm-list-caution { list-style: none; margin: 0 0 1.1rem; padding: 0; }
+.vwtsm-list-fits li, .vwtsm-list-caution li { display: flex; gap: 0.55rem; align-items: flex-start; font-size: 0.88rem; margin-bottom: 0.55rem; line-height: 1.45; }
+.vwtsm-list-fits li::before { content: '✓'; color: var(--vwtsm-success); flex-shrink: 0; font-weight: 700; }
+.vwtsm-list-caution li::before { content: '!'; color: var(--vwtsm-warning); font-weight: 700; flex-shrink: 0; }
+
+.vwtsm-caution-box {
+	border: 1px solid rgba(220, 154, 77, 0.5);
+	background: rgba(220, 154, 77, 0.08);
+	border-radius: var(--vwtsm-radius-sm);
+	padding: 1rem 1.1rem;
+}
+.vwtsm-root .vwtsm-subheading.vwtsm-subheading-success { color: var(--vwtsm-success) !important; }
+
+.vwtsm-root .vwtsm-caution-box .vwtsm-subheading { color: var(--vwtsm-warning) !important; margin-bottom: 0.5rem; font-size: 1.15rem; }
+
+/* Compass diagram */
+.vwtsm-compass { position: relative; width: 100%; aspect-ratio: 1; max-width: 250px; margin: 1.25rem auto 0; }
+.vwtsm-compass-ring { position: absolute; inset: 0; border: 1px dashed var(--vwtsm-navy-700); border-radius: 50%; }
+.vwtsm-compass-ring.vwtsm-ring-inner { inset: 22%; }
+.vwtsm-compass-center { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--vwtsm-gold); transform: translate(-50%, -50%); box-shadow: 0 0 10px rgba(201,162,75,0.7); }
+.vwtsm-compass-point { position: absolute; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid var(--vwtsm-navy-950); }
+.vwtsm-compass-point.is-neighborhood { background: var(--vwtsm-gold-soft); }
+.vwtsm-compass-point.is-airport { background: var(--vwtsm-arch-airport_transit); }
+.vwtsm-compass-label { position: absolute; font-size: 0.68rem; color: var(--vwtsm-cream-dim); white-space: nowrap; transform: translate(-50%, 6px); }
+
+.vwtsm-price-band { font-family: var(--vwtsm-font-display); font-size: 1.15rem; letter-spacing: 0.05em; }
+.vwtsm-price-band .vwtsm-price-filled { color: var(--vwtsm-gold); }
+.vwtsm-price-band .vwtsm-price-empty { color: var(--vwtsm-navy-700); }
+
+.vwtsm-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.85rem 0; }
+.vwtsm-badge { font-size: 0.74rem; border: 1px solid var(--vwtsm-navy-700); border-radius: 999px; padding: 0.32rem 0.75rem; color: var(--vwtsm-cream-dim); }
+
+.vwtsm-local-tip { font-style: italic; font-size: 0.85rem; color: var(--vwtsm-cream-dim); border-left: 2px solid var(--vwtsm-gold); padding-left: 0.8rem; margin: 1.1rem 0; }
+.vwtsm-cta-row { margin-top: 1.3rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+/* -------------------------------------------------------------------------
+   Comparison "scorecard" -- horizontal bars, more infographic than a plain table
+   ------------------------------------------------------------------------- */
+
+.vwtsm-compare-scorecard { margin-bottom: 2.25rem; }
+.vwtsm-compare-row-label { font-size: 0.78rem; color: var(--vwtsm-cream-dim); text-transform: uppercase; letter-spacing: 0.04em; grid-column: 1 / -1; margin-top: 0.6rem; }
+.vwtsm-compare-bars { display: flex; flex-direction: column; gap: 0.4rem; grid-column: 1 / -1; }
+.vwtsm-compare-bar-track { display: grid; grid-template-columns: 110px 1fr 42px; align-items: center; gap: 0.6rem; font-size: 0.82rem; }
+.vwtsm-compare-bar-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vwtsm-compare-bar-bg { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.vwtsm-compare-bar-fill { height: 100%; border-radius: 999px; background-image: linear-gradient(90deg, rgba(255,255,255,0.15), transparent); background-blend-mode: overlay; }
+.vwtsm-compare-bar-value { text-align: right; color: var(--vwtsm-cream-dim); font-size: 0.78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Pending ("not synced") rows use a dedicated 2-column layout instead of
+   squeezing a 10-character label into the ~42px column sized for a 2-3
+   digit score -- that mismatch was the root cause of the label wrapping
+   into broken stacked fragments. */
+.vwtsm-compare-bar-track-pending { grid-template-columns: 110px 1fr; }
+.vwtsm-compare-bar-pending-label {
+	display: flex; align-items: center; gap: 0.5rem;
+	font-style: italic; white-space: nowrap;
+	color: var(--vwtsm-pending); opacity: 0.9; font-size: 0.78rem;
+}
+
+@media (max-width: 560px) {
+	.vwtsm-compare-bar-track { grid-template-columns: 86px 1fr 36px; }
+	.vwtsm-compare-bar-track-pending { grid-template-columns: 86px 1fr; }
+}
+
+/* -------------------------------------------------------------------------
+   Shared "data confidence" component -- a single visual language used
+   everywhere an unsynced OpenStreetMap dimension needs disclosing (match
+   card ring, radar chart caption, compare table, trip reality strip),
+   instead of ad hoc treatments per surface.
+   ------------------------------------------------------------------------- */
+
+.vwtsm-confidence-dot {
+	width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block;
+	background-image: repeating-linear-gradient(45deg, var(--vwtsm-pending) 0 2px, transparent 2px 4px);
+}
+.vwtsm-confidence-note {
+	display: flex; align-items: center; gap: 0.5rem;
+	font-size: 0.74rem; font-style: italic; color: var(--vwtsm-cream-dim);
+	margin: 0.6rem 0 0;
+}
+/* Striped "pending" fill, reused wherever a bar/track represents an
+   unsynced metric (trip reality strip chips today). */
+.vwtsm-compare-bar-pending {
+	background-image: repeating-linear-gradient(45deg, rgba(154,163,184,0.28) 0 4px, transparent 4px 8px);
+}
+.vwtsm-confidence-summary { display: flex; align-items: center; gap: 0.5rem; font-style: normal; }
+
+/* -------------------------------------------------------------------------
+   Overview map
+   ------------------------------------------------------------------------- */
+
+.vwtsm-overview-map {
+	position: relative; width: 100%; aspect-ratio: 4 / 3;
+	background:
+		repeating-linear-gradient(90deg, rgba(232,207,134,0.05) 0, rgba(232,207,134,0.05) 1px, transparent 1px, transparent 40px),
+		repeating-linear-gradient(0deg, rgba(232,207,134,0.05) 0, rgba(232,207,134,0.05) 1px, transparent 1px, transparent 40px),
+		radial-gradient(ellipse 90% 80% at 50% 45%, rgba(28,41,68,0.4), rgba(6,10,20,0.75) 80%),
+		rgba(6, 10, 20, 0.55);
+	border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-md);
+	margin-bottom: 1.5rem; overflow: hidden;
+}
+.vwtsm-overview-map::after {
+	content: 'N ↑';
+	position: absolute;
+	top: 12px; left: 14px;
+	font-size: 0.68rem;
+	letter-spacing: 0.06em;
+	color: var(--vwtsm-cream-dim);
+	opacity: 0.6;
+	pointer-events: none;
+}
+.vwtsm-overview-polygons { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.vwtsm-overview-pin {
+	position: absolute; width: 13px; height: 13px; border-radius: 50%;
+	border: 2px solid var(--vwtsm-navy-950); transform: translate(-50%, -50%); cursor: pointer;
+	box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 0 10px 2px currentColor, 0 3px 8px -1px rgba(0,0,0,0.55);
+	background-image: radial-gradient(circle at 35% 28%, rgba(255,255,255,0.6), transparent 55%);
+	background-blend-mode: overlay;
+	transition: transform 0.15s ease;
+}
+.vwtsm-overview-pin:hover { transform: translate(-50%, -50%) scale(1.25); z-index: 2; }
+@media (prefers-reduced-motion: no-preference) {
+	.vwtsm-overview-pin { animation: vwtsm-pin-pulse 3s ease-in-out infinite; }
+}
+@keyframes vwtsm-pin-pulse {
+	0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 0 10px 2px currentColor; }
+	50% { box-shadow: 0 0 0 6px rgba(255,255,255,0.1), 0 0 16px 4px currentColor; }
+}
+.vwtsm-overview-pin-label { position: absolute; font-size: 0.64rem; color: var(--vwtsm-cream-dim); transform: translate(-50%, 7px); white-space: nowrap; pointer-events: none; }
+.vwtsm-overview-legend { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 1.75rem; }
+.vwtsm-overview-legend span { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--vwtsm-cream-dim); }
+.vwtsm-overview-legend .vwtsm-swatch { width: 10px; height: 10px; border-radius: 50%; }
+
+/* -------------------------------------------------------------------------
+   Split-stay suggestion
+   ------------------------------------------------------------------------- */
+
+.vwtsm-split-stay {
+	background: rgba(10, 15, 28, 0.4);
+	border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-md);
+	padding: 1.1rem 1.3rem;
+	margin-bottom: 1.75rem;
+}
+.vwtsm-split-stay-bar {
+	display: flex;
+	height: 44px;
+	border-radius: var(--vwtsm-radius-sm);
+	overflow: hidden;
+	margin: 0.75rem 0;
+	gap: 2px;
+}
+.vwtsm-split-stay-segment {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: var(--vwtsm-navy-950);
+	font-size: 0.78rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	padding: 0 0.4rem;
+}
+.vwtsm-split-stay-segment small { font-weight: 400; font-size: 0.68rem; opacity: 0.85; }
+
+.vwtsm-badge-freshness { border-color: rgba(103, 179, 137, 0.4); color: var(--vwtsm-success); }
+
+/* -------------------------------------------------------------------------
+   Explore-more accordion
+   ------------------------------------------------------------------------- */
+
+.vwtsm-accordion-toggle {
+	width: 100%; background: rgba(10,15,28,0.45); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm); padding: 0.9rem 1.1rem; text-align: left;
+	color: var(--vwtsm-cream); font-weight: 500; display: flex; justify-content: space-between;
+}
+.vwtsm-accordion-body { display: none; padding: 1rem 0; }
+.vwtsm-accordion-body.is-open { display: block; }
+.vwtsm-accordion-row { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.88rem; }
+
+/* -------------------------------------------------------------------------
+   Refine panel
+   ------------------------------------------------------------------------- */
+
+.vwtsm-refine-link { background: none; border: none; color: var(--vwtsm-gold-soft); font-size: 0.85rem; text-decoration: underline; padding: 0; margin: 1.25rem 0; }
+.vwtsm-refine-panel { display: none; background: rgba(10,15,28,0.45); border: 1px solid var(--vwtsm-navy-700); border-radius: var(--vwtsm-radius-sm); padding: 1.3rem; margin-bottom: 1.5rem; }
+.vwtsm-refine-panel.is-open { display: block; }
+
+/* -------------------------------------------------------------------------
+   Empty state
+   ------------------------------------------------------------------------- */
+
+.vwtsm-empty-state { text-align: center; padding: 3.5rem 1.5rem; }
+.vwtsm-empty-state p { color: var(--vwtsm-cream-dim); max-width: 480px; margin: 0 auto; }
+
+/* -------------------------------------------------------------------------
+   Permanent footer -- always visible below the quiz/results card, never
+   wiped out when the quiz re-renders between steps.
+   ------------------------------------------------------------------------- */
+
+.vwtsm-footer {
+	margin-top: 1.75rem;
+	background: linear-gradient(180deg, var(--vwtsm-navy-900), var(--vwtsm-navy-950));
+	border: 1px solid rgba(232, 207, 134, 0.14);
+	border-radius: var(--vwtsm-radius-lg);
+	overflow: hidden;
+}
+
+.vwtsm-footer-inner {
+	display: grid;
+	grid-template-columns: 1.3fr 1fr 1fr 1fr 1.1fr;
+	gap: 1.75rem;
+	padding: 2.25rem 2rem;
+}
+
+@media (max-width: 1000px) {
+	.vwtsm-footer-inner { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 640px) {
+	.vwtsm-footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 420px) {
+	.vwtsm-footer-inner { grid-template-columns: 1fr; padding: 1.6rem 1.3rem; }
+}
+
+.vwtsm-root .vwtsm-footer-col h4 {
+	font-family: var(--vwtsm-font-display);
+	font-size: 1.05rem;
+	font-weight: 600;
+	color: var(--vwtsm-gold-soft) !important;
+	margin: 0 0 0.9rem;
+}
+
+.vwtsm-footer-wordmark {
+	font-family: var(--vwtsm-font-display);
+	font-style: italic;
+	font-size: 1.6rem;
+	font-weight: 600;
+	color: var(--vwtsm-cream);
+	margin: 0 0 0.6rem;
+}
+
+.vwtsm-footer-about p {
+	font-size: 0.85rem;
+	color: var(--vwtsm-cream-dim);
+	line-height: 1.55;
+	margin: 0 0 0.9rem;
+}
+
+.vwtsm-footer-links { list-style: none; margin: 0; padding: 0; }
+.vwtsm-footer-links li { margin-bottom: 0.6rem; }
+.vwtsm-footer-links a { color: var(--vwtsm-cream-dim); text-decoration: none; font-size: 0.85rem; transition: color 0.15s ease; }
+.vwtsm-footer-links a:hover { color: var(--vwtsm-gold-soft); }
+
+.vwtsm-footer-legal p { font-size: 0.76rem; color: var(--vwtsm-cream-dim); line-height: 1.55; margin: 0 0 0.7rem; }
+.vwtsm-footer-legal a { font-size: inherit; }
+.vwtsm-affiliate-disclosure { font-style: italic; }
+
+.vwtsm-trust-badge {
+	display: inline-block;
+	background: rgba(232, 207, 134, 0.1);
+	border: 1px solid rgba(232, 207, 134, 0.25);
+	border-radius: 999px;
+	padding: 0.35rem 0.85rem;
+	font-size: 0.72rem;
+	color: var(--vwtsm-gold-soft);
+}
+
+.vwtsm-footer-bottom {
+	border-top: 1px solid rgba(255,255,255,0.07);
+	padding: 0.9rem 2rem;
+	text-align: center;
+	font-size: 0.72rem;
+	color: var(--vwtsm-cream-dim);
+}
+
+/* -------------------------------------------------------------------------
+   Cross-tool CTA strip (inline, inside results -- distinct from footer)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-cross-tool-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin: 2rem 0; }
+.vwtsm-cross-tool-card {
+	background: rgba(10,15,28,0.45); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm); padding: 0.9rem; font-size: 0.85rem;
+	text-decoration: none; color: var(--vwtsm-cream); transition: border-color 0.15s ease;
+}
+.vwtsm-cross-tool-card:hover { border-color: var(--vwtsm-gold); }

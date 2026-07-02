@@ -1,0 +1,16 @@
+.vni-wrap .form-table th {
+	width: 220px;
+}
+.vni-wrap code {
+	display: block;
+	background: #f6f7f7;
+	padding: 10px 12px;
+	border-radius: 4px;
+	font-size: 12px;
+	margin-bottom: 10px;
+	word-break: break-word;
+}
+.vni-wrap .notice ul {
+	margin-left: 20px;
+	list-style: disc;
+}

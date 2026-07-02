@@ -1,0 +1,157 @@
+name,country,lat,lng,airport_name,airport_lat,airport_lng,tier,timezone,cost_index,source_dataset
+Tokyo,Japan,35.6762,139.6503,Narita International (NRT),35.7720,140.3929,1,Asia/Tokyo,3,starter-dataset
+Paris,France,48.8566,2.3522,Charles de Gaulle (CDG),49.0097,2.5479,1,Europe/Paris,3,starter-dataset
+Bangkok,Thailand,13.7563,100.5018,Suvarnabhumi (BKK),13.6900,100.7501,1,Asia/Bangkok,3,starter-dataset
+New York,United States,40.7128,-74.0060,John F. Kennedy International (JFK),40.6413,-73.7781,1,America/New_York,3,starter-dataset
+London,United Kingdom,51.5074,-0.1278,Heathrow (LHR),51.4700,-0.4543,1,Europe/London,3,starter-dataset
+Rome,Italy,41.9028,12.4964,Fiumicino (FCO),41.8003,12.2389,1,Europe/Rome,3,starter-dataset
+Barcelona,Spain,41.3851,2.1734,El Prat (BCN),41.2974,2.0833,1,Europe/Madrid,3,starter-dataset
+Dubai,United Arab Emirates,25.2048,55.2708,Dubai International (DXB),25.2532,55.3657,1,Asia/Dubai,3,starter-dataset
+Singapore,Singapore,1.3521,103.8198,Changi (SIN),1.3644,103.9915,1,Asia/Singapore,3,starter-dataset
+Istanbul,Turkey,41.0082,28.9784,Istanbul Airport (IST),41.2753,28.7519,1,Europe/Istanbul,3,starter-dataset
+Amsterdam,Netherlands,52.3676,4.9041,Schiphol (AMS),52.3105,4.7683,1,Europe/Amsterdam,3,starter-dataset
+Berlin,Germany,52.52,13.405,Berlin Brandenburg (BER),52.3667,13.5033,1,Europe/Berlin,3,starter-dataset
+Lisbon,Portugal,38.7223,-9.1393,Humberto Delgado (LIS),38.7813,-9.1359,1,Europe/Lisbon,3,starter-dataset
+Madrid,Spain,40.4168,-3.7038,Adolfo Suarez Madrid-Barajas (MAD),40.4983,-3.5676,1,Europe/Madrid,3,starter-dataset
+Vienna,Austria,48.2082,16.3738,Vienna International (VIE),48.1103,16.5697,1,Europe/Vienna,3,starter-dataset
+Prague,Czech Republic,50.0755,14.4378,Vaclav Havel Airport (PRG),50.1008,14.26,1,Europe/Prague,3,starter-dataset
+Budapest,Hungary,47.4979,19.0402,Budapest Ferenc Liszt (BUD),47.4298,19.2611,1,Europe/Budapest,3,starter-dataset
+Athens,Greece,37.9838,23.7275,Athens International (ATH),37.9364,23.9445,1,Europe/Athens,3,starter-dataset
+Sydney,Australia,-33.8688,151.2093,Sydney Kingsford Smith (SYD),-33.9399,151.1753,1,Australia/Sydney,3,starter-dataset
+Hong Kong,Hong Kong SAR,22.3193,114.1694,Hong Kong International (HKG),22.308,113.9185,1,Asia/Hong_Kong,3,starter-dataset
+Seoul,South Korea,37.5665,126.978,Incheon International (ICN),37.4602,126.4407,1,Asia/Seoul,3,starter-dataset
+Mexico City,Mexico,19.4326,-99.1332,Mexico City International (MEX),19.4363,-99.0721,1,America/Mexico_City,3,starter-dataset
+Cairo,Egypt,30.0444,31.2357,Cairo International (CAI),30.1219,31.4056,1,Africa/Cairo,3,starter-dataset
+Marrakech,Morocco,31.6295,-7.9811,Marrakech Menara (RAK),31.6069,-8.0363,1,Africa/Casablanca,3,starter-dataset
+Mumbai,India,19.076,72.8777,Chhatrapati Shivaji Maharaj International (BOM),19.0896,72.8656,1,Asia/Kolkata,3,starter-dataset
+Edinburgh,United Kingdom,55.9533,-3.1883,Edinburgh (EDI),55.9508,-3.3615,2,Europe/London,3,starter-dataset-generic-zones
+Dublin,Ireland,53.3498,-6.2603,Dublin (DUB),53.4264,-6.2499,2,Europe/Dublin,3,starter-dataset-generic-zones
+Copenhagen,Denmark,55.6761,12.5683,Copenhagen (CPH),55.618,12.6508,2,Europe/Copenhagen,3,starter-dataset-generic-zones
+Stockholm,Sweden,59.3293,18.0686,Stockholm Arlanda (ARN),59.6519,17.9186,2,Europe/Stockholm,3,starter-dataset-generic-zones
+Oslo,Norway,59.9139,10.7522,Oslo Gardermoen (OSL),60.1939,11.1004,2,Europe/Oslo,3,starter-dataset-generic-zones
+Helsinki,Finland,60.1699,24.9384,Helsinki Vantaa (HEL),60.3172,24.9633,2,Europe/Helsinki,3,starter-dataset-generic-zones
+Zurich,Switzerland,47.3769,8.5417,Zurich (ZRH),47.4647,8.5492,2,Europe/Zurich,3,starter-dataset-generic-zones
+Geneva,Switzerland,46.2044,6.1432,Geneva (GVA),46.2381,6.1089,2,Europe/Zurich,3,starter-dataset-generic-zones
+Munich,Germany,48.1351,11.582,Munich (MUC),48.3538,11.7861,2,Europe/Berlin,3,starter-dataset-generic-zones
+Hamburg,Germany,53.5511,9.9937,Hamburg (HAM),53.6304,9.9882,2,Europe/Berlin,3,starter-dataset-generic-zones
+Milan,Italy,45.4642,9.19,Milan Malpensa (MXP),45.6306,8.7281,2,Europe/Rome,3,starter-dataset-generic-zones
+Venice,Italy,45.4408,12.3155,Venice Marco Polo (VCE),45.5053,12.3519,2,Europe/Rome,3,starter-dataset-generic-zones
+Florence,Italy,43.7696,11.2558,Florence (FLR),43.81,11.2051,2,Europe/Rome,3,starter-dataset-generic-zones
+Naples,Italy,40.8518,14.2681,Naples (NAP),40.886,14.2908,2,Europe/Rome,3,starter-dataset-generic-zones
+Seville,Spain,37.3891,-5.9845,Seville (SVQ),37.418,-5.8931,2,Europe/Madrid,3,starter-dataset-generic-zones
+Valencia,Spain,39.4699,-0.3763,Valencia (VLC),39.4893,-0.4816,2,Europe/Madrid,3,starter-dataset-generic-zones
+Porto,Portugal,41.1579,-8.6291,Porto (OPO),41.2481,-8.6814,2,Europe/Lisbon,3,starter-dataset-generic-zones
+Warsaw,Poland,52.2297,21.0122,Warsaw Chopin (WAW),52.1657,20.9671,2,Europe/Warsaw,3,starter-dataset-generic-zones
+Krakow,Poland,50.0647,19.945,Krakow (KRK),50.0777,19.7848,2,Europe/Warsaw,3,starter-dataset-generic-zones
+Bratislava,Slovakia,48.1486,17.1077,Bratislava (BTS),48.1702,17.2127,2,Europe/Bratislava,3,starter-dataset-generic-zones
+Ljubljana,Slovenia,46.0569,14.5058,Ljubljana (LJU),46.2237,14.4576,2,Europe/Ljubljana,3,starter-dataset-generic-zones
+Zagreb,Croatia,45.815,15.9819,Zagreb (ZAG),45.7429,16.0688,2,Europe/Zagreb,3,starter-dataset-generic-zones
+Belgrade,Serbia,44.7866,20.4489,Belgrade Nikola Tesla (BEG),44.8184,20.3091,2,Europe/Belgrade,3,starter-dataset-generic-zones
+Bucharest,Romania,44.4268,26.1025,Bucharest Otopeni (OTP),44.5711,26.085,2,Europe/Bucharest,3,starter-dataset-generic-zones
+Sofia,Bulgaria,42.6977,23.3219,Sofia (SOF),42.6952,23.4061,2,Europe/Sofia,3,starter-dataset-generic-zones
+Reykjavik,Iceland,64.1466,-21.9426,Keflavik (KEF),63.985,-22.6056,2,Atlantic/Reykjavik,3,starter-dataset-generic-zones
+Brussels,Belgium,50.8503,4.3517,Brussels (BRU),50.9014,4.4844,2,Europe/Brussels,3,starter-dataset-generic-zones
+Dubrovnik,Croatia,42.6507,18.0944,Dubrovnik (DBV),42.5614,18.2682,2,Europe/Zagreb,3,starter-dataset-generic-zones
+Kyoto,Japan,35.0116,135.7681,Osaka Itami (ITM),34.7855,135.4382,2,Asia/Tokyo,3,starter-dataset-generic-zones
+Osaka,Japan,34.6937,135.5023,Kansai International (KIX),34.4347,135.2441,2,Asia/Tokyo,3,starter-dataset-generic-zones
+Taipei,Taiwan,25.033,121.5654,Taoyuan (TPE),25.0797,121.2342,2,Asia/Taipei,3,starter-dataset-generic-zones
+Shanghai,China,31.2304,121.4737,Pudong (PVG),31.1443,121.8083,2,Asia/Shanghai,3,starter-dataset-generic-zones
+Beijing,China,39.9042,116.4074,Beijing Capital (PEK),40.0799,116.6031,2,Asia/Shanghai,3,starter-dataset-generic-zones
+Hanoi,Vietnam,21.0285,105.8542,Noi Bai (HAN),21.2212,105.8072,2,Asia/Bangkok,3,starter-dataset-generic-zones
+Ho Chi Minh City,Vietnam,10.8231,106.6297,Tan Son Nhat (SGN),10.8188,106.652,2,Asia/Bangkok,3,starter-dataset-generic-zones
+Siem Reap,Cambodia,13.3633,103.8564,Siem Reap Angkor (SAI),13.4107,103.8131,2,Asia/Bangkok,3,starter-dataset-generic-zones
+Kuala Lumpur,Malaysia,3.139,101.6869,Kuala Lumpur International (KUL),2.7456,101.7099,2,Asia/Kuala_Lumpur,3,starter-dataset-generic-zones
+Bali (Denpasar),Indonesia,-8.6705,115.2126,Ngurah Rai (DPS),-8.7482,115.1672,2,Asia/Makassar,3,starter-dataset-generic-zones
+Manila,Philippines,14.5995,120.9842,Ninoy Aquino (MNL),14.5086,121.0194,2,Asia/Manila,3,starter-dataset-generic-zones
+Colombo,Sri Lanka,6.9271,79.8612,Bandaranaike (CMB),7.1808,79.8841,2,Asia/Colombo,3,starter-dataset-generic-zones
+Kathmandu,Nepal,27.7172,85.324,Tribhuvan (KTM),27.6966,85.3591,2,Asia/Kathmandu,3,starter-dataset-generic-zones
+Delhi,India,28.6139,77.209,Indira Gandhi International (DEL),28.5562,77.1,2,Asia/Kolkata,3,starter-dataset-generic-zones
+Jaipur,India,26.9124,75.7873,Jaipur (JAI),26.8242,75.8122,2,Asia/Kolkata,3,starter-dataset-generic-zones
+Goa (Panaji),India,15.4909,73.8278,Goa Dabolim (GOI),15.3808,73.8314,2,Asia/Kolkata,3,starter-dataset-generic-zones
+Agra,India,27.1767,78.0081,Agra (AGR),27.1577,77.9601,2,Asia/Kolkata,3,starter-dataset-generic-zones
+Kochi,India,9.9312,76.2673,Cochin International (COK),10.152,76.4019,2,Asia/Kolkata,3,starter-dataset-generic-zones
+Dhaka,Bangladesh,23.8103,90.4125,Hazrat Shahjalal International (DAC),23.8431,90.3978,2,Asia/Dhaka,3,starter-dataset-generic-zones
+Chiang Mai,Thailand,18.7883,98.9853,Chiang Mai (CNX),18.7669,98.9626,2,Asia/Bangkok,3,starter-dataset-generic-zones
+Doha,Qatar,25.2854,51.531,Hamad International (DOH),25.2731,51.608,2,Asia/Qatar,3,starter-dataset-generic-zones
+Abu Dhabi,United Arab Emirates,24.4539,54.3773,Abu Dhabi International (AUH),24.433,54.6511,2,Asia/Dubai,3,starter-dataset-generic-zones
+Amman,Jordan,31.9454,35.9284,Queen Alia International (AMM),31.7226,35.9932,2,Asia/Amman,3,starter-dataset-generic-zones
+Tel Aviv,Israel,32.0853,34.7818,Ben Gurion (TLV),32.0114,34.8867,2,Asia/Jerusalem,3,starter-dataset-generic-zones
+Cape Town,South Africa,-33.9249,18.4241,Cape Town International (CPT),-33.9648,18.6017,2,Africa/Johannesburg,3,starter-dataset-generic-zones
+Nairobi,Kenya,-1.2921,36.8219,Jomo Kenyatta International (NBO),-1.3192,36.9278,2,Africa/Nairobi,3,starter-dataset-generic-zones
+Zanzibar City,Tanzania,-6.1659,39.2026,Abeid Amani Karume International (ZNZ),-6.222,39.2249,2,Africa/Dar_es_Salaam,3,starter-dataset-generic-zones
+Casablanca,Morocco,33.5731,-7.5898,Mohammed V International (CMN),33.3675,-7.5898,2,Africa/Casablanca,3,starter-dataset-generic-zones
+Tunis,Tunisia,36.8065,10.1815,Tunis-Carthage (TUN),36.851,10.2272,2,Africa/Tunis,3,starter-dataset-generic-zones
+Lagos,Nigeria,6.5244,3.3792,Murtala Muhammed International (LOS),6.5774,3.3212,2,Africa/Lagos,3,starter-dataset-generic-zones
+Accra,Ghana,5.6037,-0.187,Kotoka International (ACC),5.6052,-0.1668,2,Africa/Accra,3,starter-dataset-generic-zones
+Los Angeles,United States,34.0522,-118.2437,Los Angeles International (LAX),33.9416,-118.4085,2,America/Los_Angeles,3,starter-dataset-generic-zones
+San Francisco,United States,37.7749,-122.4194,San Francisco International (SFO),37.6213,-122.379,2,America/Los_Angeles,3,starter-dataset-generic-zones
+Chicago,United States,41.8781,-87.6298,O'Hare International (ORD),41.9742,-87.9073,2,America/Chicago,3,starter-dataset-generic-zones
+Miami,United States,25.7617,-80.1918,Miami International (MIA),25.7959,-80.287,2,America/New_York,3,starter-dataset-generic-zones
+Las Vegas,United States,36.1699,-115.1398,Harry Reid International (LAS),36.084,-115.1537,2,America/Los_Angeles,3,starter-dataset-generic-zones
+Toronto,Canada,43.6532,-79.3832,Toronto Pearson (YYZ),43.6777,-79.6248,2,America/Toronto,3,starter-dataset-generic-zones
+Vancouver,Canada,49.2827,-123.1207,Vancouver International (YVR),49.1947,-123.1792,2,America/Vancouver,3,starter-dataset-generic-zones
+Montreal,Canada,45.5019,-73.5674,Montreal-Trudeau (YUL),45.4706,-73.7408,2,America/Toronto,3,starter-dataset-generic-zones
+Cancun,Mexico,21.1619,-86.8515,Cancun International (CUN),21.0365,-86.8771,2,America/Cancun,3,starter-dataset-generic-zones
+Havana,Cuba,23.1136,-82.3666,Jose Marti International (HAV),22.9892,-82.4091,2,America/Havana,3,starter-dataset-generic-zones
+Buenos Aires,Argentina,-34.6037,-58.3816,Jorge Newbery / Ezeiza (AEP),-34.5592,-58.4156,2,America/Argentina/Buenos_Aires,3,starter-dataset-generic-zones
+Rio de Janeiro,Brazil,-22.9068,-43.1729,Galeao International (GIG),-22.8089,-43.2436,2,America/Sao_Paulo,3,starter-dataset-generic-zones
+Sao Paulo,Brazil,-23.5505,-46.6333,Guarulhos International (GRU),-23.4356,-46.4731,2,America/Sao_Paulo,3,starter-dataset-generic-zones
+Lima,Peru,-12.0464,-77.0428,Jorge Chavez International (LIM),-12.0219,-77.1143,2,America/Lima,3,starter-dataset-generic-zones
+Cusco,Peru,-13.532,-71.9675,Alejandro Velasco Astete (CUZ),-13.5358,-71.9388,2,America/Lima,3,starter-dataset-generic-zones
+Bogota,Colombia,4.711,-74.0721,El Dorado International (BOG),4.7016,-74.1469,2,America/Bogota,3,starter-dataset-generic-zones
+Santiago,Chile,-33.4489,-70.6693,Arturo Merino Benitez (SCL),-33.393,-70.7858,2,America/Santiago,3,starter-dataset-generic-zones
+Cartagena,Colombia,10.391,-75.4794,Rafael Nunez International (CTG),10.4424,-75.513,2,America/Bogota,3,starter-dataset-generic-zones
+Melbourne,Australia,-37.8136,144.9631,Melbourne (MEL),-37.669,144.841,2,Australia/Melbourne,3,starter-dataset-generic-zones
+Auckland,New Zealand,-36.8485,174.7633,Auckland (AKL),-37.0082,174.785,2,Pacific/Auckland,3,starter-dataset-generic-zones
+Queenstown,New Zealand,-45.0312,168.6626,Queenstown (ZQN),-45.0211,168.7392,2,Pacific/Auckland,3,starter-dataset-generic-zones
+Nadi,Fiji,-17.7765,177.4356,Nadi International (NAN),-17.7554,177.4434,2,Pacific/Fiji,3,starter-dataset-generic-zones
+Lyon,France,45.764,4.8357,Lyon-Saint Exupéry (LYS),45.7256,5.0811,1,Europe/Paris,3,starter-dataset-v3
+Frankfurt,Germany,50.1109,8.6821,Frankfurt Airport (FRA),50.0379,8.5622,1,Europe/Berlin,4,starter-dataset-v3
+Fukuoka,Japan,33.5904,130.4017,Fukuoka Airport (FUK),33.5859,130.4506,1,Asia/Tokyo,3,starter-dataset-v3
+Busan,South Korea,35.1796,129.0756,Gimhae International (PUS),35.1795,128.9382,1,Asia/Seoul,3,starter-dataset-v3
+Chengdu,China,30.5728,104.0668,Chengdu Shuangliu International (CTU),30.5785,103.9471,1,Asia/Shanghai,2,starter-dataset-v3
+Phuket,Thailand,7.8804,98.3923,Phuket International (HKT),8.1132,98.3169,1,Asia/Bangkok,2,starter-dataset-v3
+Da Nang,Vietnam,16.0544,108.2022,Da Nang International (DAD),16.0439,108.1994,1,Asia/Bangkok,2,starter-dataset-v3
+George Town (Penang),Malaysia,5.4141,100.3288,Penang International (PEN),5.2971,100.2769,1,Asia/Kuala_Lumpur,2,starter-dataset-v3
+Beirut,Lebanon,33.8938,35.5018,Beirut-Rafic Hariri International (BEY),33.8209,35.4884,1,Asia/Beirut,3,starter-dataset-v3
+Tbilisi,Georgia,41.7151,44.8271,Tbilisi International (TBS),41.6692,44.9547,1,Asia/Tbilisi,2,starter-dataset-v3
+Medellín,Colombia,6.2442,-75.5812,José María Córdova International (MDE),6.1645,-75.4231,1,America/Bogota,2,starter-dataset-v3
+Nice,France,43.7102,7.262,Nice Côte d'Azur (NCE),43.6584,7.2159,2,Europe/Paris,4,starter-dataset-v3-generic-zones
+Marseille,France,43.2965,5.3698,Marseille Provence (MRS),43.4393,5.2214,2,Europe/Paris,3,starter-dataset-v3-generic-zones
+Cologne,Germany,50.9375,6.9603,Cologne Bonn (CGN),50.8659,7.1427,2,Europe/Berlin,4,starter-dataset-v3-generic-zones
+Turin,Italy,45.0703,7.6869,Turin (TRN),45.2008,7.6497,2,Europe/Rome,3,starter-dataset-v3-generic-zones
+Malaga,Spain,36.7213,-4.4214,Malaga-Costa del Sol (AGP),36.6749,-4.4991,2,Europe/Madrid,3,starter-dataset-v3-generic-zones
+Thessaloniki,Greece,40.6401,22.9444,Thessaloniki (SKG),40.5197,22.9709,2,Europe/Athens,2,starter-dataset-v3-generic-zones
+Riga,Latvia,56.9496,24.1052,Riga International (RIX),56.9236,23.9711,2,Europe/Riga,2,starter-dataset-v3-generic-zones
+Tallinn,Estonia,59.437,24.7536,Tallinn (TLL),59.4133,24.8328,2,Europe/Tallinn,2,starter-dataset-v3-generic-zones
+Innsbruck,Austria,47.2692,11.4041,Innsbruck (INN),47.2602,11.3439,2,Europe/Vienna,4,starter-dataset-v3-generic-zones
+Rotterdam,Netherlands,51.9244,4.4777,Rotterdam The Hague (RTM),51.9569,4.4372,2,Europe/Amsterdam,4,starter-dataset-v3-generic-zones
+Bilbao,Spain,43.263,-2.935,Bilbao Airport (BIO),43.3011,-2.9106,2,Europe/Madrid,3,starter-dataset-v3-generic-zones
+Sapporo,Japan,43.0618,141.3545,New Chitose (CTS),42.7752,141.6923,2,Asia/Tokyo,3,starter-dataset-v3-generic-zones
+Nagoya,Japan,35.1815,136.9066,Chubu Centrair International (NGO),34.8584,136.8054,2,Asia/Tokyo,3,starter-dataset-v3-generic-zones
+Guangzhou,China,23.1291,113.2644,Baiyun International (CAN),23.3924,113.2988,2,Asia/Shanghai,2,starter-dataset-v3-generic-zones
+Xi'an,China,34.3416,108.9398,Xianyang International (XIY),34.4471,108.7516,2,Asia/Shanghai,2,starter-dataset-v3-generic-zones
+Pattaya,Thailand,12.9236,100.8825,U-Tapao International (UTP),12.6799,101.005,2,Asia/Bangkok,2,starter-dataset-v3-generic-zones
+Nha Trang,Vietnam,12.2388,109.1967,Cam Ranh International (CXR),11.9982,109.2194,2,Asia/Bangkok,2,starter-dataset-v3-generic-zones
+Langkawi,Malaysia,6.35,99.8,Langkawi International (LGK),6.3297,99.7286,2,Asia/Kuala_Lumpur,3,starter-dataset-v3-generic-zones
+Cebu City,Philippines,10.3157,123.8854,Mactan-Cebu International (CEB),10.3075,123.979,2,Asia/Manila,2,starter-dataset-v3-generic-zones
+Ubud,Indonesia,-8.5069,115.2625,Ngurah Rai (DPS),-8.7482,115.1672,2,Asia/Makassar,2,starter-dataset-v3-generic-zones
+Malé,Maldives,4.1755,73.5093,Velana International (MLE),4.1918,73.5292,2,Indian/Maldives,4,starter-dataset-v3-generic-zones
+Islamabad,Pakistan,33.6844,73.0479,Islamabad International (ISB),33.5606,72.8251,2,Asia/Karachi,2,starter-dataset-v3-generic-zones
+Yangon,Myanmar,16.8409,96.1735,Yangon International (RGN),16.9073,96.1332,2,Asia/Yangon,2,starter-dataset-v3-generic-zones
+Muscat,Oman,23.588,58.3829,Muscat International (MCT),23.5933,58.2844,2,Asia/Muscat,4,starter-dataset-v3-generic-zones
+Manama,Bahrain,26.2285,50.586,Bahrain International (BAH),26.2708,50.6336,2,Asia/Bahrain,4,starter-dataset-v3-generic-zones
+Alexandria,Egypt,31.2001,29.9187,Borg El Arab (HBE),30.9175,29.6961,2,Africa/Cairo,2,starter-dataset-v3-generic-zones
+Addis Ababa,Ethiopia,9.03,38.74,Bole International (ADD),8.9779,38.7989,2,Africa/Addis_Ababa,2,starter-dataset-v3-generic-zones
+Kigali,Rwanda,-1.9441,30.0619,Kigali International (KGL),-1.9686,30.1395,2,Africa/Kigali,3,starter-dataset-v3-generic-zones
+Livingstone,Zambia,-17.8419,25.8543,Harry Mwanga Nkumbula International (LVI),-17.8218,25.8225,2,Africa/Lusaka,3,starter-dataset-v3-generic-zones
+Quebec City,Canada,46.8139,-71.208,Québec City Jean Lesage International (YQB),46.7911,-71.3933,2,America/Toronto,4,starter-dataset-v3-generic-zones
+Seattle,United States,47.6062,-122.3321,Seattle-Tacoma International (SEA),47.4502,-122.3088,2,America/Los_Angeles,4,starter-dataset-v3-generic-zones
+New Orleans,United States,29.9511,-90.0715,Louis Armstrong New Orleans International (MSY),29.9934,-90.2581,2,America/Chicago,3,starter-dataset-v3-generic-zones
+Guadalajara,Mexico,20.6597,-103.3496,Miguel Hidalgo y Costilla International (GDL),20.5218,-103.3111,2,America/Mexico_City,2,starter-dataset-v3-generic-zones
+Tulum,Mexico,20.2114,-87.4654,Tulum International (TQO),20.05,-87.46,2,America/Cancun,3,starter-dataset-v3-generic-zones
+Quito,Ecuador,-0.1807,-78.4678,Mariscal Sucre International (UIO),-0.1292,-78.3575,2,America/Guayaquil,2,starter-dataset-v3-generic-zones
+Montevideo,Uruguay,-34.9011,-56.1645,Carrasco International (MVD),-34.8384,-56.0308,2,America/Montevideo,3,starter-dataset-v3-generic-zones
+Perth,Australia,-31.9505,115.8605,Perth Airport (PER),-31.9403,115.9669,2,Australia/Perth,4,starter-dataset-v3-generic-zones
+Brisbane,Australia,-27.4698,153.0251,Brisbane Airport (BNE),-27.3942,153.1218,2,Australia/Brisbane,4,starter-dataset-v3-generic-zones
+Wellington,New Zealand,-41.2865,174.7762,Wellington International (WLG),-41.3272,174.805,2,Pacific/Auckland,4,starter-dataset-v3-generic-zones
