@@ -48,7 +48,8 @@ final class Voyasee_3D_Atlas {
 
     public function register_assets(): void {
         wp_register_style('v3da-frontend', V3DA_URL . 'assets/css/frontend.css', [], V3DA_VERSION);
-        wp_register_script('v3da-app', V3DA_URL . 'assets/js/app.js', [], V3DA_VERSION, true);
+        wp_register_script_module('v3da-cobe', V3DA_URL . 'assets/js/vendor/cobe.esm.js', [], V3DA_VERSION);
+        wp_register_script_module('v3da-app', V3DA_URL . 'assets/js/app.js', ['v3da-cobe'], V3DA_VERSION);
     }
 
     public function action_links(array $links): array {

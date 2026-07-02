@@ -1,6 +1,7 @@
 <?php
 /**
  * @var string $uid
+ * @var string $demo_markers JSON-encoded array of {lat,lng,size}.
  */
 defined('ABSPATH') || exit;
 ?>
@@ -8,11 +9,11 @@ defined('ABSPATH') || exit;
     <div class="v3datlas-hero">
         <p class="v3datlas-eyebrow"><?php echo esc_html__('Voyasee World Story Atlas', 'voyasee-3d-atlas'); ?></p>
         <h2 class="v3datlas-title"><?php echo esc_html__('An interactive globe of every place Voyasee has covered', 'voyasee-3d-atlas'); ?></h2>
-        <p class="v3datlas-intro"><?php echo esc_html__('The 3D globe is being finalized. In the meantime, browse the destinations list below.', 'voyasee-3d-atlas'); ?></p>
+        <p class="v3datlas-intro"><?php echo esc_html__('Browse the destinations list below the globe for the full, linkable A–Z index.', 'voyasee-3d-atlas'); ?></p>
     </div>
 
-    <div class="v3datlas-globe-mount" data-v3datlas-globe-mount aria-hidden="true">
-        <!-- Phase 2: COBE canvas mounts here, lazy-booted via IntersectionObserver. -->
+    <div class="v3datlas-globe-mount" data-v3datlas-globe-mount data-markers="<?php echo esc_attr($demo_markers); ?>" aria-hidden="true">
+        <noscript><?php echo esc_html__('Enable JavaScript to view the interactive globe.', 'voyasee-3d-atlas'); ?></noscript>
     </div>
 
     <div class="v3datlas-destination-list" data-v3datlas-destination-list>
