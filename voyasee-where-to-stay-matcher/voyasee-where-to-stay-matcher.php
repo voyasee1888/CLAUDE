@@ -3,7 +3,7 @@
  * Plugin Name:       Voyasee Where to Stay Matcher
  * Plugin URI:        https://voyasee.com
  * Description:       All-in-one neighborhood-matching tool: self-hosted destination/neighborhood dataset, OpenStreetMap POI sync, admin CRUD + CSV import, and the interactive 2-step "where should I stay" quiz with an explainable Match Score and the signature Wrong Area Warning -- all in a single plugin, operated through one shortcode.
- * Version:           4.1.2
+ * Version:           4.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Voyasee
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ----------------------------------------------------------------------
  * Constants
  * -------------------------------------------------------------------- */
-define( 'WTSM_VERSION', '4.1.2' );
+define( 'WTSM_VERSION', '4.2.0' );
 define( 'WTSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WTSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -51,6 +51,7 @@ require_once WTSM_PLUGIN_DIR . 'includes/class-wtsm-country-codes.php';
 require_once WTSM_PLUGIN_DIR . 'includes/class-wtsm-currency.php';
 require_once WTSM_PLUGIN_DIR . 'includes/class-wtsm-landmark-sync.php';
 require_once WTSM_PLUGIN_DIR . 'includes/class-wtsm-neighborhood-discovery.php';
+require_once WTSM_PLUGIN_DIR . 'includes/class-wtsm-tier1-upgrade.php';
 require_once WTSM_PLUGIN_DIR . 'includes/class-wtsm-shortcode.php';
 
 if ( is_admin() ) {
@@ -73,6 +74,10 @@ add_action( 'plugins_loaded', function () {
 	if ( version_compare( $installed, VNI_DB_VERSION, '<' ) ) {
 		VNI_DB::activate();
 	}
+	// Runs once, ever (self-gated via its own option flag) -- safe to call
+	// on every request's plugins_loaded, and needs to run after the table
+	// schema is confirmed current above.
+	WTSM_Tier1_Upgrade::maybe_run();
 } );
 
 /* ----------------------------------------------------------------------
@@ -193,6 +198,53 @@ function voyasee_ni_maybe_get_weather( $lat, $lng, $date ) {
 	}
 
 	return null;
+}
+
+/**
+ * Optional integration point: Voyasee Weather Bridge's air quality data,
+ * if active. Weather Bridge exposes this as a genuinely separate function
+ * from the forecast/climate-normals ones above (a different upstream
+ * provider), so it's handled as its own optional call rather than folded
+ * into voyasee_ni_maybe_get_weather().
+ *
+ * This plugin doesn't own Weather Bridge's exact response shape, so this
+ * defensively checks a few plausible key names for the headline index and
+ * its human-readable category, the same "degrade gracefully instead of
+ * guessing" approach already used for Country Intelligence's currency
+ * data -- if nothing recognizable is found, this returns null and the
+ * frontend simply omits the air quality fact rather than showing
+ * something wrong.
+ *
+ * @return array{value:int,category:string}|null
+ */
+function voyasee_ni_maybe_get_air_quality( $lat, $lng ) {
+	if ( ! $lat || ! $lng || ! function_exists( 'voyasee_weather_get_air_quality' ) ) {
+		return null;
+	}
+
+	$raw = voyasee_weather_get_air_quality( $lat, $lng );
+	if ( is_wp_error( $raw ) || empty( $raw ) || ! is_array( $raw ) ) {
+		return null;
+	}
+
+	// Unwrap one common level of nesting (e.g. { airQuality: {...} }),
+	// same defensive shape-guessing already used for weather/currency.
+	$candidate = $raw['airQuality'] ?? $raw['air_quality'] ?? $raw;
+	if ( ! is_array( $candidate ) ) {
+		return null;
+	}
+
+	$value = $candidate['aqi'] ?? $candidate['index'] ?? $candidate['us_aqi'] ?? $candidate['value'] ?? null;
+	if ( null === $value || ! is_numeric( $value ) ) {
+		return null;
+	}
+
+	$category = $candidate['category'] ?? $candidate['level'] ?? $candidate['label'] ?? '';
+
+	return array(
+		'value'    => (int) round( (float) $value ),
+		'category' => sanitize_text_field( (string) $category ),
+	);
 }
 
 /**

@@ -96,6 +96,7 @@ class WTSM_Shortcode {
 				'restUrl'         => rest_url( 'voyasee-wtsm/v1/match' ),
 				'destinationsUrl' => rest_url( 'voyasee-wtsm/v1/destinations' ),
 				'statsUrl'        => rest_url( 'voyasee-wtsm/v1/stats' ),
+				'reportIssueUrl'  => rest_url( 'voyasee-wtsm/v1/report-issue' ),
 				'nonce'           => wp_create_nonce( 'wp_rest' ),
 				'bookingUrl'      => WTSM_Settings::get( 'booking_affiliate_url', '' ),
 				'jetlagPlannerUrl' => WTSM_Settings::get( 'tool_jetlag_planner_url', '' ),

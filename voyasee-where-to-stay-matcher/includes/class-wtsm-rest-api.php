@@ -24,6 +24,9 @@ class WTSM_REST_API {
 		return self::$instance;
 	}
 
+	/** Max correction reports accepted from one IP per hour -- plenty for a genuine visitor, cheap insurance against spam. */
+	const REPORT_ISSUE_RATE_LIMIT = 5;
+
 	public function register_routes() {
 		register_rest_route(
 			self::NAMESPACE_,
@@ -31,6 +34,16 @@ class WTSM_REST_API {
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'handle_match' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE_,
+			'/report-issue',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'handle_report_issue' ),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -66,7 +79,8 @@ class WTSM_REST_API {
 
 		$top = $result['matches'][0];
 
-		$weather = voyasee_ni_maybe_get_weather( $destination['lat'], $destination['lng'], $answers['travel_date'] );
+		$weather     = voyasee_ni_maybe_get_weather( $destination['lat'], $destination['lng'], $answers['travel_date'] );
+		$air_quality = voyasee_ni_maybe_get_air_quality( $destination['lat'], $destination['lng'] );
 
 		$holiday = ! empty( $answers['travel_date'] )
 			? voyasee_ni_maybe_get_holiday_overlap( $destination['country_code'] ?? '', $answers['travel_date'], $answers['nights'] )
@@ -111,6 +125,7 @@ class WTSM_REST_API {
 				'data_tier'          => $result['data_tier'],
 				'split_stay'         => $result['split_stay'],
 				'weather'            => $weather,
+				'air_quality'        => $air_quality,
 				'holiday_overlap'    => $holiday,
 				'country_intel'      => $country_intel,
 				'currency_estimate'  => $currency,
@@ -118,6 +133,73 @@ class WTSM_REST_API {
 			),
 			200
 		);
+	}
+
+	/**
+	 * Visitor-facing "suggest a correction" report. Never touches the
+	 * database or auto-applies anything -- it just emails the site admin
+	 * so a human decides what to do, the same trust model as every other
+	 * editorial field in this plugin (nothing here is ever auto-published
+	 * from an anonymous submission).
+	 */
+	public function handle_report_issue( WP_REST_Request $request ) {
+		$ip    = $this->get_client_ip();
+		$limit_key = 'wtsm_report_issue_' . md5( $ip );
+		$count = (int) get_transient( $limit_key );
+		if ( $count >= self::REPORT_ISSUE_RATE_LIMIT ) {
+			return new WP_REST_Response( array( 'message' => __( 'Too many reports from this connection recently -- please try again later.', 'voyasee-wtsm' ) ), 429 );
+		}
+
+		$params = $request->get_json_params() ?: $request->get_params();
+
+		$message = isset( $params['message'] ) ? sanitize_textarea_field( wp_strip_all_tags( (string) $params['message'] ) ) : '';
+		$message = mb_substr( trim( $message ), 0, 1000 );
+		if ( '' === $message ) {
+			return new WP_REST_Response( array( 'message' => __( 'Please describe what looks wrong.', 'voyasee-wtsm' ) ), 400 );
+		}
+
+		$destination_name  = sanitize_text_field( (string) ( $params['destination_name'] ?? '' ) );
+		$neighborhood_name = sanitize_text_field( (string) ( $params['neighborhood_name'] ?? '' ) );
+		$visitor_email     = sanitize_email( (string) ( $params['email'] ?? '' ) );
+
+		$to      = get_option( 'admin_email' );
+		$subject = sprintf(
+			/* translators: %s: destination/neighborhood name being reported */
+			__( '[Where to Stay Matcher] Correction suggested for %s', 'voyasee-wtsm' ),
+			trim( $destination_name . ' / ' . $neighborhood_name, ' /' ) ?: __( 'a neighborhood', 'voyasee-wtsm' )
+		);
+
+		$body  = __( 'A visitor suggested a correction on the Where to Stay Matcher results page.', 'voyasee-wtsm' ) . "\n\n";
+		$body .= __( 'Destination:', 'voyasee-wtsm' ) . ' ' . ( $destination_name ?: '-' ) . "\n";
+		$body .= __( 'Neighborhood:', 'voyasee-wtsm' ) . ' ' . ( $neighborhood_name ?: '-' ) . "\n";
+		$body .= __( 'Visitor email (optional, unverified):', 'voyasee-wtsm' ) . ' ' . ( $visitor_email ?: '-' ) . "\n\n";
+		$body .= __( 'Message:', 'voyasee-wtsm' ) . "\n" . $message . "\n";
+
+		$headers = array();
+		if ( $visitor_email ) {
+			$headers[] = 'Reply-To: ' . $visitor_email;
+		}
+
+		$sent = wp_mail( $to, $subject, $body, $headers );
+
+		set_transient( $limit_key, $count + 1, HOUR_IN_SECONDS );
+
+		if ( ! $sent ) {
+			return new WP_REST_Response( array( 'message' => __( 'Could not send the report right now -- please try again later.', 'voyasee-wtsm' ) ), 500 );
+		}
+
+		return new WP_REST_Response( array( 'message' => __( 'Thanks -- we\'ll take a look.', 'voyasee-wtsm' ) ), 200 );
+	}
+
+	private function get_client_ip() {
+		// Best-effort only, used solely for a soft rate limit -- never
+		// stored, never shown, and not security-critical if spoofed.
+		$forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+		if ( $forwarded ) {
+			$parts = explode( ',', $forwarded );
+			return trim( $parts[0] );
+		}
+		return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 	}
 
 	private function sanitize_answers( $raw ) {

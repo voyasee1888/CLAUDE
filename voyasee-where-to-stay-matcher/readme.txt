@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.1.2
+Stable tag: 4.2.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -36,7 +36,7 @@ Or pre-fill a destination on a landing page:
 
 == Setup ==
 
-1. Activate the plugin. A starter dataset of 156 destinations and 478
+1. Activate the plugin. A starter dataset of 156 destinations and 463
    neighborhoods loads automatically the first time it activates --
    there is no manual CSV import step. (Import CSV still exists in the
    admin menu, but only as an optional way to add more destinations
@@ -124,16 +124,23 @@ close in score).
 * All editorial fields (why_fits, why_caution, local_tip, best_for) are
   meant to be written in your own words -- never paste text from
   Wikivoyage, Wikipedia, or any blog.
-* The bundled starter dataset auto-loads on activation: 36 destinations
+* The bundled starter dataset auto-loads on activation: 51 destinations
   have real, named neighborhoods written from general well-documented
-  travel knowledge (Tier 1). The remaining 120 destinations use honest
-  generic zones ("City Center", "Business District", "Quiet
-  Residential Area", or "Beachfront" for coastal towns) rather than
-  invented neighborhood names for places we don't have confident
-  street-level detail on (Tier 2) -- this is flagged to the traveler in
-  the result page and in each zone's caution text. Expand any
-  destination from Tier 2 to Tier 1 over time via the admin screens or
-  CSV import once you have real local detail to add.
+  travel knowledge (Tier 1) -- as of 4.2.0 this includes 15 of the
+  world's most globally searched destinations (Los Angeles, San
+  Francisco, Chicago, Miami, Las Vegas, Rio de Janeiro, Buenos Aires,
+  Cape Town, Bali (Denpasar), Kuala Lumpur, Cancun, Delhi, Kyoto,
+  Shanghai, and Beijing), upgraded from generic zones to real named
+  neighborhoods. The remaining 105 destinations use honest generic zones
+  ("City Center", "Business District", "Quiet Residential Area", or
+  "Beachfront" for coastal towns) rather than invented neighborhood
+  names for places we don't have confident street-level detail on
+  (Tier 2) -- this is flagged to the traveler in the result page and in
+  each zone's caution text. Expand any destination from Tier 2 to
+  Tier 1 over time via the admin screens or CSV import once you have
+  real local detail to add. A site that already seeded the old generic
+  zones for those 15 destinations migrates automatically the first time
+  it loads after updating to 4.2.0 -- see WTSM_Tier1_Upgrade.
 
 == What's deliberately simplified in this version (documented upgrade path) ==
 
@@ -157,14 +164,10 @@ Not built yet, in rough order of likely value:
   Travel Passport trip profile, pre-filling this quiz from it would be
   a real integration advantage, but needs confirmation of that tool's
   actual data storage format before it can be built safely.
-* Expanding more of the 120 generic-zone (Tier 2) destinations into
-  fully named neighborhoods as real local detail becomes available.
-* A lightweight visitor-facing "suggest a correction" link on each
-  neighborhood, so locals/readers can flag outdated info.
+* Expanding more of the 105 remaining generic-zone (Tier 2) destinations
+  into fully named neighborhoods as real local detail becomes available.
 * Caching Pexels photo results checks-ins (re-check for a fresher photo
   every few months) rather than fetching once and keeping forever.
-* Optional multi-currency price-band display instead of a flat $-$$$$$
-  scale.
 * A proper block.json/editor UI for the Gutenberg block (currently
   frontend-only; the shortcode is the recommended integration point).
 * A richer accessibility signal once a real, free, commercial-use-safe
@@ -173,6 +176,38 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.2.0 =
+* Added: 15 of the bundled starter dataset's most globally-searched Tier 2
+  destinations upgraded to Tier 1, gaining real, named neighborhoods
+  instead of generic zones -- Los Angeles (Hollywood, Santa Monica), San
+  Francisco (Fisherman's Wharf, Mission District), Chicago (The Loop,
+  Wicker Park), Miami (South Beach, Brickell), Las Vegas (The Strip,
+  Downtown/Fremont Street), Rio de Janeiro (Copacabana, Ipanema), Buenos
+  Aires (Palermo, Recoleta), Cape Town (City Bowl, Camps Bay), Bali/
+  Denpasar (Seminyak, Kuta), Kuala Lumpur (Bukit Bintang, KLCC), Cancun
+  (Zona Hotelera, El Centro), Delhi (Connaught Place, Hauz Khas), Kyoto
+  (Gion, Arashiyama), Shanghai (The Bund, French Concession), and Beijing
+  (Wangfujing, Sanlitun). Sites that already seeded the old generic zones
+  for these destinations are migrated automatically and safely the first
+  time the site loads after updating -- any of these rows a site owner
+  has since hand-edited are left untouched rather than being replaced.
+* Added: Air Quality now shown in the Trip Facts strip, via the Voyasee
+  Weather Bridge sibling plugin's existing air-quality lookup (already
+  integrated for weather, but never actually called anywhere until now).
+  Shown as the source's own index number and category label, with no
+  good/moderate/unhealthy banding invented on this end, since the exact
+  index scale isn't a value this plugin can confirm.
+* Added: a "Suggest a correction" link on each neighborhood's detail
+  panel. A visitor's note is emailed straight to the site admin (rate-
+  limited per connection) -- nothing is ever auto-applied to the data
+  from an anonymous submission, the same human-in-the-loop trust model as
+  every other editorial field in this plugin.
+* Added: "Compare with another destination" on the results page -- pick
+  a second city and see its top match side by side with your current
+  top match, re-using the exact same answers you already gave. Built
+  entirely from the existing /match endpoint (no matching-engine or
+  scoring changes at all).
 
 = 4.1.2 =
 * Fixed: the 4.1.1 fix for the invisible destination-field text while typing

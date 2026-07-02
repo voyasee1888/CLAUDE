@@ -586,6 +586,7 @@
 
 		this.compareExtra = null; // reset any 4th-slot pick from a previous result.
 		this._lastMatches = matches;
+		this._lastDestinationName = destination && destination.name;
 		this.updateShareUrl();
 
 		// The previous result's map container (if any) is about to be
@@ -653,6 +654,8 @@
 
 			this.buildSimilarElsewhere( data.similar_elsewhere, archetypeLabel( matches[0] && matches[0].archetype ) ) +
 
+			this.buildCompareDestinationsSection() +
+
 			( explored.length ? this.buildAccordionShell( explored.length ) : '' ) +
 
 			'<button type="button" class="vwtsm-refine-link" data-vwtsm-refine-toggle>' + escapeHtml( VWTSM.i18n.refine ) + ' &darr;</button>' +
@@ -683,6 +686,7 @@
 
 		this.bindRefinePanel();
 		this.bindShareButton();
+		this.bindCompareDestinations( destination, matches[0] );
 	};
 
 	/**
@@ -910,6 +914,24 @@
 					'</div>' +
 					this.buildCompass( n ) +
 				'</div>' +
+			'</div>' +
+			this.buildReportIssueBlock( n )
+		);
+	};
+
+	VoyaseeMatcher.prototype.buildReportIssueBlock = function ( n ) {
+		if ( ! VWTSM.reportIssueUrl ) { return ''; }
+		return (
+			'<div class="vwtsm-report-issue" data-vwtsm-report-issue>' +
+				'<button type="button" class="vwtsm-report-issue-toggle" data-vwtsm-report-toggle>Notice something outdated? Suggest a correction</button>' +
+				'<form class="vwtsm-report-issue-form" data-vwtsm-report-form hidden>' +
+					'<textarea data-vwtsm-report-message maxlength="1000" rows="3" placeholder="What looks wrong or out of date?" required></textarea>' +
+					'<input type="email" data-vwtsm-report-email placeholder="Your email (optional, in case we have a follow-up question)" />' +
+					'<div class="vwtsm-report-issue-actions">' +
+						'<button type="submit" class="vwtsm-btn-secondary">Send</button>' +
+						'<span class="vwtsm-report-issue-status" data-vwtsm-report-status></span>' +
+					'</div>' +
+				'</form>' +
 			'</div>'
 		);
 	};
@@ -1099,6 +1121,9 @@
 		var weather = this.buildWeatherFact( data.weather );
 		if ( weather ) { chips.push( weather ); }
 
+		var airQuality = this.buildAirQualityFact( data.air_quality );
+		if ( airQuality ) { chips.push( airQuality ); }
+
 		var seasonal = this.buildSeasonalFact( data.destination && data.destination.seasonal_note );
 		if ( seasonal ) { chips.push( seasonal ); }
 
@@ -1165,6 +1190,20 @@
 		}
 
 		return '';
+	};
+
+	VoyaseeMatcher.prototype.buildAirQualityFact = function ( airQuality ) {
+		if ( ! airQuality || null === airQuality.value || undefined === airQuality.value ) { return ''; }
+
+		// Weather Bridge's air quality index scale isn't a value this
+		// plugin owns or can confirm (US AQI vs. a regional/European
+		// scale would have very different "this number is fine" ranges),
+		// so this never invents its own good/moderate/unhealthy banding
+		// from the raw number -- only the source's own category label
+		// (when it supplies one) is shown alongside the number as-is.
+		var categoryText = airQuality.category ? ' &middot; ' + escapeHtml( airQuality.category ) : '';
+		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127786;</span><span>' +
+			'Air quality index: ' + escapeHtml( String( airQuality.value ) ) + categoryText + '</span></div>';
 	};
 
 	VoyaseeMatcher.prototype.buildSeasonalFact = function ( seasonalNote ) {
@@ -1281,6 +1320,125 @@
 	};
 
 	/* ---------------------------------------------------------------------
+	 * Compare with a second destination -- reuses the same /match endpoint
+	 * and the same already-answered quiz, just swapping destination_slug,
+	 * so it's a read-only client-side lookup with no new scoring logic and
+	 * no change to the matching engine at all.
+	 * ------------------------------------------------------------------- */
+
+	VoyaseeMatcher.prototype.buildCompareDestinationsSection = function () {
+		return (
+			'<div class="vwtsm-compare-destinations" data-vwtsm-compare-dest>' +
+				'<h3 class="vwtsm-subheading">Compare with another destination</h3>' +
+				'<p class="vwtsm-field-hint">See how your top match here stacks up against another city, using the same answers.</p>' +
+				'<div class="vwtsm-autocomplete vwtsm-compare-dest-autocomplete">' +
+					'<input type="text" class="vwtsm-input" data-vwtsm-compare-dest-input placeholder="e.g. Bali, Lisbon..." autocomplete="off" />' +
+					'<div class="vwtsm-autocomplete-results" data-vwtsm-compare-dest-results></div>' +
+				'</div>' +
+				'<div data-vwtsm-compare-dest-output></div>' +
+			'</div>'
+		);
+	};
+
+	VoyaseeMatcher.prototype.bindCompareDestinations = function ( currentDestination, currentTop ) {
+		var self = this;
+		var section = this.container.querySelector( '[data-vwtsm-compare-dest]' );
+		if ( ! section ) { return; }
+
+		var input = section.querySelector( '[data-vwtsm-compare-dest-input]' );
+		var resultsBox = section.querySelector( '[data-vwtsm-compare-dest-results]' );
+		var output = section.querySelector( '[data-vwtsm-compare-dest-output]' );
+
+		var doSearch = debounce( function () {
+			var term = input.value.trim();
+			if ( term.length < 2 ) {
+				resultsBox.classList.remove( 'is-open' );
+				resultsBox.innerHTML = '';
+				return;
+			}
+			fetch( VWTSM.destinationsUrl + '?search=' + encodeURIComponent( term ) + '&limit=8' )
+				.then( function ( r ) { return r.json(); } )
+				.then( function ( data ) {
+					var list = ( data && data.destinations ) || [];
+					list = list.filter( function ( d ) { return d.slug !== currentDestination.slug; } );
+					if ( ! list.length ) {
+						resultsBox.innerHTML = '<div class="vwtsm-autocomplete-result">No matches yet.</div>';
+						resultsBox.classList.add( 'is-open' );
+						return;
+					}
+					resultsBox.innerHTML = list.map( function ( d ) {
+						return '<div class="vwtsm-autocomplete-result" data-slug="' + escapeHtml( d.slug ) + '" data-name="' + escapeHtml( d.name ) + '">' +
+							escapeHtml( d.name ) + ( d.country ? ', ' + escapeHtml( d.country ) : '' ) + '</div>';
+					} ).join( '' );
+					resultsBox.classList.add( 'is-open' );
+				} )
+				.catch( function () {} );
+		}, 300 );
+
+		input.addEventListener( 'input', doSearch );
+
+		resultsBox.addEventListener( 'click', function ( e ) {
+			var row = e.target.closest( '[data-slug]' );
+			if ( ! row ) { return; }
+			var slug = row.getAttribute( 'data-slug' );
+			var name = row.getAttribute( 'data-name' );
+			resultsBox.classList.remove( 'is-open' );
+			input.value = name;
+			output.innerHTML = '<p class="vwtsm-field-hint">Loading ' + escapeHtml( name ) + '&hellip;</p>';
+
+			var otherAnswers = Object.assign( {}, self.answers, { destination_slug: slug, destination_name: name } );
+
+			fetch( VWTSM.restUrl, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': VWTSM.nonce },
+				body: JSON.stringify( otherAnswers ),
+			} )
+				.then( function ( r ) { return r.json(); } )
+				.then( function ( otherData ) {
+					if ( ! otherData || ! otherData.matches || ! otherData.matches.length ) {
+						output.innerHTML = '<p class="vwtsm-field-hint">We don\'t have neighborhood data for ' + escapeHtml( name ) + ' yet.</p>';
+						return;
+					}
+					output.innerHTML = self.buildDestinationCompareResult(
+						currentDestination, currentTop,
+						otherData.destination, otherData.matches[0]
+					);
+				} )
+				.catch( function () {
+					output.innerHTML = '<p class="vwtsm-field-hint">Could not load that destination right now -- please try again.</p>';
+				} );
+		} );
+	};
+
+	VoyaseeMatcher.prototype.buildDestinationCompareResult = function ( destA, topA, destB, topB ) {
+		var side = function ( dest, top ) {
+			var color = archetypeColor( top.archetype );
+			var filled = clamp( parseInt( top.price_band, 10 ) || 0, 0, 5 );
+			var price = '';
+			for ( var i = 1; i <= 5; i++ ) {
+				price += '<span class="' + ( i <= filled ? 'vwtsm-price-filled' : 'vwtsm-price-empty' ) + '">$</span>';
+			}
+			return (
+				'<div class="vwtsm-compare-dest-side">' +
+					'<div class="vwtsm-compare-dest-swatch" style="background:' + color + '"></div>' +
+					'<p class="vwtsm-eyebrow">' + escapeHtml( dest.name ) + '</p>' +
+					'<strong class="vwtsm-compare-dest-score">' + ( top.match_score || 0 ) + '</strong>' +
+					'<span class="vwtsm-field-hint">' + escapeHtml( top.name ) + ' &middot; ' + escapeHtml( archetypeLabel( top.archetype ) ) + '</span>' +
+					'<div class="vwtsm-price-band">' + price + '</div>' +
+				'</div>'
+			);
+		};
+
+		return (
+			'<div class="vwtsm-compare-dest-result">' +
+				side( destA, topA ) +
+				'<div class="vwtsm-compare-dest-vs">vs</div>' +
+				side( destB, topB ) +
+			'</div>'
+		);
+	};
+
+	/* ---------------------------------------------------------------------
 	 * Detail panel actions: download-as-image, add-to-comparison
 	 * ------------------------------------------------------------------- */
 
@@ -1300,6 +1458,60 @@
 				addCompareBtn.disabled = true;
 			} );
 		}
+
+		var reportToggle = panel.querySelector( '[data-vwtsm-report-toggle]' );
+		var reportForm = panel.querySelector( '[data-vwtsm-report-form]' );
+		if ( reportToggle && reportForm ) {
+			reportToggle.addEventListener( 'click', function () {
+				reportForm.hidden = ! reportForm.hidden;
+				if ( ! reportForm.hidden ) {
+					var ta = reportForm.querySelector( '[data-vwtsm-report-message]' );
+					if ( ta ) { ta.focus(); }
+				}
+			} );
+			reportForm.addEventListener( 'submit', function ( e ) {
+				e.preventDefault();
+				self.submitReportIssue( reportForm, n );
+			} );
+		}
+	};
+
+	VoyaseeMatcher.prototype.submitReportIssue = function ( form, n ) {
+		var messageEl = form.querySelector( '[data-vwtsm-report-message]' );
+		var emailEl = form.querySelector( '[data-vwtsm-report-email]' );
+		var statusEl = form.querySelector( '[data-vwtsm-report-status]' );
+		var submitBtn = form.querySelector( 'button[type="submit"]' );
+		var message = messageEl ? messageEl.value.trim() : '';
+
+		if ( ! message ) { return; }
+		if ( ! VWTSM.reportIssueUrl ) { return; }
+
+		if ( submitBtn ) { submitBtn.disabled = true; }
+		if ( statusEl ) { statusEl.textContent = 'Sending…'; }
+
+		fetch( VWTSM.reportIssueUrl, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': VWTSM.nonce },
+			body: JSON.stringify( {
+				message: message,
+				destination_name: this._lastDestinationName || '',
+				neighborhood_name: n.name || '',
+				email: emailEl ? emailEl.value.trim() : '',
+			} ),
+		} )
+			.then( function ( r ) { return r.json().then( function ( body ) { return { ok: r.ok, body: body }; } ); } )
+			.then( function ( res ) {
+				if ( statusEl ) { statusEl.textContent = ( res.body && res.body.message ) || ( res.ok ? 'Thanks!' : 'Something went wrong.' ); }
+				if ( submitBtn ) { submitBtn.disabled = false; }
+				if ( res.ok ) {
+					form.reset();
+					form.hidden = true;
+				}
+			} )
+			.catch( function () {
+				if ( statusEl ) { statusEl.textContent = 'Could not send the report right now -- please try again later.'; }
+				if ( submitBtn ) { submitBtn.disabled = false; }
+			} );
 	};
 
 	/**

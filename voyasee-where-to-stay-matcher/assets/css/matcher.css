@@ -860,6 +860,38 @@
 }
 .vwtsm-badge-confidence { border-color: var(--vwtsm-gold); color: var(--vwtsm-gold-soft); }
 
+.vwtsm-report-issue { grid-column: 1 / -1; margin-top: 1rem; border-top: 1px solid rgba(232,207,134,0.12); padding-top: 0.9rem; }
+.vwtsm-report-issue-toggle {
+	background: none; border: none; padding: 0; cursor: pointer;
+	font-size: 0.8rem; color: var(--vwtsm-cream-dim); text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.vwtsm-report-issue-toggle:hover { color: var(--vwtsm-gold-soft); }
+.vwtsm-report-issue-form { margin-top: 0.7rem; display: flex; flex-direction: column; gap: 0.6rem; max-width: 460px; }
+.vwtsm-report-issue-form textarea,
+.vwtsm-report-issue-form input[type="email"] {
+	width: 100%;
+	background: rgba(10, 15, 28, 0.55) !important;
+	border: 1px solid var(--vwtsm-navy-700) !important;
+	border-radius: var(--vwtsm-radius-sm);
+	padding: 0.6rem 0.8rem;
+	color: var(--vwtsm-cream) !important;
+	font-family: var(--vwtsm-font-body);
+	font-size: 0.85rem;
+	-webkit-text-fill-color: var(--vwtsm-cream) !important;
+}
+.vwtsm-report-issue-form textarea:focus,
+.vwtsm-report-issue-form input[type="email"]:focus {
+	background: rgba(10, 15, 28, 0.7) !important;
+	color: var(--vwtsm-cream) !important;
+	-webkit-text-fill-color: var(--vwtsm-cream) !important;
+	border-color: var(--vwtsm-gold-soft) !important;
+	outline: 2px solid var(--vwtsm-gold-soft);
+	outline-offset: 2px;
+}
+.vwtsm-report-issue-actions { display: flex; align-items: center; gap: 0.8rem; }
+.vwtsm-report-issue-status { font-size: 0.78rem; color: var(--vwtsm-cream-dim); }
+
 .vwtsm-radar-wrap {
 	background: rgba(6, 10, 20, 0.5);
 	border-radius: var(--vwtsm-radius-sm);
@@ -1334,6 +1366,28 @@
 .vwtsm-similar-card div { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .vwtsm-similar-card strong { font-family: var(--vwtsm-font-display); font-size: 1rem; color: var(--vwtsm-cream); }
 .vwtsm-similar-card span { font-size: 0.76rem; color: var(--vwtsm-cream-dim); }
+
+.vwtsm-compare-destinations { margin: 2rem 0; }
+.vwtsm-compare-dest-autocomplete { max-width: 420px; margin-top: 0.75rem; }
+.vwtsm-compare-dest-output { margin-top: 1rem; }
+.vwtsm-compare-dest-result {
+	display: flex; align-items: center; gap: 1.4rem;
+	background: rgba(10,15,28,0.45); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-md); padding: 1.4rem;
+	flex-wrap: wrap;
+}
+.vwtsm-compare-dest-side { flex: 1 1 180px; text-align: center; }
+.vwtsm-compare-dest-swatch { width: 36px; height: 6px; border-radius: 4px; margin: 0 auto 0.6rem; }
+.vwtsm-compare-dest-score {
+	display: block; font-family: var(--vwtsm-font-display); font-size: 2.2rem;
+	color: var(--vwtsm-gold); line-height: 1.1; margin: 0.2rem 0;
+}
+.vwtsm-compare-dest-side .vwtsm-price-band { margin-top: 0.5rem; }
+.vwtsm-compare-dest-vs {
+	flex: 0 0 auto; font-family: var(--vwtsm-font-display); font-style: italic;
+	color: var(--vwtsm-cream-dim); font-size: 1rem;
+}
+@media (max-width: 560px) { .vwtsm-compare-dest-result { flex-direction: column; } }
 
 /* -------------------------------------------------------------------------
    v4.0: Landmark chips (match card) + daily-convenience row (detail panel)
