@@ -39,6 +39,14 @@ final class V3DA_REST {
         $articles = V3DA_Content::related_articles($destination['content_taxonomy'], $destination['content_term_slug'], 6);
         $weather = V3DA_Content::weather_snapshot((float) $destination['lat'], (float) $destination['lng']);
         $country = V3DA_Content::country_snapshot($destination['country_code']);
+        $best_time = V3DA_TravelMonth::best_time($destination['slug']);
+        $holiday = V3DA_Content::upcoming_holiday($destination['country_code']);
+
+        $hero_image_url = $destination['hero_image_id']
+            ? wp_get_attachment_image_url((int) $destination['hero_image_id'], 'large')
+            : V3DA_Content::term_latest_thumbnail($destination['content_taxonomy'], $destination['content_term_slug']);
+
+        $all_destinations = V3DA_DB::get_all(['status' => 'active']);
 
         $response = new WP_REST_Response([
             'ok' => true,
@@ -54,11 +62,15 @@ final class V3DA_REST {
                 'post_count' => V3DA_Content::term_post_count($destination['content_taxonomy'], $destination['content_term_slug']),
                 'signature_line' => $destination['signature_line'],
                 'did_you_know' => $destination['did_you_know'],
-                'hero_image_url' => $destination['hero_image_id'] ? wp_get_attachment_image_url((int) $destination['hero_image_id'], 'large') : null,
+                'hero_image_url' => $hero_image_url ?: null,
             ],
             'articles' => $articles,
             'weather' => $weather,
             'country' => $country,
+            'bestTime' => $best_time,
+            'upcomingHoliday' => $holiday,
+            'nearby' => V3DA_Content::nearby_destinations($all_destinations, $destination, 3),
+            'sameCountry' => V3DA_Content::same_country_destinations($all_destinations, $destination, 4),
         ], 200);
         $response->header('Cache-Control', 'public, max-age=300, stale-while-revalidate=900');
         return $response;

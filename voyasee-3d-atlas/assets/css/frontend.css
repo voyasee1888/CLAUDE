@@ -328,6 +328,34 @@
     color: var(--v3datlas-gold-soft);
 }
 
+.v3datlas-best-time {
+    font-size: 13px;
+    color: var(--v3datlas-cream-dim);
+    margin: 8px 0 0;
+}
+
+.v3datlas-related-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.v3datlas-related-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 207, 134, 0.35);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--v3datlas-cream);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.v3datlas-related-chip:hover,
+.v3datlas-related-chip:focus-visible {
+    border-color: var(--v3datlas-gold-soft);
+    color: var(--v3datlas-gold-soft);
+}
+
 .v3datlas-sidebar-loading,
 .v3datlas-sidebar-error {
     color: var(--v3datlas-cream-dim);
@@ -345,6 +373,37 @@
     font-family: var(--v3datlas-font-display);
     font-size: 22px;
     margin: 0 0 12px;
+}
+
+.v3datlas-list-search {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 0 16px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 207, 134, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--v3datlas-cream);
+    font-family: var(--v3datlas-font-body);
+    font-size: 14px;
+}
+
+.v3datlas-list-search::placeholder {
+    color: var(--v3datlas-cream-dim);
+}
+
+.v3datlas-list-search:focus {
+    outline: none;
+    border-color: var(--v3datlas-gold-soft);
+}
+
+.v3datlas-region[data-v3datlas-hidden] {
+    display: none;
+}
+
+.v3datlas-region-list li[data-v3datlas-hidden] {
+    display: none;
 }
 
 .v3datlas-list-empty {
@@ -394,6 +453,11 @@
     gap: 24px;
 }
 
+.v3datlas-footer-col {
+    padding-top: 10px;
+    border-top: 2px solid rgba(232, 207, 134, 0.35);
+}
+
 .v3datlas-footer-col h3 {
     font-size: 13px;
     text-transform: uppercase;
@@ -410,11 +474,19 @@
 }
 
 .v3datlas-footer-col li {
-    padding: 3px 0;
+    padding: 4px 0;
 }
 
 .v3datlas-footer-col a {
     color: var(--v3datlas-cream-dim);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.v3datlas-footer-col a:hover,
+.v3datlas-footer-col a:focus-visible {
+    color: var(--v3datlas-gold-soft);
+    text-decoration: underline;
 }
 
 @media (max-width: 640px) {

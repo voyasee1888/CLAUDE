@@ -28,6 +28,7 @@ final class V3DA_DB {
         // read (no query against the destinations table) once it has run.
         self::maybe_seed_defaults();
         self::maybe_backfill_story_content();
+        self::maybe_seed_new_defaults();
     }
 
     private static function maybe_seed_defaults(): void {
@@ -44,6 +45,30 @@ final class V3DA_DB {
             self::insert($row);
         }
         update_option('v3da_seeded', 1, false);
+    }
+
+    /**
+     * The default dataset grew from 117 to 167 destinations after initial
+     * release. Sites that already seeded the first batch (v3da_seeded=1)
+     * would otherwise never receive the additional ones, since
+     * maybe_seed_defaults() only runs against a fully empty table. This
+     * does a one-time pass adding any default destination whose slug isn't
+     * already present -- it never touches or overwrites an existing row,
+     * so hand-edited destinations are untouched either way.
+     */
+    private static function maybe_seed_new_defaults(): void {
+        if (get_option('v3da_seeded_v2')) return;
+        $defaults = require V3DA_DIR . 'includes/data/default-destinations.php';
+        $existing_slugs = wp_list_pluck(self::get_all(), 'slug');
+        foreach ($defaults as $row) {
+            $slug = sanitize_title($row['name']);
+            if (in_array($slug, $existing_slugs, true)) continue;
+            $row['content_taxonomy'] = 'category';
+            $row['content_term_slug'] = $slug;
+            $row['status'] = 'active';
+            self::insert($row);
+        }
+        update_option('v3da_seeded_v2', 1, false);
     }
 
     /**

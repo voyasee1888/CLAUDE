@@ -5,11 +5,23 @@ final class V3DA_Admin {
     private const CAP = 'manage_options';
 
     private const SETTINGS_FIELDS = [
-        'tool_interactive_map',
-        'tool_destination_quiz',
+        // Voyasee tools
+        'tool_trip_readiness',
         'tool_smart_travel_hub',
+        'tool_interactive_map',
+        'tool_travel_month_planner',
+        'tool_trip_budget_calculator',
+        'tool_destination_quiz',
+        'tool_destination_comparison',
+        'tool_smart_packing_list',
+        'tool_travel_scam_shield',
+        'tool_jet_lag_planner',
+        // Affiliate partners
         'affiliate_booking_eu',
         'affiliate_booking_apac',
+        'affiliate_aviasales',
+        'affiliate_kiwi',
+        'affiliate_safetywing',
         'affiliate_visa',
     ];
 
@@ -18,6 +30,8 @@ final class V3DA_Admin {
         add_action('admin_post_v3da_save_destination', [self::class, 'handle_save']);
         add_action('admin_post_v3da_delete_destination', [self::class, 'handle_delete']);
         add_action('admin_post_v3da_save_settings', [self::class, 'handle_save_settings']);
+        add_action('admin_post_v3da_run_automap', [self::class, 'handle_run_automap']);
+        add_action('admin_post_v3da_create_category', [self::class, 'handle_create_category']);
         add_action('admin_enqueue_scripts', [self::class, 'maybe_enqueue']);
     }
 
@@ -33,6 +47,14 @@ final class V3DA_Admin {
         );
         add_submenu_page(
             'voyasee-3d-atlas',
+            __('Voyasee 3D Atlas — Health Check', 'voyasee-3d-atlas'),
+            __('Health Check', 'voyasee-3d-atlas'),
+            self::CAP,
+            'voyasee-3d-atlas-health',
+            [self::class, 'render_health_check']
+        );
+        add_submenu_page(
+            'voyasee-3d-atlas',
             __('Voyasee 3D Atlas — Settings', 'voyasee-3d-atlas'),
             __('Settings', 'voyasee-3d-atlas'),
             self::CAP,
@@ -42,10 +64,91 @@ final class V3DA_Admin {
     }
 
     public static function maybe_enqueue(string $hook): void {
-        if (!in_array($hook, ['toplevel_page_voyasee-3d-atlas', '3d-atlas_page_voyasee-3d-atlas-settings'], true)) return;
+        if (!in_array($hook, ['toplevel_page_voyasee-3d-atlas', '3d-atlas_page_voyasee-3d-atlas-settings', '3d-atlas_page_voyasee-3d-atlas-health'], true)) return;
         wp_enqueue_style('v3da-admin', V3DA_URL . 'assets/css/admin.css', [], V3DA_VERSION);
         wp_enqueue_media();
         wp_enqueue_script('v3da-admin', V3DA_URL . 'assets/js/admin.js', ['jquery'], V3DA_VERSION, true);
+    }
+
+    public static function render_health_check(): void {
+        if (!current_user_can(self::CAP)) return;
+        $destinations = V3DA_DB::get_all();
+        $report = get_transient('v3da_automap_report');
+
+        $stats = ['total' => count($destinations), 'mapped' => 0, 'unmapped' => 0, 'with_hero' => 0, 'coord_outliers' => []];
+        foreach ($destinations as $d) {
+            $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
+            if ($link) $stats['mapped']++; else $stats['unmapped']++;
+            if ($d['hero_image_id']) $stats['with_hero']++;
+
+            if (function_exists('voyasee_country_data_get_country') && $d['country_code']) {
+                $country = voyasee_country_data_get_country($d['country_code']);
+                if (!is_wp_error($country)) {
+                    $centroid = $country['core']['geography']['centroid'] ?? null;
+                    $capital = $country['core']['capital'] ?? null;
+                    if ($centroid) {
+                        $dist_centroid = V3DA_Content::haversine_km((float) $d['lat'], (float) $d['lng'], (float) $centroid['latitude'], (float) $centroid['longitude']);
+                        $dist_capital = $capital ? V3DA_Content::haversine_km((float) $d['lat'], (float) $d['lng'], (float) $capital['latitude'], (float) $capital['longitude']) : PHP_FLOAT_MAX;
+                        if ($dist_centroid > 3500 && $dist_capital > 3500) {
+                            $stats['coord_outliers'][] = ['name' => $d['name'], 'country' => $d['country'], 'distanceKm' => round(min($dist_centroid, $dist_capital))];
+                        }
+                    }
+                }
+            }
+        }
+
+        include V3DA_DIR . 'admin/views/health-check.php';
+    }
+
+    public static function handle_run_automap(): void {
+        if (!current_user_can(self::CAP)) wp_die(esc_html__('You are not allowed to do this.', 'voyasee-3d-atlas'));
+        check_admin_referer('v3da_run_automap');
+
+        $report = V3DA_AutoMap::run_bulk();
+        set_transient('v3da_automap_report', $report, 300);
+
+        self::maybe_purge_page_cache();
+        wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas-health', 'v3da_notice' => 'automapped'], admin_url('admin.php')));
+        exit;
+    }
+
+    public static function handle_create_category(): void {
+        if (!current_user_can(self::CAP)) wp_die(esc_html__('You are not allowed to do this.', 'voyasee-3d-atlas'));
+        $id = isset($_GET['id']) ? absint($_GET['id']) : 0;
+        check_admin_referer('v3da_create_category_' . $id);
+
+        $result = $id ? V3DA_AutoMap::create_category_for($id) : new WP_Error('v3da_missing_id', __('Missing destination.', 'voyasee-3d-atlas'));
+
+        $notice = is_wp_error($result) ? 'category-error' : 'category-created';
+        self::maybe_purge_page_cache();
+        wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas', 'v3da_notice' => $notice], admin_url('admin.php')));
+        exit;
+    }
+
+    /**
+     * @return array<int,array{0:string,1:string}>
+     */
+    public static function get_featured_arcs(): array {
+        $stored = get_option('v3da_featured_arcs', null);
+        return is_array($stored) ? $stored : [];
+    }
+
+    /**
+     * Parses one "slug-one, slug-two" pair per line into a clean list,
+     * silently dropping malformed lines rather than erroring -- this is a
+     * convenience field, not a strict schema the site owner needs to
+     * fight with.
+     *
+     * @return array<int,array{0:string,1:string}>
+     */
+    private static function sanitize_featured_arcs(string $raw): array {
+        $pairs = [];
+        foreach (preg_split('/\r\n|\r|\n/', $raw) as $line) {
+            $parts = array_map('sanitize_title', array_map('trim', explode(',', $line)));
+            $parts = array_values(array_filter($parts));
+            if (2 === count($parts)) $pairs[] = [$parts[0], $parts[1]];
+        }
+        return array_slice($pairs, 0, 10);
     }
 
     /**
@@ -77,6 +180,7 @@ final class V3DA_Admin {
             $settings[$field] = esc_url_raw((string) wp_unslash($_POST[$field] ?? ''));
         }
         update_option('v3da_settings', $settings, false);
+        update_option('v3da_featured_arcs', self::sanitize_featured_arcs((string) wp_unslash($_POST['featured_arcs'] ?? '')), false);
 
         self::maybe_purge_page_cache();
         wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas-settings', 'v3da_notice' => 'saved'], admin_url('admin.php')));
@@ -176,6 +280,7 @@ final class V3DA_Admin {
      * to call unconditionally on any host.
      */
     private static function maybe_purge_page_cache(): void {
+        delete_transient('v3da_post_counts');
         if (has_action('litespeed_purge_all')) {
             do_action('litespeed_purge_all');
         }

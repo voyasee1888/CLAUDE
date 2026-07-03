@@ -88,11 +88,13 @@ function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-/** Editorial "world tour" pairs for the on-load intro animation, resolved
- *  against whichever destinations actually exist on this site -- a pair is
- *  simply skipped if either slug isn't found (e.g. a destination was
- *  deleted, or the seed data was never populated). */
-const FEATURED_ARC_PAIRS = [
+/** Default "world tour" pairs for the on-load intro animation, used only
+ *  when the site owner hasn't configured their own route list in
+ *  Settings -> Globe Intro Tour. Resolved against whichever destinations
+ *  actually exist on this site -- a pair is simply skipped if either slug
+ *  isn't found (e.g. a destination was deleted, or the seed data was
+ *  never populated). */
+const DEFAULT_FEATURED_ARC_PAIRS = [
   ["new-york-city", "london"],
   ["paris", "tokyo"],
   ["dubai", "sydney"],
@@ -152,7 +154,8 @@ function initRoot(root) {
 
   const byslug = {};
   markers.forEach(function (m) { byslug[m.slug] = m; });
-  const featuredArcs = FEATURED_ARC_PAIRS
+  const arcPairs = Array.isArray(config.arcs) && config.arcs.length ? config.arcs : DEFAULT_FEATURED_ARC_PAIRS;
+  const featuredArcs = arcPairs
     .map(function (pair) {
       const from = byslug[pair[0]];
       const to = byslug[pair[1]];
@@ -567,8 +570,8 @@ function initRoot(root) {
       sidebarBody.appendChild(el("p", "v3datlas-sidebar-signature", dest.signature_line));
     }
 
-    sidebarBody.appendChild(renderWeather(data.weather));
-    sidebarBody.appendChild(renderCountry(data.country));
+    sidebarBody.appendChild(renderWeather(data.weather, data.bestTime));
+    sidebarBody.appendChild(renderCountry(data.country, data.upcomingHoliday));
 
     if (dest.did_you_know) {
       const fact = el("div", "v3datlas-sidebar-section v3datlas-fact");
@@ -578,16 +581,15 @@ function initRoot(root) {
     }
 
     sidebarBody.appendChild(renderArticles(data.articles, dest));
+    sidebarBody.appendChild(renderRelatedDestinations(data.nearby, data.sameCountry));
   }
 
-  function renderWeather(weather) {
+  function renderWeather(weather, bestTime) {
     const section = el("div", "v3datlas-sidebar-section v3datlas-weather");
     section.appendChild(el("h4", null, "Weather"));
     if (!weather) {
       section.appendChild(el("p", "v3datlas-muted", strings.weatherUnavailable || "Weather data is temporarily unavailable."));
-      return section;
-    }
-    if ("current" === weather.type) {
+    } else if ("current" === weather.type) {
       const row = el("p", "v3datlas-weather-now");
       if (null !== weather.tempC && undefined !== weather.tempC) {
         row.appendChild(el("strong", null, Math.round(weather.tempC) + "°C"));
@@ -603,10 +605,17 @@ function initRoot(root) {
       }
       section.appendChild(row);
     }
+    if (bestTime && bestTime.months && bestTime.months.length) {
+      const row = el("p", "v3datlas-best-time");
+      row.appendChild(document.createTextNode("Best time to visit: "));
+      row.appendChild(el("strong", null, bestTime.months.join(" & ")));
+      if (bestTime.highlight) row.appendChild(document.createTextNode(" (" + bestTime.highlight + ")"));
+      section.appendChild(row);
+    }
     return section;
   }
 
-  function renderCountry(country) {
+  function renderCountry(country, upcomingHoliday) {
     const section = el("div", "v3datlas-sidebar-section v3datlas-country");
     section.appendChild(el("h4", null, "Country notes"));
     if (!country) {
@@ -623,6 +632,42 @@ function initRoot(root) {
     }
     if (country.emergencyPolice) list.appendChild(el("li", null, "Police: " + country.emergencyPolice));
     if (country.tippingGuidance) list.appendChild(el("li", null, country.tippingGuidance));
+    if (upcomingHoliday && upcomingHoliday.name) {
+      list.appendChild(el("li", null, upcomingHoliday.name + " is coming up (" + upcomingHoliday.date + ")"));
+    }
+    section.appendChild(list);
+    return section;
+  }
+
+  function renderRelatedDestinations(nearby, sameCountry) {
+    const section = el("div", "v3datlas-sidebar-section v3datlas-related");
+    const combined = [];
+    const seen = {};
+    (nearby || []).forEach(function (item) {
+      if (seen[item.slug]) return;
+      seen[item.slug] = true;
+      combined.push(item);
+    });
+    (sameCountry || []).forEach(function (item) {
+      if (seen[item.slug]) return;
+      seen[item.slug] = true;
+      combined.push(item);
+    });
+    if (!combined.length) return el("div");
+
+    section.appendChild(el("h4", null, "You might also like"));
+    const list = el("div", "v3datlas-related-chips");
+    combined.slice(0, 5).forEach(function (item) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "v3datlas-related-chip";
+      chip.textContent = item.name;
+      chip.addEventListener("click", function () {
+        const marker = byslug[item.slug];
+        if (marker) openSidebar(marker);
+      });
+      list.appendChild(chip);
+    });
     section.appendChild(list);
     return section;
   }
@@ -655,8 +700,35 @@ function initRoot(root) {
   }
 }
 
+/**
+ * Type-to-filter search over the server-rendered A-Z destination list.
+ * Deliberately independent of the globe/WebGL init above -- this list is
+ * plain server-rendered HTML and must keep working (including for
+ * accessibility/no-WebGL visitors) whether or not the globe boots at all.
+ */
+function initListSearch(root) {
+  const input = root.querySelector("[data-v3datlas-list-search]");
+  if (!input) return;
+  const regions = root.querySelectorAll("[data-v3datlas-region]");
+
+  input.addEventListener("input", function () {
+    const q = input.value.trim().toLowerCase();
+    regions.forEach(function (region) {
+      let anyVisible = false;
+      region.querySelectorAll("[data-v3datlas-region-item]").forEach(function (item) {
+        const match = !q || (item.getAttribute("data-name") || "").indexOf(q) !== -1;
+        item.toggleAttribute("data-v3datlas-hidden", !match);
+        if (match) anyVisible = true;
+      });
+      region.toggleAttribute("data-v3datlas-hidden", !anyVisible);
+      if (q) region.open = anyVisible;
+    });
+  });
+}
+
 document.querySelectorAll("[data-v3datlas-root]").forEach(function (root) {
   if (root.hasAttribute("data-v3datlas-ready")) return;
   root.setAttribute("data-v3datlas-ready", "1");
+  initListSearch(root);
   initRoot(root);
 });

@@ -1,0 +1,79 @@
+<?php
+/**
+ * @var array $stats
+ * @var array<int,array{name:string,status:string,detail:string}>|false $report
+ */
+defined('ABSPATH') || exit;
+
+$notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_notice'])) : '';
+?>
+<div class="wrap v3da-admin-wrap">
+    <h1><?php echo esc_html__('Voyasee 3D Atlas — Data Health Check', 'voyasee-3d-atlas'); ?></h1>
+
+    <?php if ('automapped' === $notice): ?>
+        <div class="notice notice-success is-dismissible"><p><?php echo esc_html__('Auto-map finished — see the report below.', 'voyasee-3d-atlas'); ?></p></div>
+    <?php endif; ?>
+
+    <div class="v3da-health-cards">
+        <div class="v3da-health-card">
+            <strong><?php echo (int) $stats['total']; ?></strong>
+            <span><?php echo esc_html__('Total destinations', 'voyasee-3d-atlas'); ?></span>
+        </div>
+        <div class="v3da-health-card">
+            <strong><?php echo (int) $stats['mapped']; ?></strong>
+            <span><?php echo esc_html__('Linked to a real category/tag', 'voyasee-3d-atlas'); ?></span>
+        </div>
+        <div class="v3da-health-card <?php echo $stats['unmapped'] > 0 ? 'is-warning' : ''; ?>">
+            <strong><?php echo (int) $stats['unmapped']; ?></strong>
+            <span><?php echo esc_html__('Still using the search-fallback link', 'voyasee-3d-atlas'); ?></span>
+        </div>
+        <div class="v3da-health-card">
+            <strong><?php echo (int) $stats['with_hero']; ?></strong>
+            <span><?php echo esc_html__('Have a hero image set', 'voyasee-3d-atlas'); ?></span>
+        </div>
+    </div>
+
+    <h2><?php echo esc_html__('Auto-Map Content', 'voyasee-3d-atlas'); ?></h2>
+    <p><?php echo esc_html__('Scans your published posts for mentions of each unmapped destination, and points it at whichever real category/tag those matching posts actually use most.', 'voyasee-3d-atlas'); ?></p>
+    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+        <input type="hidden" name="action" value="v3da_run_automap">
+        <?php wp_nonce_field('v3da_run_automap'); ?>
+        <?php submit_button(__('Run Auto-Map Now', 'voyasee-3d-atlas'), 'primary', 'submit', false); ?>
+    </form>
+
+    <?php if ($report): ?>
+        <h3><?php echo esc_html__('Last auto-map report', 'voyasee-3d-atlas'); ?></h3>
+        <table class="wp-list-table widefat fixed striped">
+            <thead><tr>
+                <th><?php echo esc_html__('Destination', 'voyasee-3d-atlas'); ?></th>
+                <th><?php echo esc_html__('Result', 'voyasee-3d-atlas'); ?></th>
+                <th><?php echo esc_html__('Detail', 'voyasee-3d-atlas'); ?></th>
+            </tr></thead>
+            <tbody>
+                <?php foreach ($report as $row): ?>
+                    <tr>
+                        <td><?php echo esc_html($row['name']); ?></td>
+                        <td><?php echo esc_html($row['status']); ?></td>
+                        <td><?php echo esc_html($row['detail']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+    <?php if (!empty($stats['coord_outliers'])): ?>
+        <h2><?php echo esc_html__('Coordinate check', 'voyasee-3d-atlas'); ?></h2>
+        <p><?php echo esc_html__('Flagged only if a destination is unusually far from its own country (using Voyasee Country Intelligence\'s country data) — worth a quick look, though a large country can legitimately produce a false flag (e.g. Hawaii vs. the continental US).', 'voyasee-3d-atlas'); ?></p>
+        <ul>
+            <?php foreach ($stats['coord_outliers'] as $o): ?>
+                <li><?php echo esc_html($o['name'] . ', ' . $o['country'] . ' — ' . $o['distanceKm'] . ' km from its country\'s centroid/capital'); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php elseif (function_exists('voyasee_country_data_get_country')): ?>
+        <h2><?php echo esc_html__('Coordinate check', 'voyasee-3d-atlas'); ?></h2>
+        <p><?php echo esc_html__('No coordinate outliers found.', 'voyasee-3d-atlas'); ?></p>
+    <?php else: ?>
+        <h2><?php echo esc_html__('Coordinate check', 'voyasee-3d-atlas'); ?></h2>
+        <p><?php echo esc_html__('Voyasee Country Intelligence isn\'t active, so this check can\'t run right now.', 'voyasee-3d-atlas'); ?></p>
+    <?php endif; ?>
+</div>

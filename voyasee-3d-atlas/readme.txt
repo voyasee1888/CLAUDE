@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,52 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.3.0 =
+* Dataset expanded from 117 to 167 destinations, filling gaps in the Balkans,
+  Scandinavia, the Himalayas, East/Southern Africa, Central America, and the
+  Pacific. Every new signature line / "did you know" fact was independently
+  checked before writing (dates, superlative claims, and disputed origin
+  stories are hedged rather than stated flatly). Existing sites that already
+  seeded the original 117 get the 50 new ones automatically on next page
+  load, matched by slug, without touching any destination already hand-edited.
+* Travel Month Planner integration: destinations that overlap with Voyasee
+  Travel Month Planner's own seasonal-appeal data now show a "best time to
+  visit" hint in the sidebar. Deliberately conservative -- a destination
+  only gets a best-time hint when the underlying data shows real month-to-
+  month variation (not flat/placeholder scores), so nothing is shown rather
+  than something invented. 112 of 167 destinations matched directly by slug,
+  plus 4 more found via known aliasing, sourced from a one-time snapshot of
+  the planner's own exported data (no live API dependency).
+* New "nearby destinations" and "same country" related-destination chips in
+  the sidebar (haversine distance, reusing Country Intelligence's own
+  coordinate data -- no new dependency), and an automatic hero-image
+  fallback that pulls the latest post thumbnail from a destination's mapped
+  category when no image has been set manually.
+* New Data Health Check admin screen: mapped/unmapped destination counts,
+  one-click "Run Auto-Map Now" (matches unmapped destinations to existing
+  categories/tags by searching site content, or offers to create a new
+  category), and a live coordinate-outlier check against Country
+  Intelligence's centroid data.
+* Footer redesigned into four labeled columns (Plan Your Trip, Decide &
+  Prepare, Book Your Trip, Travel Safe) covering up to 10 other Voyasee
+  tools and up to 6 affiliate partners including Booking.com, instead of a
+  single flat link list.
+* The hero call-to-action no longer names a specific tool (it previously
+  read "Try the Interactive Travel Map," which name-dropped a separate,
+  already-existing Voyasee tool right next to this Atlas). It now reads
+  "Not sure where to start? Find your next destination" and still links to
+  whichever discovery tool is configured in Settings.
+* Destination search box added above the A-Z browse list for fast client-
+  side filtering by name or country.
+* Configurable globe intro-tour arcs (Settings -> Globe Intro Tour), falling
+  back to a built-in default route set if left blank.
+* Structured data upgraded from a plain ItemList of names to nested Place
+  entries with GeoCoordinates and each destination's signature line as its
+  description.
+* Post-count lookups (used for marker glow intensity) are now cached for 15
+  minutes via a transient instead of recomputed on every single page load,
+  invalidated immediately on any admin save/delete/auto-map.
 
 = 1.2.0 =
 * Color system: deep emerald/forest base with the existing Voyasee gold as

@@ -16,7 +16,17 @@ defined('ABSPATH') || exit;
         <div class="notice notice-success is-dismissible"><p><?php echo esc_html__('Destination saved.', 'voyasee-3d-atlas'); ?></p></div>
     <?php elseif ('deleted' === $notice): ?>
         <div class="notice notice-success is-dismissible"><p><?php echo esc_html__('Destination deleted.', 'voyasee-3d-atlas'); ?></p></div>
+    <?php elseif ('category-created' === $notice): ?>
+        <div class="notice notice-success is-dismissible"><p><?php echo esc_html__('Category created and linked.', 'voyasee-3d-atlas'); ?></p></div>
+    <?php elseif ('category-error' === $notice): ?>
+        <div class="notice notice-error is-dismissible"><p><?php echo esc_html__('Could not create the category.', 'voyasee-3d-atlas'); ?></p></div>
     <?php endif; ?>
+
+    <p>
+        <a href="<?php echo esc_url(admin_url('admin.php?page=voyasee-3d-atlas-health')); ?>" class="button">
+            <?php echo esc_html__('Data Health Check', 'voyasee-3d-atlas'); ?>
+        </a>
+    </p>
 
     <table class="wp-list-table widefat fixed striped">
         <thead>
@@ -41,18 +51,26 @@ defined('ABSPATH') || exit;
                     add_query_arg(['action' => 'v3da_delete_destination', 'id' => $d['id']], admin_url('admin-post.php')),
                     'v3da_delete_destination_' . $d['id']
                 );
+                $is_mapped = (bool) V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
+                $create_category_url = wp_nonce_url(
+                    add_query_arg(['action' => 'v3da_create_category', 'id' => $d['id']], admin_url('admin-post.php')),
+                    'v3da_create_category_' . $d['id']
+                );
                 ?>
                 <tr>
                     <td><strong><a href="<?php echo esc_url($edit_url); ?>"><?php echo esc_html($d['name']); ?></a></strong><br><code><?php echo esc_html($d['slug']); ?></code></td>
                     <td><?php echo esc_html($d['country']); ?> <?php echo $d['country_code'] ? '(' . esc_html($d['country_code']) . ')' : ''; ?></td>
                     <td><?php echo esc_html($d['region']); ?></td>
                     <td><?php echo esc_html($d['lat']); ?>, <?php echo esc_html($d['lng']); ?></td>
-                    <td><?php echo esc_html($d['content_taxonomy']); ?>: <?php echo esc_html($d['content_term_slug']); ?></td>
+                    <td><?php echo esc_html($d['content_taxonomy']); ?>: <?php echo esc_html($d['content_term_slug']); ?> <?php echo $is_mapped ? '' : '<span style="color:#b32d2e;">(' . esc_html__('unmapped', 'voyasee-3d-atlas') . ')</span>'; ?></td>
                     <td><?php echo esc_html($d['status']); ?></td>
                     <td>
                         <a href="<?php echo esc_url($edit_url); ?>"><?php echo esc_html__('Edit', 'voyasee-3d-atlas'); ?></a>
                         |
                         <a href="<?php echo esc_url($delete_url); ?>" onclick="return confirm('<?php echo esc_js(__('Delete this destination?', 'voyasee-3d-atlas')); ?>');" style="color:#b32d2e;"><?php echo esc_html__('Delete', 'voyasee-3d-atlas'); ?></a>
+                        <?php if (!$is_mapped): ?>
+                            | <a href="<?php echo esc_url($create_category_url); ?>"><?php echo esc_html__('Create Category', 'voyasee-3d-atlas'); ?></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

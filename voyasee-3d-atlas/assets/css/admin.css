@@ -5,3 +5,35 @@
 .v3da-admin-wrap code {
     font-size: 12px;
 }
+
+.v3da-health-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 16px 0 24px;
+}
+
+.v3da-health-card {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.v3da-health-card strong {
+    font-size: 28px;
+}
+
+.v3da-health-card.is-warning {
+    border-color: #dba617;
+    background: #fcf9e8;
+}
+
+@media (max-width: 782px) {
+    .v3da-health-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
