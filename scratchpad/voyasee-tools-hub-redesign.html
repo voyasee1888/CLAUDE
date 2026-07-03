@@ -1,0 +1,472 @@
+<style>
+.vtools-seo, .vtools-seo * { box-sizing: border-box; }
+.vtools-seo {
+  --ink: #121a30;
+  --muted: #5b6478;
+  --line: #e3e7f0;
+  --soft: #f6f7fb;
+  --navy: #0a0f1e;
+  --navy-deep: #141d38;
+  --gold: #c99a3f;
+  --gold-soft: #e3c079;
+  --r: 20px;
+  font-family: inherit;
+  color: var(--ink);
+  line-height: 1.72;
+}
+.vtools-seo a { color: #9a6a1f; text-decoration: none; }
+.vtools-seo a:hover { text-decoration: underline; }
+.vtools-seo h2, .vtools-seo h3 { color: #0e1428; line-height: 1.2; margin: 0 0 14px; }
+.vtools-seo h2 { font-size: clamp(1.6rem, 3vw, 2.35rem); margin-top: 40px; padding-bottom: 10px; border-bottom: 2px solid var(--line); }
+.vtools-seo h3 { font-size: clamp(1.15rem, 2vw, 1.5rem); margin-top: 20px; }
+.vtools-seo p { margin: 0 0 16px; color: var(--muted); }
+
+/* ---------- Hero ---------- */
+.vtools-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  padding: clamp(28px, 5vw, 48px);
+  background:
+    radial-gradient(circle at 85% 0%, rgba(201,154,63,.18), transparent 45%),
+    radial-gradient(circle at 5% 100%, rgba(80,120,190,.14), transparent 45%),
+    linear-gradient(135deg, #0a0f1e 0%, #141d38 60%, #0c1226 100%);
+  color: #f2ede0;
+  margin: 0 0 30px;
+}
+.vtools-hero h2 { color: #f6f1e2; border-bottom: none; margin-top: 8px; font-size: clamp(1.9rem, 4vw, 2.6rem); letter-spacing: -.01em; }
+.vtools-hero p { color: #c6cbdc; max-width: 780px; }
+.vtools-eyebrow { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-soft); margin-bottom: 8px; }
+.vtools-hero-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.vtools-hero-stats span { padding: 7px 14px; border-radius: 30px; background: rgba(255,255,255,.06); border: 1px solid rgba(227,192,121,.35); font-size: 13px; color: #efe4c8; }
+
+/* ---------- Category chips (color-coded per tool type) ---------- */
+.vtools-chip { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 11px; font-size: .78rem; font-weight: 800; margin-bottom: 10px; letter-spacing: .01em; }
+.vc-readiness   { background: #fdf3e0; color: #9a6a10; }
+.vc-discovery   { background: #e8f0fd; color: #1d5fb4; }
+.vc-intel       { background: #e3f7f2; color: #0f8a7a; }
+.vc-budget      { background: #e9f8ee; color: #2f8f4e; }
+.vc-packing     { background: #fdeee0; color: #c1631a; }
+.vc-baggage     { background: #ecebfb; color: #4a4fc4; }
+.vc-compliance  { background: #f3e8fa; color: #7a3fa0; }
+.vc-safety      { background: #fbe7ea; color: #c1354a; }
+.vc-inspiration { background: #fbe7f0; color: #b13c74; }
+.vc-compare     { background: #e2f5f7; color: #12798a; }
+.vc-month       { background: #fbf1dc; color: #a67c14; }
+.vc-rules       { background: #f3e4da; color: #8a4a2a; }
+.vc-recovery    { background: #ece5fa; color: #6a3fb0; }
+.vc-layover     { background: #e6eef4; color: #3a5a7a; }
+.vc-neighborhood{ background: #e2f6ee; color: #1f7a5c; }
+
+/* ---------- Grid of tool cards ---------- */
+.vtools-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; margin: 22px 0 32px; }
+.vtools-card { position: relative; border: 1px solid var(--line); border-radius: 18px; background: #fff; overflow: hidden; box-shadow: 0 10px 28px rgba(15,25,55,.06); transition: transform .22s, box-shadow .22s; }
+.vtools-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15,25,55,.12); }
+.vtools-card.vtools-featured { border: 1.5px solid var(--gold-soft); box-shadow: 0 12px 32px rgba(201,154,63,.18); }
+.vtools-card-badge { position: absolute; top: 12px; right: 12px; z-index: 2; background: linear-gradient(135deg, var(--gold), #a67626); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 5px 10px; border-radius: 30px; }
+.vtools-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--soft); transition: transform .25s; }
+.vtools-card:hover img { transform: scale(1.03); }
+.vtools-card-body { padding: 18px 18px 20px; }
+.vtools-card-body h3 { margin: 0 0 8px; font-size: 1.15rem; }
+.vtools-btn {
+  display: inline-flex; align-items: center; justify-content: center; margin-top: 8px;
+  border-radius: 12px; background: linear-gradient(135deg, var(--navy-deep), var(--navy));
+  color: #fff !important; font-weight: 800; padding: 10px 16px; text-decoration: none !important;
+  transition: filter .2s, transform .2s; font-size: .92rem;
+}
+.vtools-btn:hover { filter: brightness(1.2); transform: scale(1.02); }
+.vtools-btn-gold { background: linear-gradient(135deg, var(--gold), #a67626); }
+
+/* ---------- Detailed tool sections ---------- */
+.vtools-tool { border-top: 1px solid var(--line); padding-top: 30px; margin-top: 36px; }
+.vtools-tool.vtools-tool-featured { border-radius: 22px; padding: 28px; border: 1px solid var(--gold-soft); background: linear-gradient(180deg, #fffaf0, #fff); margin-top: 44px; }
+.vtools-tool-img { display: block; width: 100%; max-width: 980px; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; border: 1px solid var(--line); box-shadow: 0 16px 40px rgba(15,25,55,.08); margin: 14px 0 20px; background: var(--soft); }
+.vtools-list { margin: 0 0 18px; padding-left: 22px; color: var(--muted); }
+.vtools-list li { margin: 6px 0; }
+.vtools-note { border-left: 4px solid var(--gold); background: #fdf6e8; padding: 15px 17px; border-radius: 12px; margin: 20px 0; color: var(--ink); }
+
+/* ---------- FAQ ---------- */
+.vtools-faq details { border: 1px solid var(--line); border-radius: 12px; margin: 8px 0; background: #fff; }
+.vtools-faq summary { cursor: pointer; padding: 14px 16px; font-weight: 700; color: #0e1428; list-style: none; }
+.vtools-faq summary::-webkit-details-marker { display: none; }
+.vtools-faq details p { padding: 0 16px 15px; margin: 0; }
+
+/* ---------- Closing CTA ---------- */
+.vtools-cta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-radius: 22px; padding: 26px 30px; margin: 30px 0; background: linear-gradient(135deg, #0a0f1e, #141d38); color: #f2ede0; }
+.vtools-cta strong { display: block; font-size: 1.15rem; color: #f6f1e2; }
+.vtools-cta span { color: #b8bfd2; font-size: .92rem; }
+
+@media (max-width: 760px) {
+  .vtools-grid { grid-template-columns: 1fr; }
+  .vtools-hero { padding: 22px; }
+  .vtools-card-body { padding: 16px; }
+  .vtools-cta { flex-direction: column; text-align: center; }
+}
+</style>
+
+<section class="vtools-seo">
+
+  <div class="vtools-hero">
+    <span class="vtools-eyebrow">15 free planning tools, one trip workflow</span>
+    <h2>Free Travel Tools to Plan Smarter, Spend Better and Avoid Travel Mistakes</h2>
+    <p>Voyasee travel tools are built for travellers who want more than inspiration. Beautiful photos can help you dream, but real planning needs answers: where should I go, which area should I actually stay in, what month is best, can I afford the trip, what should I pack, will my carry-on fit my airline, how many Schengen days do I have left, is my layover risky, can I bring my medicine, how do I recover from jet lag, and what tourist scams should I know before arrival?</p>
+    <p>This travel tools hub brings all 15 Voyasee tools into one place. Each tool solves a different travel planning problem, but they work best together as a full trip workflow &mdash; from choosing a destination all the way through to landing and knowing exactly what to do first.</p>
+    <div class="vtools-hero-stats">
+      <span>15 planning tools</span>
+      <span>No account required</span>
+      <span>Free to use</span>
+      <span>Built as one connected workflow</span>
+    </div>
+  </div>
+
+  <h2>Choose a Voyasee Travel Tool</h2>
+  <p>The tools below cover the main travel decisions people usually spread across dozens of tabs: destination matching, which neighborhood to book, side-by-side comparison, season planning, budget, packing, baggage size checks, Schengen day balance, live destination intelligence, safety, medicine rules, layovers, jet lag and trip readiness.</p>
+
+  <div class="vtools-grid">
+
+    <article class="vtools-card vtools-featured">
+      <span class="vtools-card-badge">New</span>
+      <a href="https://voyasee.com/best-area-to-stay/"><img src="https://voyasee.com/wp-content/uploads/2026/07/Find-the-Best-Area-to-Stay-for-Your-Trip.png" alt="Voyasee Best Area to Stay Finder neighborhood-matching tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body">
+        <span class="vtools-chip vc-neighborhood">Neighborhoods</span>
+        <h3>Best Area to Stay Finder</h3>
+        <p>Match your trip to the right neighborhood, not just the right city, with an explainable score, an honest trade-off warning and a real map.</p>
+        <a class="vtools-btn vtools-btn-gold" href="https://voyasee.com/best-area-to-stay/">Find Your Area</a>
+      </div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/trip-readiness-checklist/"><img src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-PASSPORT.png" alt="Voyasee Travel Passport trip readiness checklist tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-readiness">Readiness</span><h3>Travel Passport</h3><p>Check if your trip is ready before you fly with readiness score, arrival plan, airport clues, budget signals and safety checks.</p><a class="vtools-btn" href="https://voyasee.com/trip-readiness-checklist/">Check Trip Readiness</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/interactive-travel-map/"><img src="https://voyasee.com/wp-content/uploads/2026/05/INTERACTIVE-TRAVEL-MAP.jpg" alt="Voyasee Interactive Travel Map tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-discovery">Discovery</span><h3>Interactive Travel Map</h3><p>Find destinations by budget, month, travel style, safety comfort, food, hidden gems and match score.</p><a class="vtools-btn" href="https://voyasee.com/interactive-travel-map/">Open Travel Map</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/free-smart-travel-hub/"><img src="https://voyasee.com/wp-content/uploads/2026/04/SMART-TRAVEL-HUB.jpg" alt="Voyasee Smart Travel Hub tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-intel">Live intel</span><h3>Smart Travel Hub</h3><p>Check weather, currency, AQI, emergency numbers, holidays, budget clues, safety notes and local basics.</p><a class="vtools-btn" href="https://voyasee.com/free-smart-travel-hub/">Open Smart Hub</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/trip-budget-calculator/"><img src="https://voyasee.com/wp-content/uploads/2026/04/TRIP-BUDGET-CALCULATOR.jpg" alt="Voyasee Trip Budget Calculator tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-budget">Budget</span><h3>Trip Budget Calculator</h3><p>Estimate total travel cost, daily spend, hidden fees, group splits, stress tests and affordability.</p><a class="vtools-btn" href="https://voyasee.com/trip-budget-calculator/">Calculate Trip Cost</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/packing-list-generator/"><img src="https://voyasee.com/wp-content/uploads/2026/04/SMART-PACKING-LIST-GENERATOR.jpg" alt="Voyasee Packing List Generator tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-packing">Packing</span><h3>Packing List Generator</h3><p>Create a climate-aware checklist with luggage weight, liquids, batteries, activities and destination extras.</p><a class="vtools-btn" href="https://voyasee.com/packing-list-generator/">Build Packing List</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/carry-on-size-checker/"><img src="https://voyasee.com/wp-content/uploads/2026/06/Carry-On-Size-Checker.png" alt="Voyasee Carry-On Size Checker tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-baggage">Baggage</span><h3>Carry-On Size Checker</h3><p>Check your carry-on, personal item or checked bag against airline rules across multiple flights, with fee estimates and a fix-it plan.</p><a class="vtools-btn" href="https://voyasee.com/carry-on-size-checker/">Check Your Bag</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/schengen-calculator/"><img src="https://voyasee.com/wp-content/uploads/2026/06/Schengen-Calculator.jpg" alt="Voyasee Schengen Calculator tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-compliance">Compliance</span><h3>Schengen Calculator</h3><p>Check your real remaining days under the 90/180-day rule, with future trip forecasting and smart re&#8209;entry planning.</p><a class="vtools-btn" href="https://voyasee.com/schengen-calculator/">Check Day Balance</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/travel-scam-checker/"><img src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-22-2026-06_52_57-PM.png" alt="Voyasee Travel Scam Checker tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-safety">Safety</span><h3>Travel Scam Checker</h3><p>Spot suspicious offers, taxi pressure, fake tickets, rental deposits and city scam patterns before you pay.</p><a class="vtools-btn" href="https://voyasee.com/travel-scam-checker/">Check Scam Risk</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/destination-quiz/"><img src="https://voyasee.com/wp-content/uploads/2026/04/DESTINATION-QUIZ.jpg" alt="Voyasee Destination Quiz tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-inspiration">Inspiration</span><h3>Destination Quiz</h3><p>Answer quick questions and get destination matches based on budget, mood, climate and trip style.</p><a class="vtools-btn" href="https://voyasee.com/destination-quiz/">Take the Quiz</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/travel-destination-comparison-tool/"><img src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-DESTINATION-TOOL.png" alt="Voyasee Travel Destination Comparison Tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-compare">Compare</span><h3>Travel Destination Comparison Tool</h3><p>Battle two places side by side by month, budget, trip style, arrival ease, hidden costs and passport comfort.</p><a class="vtools-btn" href="https://voyasee.com/travel-destination-comparison-tool/">Compare Two Places</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/best-time-to-visit-travel-planner/"><img src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-29-2026-07_07_57-PM.jpg" alt="Voyasee Travel Month Planner tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-month">Best month</span><h3>Travel Month Planner</h3><p>Compare weather, rain, crowd level, price pressure, daylight, events and better month suggestions.</p><a class="vtools-btn" href="https://voyasee.com/best-time-to-visit-travel-planner/">Find Best Month</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/medicine-restricted-item-checker/"><img src="https://voyasee.com/wp-content/uploads/2026/05/ChatGPT-Image-May-5-2026-09_06_04-PM.jpg" alt="Voyasee Medicine and Restricted Item Checker tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-rules">Rules</span><h3>Medicine &amp; Restricted Items Checker</h3><p>Check medicines, vapes, drones, batteries, syringes, CBD, permits, doctor letters and strictest trip leg.</p><a class="vtools-btn" href="https://voyasee.com/medicine-restricted-item-checker/">Check Item Rules</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/jet-lag-recovery-planner/"><img src="https://voyasee.com/wp-content/uploads/2026/05/gpt-image-2_Create_an_ultra-premium_8K_landscape_featured_image_for_a_travel_website_tool_ti-0.jpg" alt="Voyasee Jet Lag Recovery Planner tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-recovery">Recovery</span><h3>Jet Lag Recovery Planner</h3><p>Build a sleep, light, caffeine and arrival-readiness plan for long-haul flights and time zone changes.</p><a class="vtools-btn" href="https://voyasee.com/jet-lag-recovery-planner/">Plan Jet Lag Recovery</a></div>
+    </article>
+
+    <article class="vtools-card">
+      <a href="https://voyasee.com/transit-visa-layover-risk-checker/"><img src="https://voyasee.com/wp-content/uploads/2026/05/TRANSIT-VISA.jpg" alt="Voyasee Transit Visa and Layover Risk Checker tool preview" loading="lazy" decoding="async"></a>
+      <div class="vtools-card-body"><span class="vtools-chip vc-layover">Layover</span><h3>Transit Visa &amp; Layover Risk Checker</h3><p>Check layover visa risk, separate tickets, baggage collection, terminal transfers and connection timing.</p><a class="vtools-btn" href="https://voyasee.com/transit-visa-layover-risk-checker/">Check Layover Risk</a></div>
+    </article>
+
+  </div>
+
+  <h2>How to Use These Travel Planning Tools Together</h2>
+  <p>The easiest way to use Voyasee is to follow a simple planning flow. First, choose where you might go. Second, once you know the city, work out which specific area to actually stay in &mdash; the wrong hotel in the right city is still a mismatch. Third, check whether the month, budget and comfort level make sense. Fourth, prepare the practical details that create real travel stress: packing, medicine, scams, layovers and jet lag. This is why the tools are connected across the site rather than standing alone.</p>
+  <p>If you are at the inspiration stage, start with the <a href="https://voyasee.com/interactive-travel-map/">Interactive Travel Map</a> or <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a>. If you have two strong finalists, use the <a href="https://voyasee.com/travel-destination-comparison-tool/">Travel Destination Comparison Tool</a> to battle them side by side before you go deeper. Once you know the city, use the <a href="https://voyasee.com/best-area-to-stay/">Best Area to Stay Finder</a> to work out which specific neighborhood actually fits your trip, then open the <a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a> and <a href="https://voyasee.com/best-time-to-visit-travel-planner/">Travel Month Planner</a> for deeper destination and timing context. If the destination still looks good, move to the <a href="https://voyasee.com/trip-budget-calculator/">Trip Budget Calculator</a>, <a href="https://voyasee.com/packing-list-generator/">Packing List Generator</a> and <a href="https://voyasee.com/carry-on-size-checker/">Carry-On Size Checker</a> to confirm your bags actually fit before you pack them. If you are travelling to the Schengen Area, check your day balance with the <a href="https://voyasee.com/schengen-calculator/">Schengen Calculator</a> before booking any flights. Then protect the trip with the <a href="https://voyasee.com/travel-scam-checker/">Travel Scam Checker</a>, <a href="https://voyasee.com/medicine-restricted-item-checker/">Medicine &amp; Restricted Items Checker</a>, <a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa Checker</a> and <a href="https://voyasee.com/jet-lag-recovery-planner/">Jet Lag Recovery Planner</a>. Before you book or fly, finish with the <a href="https://voyasee.com/trip-readiness-checklist/">Travel Passport</a> to see what is ready and what still needs attention.</p>
+
+  <article class="vtools-tool vtools-tool-featured" id="best-area-to-stay">
+    <span class="vtools-chip vc-neighborhood">New tool</span>
+    <h2>1. Best Area to Stay Finder: Match Your Trip to the Right Neighborhood</h2>
+    <a href="https://voyasee.com/best-area-to-stay/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/07/Find-the-Best-Area-to-Stay-for-Your-Trip.png" alt="Voyasee Best Area to Stay Finder results page showing a matched neighborhood, match score and real map" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/best-area-to-stay/">Voyasee Best Area to Stay Finder</a> answers a question hotel reviews rarely do: not "is this a good hotel," but "is this the right part of the city for my trip." A great hotel in the wrong neighborhood is still a mismatch &mdash; a long ride from anything you wanted to see, a nightlife strip when you wanted quiet, or a quiet suburb when you wanted to be in the middle of things.</p>
+    <p>Answer a short quiz about your budget, trip length, traveller type, and what you actually want to do, and the tool scores real neighborhoods in your destination across seven weighted factors: budget fit, vibe fit, attraction fit, walkability, airport ease, traveller-type suitability and safety comfort. Every match comes with an explainable score, a plain-language reason it topped your results, and a "Wrong Area Warning" &mdash; an honest caution about its single weakest point, not just a list of upsides.</p>
+    <p>Results include a real interactive map built on actual street data, a weather and jet-lag snapshot for your travel dates, local practical facts like plug type and emergency numbers, and a side-by-side comparison table across your top matches. You can even compare your top match against a second city entirely, using the same answers. Nothing is guessed: destinations without confirmed street-level detail are shown as honest general zones instead of invented neighborhood names, and any estimate still waiting on a data refresh is labelled "not synced" rather than dressed up as confirmed.</p>
+    <ul class="vtools-list">
+      <li>Best for: first-time visitors to a city, solo travellers, families, and anyone landing late at night who wants a genuinely convenient area.</li>
+      <li>Use before: booking accommodation, once you already know the city but not which part of it to stay in.</li>
+      <li>Next step: once you have your matched neighborhood, book accommodation in that specific area and check the Smart Travel Hub for deeper destination context.</li>
+    </ul>
+    <a class="vtools-btn vtools-btn-gold" href="https://voyasee.com/best-area-to-stay/">Find Your Area</a>
+  </article>
+
+  <article class="vtools-tool" id="travel-passport">
+    <h2>2. Travel Passport: Trip Readiness Checklist Before You Fly</h2>
+    <a href="https://voyasee.com/trip-readiness-checklist/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-PASSPORT.png" alt="Travel Passport trip readiness checklist dashboard for checking a trip before flying" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/trip-readiness-checklist/">Voyasee Travel Passport</a> is the final readiness dashboard to use once a trip starts becoming real. It answers a simple but important question: is this trip ready before you book, pack, fly and land? Instead of keeping notes across weather pages, budget tabs, packing lists, airline rules and safety articles, it brings the major checks into one readable trip profile.</p>
+    <p>It builds a Trip Readiness Score from your destination, travel month, trip length, traveller type, budget comfort, arrival time and luggage style, alongside destination difficulty, travel shock, first-arrival risk, airport friction, currency, public holidays and a first-24-hours arrival plan. It connects to the rest of the Voyasee system directly: an unchecked budget points to the Trip Budget Calculator, incomplete packing links to the Packing List Generator, a layover reminds you to check transit risk, and a downloadable trip card gives you a shareable snapshot of the whole plan.</p>
+    <ul class="vtools-list">
+      <li>Best for: final trip readiness, pre-booking checks, and first-24-hours arrival confidence.</li>
+      <li>Use before: booking non-refundable travel, packing, flying or landing in a new destination.</li>
+      <li>Next step: complete any missing checks through the connected Voyasee tools.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/trip-readiness-checklist/">Use the Travel Passport</a>
+  </article>
+
+  <article class="vtools-tool" id="interactive-travel-map">
+    <h2>3. Interactive Travel Map: Discover Destinations by Real Trip Fit</h2>
+    <a href="https://voyasee.com/interactive-travel-map/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/INTERACTIVE-TRAVEL-MAP.jpg" alt="Voyasee Interactive Travel Map showing destination pins and match filters" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/interactive-travel-map/">Interactive Travel Map</a> is a visual destination-discovery tool for travellers who are still deciding where to go, built around real trip fit rather than geography alone. Filter destinations by month, budget, travel style, safety comfort, scam awareness, food strength and hidden-gem value, and compare up to four shortlisted destinations on a saved comparison board.</p>
+    <p>Every destination card carries a Voyasee Match Score plus practical signals like live weather, daily-budget estimates, packing clues and seasonal warnings, so a shortlist becomes something you can actually act on rather than a list of pretty names.</p>
+    <ul class="vtools-list">
+      <li>Best for: undecided travellers, "where should I go" articles, cheap-destination and warm-winter searches.</li>
+      <li>Use before: booking anything, while you're still exploring options across many possible destinations.</li>
+      <li>Next step: once you have two strong finalists, compare them directly in the Travel Destination Comparison Tool.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/interactive-travel-map/">Open Travel Map</a>
+  </article>
+
+  <article class="vtools-tool" id="smart-travel-hub">
+    <h2>4. Smart Travel Hub: Full Destination Intelligence in One Dashboard</h2>
+    <a href="https://voyasee.com/free-smart-travel-hub/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/SMART-TRAVEL-HUB.jpg" alt="Voyasee Smart Travel Hub dashboard with weather, currency and safety information" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a> is a research dashboard for a destination you already have in mind. It combines live weather and forecasts, currency conversion, air quality and UV, public holidays, local emergency numbers, scam-watch notes, budget signals and a readiness score into one place, with a clear label on whether each piece of information is live, curated, or estimated.</p>
+    <p>It also includes a "Before You Book" live-check panel, a lightweight itinerary builder, and stay-zone and neighbourhood suggestions &mdash; a natural companion to the Best Area to Stay Finder once you want the fuller destination picture around your matched neighbourhood.</p>
+    <ul class="vtools-list">
+      <li>Best for: researching one known destination before payment, first-time international travel, seasonal planning.</li>
+      <li>Use before: you commit to flights or accommodation, once the destination is already fairly settled.</li>
+      <li>Next step: check the Travel Month Planner to confirm your dates actually fit the destination's best season.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/free-smart-travel-hub/">Open Smart Hub</a>
+  </article>
+
+  <article class="vtools-tool" id="trip-budget-calculator">
+    <h2>5. Trip Budget Calculator: Your Real Travel Cost, Not Just Flights and Hotels</h2>
+    <a href="https://voyasee.com/trip-budget-calculator/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/TRIP-BUDGET-CALCULATOR.jpg" alt="Voyasee Trip Budget Calculator showing a cost breakdown" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/trip-budget-calculator/">Trip Budget Calculator</a> estimates a full journey, not just flights and hotels, across 425+ destination presets. It covers food, transport, activities, insurance, eSIM, visas, transfers, baggage and an emergency buffer, then gives you a per-person, per-day and group-total estimate alongside a Budget Health score with plain verdicts like "Strong Fit" or "Budget Pressure."</p>
+    <p>When a planned trip is under real pressure, it suggests cheaper alternative destinations rather than just telling you the number is too high, and it hands off cleanly into packing, timing and booking tools once the number looks workable.</p>
+    <ul class="vtools-list">
+      <li>Best for: "can I afford this trip," family and group trips, comparing a planned budget with a realistic range.</li>
+      <li>Use before: paying for flights, accommodation, or any non-refundable booking.</li>
+      <li>Next step: if the budget works, move to the Packing List Generator and Carry-On Size Checker.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/trip-budget-calculator/">Calculate Trip Cost</a>
+  </article>
+
+  <article class="vtools-tool" id="packing-list-generator">
+    <h2>6. Smart Packing List Generator: A Checklist Built Around the Actual Trip</h2>
+    <a href="https://voyasee.com/packing-list-generator/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/SMART-PACKING-LIST-GENERATOR.jpg" alt="Voyasee Packing List Generator showing a categorized packing checklist" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/packing-list-generator/">Smart Packing List Generator</a> builds a climate-aware, activity-aware, luggage-aware checklist rather than a generic list copied for every trip. It flags 100ml liquid limits, lithium batteries and cabin-only items, adjusts quantities for how often you'll do laundry, and adds destination-specific extras based on the activities you actually picked.</p>
+    <p>A 48-hour departure plan and a personal-item survival kit round out the list, with a direct handoff to the Medicine &amp; Restricted Items Checker for anything that needs a closer look before it goes in the bag.</p>
+    <ul class="vtools-list">
+      <li>Best for: packing articles, first-time travel prep, carry-on-only trips, mixed-climate journeys, family trips.</li>
+      <li>Use before: closing your bag, once your destination and trip length are set.</li>
+      <li>Next step: once packed, run every bag through the Carry-On Size Checker before departure.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/packing-list-generator/">Build Packing List</a>
+  </article>
+
+  <article class="vtools-tool" id="carry-on-size-checker">
+    <h2>7. Carry-On Size Checker (BagFit): Know Before the Gate, Not At It</h2>
+    <a href="https://voyasee.com/carry-on-size-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/Carry-On-Size-Checker.png" alt="Voyasee BagFit Carry-On Size Checker showing a flight decision board" loading="lazy" decoding="async"></a>
+    <p>Voyasee BagFit compares up to six bags against up to ten flights in a single check, across 250 airline profiles. It doesn't just say whether a bag fits &mdash; it names the exact dimension that's the problem, how strictly that airline enforces its own rule, and what a rejected bag is likely to cost at the counter, online, or at the gate.</p>
+    <p>It reads the allowance text straight from your booking confirmation, accounts for Basic Economy and Premium Economy fare differences, and gives a Smart Fix Plan with a pre-written airport-counter script if a bag is borderline. Every result links back to the airline's own official source.</p>
+    <ul class="vtools-list">
+      <li>Best for: connecting flights, mixed-airline itineraries, budget-airline fare traps, family groups with multiple bags.</li>
+      <li>Use before: leaving the house, once your bags are actually packed and measured.</li>
+      <li>Next step: if a bag doesn't fit, check the fix suggestions before considering paying a gate fee.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/carry-on-size-checker/">Check Your Bag</a>
+  </article>
+
+  <article class="vtools-tool" id="schengen-calculator">
+    <h2>8. Schengen Calculator: Check Your 90/180-Day Stay</h2>
+    <a href="https://voyasee.com/schengen-calculator/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/Schengen-Calculator.jpg" alt="Schengen Calculator for checking 90/180-day rule compliance and future trip planning" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/schengen-calculator/">Voyasee Schengen Calculator</a> is a free, private tool that instantly shows your real remaining days under the 90/180-day rule. It rebuilds the rolling 180-day window for every date you ask about, including future dates, merges overlapping trips, and correctly handles the rolling look-back that EU border guards use &mdash; not a simple "90 minus days used" guess.</p>
+    <p>A colour-coded calendar heatmap, a smart re-entry planner, a passport-expiry check against the 3-month validity rule, and a side-by-side comparison of two travellers' balances round out the tool. Everything runs offline in your browser &mdash; no account, no data leaving your device.</p>
+    <ul class="vtools-list">
+      <li>Best for: checking Schengen day balance, forecasting future trips, avoiding accidental overstays.</li>
+      <li>Use before: booking flights, planning multi-country European trips, or after a long stay.</li>
+      <li>Next step: if your balance is low, check the re-entry planner before booking anything new.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/schengen-calculator/">Check Your Day Balance</a>
+  </article>
+
+  <article class="vtools-tool" id="travel-scam-checker">
+    <h2>9. Travel Scam Checker: Spot Suspicious Offers Before You Pay or Click</h2>
+    <a href="https://voyasee.com/travel-scam-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-22-2026-06_52_57-PM.png" alt="Travel Scam Checker for tourist scams and suspicious travel offers" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/travel-scam-checker/">Travel Scam Checker</a>, also called Scam Shield, helps travellers pause before paying, clicking, following or sharing documents. It's a structured risk-assessment assistant &mdash; not an automatic scanner &mdash; asking about contact method, payment request, offer type and pressure level, then giving a suggested action: pause, verify, contact the platform, or avoid payment.</p>
+    <p>City-specific scam profiles for places like Barcelona, Bangkok, Bali, Istanbul and Rome make it practical rather than generically alarming: the goal is recognising a pattern faster, not travelling afraid.</p>
+    <ul class="vtools-list">
+      <li>Best for: suspicious payments, fake tickets, rental deposits, unofficial taxis, city-specific scam patterns.</li>
+      <li>Use before: paying, clicking a link from a stranger, or following someone who says an attraction is closed.</li>
+      <li>Next step: save emergency numbers and a safety card before arrival.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/travel-scam-checker/">Use the Travel Scam Checker</a>
+  </article>
+
+  <article class="vtools-tool" id="destination-quiz">
+    <h2>10. Destination Quiz: A Fast, Personality-Led Shortlist</h2>
+    <a href="https://voyasee.com/destination-quiz/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/DESTINATION-QUIZ.jpg" alt="Voyasee Destination Quiz question flow" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a> turns budget, month, climate preference, trip pace, and travel style into a ranked shortlist across 600 destination profiles, with a plain-language reason attached to each match. No signup, no long form &mdash; just 12 honest questions and a result you can act on.</p>
+    <p>It's built for the moment before research even starts: when scrolling has stopped helping and you just need a short, sensible list of places worth looking into further.</p>
+    <ul class="vtools-list">
+      <li>Best for: first-time travellers, users overwhelmed by too many options, personality-led travel content.</li>
+      <li>Use before: any deeper research, when you genuinely don't know where to start.</li>
+      <li>Next step: run your favourite two results through the Travel Destination Comparison Tool.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/destination-quiz/">Take the Quiz</a>
+  </article>
+
+  <article class="vtools-tool" id="destination-comparison">
+    <h2>11. Travel Destination Comparison Tool: Battle Two Places Before You Book</h2>
+    <a href="https://voyasee.com/travel-destination-comparison-tool/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-DESTINATION-TOOL.png" alt="Voyasee Travel Destination Comparison Tool preview" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/travel-destination-comparison-tool/">Travel Destination Comparison Tool</a>, also called Destination Battle Pro, is built for the moment a choice is already down to two realistic contenders. It compares month fit, budget fit, traveller-type fit, arrival ease, hidden-cost comfort and passport comfort, then explains not just which place wins but why it wins for your exact trip.</p>
+    <p>Battle modes like Quick Compare, Budget Battle and Best Month Battle let you weight the comparison toward whatever actually matters most for this specific decision.</p>
+    <ul class="vtools-list">
+      <li>Best for: "X vs Y" articles, honeymoon and family decisions, readers who want a transparent reason breakdown.</li>
+      <li>Use before: booking, once the choice is genuinely down to two named places.</li>
+      <li>Next step: once a winner is clear, open the Smart Travel Hub for the chosen destination.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/travel-destination-comparison-tool/">Compare Two Places</a>
+  </article>
+
+  <article class="vtools-tool" id="travel-month-planner">
+    <h2>12. Travel Month Planner: Find the Right Time, Not Just the Right Place</h2>
+    <a href="https://voyasee.com/best-time-to-visit-travel-planner/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-29-2026-07_07_57-PM.jpg" alt="Voyasee Travel Month Planner showing a 12-month score map" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/best-time-to-visit-travel-planner/">Travel Month Planner</a> evaluates a selected month against the destination's full year, scoring weather comfort, crowd pressure, price season, public holidays and daylight, then gives a plain-language verdict &mdash; strong, workable, difficult, or poor &mdash; for that specific month and travel style.</p>
+    <p>Where a different month or even a different destination would genuinely fit your dates better, it says so directly rather than only confirming the choice you already made.</p>
+    <ul class="vtools-list">
+      <li>Best for: "best time to visit" articles, choosing dates, shoulder-season planning.</li>
+      <li>Use before: booking, when your destination is set but your dates are still flexible.</li>
+      <li>Next step: once the month is confirmed, check the Trip Budget Calculator for that season's pricing.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/best-time-to-visit-travel-planner/">Find Best Month</a>
+  </article>
+
+  <article class="vtools-tool" id="medicine-restricted-items">
+    <h2>13. Medicine &amp; Restricted Items Checker: What You Can Actually Carry</h2>
+    <a href="https://voyasee.com/medicine-restricted-item-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/ChatGPT-Image-May-5-2026-09_06_04-PM.jpg" alt="Voyasee Medicine and Restricted Item Checker tool preview" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/medicine-restricted-item-checker/">Medicine &amp; Restricted Items Checker</a> covers a 120-country rules layer for prescription and over-the-counter medicine, controlled substances, injectables, power banks, vapes, drones and other customs-sensitive items, applying strictest-leg thinking across both your destination and any transit country.</p>
+    <p>It generates a Travel Medicine Passport Pack with a doctor-letter template and embassy-email template, so you have the right documents ready rather than discovering a gap at security.</p>
+    <ul class="vtools-list">
+      <li>Best for: long-term prescriptions, diabetes equipment, batteries, vapes, drones, family travel with medication.</li>
+      <li>Use before: packing, whenever you're carrying anything that might be treated differently across borders.</li>
+      <li>Next step: keep the generated document pack with your travel documents, not just in the packing list.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/medicine-restricted-item-checker/">Check Item Rules</a>
+  </article>
+
+  <article class="vtools-tool" id="jet-lag-planner">
+    <h2>14. Jet Lag Recovery Planner: A Body-Clock Plan for Long-Haul Flights</h2>
+    <a href="https://voyasee.com/jet-lag-recovery-planner/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/gpt-image-2_Create_an_ultra-premium_8K_landscape_featured_image_for_a_travel_website_tool_ti-0.jpg" alt="Voyasee Jet Lag Recovery Planner showing a body clock chart" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/jet-lag-recovery-planner/">Jet Lag Recovery Planner</a> converts your flight timing, time-zone change and the first important thing you need to do after landing &mdash; a meeting, a wedding, a race &mdash; into a practical light, sleep, caffeine and meal-timing schedule, built on a real body-clock model rather than generic advice to "just drink water and sleep on the plane."</p>
+    <p>Modes for families with children, seniors, and especially sensitive travellers adjust the plan accordingly, and it exports directly to your calendar.</p>
+    <ul class="vtools-list">
+      <li>Best for: long-haul flights, business trips, weddings and events, families and seniors.</li>
+      <li>Use before: departure, once your flight times and arrival-day plans are confirmed.</li>
+      <li>Next step: follow the light-exposure and sleep plan from the day you depart, not just after landing.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/jet-lag-recovery-planner/">Plan Jet Lag Recovery</a>
+  </article>
+
+  <article class="vtools-tool" id="transit-visa-checker">
+    <h2>15. Transit Visa &amp; Layover Risk Checker: Know the Connection Before You Book It</h2>
+    <a href="https://voyasee.com/transit-visa-layover-risk-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/TRANSIT-VISA.jpg" alt="Voyasee Transit Visa and Layover Risk Checker tool preview" loading="lazy" decoding="async"></a>
+    <p>The <a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa &amp; Layover Risk Checker</a> looks at your passport, the transit airport, and whether your ticket is protected, separate, or self-transfer, then flags whether your layover may involve a transit visa, baggage collection, a terminal change, or weak connection protection &mdash; the details a cheap fare rarely surfaces on its own.</p>
+    <p>A route-friction risk score and a clear breakdown of exactly which factor increased it means you know precisely what to double-check with the airline or embassy before paying for a complicated itinerary.</p>
+    <ul class="vtools-list">
+      <li>Best for: long layovers, separate-ticket routes, self-transfer itineraries, first-time international connections.</li>
+      <li>Use before: booking, especially on unusually cheap fares with a connection built in.</li>
+      <li>Next step: confirm anything flagged directly with the airline or relevant government source before paying.</li>
+    </ul>
+    <a class="vtools-btn" href="https://voyasee.com/transit-visa-layover-risk-checker/">Check Layover Risk</a>
+  </article>
+
+  <h2>Which Voyasee Tool Should You Use First?</h2>
+  <p>If you have no destination yet, start with the Interactive Travel Map or Destination Quiz. If you have two strong options and need a clearer winner, use the Travel Destination Comparison Tool next. Once you know the city, use the Best Area to Stay Finder to work out which specific neighbourhood actually fits your trip &mdash; this is the step most travellers skip, and the one most likely to quietly go wrong. If you have a destination but not dates, use the Travel Month Planner. If you know the place and date, open the Smart Travel Hub, Trip Budget Calculator and Packing List Generator. Once packing is close to final, run your bags through the Carry-On Size Checker so nothing gets stopped at the gate. If you are travelling to the Schengen Area, check your day balance with the Schengen Calculator before booking any flights. If your trip has a layover, controlled medicine, restricted items or long-haul time zones, use the Transit Visa Checker, Medicine Checker and Jet Lag Planner before booking or packing. When those checks are complete, use the Travel Passport to review your whole trip readiness in one place.</p>
+  <p>For safety and confidence, use the Travel Scam Checker close to departure and again after arrival. It is especially helpful in airports, taxi areas, old towns, tourist landmarks, nightlife zones, beaches, rental chats and any situation where someone creates pressure to pay, click or follow.</p>
+
+  <div class="vtools-note">
+    <strong>Planning tip:</strong> The strongest Voyasee workflow is Map or Quiz, then Destination Comparison if you have finalists, then the Best Area to Stay Finder once the city is set, then Smart Hub, then Month Planner, then Budget Calculator, then Packing List, then Carry-On Size Checker, then Schengen Calculator (for Europe trips), then safety and rule checks, then Travel Passport as the final readiness dashboard.
+  </div>
+
+  <h2>Best Voyasee Tool Workflows by Travel Problem</h2>
+  <p>Every traveller arrives at this page with a different problem. Some people are still dreaming and need ideas. Some already know the destination but not which area to book. Some found a cheap flight and need to know whether the layover is safe. Others are packing medicine, travelling with kids, planning a honeymoon, working remotely, or trying to avoid overspending. The best way to use Voyasee is to choose the workflow that matches the problem in front of you.</p>
+
+  <h3>If You Do Not Know Where to Go</h3>
+  <p>Start with the <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a> if you want a fast recommendation based on your travel personality, or the <a href="https://voyasee.com/interactive-travel-map/">Interactive Travel Map</a> if you'd rather explore visually. After you get a shortlist, do not book immediately. If two places still look strong, run them through the <a href="https://voyasee.com/travel-destination-comparison-tool/">Travel Destination Comparison Tool</a>. Then open each possible destination in the Smart Travel Hub and confirm your month with the Travel Month Planner. This layered process turns inspiration into a smarter shortlist before you spend anything.</p>
+
+  <h3>If You Already Know the City but Not the Area</h3>
+  <p>This is exactly the job of the <a href="https://voyasee.com/best-area-to-stay/">Best Area to Stay Finder</a>. Rather than scrolling hotel listings hoping a neighbourhood name sounds right, answer the short quiz and let the tool score every known area against your actual budget, vibe preference and interests. Pay attention to the Wrong Area Warning on your top match &mdash; it's the single most useful piece of information for deciding whether a trade-off is one you're comfortable with before you book.</p>
+
+  <h3>If You Found a Cheap Flight</h3>
+  <p>A cheap flight is exciting, but it is not always a good trip. Before booking, use the <a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa &amp; Layover Risk Checker</a> if the fare includes a connection, self-transfer, separate ticket or overnight layover. Then open the Trip Budget Calculator, since hotel prices, baggage fees and high-season tours can erase the savings from a cheap fare. Run your bag through the <a href="https://voyasee.com/carry-on-size-checker/">Carry-On Size Checker</a> too, since a low-cost carrier often comes with a tighter cabin allowance and a real gate fee if a bag does not fit.</p>
+
+  <h3>If You Are Travelling Carry-On Only</h3>
+  <p>Start with the Packing List Generator and choose a carry-on target, then run the packed bag through the <a href="https://voyasee.com/carry-on-size-checker/">Carry-On Size Checker</a> against the actual airline on your itinerary. Use the Medicine &amp; Restricted Items Checker if you carry prescriptions, syringes, vapes, CBD, drones or power banks. Carry-on travel makes packing lighter, but it also makes screening and size rules more important, not less.</p>
+
+  <h3>If You Are Planning a Family Trip</h3>
+  <p>Families should begin with timing and comfort: the Travel Month Planner to avoid extreme heat or peak crowds, the Best Area to Stay Finder to find a genuinely practical base with kids in tow, and the Trip Budget Calculator in group mode since family costs rise quickly. The Packing List Generator and Carry-On Size Checker matter more with several family bags to manage, and the Medicine Checker is worth using if anyone carries prescription medicine, inhalers or allergy medication.</p>
+
+  <h3>If You Are Travelling for Business or an Event</h3>
+  <p>Start with the Transit Visa Checker if there is a connection, then the Jet Lag Recovery Planner in meeting or event readiness mode. Use the Best Area to Stay Finder to find an area that's genuinely convenient for a late arrival rather than just centrally located on a map, and the Packing List Generator for formal outfits, chargers and backups.</p>
+
+  <h3>If You Are Worried About Safety or Scams</h3>
+  <p>Start with the Smart Travel Hub for emergency numbers and safety notes, then the Travel Scam Checker for the specific city or situation that worries you. The Best Area to Stay Finder's safety-comfort factor and honest Wrong Area Warning are also worth checking before booking accommodation in an unfamiliar area.</p>
+
+  <h3>If You Are a Digital Nomad or Long-Stay Traveller</h3>
+  <p>Long stays need a different workflow. Use the Interactive Travel Map to filter for nomad comfort and budget, the Best Area to Stay Finder for a base that's genuinely walkable and convenient day to day (not just for a weekend), and the Trip Budget Calculator with a longer duration so rent, coworking and insurance are included. Use the Medicine Checker for larger prescription supplies and the Jet Lag Planner if you're crossing many time zones before a work schedule needs to start.</p>
+
+  <h2>Travel Tools FAQ</h2>
+
+  <div class="vtools-faq">
+    <details><summary>Are the Voyasee travel tools free?</summary><p>Yes. The tools on this page are free to use. Some pages may include optional affiliate links for flights, tours, eSIMs, insurance, accommodation or other travel services, but the tools themselves are designed for free travel planning.</p></details>
+    <details><summary>Do these tools replace official travel advice?</summary><p>No. Voyasee tools are planning aids. Always verify visa rules, medicine rules, border requirements, airline baggage policies, safety advisories, weather alerts and health guidance through official sources before booking or travelling.</p></details>
+    <details><summary>Which tool is best for choosing where to travel?</summary><p>Use the Interactive Travel Map if you want to filter destinations by budget, month, region and style. Use the Destination Quiz if you prefer a quick question-based recommendation. Use the Travel Destination Comparison Tool when you already have two finalists and want a clearer winner.</p></details>
+    <details><summary>Which tool helps me pick which part of a city to stay in?</summary><p>Use the Best Area to Stay Finder. It scores real neighbourhoods against your budget, vibe, interests, and traveller type, and explains exactly why a match fits and where it falls short, instead of just returning a list of hotels.</p></details>
+    <details><summary>Which tool is best before booking flights?</summary><p>Use the Travel Month Planner, Trip Budget Calculator and Transit Visa Checker before booking flights. These help you check timing, affordability and connection risk before money becomes non-refundable.</p></details>
+    <details><summary>Which tool should I use before packing?</summary><p>Use the Packing List Generator first. Then use the Medicine &amp; Restricted Items Checker if you carry prescription medicine, syringes, vapes, drones, CBD, power banks, medical devices or other restricted items.</p></details>
+    <details><summary>Which tool tells me if my bag will be accepted at the airport?</summary><p>Use the Carry-On Size Checker. It compares your carry-on, personal item or checked bag against the published rules of the airline or airlines on your itinerary, including connecting flights, and shows an estimated fee if a bag does not pass where the airline publishes one.</p></details>
+    <details><summary>Can I use these tools for family travel?</summary><p>Yes. The tools are useful for solo travellers, couples, families, groups, digital nomads, business travellers, first-time travellers and long-haul travellers. Family travellers should pay extra attention to area choice, packing, medicine, budget, flight timing and destination safety.</p></details>
+    <details><summary>How do I turn a tool result into a full trip plan?</summary><p>Start with a destination shortlist, pick the right area to stay in, check the best month, estimate the budget, build the packing list, confirm your bags fit your airline, check restricted items, review scams and confirm transit risk. Then use the Travel Passport to see your final readiness score, missing checks, arrival plan and first-24-hours notes before moving into flights, hotels, tours, insurance and local transport.</p></details>
+  </div>
+
+  <h2>Book and Prepare After Using the Tools</h2>
+  <p>Once your destination, area, month, budget and practical checks look good, you can continue with Voyasee planning resources. Compare flights through <a href="https://voyasee.com/book-cheap-flights/">Book Cheap Flights</a>, browse tours through <a href="https://voyasee.com/book-tours/">Tours &amp; Activities</a>, compare rental options on <a href="https://voyasee.com/cheap-car-rental-deals-worldwide/">Car Rental Deals</a>, explore <a href="https://voyasee.com/categories-voyasee/destination-travel-guides/">Destination Guides</a>, read <a href="https://voyasee.com/categories-voyasee/travel-tips/">Travel Tips</a> and check <a href="https://voyasee.com/visa-requirements-first-time-travelers/">Visa Requirements for First-Time Travelers</a>.</p>
+  <p>Travel planning is easier when every tool answers a real question. Voyasee is built around those questions: where should I go, which area should I actually stay in, when should I go, what will it cost, what should I pack, will my bag fit, how many Schengen days do I have, what rules apply, what risks should I know, and how can I arrive ready? Use the tools together, then finish with the Travel Passport so your trip becomes clearer before you spend money.</p>
+
+  <div class="vtools-cta">
+    <div>
+      <strong>Start with whichever question matches your trip right now.</strong>
+      <span>15 free tools, working together as one connected trip plan.</span>
+    </div>
+    <a href="https://voyasee.com/best-area-to-stay/" class="vtools-btn vtools-btn-gold">Try the Newest Tool &rarr;</a>
+  </div>
+
+</section>
