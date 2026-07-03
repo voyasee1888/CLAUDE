@@ -9,7 +9,7 @@ if ( self::$rendered_once ) {
 	// shortcode/block doesn't look like a silent bug during setup.
 	if ( current_user_can( 'edit_posts' ) ) {
 		echo '<p style="padding:1rem;border:1px dashed #c9a24b;border-radius:8px;color:#c9a24b;font-size:0.85rem;">' .
-			esc_html__( 'Voyasee Where to Stay Matcher: only one instance of this tool can be shown per page. This second instance is hidden. (Only visible to editors/admins.)', 'voyasee-wtsm' ) .
+			esc_html__( 'Voyasee Best Area to Stay Finder: only one instance of this tool can be shown per page. This second instance is hidden. (Only visible to editors/admins.)', 'voyasee-wtsm' ) .
 			'</p>';
 	}
 	return;
@@ -82,7 +82,7 @@ $tool_groups = array(
 
 		<div class="vwtsm-hero-header">
 			<p class="vwtsm-eyebrow">🧭 <?php esc_html_e( 'Live neighborhood intelligence', 'voyasee-wtsm' ); ?></p>
-			<h2 class="vwtsm-hero-title">Voyasee <em>Where to Stay</em> Matcher</h2>
+			<h2 class="vwtsm-hero-title">Voyasee <em>Best Area to Stay</em> Finder</h2>
 			<p class="vwtsm-hero-tagline"><?php esc_html_e( 'Match your trip to the right neighborhood, not just the right city.', 'voyasee-wtsm' ); ?></p>
 			<div class="vwtsm-hero-badges" data-vwtsm-hero-badges>
 				<span class="vwtsm-hero-badge" data-vwtsm-badge-destinations><?php esc_html_e( 'Loading coverage…', 'voyasee-wtsm' ); ?></span>

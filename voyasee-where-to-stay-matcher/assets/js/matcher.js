@@ -1,5 +1,5 @@
 /**
- * Voyasee Where to Stay Matcher -- frontend controller (v2, unified plugin).
+ * Voyasee Best Area to Stay Finder -- frontend controller (v2, unified plugin).
  * Vanilla JS, no build step. Chart.js (cdnjs) is the only external dep.
  */
 ( function () {
@@ -1589,7 +1589,7 @@
 		// Footer.
 		ctx.fillStyle = 'rgba(246,241,230,0.5)';
 		ctx.font = '400 14px sans-serif';
-		ctx.fillText( 'Matched with the Voyasee Where to Stay tool -- voyasee.com', 48, H - 32 );
+		ctx.fillText( 'Matched with Voyasee Best Area to Stay Finder -- voyasee.com', 48, H - 32 );
 
 		var link = document.createElement( 'a' );
 		link.download = 'voyasee-' + ( n.slug || n.name || 'match' ).toString().toLowerCase().replace( /[^a-z0-9]+/g, '-' ) + '.png';

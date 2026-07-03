@@ -190,7 +190,7 @@ class WTSM_Settings {
 		);
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Where to Stay Matcher -- Settings & Footer Links', 'voyasee-wtsm' ); ?></h1>
+			<h1><?php esc_html_e( 'Best Area to Stay Finder -- Settings & Footer Links', 'voyasee-wtsm' ); ?></h1>
 			<p class="description">
 				<?php esc_html_e( 'Every field below is pre-filled with your real, live voyasee.com tool URLs and registry affiliate links -- the footer already works out of the box. Override or clear any field here if a link ever changes.', 'voyasee-wtsm' ); ?>
 			</p>
@@ -249,7 +249,7 @@ class WTSM_Settings {
 								<?php
 								printf(
 									/* translators: %s: link to Pexels API signup */
-									esc_html__( 'Free -- sign up at %s, then paste your API key here (shown immediately, no approval wait). Once set, go to Voyasee Where to Stay > Sync Data and click "Fetch neighborhood photos". Leave blank to keep the current solid-color cards.', 'voyasee-wtsm' ),
+									esc_html__( 'Free -- sign up at %s, then paste your API key here (shown immediately, no approval wait). Once set, go to Voyasee Best Area to Stay Finder > Sync Data and click "Fetch neighborhood photos". Leave blank to keep the current solid-color cards.', 'voyasee-wtsm' ),
 									'<a href="https://www.pexels.com/api/" target="_blank" rel="noopener noreferrer">pexels.com/api</a>'
 								);
 								?>
@@ -269,7 +269,7 @@ class WTSM_Settings {
 								<?php
 								printf(
 									/* translators: %s: link to GeoNames signup */
-									esc_html__( 'Free -- create an account at %s (no credit card, just confirm the free web services checkbox in your account settings), then enter your username here. Once set, go to Voyasee Where to Stay > Sync Data to bulk-fetch new destinations (name, country, coordinates, timezone) instead of adding them one at a time. GeoNames data is CC-BY licensed and free for commercial use.', 'voyasee-wtsm' ),
+									esc_html__( 'Free -- create an account at %s (no credit card, just confirm the free web services checkbox in your account settings), then enter your username here. Once set, go to Voyasee Best Area to Stay Finder > Sync Data to bulk-fetch new destinations (name, country, coordinates, timezone) instead of adding them one at a time. GeoNames data is CC-BY licensed and free for commercial use.', 'voyasee-wtsm' ),
 									'<a href="https://www.geonames.org/login" target="_blank" rel="noopener noreferrer">geonames.org</a>'
 								);
 								?>

@@ -1,10 +1,10 @@
-=== Voyasee Where to Stay Matcher ===
+=== Voyasee Best Area to Stay Finder ===
 Contributors: voyasee
 Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.2.1
+Stable tag: 4.2.2
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -43,14 +43,14 @@ Or pre-fill a destination on a landing page:
    later or bulk-edit -- you don't need to touch it to get started.)
    If you're upgrading in-place from an earlier version without
    deleting the plugin first, the new 50 destinations won't auto-seed,
-   but you don't need to reinstall -- go to Voyasee Where to Stay >
+   but you don't need to reinstall -- go to Voyasee Best Area to Stay Finder >
    Import CSV and click "Add any new starter destinations" (safe to run
    anytime; existing data is never overwritten).
-2. Go to Voyasee Where to Stay > Sync Data and run the OpenStreetMap
+2. Go to Voyasee Best Area to Stay Finder > Sync Data and run the OpenStreetMap
    POI sync once, to confirm the connection works from your server.
    Optionally also run the boundary sync there (real neighborhood
    shapes for the map) and, once a Pexels key is set, the photo sync.
-3. Go to Voyasee Where to Stay > Settings & Footer and fill in:
+3. Go to Voyasee Best Area to Stay Finder > Settings & Footer and fill in:
    - Your real Booking.com affiliate URL (must be your dpbolvw.net link
      -- the button label "Booking.com" is fixed in code, not editable,
      per the affiliate registry). Pre-filled with real registry
@@ -70,7 +70,7 @@ Or pre-fill a destination on a landing page:
    panel, currency-aware pricing, and public-holiday overlap warning.
    Neither is required -- everything else works exactly the same without
    them. Each destination needs a 2-letter country code for these to
-   activate (Voyasee Where to Stay > Destinations > edit a destination);
+   activate (Voyasee Best Area to Stay Finder > Destinations > edit a destination);
    it's auto-filled from the existing Country field where recognized.
 
 == Design ==
@@ -176,6 +176,24 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.2.2 =
+* Changed: rebranded from "Voyasee Where to Stay Matcher" to "Voyasee Best
+  Area to Stay Finder" throughout every visible piece of copy -- the Plugin
+  Name header, the front-end hero title, the admin menu label, the Settings
+  page heading, the "Suggest a correction" email subject/body, the
+  downloadable match-card image's watermark text, and all current setup
+  instructions -- to match the site's actual SEO title/H1/focus keyword
+  ("best area to stay"). Internal code identifiers (class names, function
+  names, constants, file names, the database table names, and the plugin's
+  folder/text-domain) were deliberately left unchanged, since renaming
+  those carries real risk of breaking the already-installed site for no
+  visible benefit -- WordPress ties an active plugin's identity to its
+  folder and main file path, not its display name, so this rename is safe
+  to install in place. One historical readme reference to the old 1.x
+  plugin's literal name (in the 2.0.0 migration note) was intentionally
+  left as-is, since it's identifying an actual old plugin to delete, not a
+  branding mention.
 
 = 4.2.1 =
 * Fixed: the "Compare with another destination" field (added in 4.2.0) had
@@ -330,7 +348,7 @@ Not built yet, in rough order of likely value:
 * Added: "Similar neighborhoods elsewhere" -- a cross-destination
   suggestion (same archetype as your top match, in a different city),
   computed entirely from data already in your own database.
-* Added: OSM-assisted Neighborhood Discovery (Voyasee Where to Stay >
+* Added: OSM-assisted Neighborhood Discovery (Voyasee Best Area to Stay Finder >
   Neighborhood Discovery) -- finds candidate neighborhood names and
   coordinates for a destination from OpenStreetMap and adds them as
   review-queue drafts. A draft is never visible to visitors and never
@@ -505,12 +523,12 @@ Not built yet, in rough order of likely value:
   (already stored, previously never shown) now appears in its detail
   panel.
 * NEW: real neighborhood boundary shapes. A new OpenStreetMap-based sync
-  job (Voyasee Where to Stay > Sync Data) looks up each neighborhood's
+  job (Voyasee Best Area to Stay Finder > Sync Data) looks up each neighborhood's
   actual boundary polygon where OSM has one mapped, and the overview map
   now draws that real shape instead of always using a plain dot.
   Coverage varies by city (openly documented); neighborhoods without a
   match keep the existing dot marker.
-* NEW: GeoNames bulk destination import (Voyasee Where to Stay > Import
+* NEW: GeoNames bulk destination import (Voyasee Best Area to Stay Finder > Import
   CSV). Paste a list of destination names and each is looked up and
   added automatically with real coordinates and timezone -- free,
   CC-BY licensed, commercial use permitted. Requires a free GeoNames
@@ -578,7 +596,7 @@ Not built yet, in rough order of likely value:
   external images), still respects prefers-reduced-motion.
 * Added: real neighborhood photos via the Unsplash API. Configure a free
   Unsplash Access Key under Settings & Footer, then fetch photos from
-  Voyasee Where to Stay > Sync Data. Runs in small batches (never on a
+  Voyasee Best Area to Stay Finder > Sync Data. Runs in small batches (never on a
   live visitor request), stores compliant photographer + Unsplash
   attribution with each photo, and fires Unsplash's required
   download-tracking ping once per photo at selection time. Neighborhoods

@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	</form>
 
 	<p class="description">
-		<?php esc_html_e( 'Attribution reminder: OpenStreetMap data is ODbL-licensed. Commercial use is fine, but the Where to Stay Matcher\'s footer must credit OpenStreetMap wherever this data is shown to visitors.', 'voyasee-ni' ); ?>
+		<?php esc_html_e( 'Attribution reminder: OpenStreetMap data is ODbL-licensed. Commercial use is fine, but the Best Area to Stay Finder\'s footer must credit OpenStreetMap wherever this data is shown to visitors.', 'voyasee-ni' ); ?>
 	</p>
 
 	<hr style="margin:32px 0" />

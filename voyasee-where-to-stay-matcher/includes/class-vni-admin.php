@@ -22,8 +22,8 @@ class VNI_Admin {
 
 	public function register_menu() {
 		add_menu_page(
-			__( 'Voyasee Where to Stay', 'voyasee-wtsm' ),
-			__( 'Voyasee Where to Stay', 'voyasee-wtsm' ),
+			__( 'Voyasee Best Area to Stay Finder', 'voyasee-wtsm' ),
+			__( 'Voyasee Best Area to Stay Finder', 'voyasee-wtsm' ),
 			'manage_options',
 			'vni-destinations',
 			array( $this, 'render_destinations_page' ),

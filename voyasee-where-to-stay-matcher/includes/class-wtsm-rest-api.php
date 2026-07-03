@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API for Voyasee Where to Stay Matcher.
+ * REST API for Voyasee Best Area to Stay Finder.
  *
  * Namespace: voyasee-wtsm/v1
  *
@@ -165,11 +165,11 @@ class WTSM_REST_API {
 		$to      = get_option( 'admin_email' );
 		$subject = sprintf(
 			/* translators: %s: destination/neighborhood name being reported */
-			__( '[Where to Stay Matcher] Correction suggested for %s', 'voyasee-wtsm' ),
+			__( '[Best Area to Stay Finder] Correction suggested for %s', 'voyasee-wtsm' ),
 			trim( $destination_name . ' / ' . $neighborhood_name, ' /' ) ?: __( 'a neighborhood', 'voyasee-wtsm' )
 		);
 
-		$body  = __( 'A visitor suggested a correction on the Where to Stay Matcher results page.', 'voyasee-wtsm' ) . "\n\n";
+		$body  = __( 'A visitor suggested a correction on the Best Area to Stay Finder results page.', 'voyasee-wtsm' ) . "\n\n";
 		$body .= __( 'Destination:', 'voyasee-wtsm' ) . ' ' . ( $destination_name ?: '-' ) . "\n";
 		$body .= __( 'Neighborhood:', 'voyasee-wtsm' ) . ' ' . ( $neighborhood_name ?: '-' ) . "\n";
 		$body .= __( 'Visitor email (optional, unverified):', 'voyasee-wtsm' ) . ' ' . ( $visitor_email ?: '-' ) . "\n\n";

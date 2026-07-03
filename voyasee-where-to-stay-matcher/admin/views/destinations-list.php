@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	<?php endif; ?>
 
 	<p class="description">
-		<?php esc_html_e( 'This is the destination backbone for the Where to Stay Matcher (and any future Voyasee tool that needs neighborhood-level data). For a fast start, import your existing Destination Quiz V7 destination list via the Import CSV screen.', 'voyasee-ni' ); ?>
+		<?php esc_html_e( 'This is the destination backbone for the Best Area to Stay Finder (and any future Voyasee tool that needs neighborhood-level data). For a fast start, import your existing Destination Quiz V7 destination list via the Import CSV screen.', 'voyasee-ni' ); ?>
 	</p>
 
 	<form method="get">

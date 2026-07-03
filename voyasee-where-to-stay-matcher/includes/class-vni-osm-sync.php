@@ -9,8 +9,8 @@
  * LICENSE NOTE: OpenStreetMap data is ODbL-licensed. Commercial use is
  * explicitly permitted; the only requirement is visible attribution to
  * OpenStreetMap wherever the data (or anything derived from it) is shown
- * to the public. The Where to Stay Matcher plugin's footer/result page is
- * responsible for rendering that attribution -- see its README.
+ * to the public. The Best Area to Stay Finder plugin's footer/result page
+ * is responsible for rendering that attribution -- see its README.
  *
  * IMPORTANT: Overpass is a shared community resource, not a commercial
  * CDN. This class deliberately NEVER calls Overpass on a live visitor
