@@ -18,43 +18,6 @@ final class V3DA_Content {
     }
 
     /**
-     * @return array<int,array{title:string,url:string,excerpt:string,thumbnail:?string,date:string}>
-     */
-    public static function related_articles(string $taxonomy, string $slug, int $limit = 6): array {
-        if ('' === $slug) return [];
-
-        $tax_query = [[
-            'taxonomy' => $taxonomy,
-            'field' => 'slug',
-            'terms' => $slug,
-        ]];
-
-        $query = new WP_Query([
-            'post_type' => 'post',
-            'post_status' => 'publish',
-            'posts_per_page' => max(1, min(12, $limit)),
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'tax_query' => $tax_query,
-            'no_found_rows' => true,
-            'ignore_sticky_posts' => true,
-        ]);
-
-        $articles = [];
-        foreach ($query->posts as $post) {
-            $articles[] = [
-                'title' => get_the_title($post),
-                'url' => get_permalink($post),
-                'excerpt' => wp_strip_all_tags(get_the_excerpt($post)),
-                'thumbnail' => get_the_post_thumbnail_url($post, 'medium') ?: null,
-                'date' => get_the_date('', $post),
-            ];
-        }
-        wp_reset_postdata();
-        return $articles;
-    }
-
-    /**
      * Mirrors the graceful-degradation pattern already used by
      * voyasee-where-to-stay-matcher: check function_exists() before calling
      * into Weather Bridge, never let a missing/inactive plugin break the page.

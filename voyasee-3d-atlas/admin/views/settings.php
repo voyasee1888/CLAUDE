@@ -34,7 +34,7 @@ $affiliate_fields = [
         <div class="notice notice-success is-dismissible"><p><?php echo esc_html__('Settings saved.', 'voyasee-3d-atlas'); ?></p></div>
     <?php endif; ?>
 
-    <p><?php echo esc_html__('Paste the current URLs from VOYASEE_TOOLS_AND_AFFILIATES_REGISTRY.md. Leave a field blank to hide that link from the footer — nothing is invented or hardcoded.', 'voyasee-3d-atlas'); ?></p>
+    <p><?php echo esc_html__('These fields are pre-filled with the current URLs from VOYASEE_TOOLS_AND_AFFILIATES_REGISTRY.md, so the footer works out of the box — nothing here is invented. Edit any field to correct or replace it, or clear one and save to hide that link from the footer.', 'voyasee-3d-atlas'); ?></p>
 
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
         <input type="hidden" name="action" value="v3da_save_settings">

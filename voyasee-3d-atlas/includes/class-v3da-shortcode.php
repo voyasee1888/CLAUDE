@@ -26,7 +26,6 @@ final class V3DA_Shortcode {
             'arcs' => V3DA_Admin::get_featured_arcs(),
             'strings' => [
                 'loading' => __('Loading…', 'voyasee-3d-atlas'),
-                'noArticles' => __('No articles yet for this destination.', 'voyasee-3d-atlas'),
                 'weatherUnavailable' => __('Weather data is temporarily unavailable for this destination.', 'voyasee-3d-atlas'),
                 'countryUnavailable' => __('Country details are temporarily unavailable for this destination.', 'voyasee-3d-atlas'),
                 'loadError' => __('This destination could not be loaded. Please try again.', 'voyasee-3d-atlas'),
@@ -97,15 +96,19 @@ final class V3DA_Shortcode {
     private static function destinations_schema(array $destinations): string {
         $items = [];
         foreach ($destinations as $i => $d) {
-            $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
-            if (!$link) $link = add_query_arg('s', rawurlencode($d['name']), home_url('/'));
             $place = [
                 '@type' => 'Place',
                 'name' => $d['name'],
-                'url' => $link,
                 'address' => ['@type' => 'PostalAddress', 'addressCountry' => $d['country']],
                 'geo' => ['@type' => 'GeoCoordinates', 'latitude' => (float) $d['lat'], 'longitude' => (float) $d['lng']],
             ];
+            // No 'url' is set here on purpose when this destination has no
+            // real mapped category/tag -- this Atlas never links a
+            // destination to a site-search results page or an unrelated
+            // article; every destination's own weather/country/fact data is
+            // shown directly in the on-page sidebar instead.
+            $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
+            if ($link) $place['url'] = $link;
             if ($d['signature_line']) $place['description'] = $d['signature_line'];
             $items[] = [
                 '@type' => 'ListItem',

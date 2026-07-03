@@ -304,28 +304,15 @@
     margin: 0;
 }
 
-.v3datlas-country-facts,
-.v3datlas-article-list {
+.v3datlas-country-facts {
     list-style: none;
     margin: 0;
     padding: 0;
     font-size: 14px;
 }
 
-.v3datlas-country-facts li,
-.v3datlas-article-item {
+.v3datlas-country-facts li {
     padding: 4px 0;
-}
-
-.v3datlas-article-item a {
-    color: var(--v3datlas-cream);
-}
-
-.v3datlas-sidebar-more {
-    display: inline-block;
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--v3datlas-gold-soft);
 }
 
 .v3datlas-best-time {
@@ -434,8 +421,24 @@
     gap: 6px 16px;
 }
 
-.v3datlas-region-list a {
+.v3datlas-region-link {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 2px 0;
+    font: inherit;
+    text-align: left;
     color: var(--v3datlas-cream);
+    cursor: pointer;
+}
+
+.v3datlas-region-link:hover,
+.v3datlas-region-link:focus-visible {
+    color: var(--v3datlas-gold-soft);
+    text-decoration: underline;
+    outline: none;
 }
 
 .v3datlas-footer {

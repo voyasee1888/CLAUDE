@@ -75,11 +75,10 @@ $has_safety_links = $safetywing_url || $visa_url;
             <details class="v3datlas-region" data-v3datlas-region>
                 <summary><?php echo esc_html($region); ?> <span class="v3datlas-region-count">(<?php echo count($items); ?>)</span></summary>
                 <ul class="v3datlas-region-list">
-                    <?php foreach ($items as $d):
-                        $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
-                        if (!$link) $link = add_query_arg('s', rawurlencode($d['name']), home_url('/'));
-                    ?>
-                        <li data-v3datlas-region-item data-name="<?php echo esc_attr(strtolower($d['name'] . ' ' . $d['country'])); ?>"><a href="<?php echo esc_url($link); ?>"><?php echo esc_html($d['name']); ?></a>, <?php echo esc_html($d['country']); ?></li>
+                    <?php foreach ($items as $d): ?>
+                        <li data-v3datlas-region-item data-name="<?php echo esc_attr(strtolower($d['name'] . ' ' . $d['country'])); ?>">
+                            <button type="button" class="v3datlas-region-link" data-v3datlas-open-slug="<?php echo esc_attr($d['slug']); ?>"><?php echo esc_html($d['name']); ?>, <?php echo esc_html($d['country']); ?></button>
+                        </li>
                     <?php endforeach; ?>
                 </ul>
             </details>

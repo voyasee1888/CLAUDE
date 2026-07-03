@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,37 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.4.0 =
+* Removed the "Related Articles" feature entirely. This Atlas no longer
+  fetches, shows, or links to blog posts at all -- clicking any destination
+  now only ever shows that destination's own weather, country notes, and
+  "did you know" fact, with zero dependency on whether any article has
+  been written about it.
+* Clicking a destination in the A-Z browse list (or its search-filtered
+  view) now opens the same in-page detail sidebar a globe marker click
+  does, instead of navigating to a site-search results page or a category
+  archive. Every entry point into a destination -- the globe, the list,
+  the search box, and the "you might also like" chips -- now behaves
+  identically: it shows that destination's own particular data in place,
+  never a separate page. The sidebar itself no longer depends on WebGL
+  support, so this also now works correctly on devices/browsers where the
+  3D globe can't render.
+* The destinations' JSON-LD structured data (for search engines) no longer
+  falls back to a site-search URL for an unmapped destination; it now
+  simply omits the url field for that entry rather than pointing crawlers
+  at a search-results page.
+* Footer tool/affiliate links are now pre-filled with the real,
+  registry-sourced URLs from VOYASEE_TOOLS_AND_AFFILIATES_REGISTRY.md
+  (10 Voyasee tools, 6 affiliate partners including both Booking.com
+  market links) instead of shipping blank. Previously every field
+  defaulted to empty until an admin manually pasted in every URL via
+  Settings, which meant the footer's entire "Plan Your Trip," "Decide &
+  Prepare," "Book Your Trip," and "Travel Safe" columns silently failed to
+  render at all on a site that hadn't done that yet. An admin can still
+  override, correct, or intentionally blank out any individual field any
+  time via 3D Atlas -> Settings -- an explicit save there always wins over
+  this default.
 
 = 1.3.1 =
 * Fix: Auto-Map Content used a plain keyword search and tallied every

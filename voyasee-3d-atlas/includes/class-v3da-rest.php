@@ -35,8 +35,6 @@ final class V3DA_REST {
             return new WP_Error('v3da_not_found', __('Destination not found.', 'voyasee-3d-atlas'), ['status' => 404]);
         }
 
-        $term_link = V3DA_Content::term_link($destination['content_taxonomy'], $destination['content_term_slug']);
-        $articles = V3DA_Content::related_articles($destination['content_taxonomy'], $destination['content_term_slug'], 6);
         $weather = V3DA_Content::weather_snapshot((float) $destination['lat'], (float) $destination['lng']);
         $country = V3DA_Content::country_snapshot($destination['country_code']);
         $best_time = V3DA_TravelMonth::best_time($destination['slug']);
@@ -58,13 +56,10 @@ final class V3DA_REST {
                 'region' => $destination['region'],
                 'lat' => (float) $destination['lat'],
                 'lng' => (float) $destination['lng'],
-                'term_link' => $term_link,
-                'post_count' => V3DA_Content::term_post_count($destination['content_taxonomy'], $destination['content_term_slug']),
                 'signature_line' => $destination['signature_line'],
                 'did_you_know' => $destination['did_you_know'],
                 'hero_image_url' => $hero_image_url ?: null,
             ],
-            'articles' => $articles,
             'weather' => $weather,
             'country' => $country,
             'bestTime' => $best_time,

@@ -125,21 +125,212 @@ function el(tag, className, text) {
   return node;
 }
 
-function initRoot(root) {
-  let config = {};
-  try {
-    config = JSON.parse(root.getAttribute("data-v3datlas-config") || "{}");
-  } catch (err) {
-    config = {};
-  }
-  const markers = Array.isArray(config.markers) ? config.markers : [];
-  const strings = config.strings || {};
-  const restBase = config.restBase || "";
+/**
+ * Owns the destination detail sidebar: fetching, rendering, open/close.
+ * Deliberately independent of the globe/WebGL code below -- clicking a
+ * destination (from the globe, the A-Z list, or the search box) must show
+ * that destination's own weather/country/fact data even on a device or
+ * browser where the WebGL globe itself can't render. This intentionally
+ * never links out to blog posts or a site-search results page: every
+ * destination's own particular data (weather, country notes, "did you
+ * know") is shown directly in this sidebar, with no dependency on whether
+ * any article has been written about that place yet.
+ */
+function initSidebar(root, markers, strings, restBase) {
+  const byslug = {};
+  markers.forEach(function (m) { byslug[m.slug] = m; });
 
-  const mount = root.querySelector("[data-v3datlas-globe-mount]");
   const sidebar = root.querySelector("[data-v3datlas-sidebar]");
   const sidebarBody = root.querySelector("[data-v3datlas-sidebar-body]");
   const sidebarClose = root.querySelector("[data-v3datlas-sidebar-close]");
+  if (!sidebar || !sidebarBody) {
+    return { openSidebar: function () {}, byslug: byslug };
+  }
+
+  const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  const ro = new ResizeObserver(function (entries) {
+    for (const entry of entries) {
+      root.toggleAttribute("data-v3datlas-narrow", entry.contentRect.width < 400);
+    }
+  });
+  ro.observe(root);
+
+  sidebarClose && sidebarClose.addEventListener("click", closeSidebar);
+  root.addEventListener("keydown", function (e) {
+    if ("Escape" === e.key) closeSidebar();
+  });
+
+  function openSidebar(marker) {
+    if (!marker) return;
+    sidebar.hidden = false;
+    requestAnimationFrame(function () { sidebar.classList.add("is-open"); });
+    sidebarBody.innerHTML = "";
+    sidebarBody.appendChild(el("p", "v3datlas-sidebar-loading", strings.loading || "Loading…"));
+
+    fetch(restBase + "destinations/" + encodeURIComponent(marker.slug), { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+      })
+      .then(function (result) {
+        if (!result.ok || !result.data || false === result.data.ok) throw new Error("load failed");
+        renderSidebar(result.data);
+      })
+      .catch(function () {
+        sidebarBody.innerHTML = "";
+        sidebarBody.appendChild(el("p", "v3datlas-sidebar-error", strings.loadError || "This destination could not be loaded."));
+      });
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("is-open");
+    setTimeout(function () { sidebar.hidden = true; }, reduceMotion ? 0 : 300);
+  }
+
+  function renderSidebar(data) {
+    const dest = data.destination || {};
+    sidebarBody.innerHTML = "";
+
+    if (dest.hero_image_url) {
+      const img = document.createElement("img");
+      img.className = "v3datlas-sidebar-hero";
+      img.src = dest.hero_image_url;
+      img.alt = "";
+      sidebarBody.appendChild(img);
+    }
+
+    sidebarBody.appendChild(el("h3", "v3datlas-sidebar-name", dest.name || ""));
+    sidebarBody.appendChild(el("p", "v3datlas-sidebar-country", dest.country || ""));
+
+    if (dest.signature_line) {
+      sidebarBody.appendChild(el("p", "v3datlas-sidebar-signature", dest.signature_line));
+    }
+
+    sidebarBody.appendChild(renderWeather(data.weather, data.bestTime));
+    sidebarBody.appendChild(renderCountry(data.country, data.upcomingHoliday));
+
+    if (dest.did_you_know) {
+      const fact = el("div", "v3datlas-sidebar-section v3datlas-fact");
+      fact.appendChild(el("h4", null, "Did you know?"));
+      fact.appendChild(el("p", null, dest.did_you_know));
+      sidebarBody.appendChild(fact);
+    }
+
+    sidebarBody.appendChild(renderRelatedDestinations(data.nearby, data.sameCountry));
+  }
+
+  function renderWeather(weather, bestTime) {
+    const section = el("div", "v3datlas-sidebar-section v3datlas-weather");
+    section.appendChild(el("h4", null, "Weather"));
+    if (!weather) {
+      section.appendChild(el("p", "v3datlas-muted", strings.weatherUnavailable || "Weather data is temporarily unavailable."));
+    } else if ("current" === weather.type) {
+      const row = el("p", "v3datlas-weather-now");
+      if (null !== weather.tempC && undefined !== weather.tempC) {
+        row.appendChild(el("strong", null, Math.round(weather.tempC) + "°C"));
+      }
+      if (weather.conditionText) row.appendChild(document.createTextNode(" " + weather.conditionText));
+      section.appendChild(row);
+    } else if ("climate_normals" === weather.type) {
+      const row = el("p", "v3datlas-weather-normals");
+      const label = weather.month ? weather.month + " avg: " : "Typical this month: ";
+      row.appendChild(document.createTextNode(label));
+      if (null !== weather.tempMeanC && undefined !== weather.tempMeanC) {
+        row.appendChild(el("strong", null, Math.round(weather.tempMeanC) + "°C"));
+      }
+      section.appendChild(row);
+    }
+    if (bestTime && bestTime.months && bestTime.months.length) {
+      const row = el("p", "v3datlas-best-time");
+      row.appendChild(document.createTextNode("Best time to visit: "));
+      row.appendChild(el("strong", null, bestTime.months.join(" & ")));
+      if (bestTime.highlight) row.appendChild(document.createTextNode(" (" + bestTime.highlight + ")"));
+      section.appendChild(row);
+    }
+    return section;
+  }
+
+  function renderCountry(country, upcomingHoliday) {
+    const section = el("div", "v3datlas-sidebar-section v3datlas-country");
+    section.appendChild(el("h4", null, "Country notes"));
+    if (!country) {
+      section.appendChild(el("p", "v3datlas-muted", strings.countryUnavailable || "Country details are temporarily unavailable."));
+      return section;
+    }
+    const list = el("ul", "v3datlas-country-facts");
+    if (country.currencyName) {
+      list.appendChild(el("li", null, "Currency: " + country.currencyName + (country.currencyCode ? " (" + country.currencyCode + ")" : "")));
+    }
+    if (country.drivingSide) list.appendChild(el("li", null, "Drives on the " + country.drivingSide));
+    if (country.electricalPlugTypes && country.electricalPlugTypes.length) {
+      list.appendChild(el("li", null, "Power plugs: Type " + country.electricalPlugTypes.join(", ")));
+    }
+    if (country.emergencyPolice) list.appendChild(el("li", null, "Police: " + country.emergencyPolice));
+    if (country.tippingGuidance) list.appendChild(el("li", null, country.tippingGuidance));
+    if (upcomingHoliday && upcomingHoliday.name) {
+      list.appendChild(el("li", null, upcomingHoliday.name + " is coming up (" + upcomingHoliday.date + ")"));
+    }
+    section.appendChild(list);
+    return section;
+  }
+
+  function renderRelatedDestinations(nearby, sameCountry) {
+    const section = el("div", "v3datlas-sidebar-section v3datlas-related");
+    const combined = [];
+    const seen = {};
+    (nearby || []).forEach(function (item) {
+      if (seen[item.slug]) return;
+      seen[item.slug] = true;
+      combined.push(item);
+    });
+    (sameCountry || []).forEach(function (item) {
+      if (seen[item.slug]) return;
+      seen[item.slug] = true;
+      combined.push(item);
+    });
+    if (!combined.length) return el("div");
+
+    section.appendChild(el("h4", null, "You might also like"));
+    const list = el("div", "v3datlas-related-chips");
+    combined.slice(0, 5).forEach(function (item) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "v3datlas-related-chip";
+      chip.textContent = item.name;
+      chip.addEventListener("click", function () {
+        const marker = byslug[item.slug];
+        if (marker) openSidebar(marker);
+      });
+      list.appendChild(chip);
+    });
+    section.appendChild(list);
+    return section;
+  }
+
+  return { openSidebar: openSidebar, byslug: byslug };
+}
+
+/**
+ * Wires the server-rendered A-Z destination list (and, by extension, its
+ * search-filtered subset) so clicking any destination name opens the same
+ * sidebar a globe marker click would, instead of navigating to a category
+ * archive or a site-search results page. This is the one click handler for
+ * every non-globe entry point into a destination's data.
+ */
+function initDestinationList(root, openSidebar, byslug) {
+  const list = root.querySelector("[data-v3datlas-destination-list]");
+  if (!list) return;
+  list.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-v3datlas-open-slug]");
+    if (!btn) return;
+    e.preventDefault();
+    const marker = byslug[btn.getAttribute("data-v3datlas-open-slug")];
+    if (marker) openSidebar(marker);
+  });
+}
+
+function initRoot(root, markers, config, openSidebar) {
+  const mount = root.querySelector("[data-v3datlas-globe-mount]");
   if (!mount) return;
 
   // The ambient globe renders regardless of whether any destinations exist
@@ -509,195 +700,6 @@ function initRoot(root) {
     { threshold: 0.01 }
   );
   io.observe(mount);
-
-  if (sidebar && sidebarBody) {
-    const ro = new ResizeObserver(function (entries) {
-      for (const entry of entries) {
-        root.toggleAttribute("data-v3datlas-narrow", entry.contentRect.width < 400);
-      }
-    });
-    ro.observe(root);
-
-    sidebarClose && sidebarClose.addEventListener("click", closeSidebar);
-    root.addEventListener("keydown", function (e) {
-      if ("Escape" === e.key) closeSidebar();
-    });
-  }
-
-  function openSidebar(marker) {
-    if (!sidebar || !sidebarBody) return;
-    sidebar.hidden = false;
-    requestAnimationFrame(function () { sidebar.classList.add("is-open"); });
-    sidebarBody.innerHTML = "";
-    sidebarBody.appendChild(el("p", "v3datlas-sidebar-loading", strings.loading || "Loading…"));
-
-    fetch(restBase + "destinations/" + encodeURIComponent(marker.slug), { headers: { Accept: "application/json" } })
-      .then(function (r) {
-        return r.json().then(function (data) { return { ok: r.ok, data: data }; });
-      })
-      .then(function (result) {
-        if (!result.ok || !result.data || false === result.data.ok) throw new Error("load failed");
-        renderSidebar(result.data);
-      })
-      .catch(function () {
-        sidebarBody.innerHTML = "";
-        sidebarBody.appendChild(el("p", "v3datlas-sidebar-error", strings.loadError || "This destination could not be loaded."));
-      });
-  }
-
-  function closeSidebar() {
-    if (!sidebar) return;
-    sidebar.classList.remove("is-open");
-    setTimeout(function () { sidebar.hidden = true; }, reduceMotion ? 0 : 300);
-  }
-
-  function renderSidebar(data) {
-    const dest = data.destination || {};
-    sidebarBody.innerHTML = "";
-
-    if (dest.hero_image_url) {
-      const img = document.createElement("img");
-      img.className = "v3datlas-sidebar-hero";
-      img.src = dest.hero_image_url;
-      img.alt = "";
-      sidebarBody.appendChild(img);
-    }
-
-    sidebarBody.appendChild(el("h3", "v3datlas-sidebar-name", dest.name || ""));
-    sidebarBody.appendChild(el("p", "v3datlas-sidebar-country", dest.country || ""));
-
-    if (dest.signature_line) {
-      sidebarBody.appendChild(el("p", "v3datlas-sidebar-signature", dest.signature_line));
-    }
-
-    sidebarBody.appendChild(renderWeather(data.weather, data.bestTime));
-    sidebarBody.appendChild(renderCountry(data.country, data.upcomingHoliday));
-
-    if (dest.did_you_know) {
-      const fact = el("div", "v3datlas-sidebar-section v3datlas-fact");
-      fact.appendChild(el("h4", null, "Did you know?"));
-      fact.appendChild(el("p", null, dest.did_you_know));
-      sidebarBody.appendChild(fact);
-    }
-
-    sidebarBody.appendChild(renderArticles(data.articles, dest));
-    sidebarBody.appendChild(renderRelatedDestinations(data.nearby, data.sameCountry));
-  }
-
-  function renderWeather(weather, bestTime) {
-    const section = el("div", "v3datlas-sidebar-section v3datlas-weather");
-    section.appendChild(el("h4", null, "Weather"));
-    if (!weather) {
-      section.appendChild(el("p", "v3datlas-muted", strings.weatherUnavailable || "Weather data is temporarily unavailable."));
-    } else if ("current" === weather.type) {
-      const row = el("p", "v3datlas-weather-now");
-      if (null !== weather.tempC && undefined !== weather.tempC) {
-        row.appendChild(el("strong", null, Math.round(weather.tempC) + "°C"));
-      }
-      if (weather.conditionText) row.appendChild(document.createTextNode(" " + weather.conditionText));
-      section.appendChild(row);
-    } else if ("climate_normals" === weather.type) {
-      const row = el("p", "v3datlas-weather-normals");
-      const label = weather.month ? weather.month + " avg: " : "Typical this month: ";
-      row.appendChild(document.createTextNode(label));
-      if (null !== weather.tempMeanC && undefined !== weather.tempMeanC) {
-        row.appendChild(el("strong", null, Math.round(weather.tempMeanC) + "°C"));
-      }
-      section.appendChild(row);
-    }
-    if (bestTime && bestTime.months && bestTime.months.length) {
-      const row = el("p", "v3datlas-best-time");
-      row.appendChild(document.createTextNode("Best time to visit: "));
-      row.appendChild(el("strong", null, bestTime.months.join(" & ")));
-      if (bestTime.highlight) row.appendChild(document.createTextNode(" (" + bestTime.highlight + ")"));
-      section.appendChild(row);
-    }
-    return section;
-  }
-
-  function renderCountry(country, upcomingHoliday) {
-    const section = el("div", "v3datlas-sidebar-section v3datlas-country");
-    section.appendChild(el("h4", null, "Country notes"));
-    if (!country) {
-      section.appendChild(el("p", "v3datlas-muted", strings.countryUnavailable || "Country details are temporarily unavailable."));
-      return section;
-    }
-    const list = el("ul", "v3datlas-country-facts");
-    if (country.currencyName) {
-      list.appendChild(el("li", null, "Currency: " + country.currencyName + (country.currencyCode ? " (" + country.currencyCode + ")" : "")));
-    }
-    if (country.drivingSide) list.appendChild(el("li", null, "Drives on the " + country.drivingSide));
-    if (country.electricalPlugTypes && country.electricalPlugTypes.length) {
-      list.appendChild(el("li", null, "Power plugs: Type " + country.electricalPlugTypes.join(", ")));
-    }
-    if (country.emergencyPolice) list.appendChild(el("li", null, "Police: " + country.emergencyPolice));
-    if (country.tippingGuidance) list.appendChild(el("li", null, country.tippingGuidance));
-    if (upcomingHoliday && upcomingHoliday.name) {
-      list.appendChild(el("li", null, upcomingHoliday.name + " is coming up (" + upcomingHoliday.date + ")"));
-    }
-    section.appendChild(list);
-    return section;
-  }
-
-  function renderRelatedDestinations(nearby, sameCountry) {
-    const section = el("div", "v3datlas-sidebar-section v3datlas-related");
-    const combined = [];
-    const seen = {};
-    (nearby || []).forEach(function (item) {
-      if (seen[item.slug]) return;
-      seen[item.slug] = true;
-      combined.push(item);
-    });
-    (sameCountry || []).forEach(function (item) {
-      if (seen[item.slug]) return;
-      seen[item.slug] = true;
-      combined.push(item);
-    });
-    if (!combined.length) return el("div");
-
-    section.appendChild(el("h4", null, "You might also like"));
-    const list = el("div", "v3datlas-related-chips");
-    combined.slice(0, 5).forEach(function (item) {
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.className = "v3datlas-related-chip";
-      chip.textContent = item.name;
-      chip.addEventListener("click", function () {
-        const marker = byslug[item.slug];
-        if (marker) openSidebar(marker);
-      });
-      list.appendChild(chip);
-    });
-    section.appendChild(list);
-    return section;
-  }
-
-  function renderArticles(articles, dest) {
-    const section = el("div", "v3datlas-sidebar-section v3datlas-articles");
-    section.appendChild(el("h4", null, "Related articles"));
-    if (!articles || !articles.length) {
-      section.appendChild(el("p", "v3datlas-muted", strings.noArticles || "No articles yet for this destination."));
-    } else {
-      const list = el("ul", "v3datlas-article-list");
-      articles.forEach(function (article) {
-        const item = el("li", "v3datlas-article-item");
-        const link = document.createElement("a");
-        link.href = article.url;
-        link.textContent = article.title;
-        item.appendChild(link);
-        list.appendChild(item);
-      });
-      section.appendChild(list);
-    }
-    if (dest.term_link) {
-      const more = document.createElement("a");
-      more.className = "v3datlas-sidebar-more";
-      more.href = dest.term_link;
-      more.textContent = "See all articles about " + (dest.name || "this destination");
-      section.appendChild(more);
-    }
-    return section;
-  }
 }
 
 /**
@@ -729,6 +731,24 @@ function initListSearch(root) {
 document.querySelectorAll("[data-v3datlas-root]").forEach(function (root) {
   if (root.hasAttribute("data-v3datlas-ready")) return;
   root.setAttribute("data-v3datlas-ready", "1");
+
+  let config = {};
+  try {
+    config = JSON.parse(root.getAttribute("data-v3datlas-config") || "{}");
+  } catch (err) {
+    config = {};
+  }
+  const markers = Array.isArray(config.markers) ? config.markers : [];
+  const strings = config.strings || {};
+  const restBase = config.restBase || "";
+
+  // The sidebar and the A-Z list click handler are wired up regardless of
+  // WebGL support, so every destination -- whether clicked on the globe,
+  // in the search-filtered A-Z list, or via a "you might also like" chip --
+  // shows the same in-page detail view. Only the globe rendering itself
+  // needs WebGL.
+  const sidebarApi = initSidebar(root, markers, strings, restBase);
   initListSearch(root);
-  initRoot(root);
+  initDestinationList(root, sidebarApi.openSidebar, sidebarApi.byslug);
+  initRoot(root, markers, config, sidebarApi.openSidebar);
 });

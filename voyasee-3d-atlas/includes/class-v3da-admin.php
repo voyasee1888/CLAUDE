@@ -153,14 +153,23 @@ final class V3DA_Admin {
     }
 
     /**
+     * A site that has never saved the Settings screen gets the real,
+     * registry-sourced tool/affiliate URLs (see includes/data/default-tool-
+     * links.php) out of the box, so the footer never ships empty. The
+     * moment an admin saves Settings even once, every field -- including
+     * an intentionally blank one meant to hide that link -- is explicitly
+     * present in the saved option and always wins over this default.
+     *
      * @return array<string,string>
      */
     public static function get_settings(): array {
         $settings = get_option('v3da_settings', []);
         if (!is_array($settings)) $settings = [];
+        $defaults = require V3DA_DIR . 'includes/data/default-tool-links.php';
         $out = [];
         foreach (self::SETTINGS_FIELDS as $field) {
-            $out[$field] = isset($settings[$field]) ? esc_url_raw((string) $settings[$field]) : '';
+            $value = array_key_exists($field, $settings) ? $settings[$field] : ($defaults[$field] ?? '');
+            $out[$field] = esc_url_raw((string) $value);
         }
         return $out;
     }
