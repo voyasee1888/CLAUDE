@@ -15,6 +15,8 @@ $booking_apac = $settings['affiliate_booking_apac'] ?? '';
 $visa_url = $settings['affiliate_visa'] ?? '';
 ?>
 <section class="v3datlas-root" id="<?php echo esc_attr($uid); ?>" data-v3datlas-root data-v3datlas-config="<?php echo esc_attr($config); ?>">
+    <div class="v3datlas-starfield" aria-hidden="true"></div>
+
     <div class="v3datlas-hero">
         <p class="v3datlas-eyebrow"><?php echo esc_html__('Voyasee World Story Atlas', 'voyasee-3d-atlas'); ?></p>
         <h2 class="v3datlas-title"><?php echo esc_html__('An interactive globe of every place Voyasee has covered', 'voyasee-3d-atlas'); ?></h2>

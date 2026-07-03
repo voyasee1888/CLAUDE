@@ -1,12 +1,17 @@
 .v3datlas-root {
-    --v3datlas-navy-950: #0b1220;
-    --v3datlas-navy-900: #111827;
-    --v3datlas-navy-800: #1a2436;
+    /* Deep emerald/forest base with the existing Voyasee gold as accent --
+       chosen over navy (the market-default dark-mode hue) and over blue
+       generally, to read as "expedition/atlas" rather than generic SaaS
+       trust-blue. Navy is kept only as a secondary shadow tone below. */
+    --v3datlas-emerald-950: #0a201a;
+    --v3datlas-emerald-900: #0f3d2e;
+    --v3datlas-emerald-800: #17513d;
+    --v3datlas-navy-800: #131c2b;
     --v3datlas-gold: #c9a24b;
     --v3datlas-gold-soft: #e8cf86;
     --v3datlas-cream: #f6f1e6;
     --v3datlas-cream-dim: #cfc8b8;
-    --v3datlas-glass-bg: rgba(17, 24, 39, 0.78);
+    --v3datlas-glass-bg: rgba(10, 32, 26, 0.78);
     --v3datlas-radius-lg: 20px;
     --v3datlas-radius-md: 12px;
     --v3datlas-font-display: 'Cormorant Garamond', Georgia, serif;
@@ -14,11 +19,48 @@
 
     display: block;
     width: 100%;
-    background: linear-gradient(180deg, var(--v3datlas-navy-950), var(--v3datlas-navy-900));
+    position: relative;
+    background-color: var(--v3datlas-emerald-950);
+    background-image:
+        radial-gradient(ellipse 70% 50% at 20% 0%, rgba(23, 81, 61, 0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 45% at 85% 15%, rgba(201, 162, 75, 0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 90% 70% at 50% 100%, var(--v3datlas-emerald-900) 0%, transparent 70%);
     color: var(--v3datlas-cream);
     font-family: var(--v3datlas-font-body);
     padding: 48px 24px;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+.v3datlas-starfield {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    background-image:
+        radial-gradient(1px 1px at 10% 20%, #fff, transparent),
+        radial-gradient(1px 1px at 80% 10%, #fff, transparent),
+        radial-gradient(1px 1px at 60% 70%, #fff, transparent),
+        radial-gradient(1px 1px at 30% 85%, #fff, transparent),
+        radial-gradient(1px 1px at 90% 60%, #fff, transparent),
+        radial-gradient(1px 1px at 45% 35%, #fff, transparent),
+        radial-gradient(1px 1px at 15% 55%, #fff, transparent),
+        radial-gradient(1px 1px at 70% 90%, #fff, transparent);
+    background-repeat: repeat;
+    background-size: 400px 400px;
+    animation: v3datlas-drift 240s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v3datlas-starfield {
+        animation: none;
+    }
+}
+
+@keyframes v3datlas-drift {
+    from { background-position: 0 0; }
+    to { background-position: -400px 400px; }
 }
 
 .v3datlas-root *,
@@ -28,6 +70,8 @@
 }
 
 .v3datlas-hero {
+    position: relative;
+    z-index: 1;
     max-width: 720px;
     margin: 0 auto 32px;
     text-align: center;
@@ -74,6 +118,7 @@
 
 .v3datlas-stage {
     position: relative;
+    z-index: 1;
     max-width: 1100px;
     margin: 0 auto;
     overflow: hidden;
@@ -102,6 +147,16 @@
     cursor: grabbing;
 }
 
+.v3datlas-terminator-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
 .v3datlas-marker-hotspot {
     position: absolute;
     top: 0;
@@ -115,6 +170,23 @@
     background: transparent;
     cursor: pointer;
     will-change: transform;
+}
+
+.v3datlas-tour-caption {
+    position: absolute;
+    left: 50%;
+    bottom: 6%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 6px 16px;
+    font-family: var(--v3datlas-font-display);
+    font-style: italic;
+    font-size: 15px;
+    white-space: nowrap;
+    color: var(--v3datlas-gold-soft);
+    background: rgba(10, 32, 26, 0.55);
+    border-radius: 999px;
+    pointer-events: none;
 }
 
 .v3datlas-marker-hotspot:hover,
@@ -198,6 +270,21 @@
     margin: 0 0 16px;
 }
 
+.v3datlas-sidebar-signature {
+    font-family: var(--v3datlas-font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--v3datlas-cream);
+    margin: -8px 0 16px;
+}
+
+.v3datlas-fact p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
 .v3datlas-sidebar-section {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 14px 0;
@@ -248,6 +335,8 @@
 }
 
 .v3datlas-destination-list {
+    position: relative;
+    z-index: 1;
     max-width: 960px;
     margin: 40px auto 0;
 }
@@ -291,6 +380,8 @@
 }
 
 .v3datlas-footer {
+    position: relative;
+    z-index: 1;
     max-width: 1100px;
     margin: 48px auto 0;
     padding-top: 24px;

@@ -3,7 +3,7 @@ defined('ABSPATH') || exit;
 
 final class V3DA_DB {
     private const TABLE = 'v3da_destinations';
-    private const DB_VERSION = '1.0';
+    private const DB_VERSION = '1.1';
 
     public static function table(): string {
         global $wpdb;
@@ -27,6 +27,7 @@ final class V3DA_DB {
         // a fresh install. The 'v3da_seeded' flag makes this a cheap option
         // read (no query against the destinations table) once it has run.
         self::maybe_seed_defaults();
+        self::maybe_backfill_story_content();
     }
 
     private static function maybe_seed_defaults(): void {
@@ -45,6 +46,39 @@ final class V3DA_DB {
         update_option('v3da_seeded', 1, false);
     }
 
+    /**
+     * signature_line / did_you_know were added after the initial dataset
+     * shipped, so a site that already seeded destinations under an earlier
+     * version has those two fields empty. This backfills them by matching
+     * on slug, one time, without touching any field a site owner may have
+     * since edited by hand (only fills in signature_line/did_you_know, and
+     * only when they're still blank).
+     */
+    private static function maybe_backfill_story_content(): void {
+        if (get_option('v3da_story_backfilled')) return;
+        $defaults = require V3DA_DIR . 'includes/data/default-destinations.php';
+        $bySlug = [];
+        foreach ($defaults as $row) {
+            $bySlug[sanitize_title($row['name'])] = $row;
+        }
+        foreach (self::get_all() as $existing) {
+            $default = $bySlug[$existing['slug']] ?? null;
+            if (!$default) continue;
+            $update = [];
+            if ('' === $existing['signature_line'] && !empty($default['signature_line'])) {
+                $update['signature_line'] = $default['signature_line'];
+            }
+            if ('' === $existing['did_you_know'] && !empty($default['did_you_know'])) {
+                $update['did_you_know'] = $default['did_you_know'];
+            }
+            if ($update) {
+                global $wpdb;
+                $wpdb->update(self::table(), $update, ['id' => $existing['id']]);
+            }
+        }
+        update_option('v3da_story_backfilled', 1, false);
+    }
+
     private static function install(): void {
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -61,6 +95,8 @@ final class V3DA_DB {
             lng DECIMAL(10,6) NOT NULL DEFAULT 0,
             content_taxonomy VARCHAR(32) NOT NULL DEFAULT 'category',
             content_term_slug VARCHAR(191) NOT NULL DEFAULT '',
+            signature_line VARCHAR(200) NOT NULL DEFAULT '',
+            did_you_know VARCHAR(400) NOT NULL DEFAULT '',
             hero_image_id BIGINT UNSIGNED NULL,
             status VARCHAR(16) NOT NULL DEFAULT 'active',
             sort_order INT NOT NULL DEFAULT 0,
@@ -227,6 +263,8 @@ final class V3DA_DB {
             'lng' => round($lng, 6),
             'content_taxonomy' => $taxonomy,
             'content_term_slug' => sanitize_title((string) ($data['content_term_slug'] ?? '')),
+            'signature_line' => sanitize_text_field((string) ($data['signature_line'] ?? '')),
+            'did_you_know' => sanitize_text_field((string) ($data['did_you_know'] ?? '')),
             'hero_image_id' => $hero_image_id > 0 ? $hero_image_id : null,
             'status' => $status,
             'sort_order' => absint($data['sort_order'] ?? 0),

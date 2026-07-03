@@ -16,6 +16,8 @@ $d = wp_parse_args($destination ?: [], [
     'lng' => '',
     'content_taxonomy' => 'category',
     'content_term_slug' => '',
+    'signature_line' => '',
+    'did_you_know' => '',
     'hero_image_id' => '',
     'status' => 'active',
     'sort_order' => 0,
@@ -84,6 +86,20 @@ $hero_thumb = $d['hero_image_id'] ? wp_get_attachment_image_url((int) $d['hero_i
                 <td>
                     <input id="v3da-content-term-slug" name="content_term_slug" type="text" class="regular-text" value="<?php echo esc_attr($d['content_term_slug']); ?>">
                     <p class="description"><?php echo esc_html__('The existing WordPress category or tag slug whose published posts should be linked to this destination.', 'voyasee-3d-atlas'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-signature-line"><?php echo esc_html__('Signature line', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <input id="v3da-signature-line" name="signature_line" type="text" class="large-text" maxlength="200" value="<?php echo esc_attr($d['signature_line']); ?>">
+                    <p class="description"><?php echo esc_html__('Short editorial tagline shown in the sidebar (8-12 words).', 'voyasee-3d-atlas'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-did-you-know"><?php echo esc_html__('Did you know?', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <textarea id="v3da-did-you-know" name="did_you_know" class="large-text" rows="2" maxlength="400"><?php echo esc_textarea($d['did_you_know']); ?></textarea>
+                    <p class="description"><?php echo esc_html__('One verified fact shown in the sidebar.', 'voyasee-3d-atlas'); ?></p>
                 </td>
             </tr>
             <tr>

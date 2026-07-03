@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,24 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.2.0 =
+* Color system: deep emerald/forest base with the existing Voyasee gold as
+  accent, replacing navy as the dominant hue (navy kept only as a minor
+  shadow tone). Background is now a layered ambient mesh gradient with an
+  optional faint starfield drift, disabled under prefers-reduced-motion.
+* Real-time day/night terminator overlaid on the globe, computed client-side
+  from a standard solar-position algorithm (no API, no key) -- verified
+  against known solstice/equinox reference points before shipping.
+* Animated great-circle arcs with a traveling marker, scripted into a short
+  auto-tour of five featured destination pairs on load (skipped entirely
+  under prefers-reduced-motion), then handing off to normal idle rotation.
+* Story content: each destination now has an editorial "signature line" and
+  a verified "did you know" fact, shown in the sidebar. All 117 seeded
+  destinations were written and checked against multiple independent public
+  sources (not fabricated), with hedged phrasing on any commonly-repeated
+  but disputed superlative claims. Existing installs get these backfilled
+  automatically by matching on slug.
 
 = 1.1.1 =
 * Purge LiteSpeed Cache / QUIC.cloud (both are driven by the same

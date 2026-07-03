@@ -52,6 +52,8 @@ final class V3DA_REST {
                 'lng' => (float) $destination['lng'],
                 'term_link' => $term_link,
                 'post_count' => V3DA_Content::term_post_count($destination['content_taxonomy'], $destination['content_term_slug']),
+                'signature_line' => $destination['signature_line'],
+                'did_you_know' => $destination['did_you_know'],
                 'hero_image_url' => $destination['hero_image_id'] ? wp_get_attachment_image_url((int) $destination['hero_image_id'], 'large') : null,
             ],
             'articles' => $articles,

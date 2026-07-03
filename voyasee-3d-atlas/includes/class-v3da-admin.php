@@ -129,6 +129,8 @@ final class V3DA_Admin {
             'lng' => wp_unslash($_POST['lng'] ?? ''),
             'content_taxonomy' => sanitize_text_field(wp_unslash($_POST['content_taxonomy'] ?? 'category')),
             'content_term_slug' => sanitize_text_field(wp_unslash($_POST['content_term_slug'] ?? '')),
+            'signature_line' => sanitize_text_field(wp_unslash($_POST['signature_line'] ?? '')),
+            'did_you_know' => sanitize_text_field(wp_unslash($_POST['did_you_know'] ?? '')),
             'hero_image_id' => wp_unslash($_POST['hero_image_id'] ?? ''),
             'status' => sanitize_text_field(wp_unslash($_POST['status'] ?? 'active')),
             'sort_order' => wp_unslash($_POST['sort_order'] ?? 0),
