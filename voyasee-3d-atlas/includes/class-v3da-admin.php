@@ -104,7 +104,8 @@ final class V3DA_Admin {
         if (!current_user_can(self::CAP)) wp_die(esc_html__('You are not allowed to do this.', 'voyasee-3d-atlas'));
         check_admin_referer('v3da_run_automap');
 
-        $report = V3DA_AutoMap::run_bulk();
+        $force_recheck = !empty($_POST['force_recheck']);
+        $report = V3DA_AutoMap::run_bulk($force_recheck);
         set_transient('v3da_automap_report', $report, 300);
 
         self::maybe_purge_page_cache();

@@ -34,10 +34,18 @@ $notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_noti
     </div>
 
     <h2><?php echo esc_html__('Auto-Map Content', 'voyasee-3d-atlas'); ?></h2>
-    <p><?php echo esc_html__('Scans your published posts for mentions of each unmapped destination, and points it at whichever real category/tag those matching posts actually use most.', 'voyasee-3d-atlas'); ?></p>
+    <p><?php echo esc_html__('Looks for a category/tag literally named after each destination first, and otherwise requires at least two published posts with that destination\'s name in their own title sharing a category/tag -- a single passing mention elsewhere in a post\'s body is never enough to map a destination on its own.', 'voyasee-3d-atlas'); ?></p>
     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
         <input type="hidden" name="action" value="v3da_run_automap">
         <?php wp_nonce_field('v3da_run_automap'); ?>
+        <p>
+            <label>
+                <input type="checkbox" name="force_recheck" value="1">
+                <?php echo esc_html__('Also re-check destinations that are already mapped', 'voyasee-3d-atlas'); ?>
+            </label>
+            <br>
+            <span class="description"><?php echo esc_html__('Use this once after updating the plugin if a destination looks mapped to the wrong category/tag -- a mapping that no longer meets the confidence bar above is cleared back to the safe search-fallback link rather than left pointing at the wrong content.', 'voyasee-3d-atlas'); ?></span>
+        </p>
         <?php submit_button(__('Run Auto-Map Now', 'voyasee-3d-atlas'), 'primary', 'submit', false); ?>
     </form>
 

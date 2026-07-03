@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,23 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.3.1 =
+* Fix: Auto-Map Content used a plain keyword search and tallied every
+  category/tag on every post that merely mentioned a destination's name
+  anywhere in its body text. On sites with limited destination-specific
+  content, this could map a destination to a completely unrelated
+  category (e.g. a destination getting mapped to a generic "world food"
+  category because one unrelated roundup post happened to name-drop it).
+  Auto-Map now requires either a category/tag literally named after the
+  destination, or at least two published posts with the destination's
+  name in their own title sharing a category/tag -- a single incidental
+  body-text mention can no longer map anything on its own.
+* The Data Health Check screen's "Run Auto-Map Now" button now has an
+  optional "Also re-check destinations that are already mapped" checkbox.
+  Run it once after updating if a destination looks mapped to the wrong
+  category: mappings that no longer meet the new bar are cleared back to
+  the safe search-fallback link instead of silently keeping the wrong one.
 
 = 1.3.0 =
 * Dataset expanded from 117 to 167 destinations, filling gaps in the Balkans,
