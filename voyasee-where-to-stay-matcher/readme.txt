@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.2.2
+Stable tag: 4.2.3
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -176,6 +176,27 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.2.3 =
+* Fixed: a visible gap sat between the tool card and the footer, making the
+  footer look like a separate floating box rather than part of the same
+  page. The footer is now flush against the card above it (no top margin,
+  square top corners meeting the card's rounded bottom).
+* Redesigned the footer to match the richer, card-based style used on other
+  Voyasee tools: a banner section up top (wordmark, headline, live coverage
+  stat) followed by icon cards for every tool and booking partner, instead
+  of a plain list of text links. Each tool/partner now shows a short,
+  genuine one-line description alongside its name.
+* Added real per-tool and per-partner one-line descriptions and icons
+  (`class-wtsm-settings.php`), plus a small inline-SVG icon set
+  (`WTSM_Settings::footer_icon()`) so no new external icon library was
+  needed.
+* Fixed in the same pass: the Booking.com affiliate's internal admin note
+  ("Must stay a dpbolvw.net link...") was being reused as the public-facing
+  footer description before this was caught -- added a separate, genuine
+  visitor-facing description field so the admin-only reminder never
+  reaches the public page, while the admin settings screen still shows the
+  original internal note as before.
 
 = 4.2.2 =
 * Changed: rebranded from "Voyasee Where to Stay Matcher" to "Voyasee Best

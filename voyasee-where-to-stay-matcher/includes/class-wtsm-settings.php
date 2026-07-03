@@ -83,64 +83,116 @@ class WTSM_Settings {
 			'booking_affiliate_url'    => array(
 				'label'       => __( 'Booking.com affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Must stay a dpbolvw.net link. Button label is fixed to "Booking.com" per the affiliate registry.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Book your stay in this area', 'voyasee-wtsm' ),
 				'fixed_label' => 'Booking.com',
+				'icon'        => 'bed',
 			),
 			'safetywing_affiliate_url' => array(
 				'label'       => __( 'SafetyWing affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Travel & nomad insurance.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Travel & nomad insurance', 'voyasee-wtsm' ),
 				'fixed_label' => 'Travel Insurance (SafetyWing)',
+				'icon'        => 'shield',
 			),
 			'visahq_affiliate_url'     => array(
 				'label'       => __( 'VisaHQ affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Visa & entry-document support.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Visa & entry-document support', 'voyasee-wtsm' ),
 				'fixed_label' => 'Visa Assistance (VisaHQ)',
+				'icon'        => 'document',
 			),
 			'aviasales_affiliate_url'  => array(
 				'label'       => __( 'Aviasales affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Flight fare comparison.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Compare flight fares', 'voyasee-wtsm' ),
 				'fixed_label' => 'Flight Deals (Aviasales)',
+				'icon'        => 'plane',
 			),
 			'airalo_affiliate_url'     => array(
 				'label'       => __( 'Airalo affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Global eSIM data plans.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Global eSIM data plans', 'voyasee-wtsm' ),
 				'fixed_label' => 'eSIM Data (Airalo)',
+				'icon'        => 'signal',
 			),
 			'discovercars_affiliate_url' => array(
 				'label'       => __( 'DiscoverCars affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Car rental comparison.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Car rental comparison', 'voyasee-wtsm' ),
 				'fixed_label' => 'Car Rental (DiscoverCars)',
+				'icon'        => 'car',
 			),
 			'getyourguide_affiliate_url' => array(
 				'label'       => __( 'GetYourGuide affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Tours & attraction tickets.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Tours near your matched area', 'voyasee-wtsm' ),
 				'fixed_label' => 'Tours & Activities (GetYourGuide)',
+				'icon'        => 'ticket',
 			),
 			'kiwitaxi_affiliate_url'   => array(
 				'label'       => __( 'Kiwitaxi affiliate URL', 'voyasee-wtsm' ),
 				'note'        => __( 'Prebooked airport transfers.', 'voyasee-wtsm' ),
+				'desc'        => __( 'Prebooked airport transfers', 'voyasee-wtsm' ),
 				'fixed_label' => 'Airport Transfer (Kiwitaxi)',
+				'icon'        => 'car',
 			),
 		);
+	}
+
+	/**
+	 * Inline SVG path markup for the footer's tool/partner icon cards,
+	 * keyed by the short name used in tool_fields()/affiliate_fields()
+	 * above. Kept as plain inline paths (same convention already used for
+	 * the footer column headers) rather than pulling in an icon font or
+	 * library -- one more external dependency this plugin doesn't need.
+	 *
+	 * @return string Inner <path>/<circle> markup for the given icon key, or a plain dot if the key is unrecognized.
+	 */
+	public static function footer_icon( $key ) {
+		$icons = array(
+			'passport'     => '<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M9 16h6"/>',
+			'globe'        => '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/>',
+			'pin'          => '<path d="M12 21s7-7.5 7-12a7 7 0 0 0-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+			'calendar'     => '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+			'coin'         => '<circle cx="12" cy="12" r="9"/><path d="M12 7v10"/><path d="M9 9.7c0-1.5 1.4-2.2 3-2.2s3 .8 3 2-1.4 1.8-3 1.8-3 .7-3 2 1.4 2.2 3 2.2 3-.8 3-2.2"/>',
+			'compass'      => '<circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6z"/>',
+			'scale'        => '<path d="M12 3v18M6 7h12M6 7l-3 6a3 3 0 0 0 6 0zM18 7l-3 6a3 3 0 0 0 6 0z"/>',
+			'suitcase'     => '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+			'clock'        => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+			'bag'          => '<rect x="6" y="7" width="12" height="14" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 12h12"/>',
+			'shield-alert' => '<path d="M12 3l7 3v5c0 4.5-3 7.7-7 10-4-2.3-7-5.5-7-10V6z"/><path d="M12 8v5M12 15h.01"/>',
+			'swap'         => '<path d="M7 7h11l-3-3M17 17H6l3 3"/>',
+			'plus'         => '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+			'moon'         => '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+			'document'     => '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/>',
+			'bed'          => '<path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7"/><path d="M3 14h18"/><path d="M7 11V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>',
+			'shield'       => '<path d="M12 3l7 3v5c0 4.5-3 7.7-7 10-4-2.3-7-5.5-7-10V6z"/>',
+			'plane'        => '<path d="M3 11l18-8-8 18-2-8-8-2z"/>',
+			'signal'       => '<path d="M3 18h.01M8 18v-3M13 18v-6M18 18v-9"/>',
+			'car'          => '<path d="M4 16V11l2-5h12l2 5v5"/><circle cx="7.5" cy="16.5" r="1.5"/><circle cx="16.5" cy="16.5" r="1.5"/>',
+			'ticket'       => '<path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/>',
+		);
+		return $icons[ $key ] ?? '<circle cx="12" cy="12" r="3"/>';
 	}
 
 	/** Voyasee tools cross-promoted in the footer, grouped to match the live site's own convention. */
 	public static function tool_fields() {
 		return array(
-			'tool_travel_passport_url'     => array( 'label' => __( 'Travel Passport', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_smart_travel_hub_url'    => array( 'label' => __( 'Smart Travel Hub', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_interactive_map_url'     => array( 'label' => __( 'Interactive Travel Map', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_month_planner_url'       => array( 'label' => __( 'Travel Month Planner', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_trip_budget_url'         => array( 'label' => __( 'Trip Budget Calculator', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_destination_quiz_url'    => array( 'label' => __( 'Destination Quiz', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_destination_battle_url'  => array( 'label' => __( 'Destination Comparison', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_packing_generator_url'   => array( 'label' => __( 'Smart Packing Generator', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_schengen_calculator_url' => array( 'label' => __( 'Schengen Calculator', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_carry_on_checker_url'    => array( 'label' => __( 'Airline Carry-On Size Checker', 'voyasee-wtsm' ), 'group' => 'plan' ),
-			'tool_scam_shield_url'         => array( 'label' => __( 'Travel Scam Shield', 'voyasee-wtsm' ), 'group' => 'safety' ),
-			'tool_transit_visa_url'        => array( 'label' => __( 'Transit Visa & Layover Checker', 'voyasee-wtsm' ), 'group' => 'safety' ),
-			'tool_medicine_checker_url'    => array( 'label' => __( 'Medicine & Restricted Item Checker', 'voyasee-wtsm' ), 'group' => 'safety' ),
-			'tool_jetlag_planner_url'      => array( 'label' => __( 'Jet Lag Recovery Planner', 'voyasee-wtsm' ), 'group' => 'safety' ),
-			'tool_printables_url'          => array( 'label' => __( 'Travel Printables & Checklists', 'voyasee-wtsm' ), 'group' => 'safety' ),
+			'tool_travel_passport_url'     => array( 'label' => __( 'Travel Passport', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'passport', 'desc' => __( 'Final trip readiness check', 'voyasee-wtsm' ) ),
+			'tool_smart_travel_hub_url'    => array( 'label' => __( 'Smart Travel Hub', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'globe', 'desc' => __( 'Weather, safety and advisories', 'voyasee-wtsm' ) ),
+			'tool_interactive_map_url'     => array( 'label' => __( 'Interactive Travel Map', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'pin', 'desc' => __( 'Explore destinations visually', 'voyasee-wtsm' ) ),
+			'tool_month_planner_url'       => array( 'label' => __( 'Travel Month Planner', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'calendar', 'desc' => __( 'Plan around the right season', 'voyasee-wtsm' ) ),
+			'tool_trip_budget_url'         => array( 'label' => __( 'Trip Budget Calculator', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'coin', 'desc' => __( 'Add up baggage and hidden costs', 'voyasee-wtsm' ) ),
+			'tool_destination_quiz_url'    => array( 'label' => __( 'Destination Quiz', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'compass', 'desc' => __( 'Find your next destination', 'voyasee-wtsm' ) ),
+			'tool_destination_battle_url'  => array( 'label' => __( 'Destination Comparison', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'scale', 'desc' => __( 'Weigh two trips side by side', 'voyasee-wtsm' ) ),
+			'tool_packing_generator_url'   => array( 'label' => __( 'Smart Packing Generator', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'suitcase', 'desc' => __( 'Pack right for this trip', 'voyasee-wtsm' ) ),
+			'tool_schengen_calculator_url' => array( 'label' => __( 'Schengen Calculator', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'clock', 'desc' => __( 'Check your 90/180-day balance', 'voyasee-wtsm' ) ),
+			'tool_carry_on_checker_url'    => array( 'label' => __( 'Airline Carry-On Size Checker', 'voyasee-wtsm' ), 'group' => 'plan', 'icon' => 'bag', 'desc' => __( 'Confirm your bag before the gate', 'voyasee-wtsm' ) ),
+			'tool_scam_shield_url'         => array( 'label' => __( 'Travel Scam Shield', 'voyasee-wtsm' ), 'group' => 'safety', 'icon' => 'shield-alert', 'desc' => __( 'Spot common travel scams', 'voyasee-wtsm' ) ),
+			'tool_transit_visa_url'        => array( 'label' => __( 'Transit Visa & Layover Checker', 'voyasee-wtsm' ), 'group' => 'safety', 'icon' => 'swap', 'desc' => __( 'Review layover and transfer risk', 'voyasee-wtsm' ) ),
+			'tool_medicine_checker_url'    => array( 'label' => __( 'Medicine & Restricted Item Checker', 'voyasee-wtsm' ), 'group' => 'safety', 'icon' => 'plus', 'desc' => __( 'Check restricted items before you fly', 'voyasee-wtsm' ) ),
+			'tool_jetlag_planner_url'      => array( 'label' => __( 'Jet Lag Recovery Planner', 'voyasee-wtsm' ), 'group' => 'safety', 'icon' => 'moon', 'desc' => __( 'Recover faster after long flights', 'voyasee-wtsm' ) ),
+			'tool_printables_url'          => array( 'label' => __( 'Travel Printables & Checklists', 'voyasee-wtsm' ), 'group' => 'safety', 'icon' => 'document', 'desc' => __( 'Free offline checklists and cards', 'voyasee-wtsm' ) ),
 		);
 	}
 
