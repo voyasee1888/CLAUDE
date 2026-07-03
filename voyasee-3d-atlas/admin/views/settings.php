@@ -1,6 +1,7 @@
 <?php
 /**
  * @var array<string,string> $settings
+ * @var string $pexels_api_key
  * @var string $notice
  */
 defined('ABSPATH') || exit;
@@ -58,6 +59,17 @@ $affiliate_fields = [
                     <td><input id="v3da-<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" type="url" class="regular-text" value="<?php echo esc_attr($settings[$key] ?? ''); ?>"></td>
                 </tr>
             <?php endforeach; ?>
+        </table>
+
+        <h2><?php echo esc_html__('Destination Photos', 'voyasee-3d-atlas'); ?></h2>
+        <table class="form-table">
+            <tr>
+                <th><label for="v3da-pexels-api-key"><?php echo esc_html__('Pexels API key', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <input id="v3da-pexels-api-key" name="pexels_api_key" type="text" class="regular-text" autocomplete="off" value="<?php echo esc_attr($pexels_api_key); ?>">
+                    <p class="description"><?php echo esc_html__('Optional. When set, a destination with no manually picked photo (below) shows a real photo of that actual place, fetched from Pexels\' free photo API. This Atlas never pulls a destination\'s photo from a blog post — get a free key at pexels.com/api. Leave blank to show no photo for destinations without one manually set.', 'voyasee-3d-atlas'); ?></p>
+                </td>
+            </tr>
         </table>
 
         <h2><?php echo esc_html__('Globe Intro Tour', 'voyasee-3d-atlas'); ?></h2>

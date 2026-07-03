@@ -17,8 +17,10 @@ $comparison_url = $settings['tool_destination_comparison'] ?? '';
 $packing_url = $settings['tool_smart_packing_list'] ?? '';
 $scam_shield_url = $settings['tool_travel_scam_shield'] ?? '';
 $jetlag_url = $settings['tool_jet_lag_planner'] ?? '';
-$booking_eu = $settings['affiliate_booking_eu'] ?? '';
-$booking_apac = $settings['affiliate_booking_apac'] ?? '';
+// Only one Booking.com link is ever shown in the footer, not both approved
+// market variants -- the EU/EEA link is preferred, falling back to the
+// Asia-Pacific/Middle East one only if the EU link isn't configured.
+$booking_url = ($settings['affiliate_booking_eu'] ?? '') ?: ($settings['affiliate_booking_apac'] ?? '');
 $aviasales_url = $settings['affiliate_aviasales'] ?? '';
 $kiwi_url = $settings['affiliate_kiwi'] ?? '';
 $safetywing_url = $settings['affiliate_safetywing'] ?? '';
@@ -32,7 +34,7 @@ $hero_cta_url = $trip_readiness ?: ($quiz_url ?: $map_url);
 
 $has_plan_links = $trip_readiness || $hub_url || $map_url || $month_planner_url || $budget_url;
 $has_decide_links = $quiz_url || $comparison_url || $packing_url || $scam_shield_url || $jetlag_url;
-$has_book_links = $booking_eu || $booking_apac || $aviasales_url || $kiwi_url;
+$has_book_links = $booking_url || $aviasales_url || $kiwi_url;
 $has_safety_links = $safetywing_url || $visa_url;
 ?>
 <section class="v3datlas-root" id="<?php echo esc_attr($uid); ?>" data-v3datlas-root data-v3datlas-config="<?php echo esc_attr($config); ?>">
@@ -116,8 +118,7 @@ $has_safety_links = $safetywing_url || $visa_url;
             <div class="v3datlas-footer-col">
                 <h3><?php echo esc_html__('Book Your Trip', 'voyasee-3d-atlas'); ?></h3>
                 <ul>
-                    <?php if ($booking_eu): ?><li><a href="<?php echo esc_url($booking_eu); ?>" rel="nofollow sponsored noopener" target="_blank"><?php echo esc_html__('Booking.com', 'voyasee-3d-atlas'); ?></a></li><?php endif; ?>
-                    <?php if ($booking_apac): ?><li><a href="<?php echo esc_url($booking_apac); ?>" rel="nofollow sponsored noopener" target="_blank"><?php echo esc_html__('Booking.com', 'voyasee-3d-atlas'); ?></a></li><?php endif; ?>
+                    <?php if ($booking_url): ?><li><a href="<?php echo esc_url($booking_url); ?>" rel="nofollow sponsored noopener" target="_blank"><?php echo esc_html__('Booking.com', 'voyasee-3d-atlas'); ?></a></li><?php endif; ?>
                     <?php if ($aviasales_url): ?><li><a href="<?php echo esc_url($aviasales_url); ?>" rel="nofollow sponsored noopener" target="_blank"><?php echo esc_html__('Aviasales', 'voyasee-3d-atlas'); ?></a></li><?php endif; ?>
                     <?php if ($kiwi_url): ?><li><a href="<?php echo esc_url($kiwi_url); ?>" rel="nofollow sponsored noopener" target="_blank"><?php echo esc_html__('Kiwi.com', 'voyasee-3d-atlas'); ?></a></li><?php endif; ?>
                 </ul>

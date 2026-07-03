@@ -42,7 +42,7 @@ final class V3DA_REST {
 
         $hero_image_url = $destination['hero_image_id']
             ? wp_get_attachment_image_url((int) $destination['hero_image_id'], 'large')
-            : V3DA_Content::term_latest_thumbnail($destination['content_taxonomy'], $destination['content_term_slug']);
+            : V3DA_Content::pexels_photo_url($destination['slug'], $destination['name'] . ' ' . $destination['country']);
 
         $all_destinations = V3DA_DB::get_all(['status' => 'active']);
 

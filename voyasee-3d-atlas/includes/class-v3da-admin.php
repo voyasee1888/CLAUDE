@@ -174,9 +174,14 @@ final class V3DA_Admin {
         return $out;
     }
 
+    public static function get_pexels_api_key(): string {
+        return trim((string) get_option('v3da_pexels_api_key', ''));
+    }
+
     public static function render_settings(): void {
         if (!current_user_can(self::CAP)) return;
         $settings = self::get_settings();
+        $pexels_api_key = self::get_pexels_api_key();
         $notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_notice'])) : '';
         include V3DA_DIR . 'admin/views/settings.php';
     }
@@ -191,6 +196,7 @@ final class V3DA_Admin {
         }
         update_option('v3da_settings', $settings, false);
         update_option('v3da_featured_arcs', self::sanitize_featured_arcs((string) wp_unslash($_POST['featured_arcs'] ?? '')), false);
+        update_option('v3da_pexels_api_key', sanitize_text_field((string) wp_unslash($_POST['pexels_api_key'] ?? '')), false);
 
         self::maybe_purge_page_cache();
         wp_safe_redirect(add_query_arg(['page' => 'voyasee-3d-atlas-settings', 'v3da_notice' => 'saved'], admin_url('admin.php')));

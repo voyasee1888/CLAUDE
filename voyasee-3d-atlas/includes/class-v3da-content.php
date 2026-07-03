@@ -57,33 +57,58 @@ final class V3DA_Content {
     }
 
     /**
-     * Automatic hero-image fallback: if a destination has no manually
-     * picked hero image, use the featured image of the most recent post in
-     * its mapped category/tag instead -- so hero images fill themselves in
-     * as your content library grows, no per-destination media picking
-     * required once 1a (auto-mapping) has connected real content.
+     * Automatic hero-image fallback via the Pexels API (https://www.pexels.com/api/),
+     * used only when a destination has no manually picked hero image. This
+     * Atlas never pulls a destination's photo from a blog post/article --
+     * the photo shown is always either hand-picked in 3D Atlas ->
+     * Destinations, or a real photo of that actual place fetched here.
+     *
+     * Requires a Pexels API key pasted into Settings (Pexels' free tier is
+     * enough for this -- no paid plan needed). With no key configured, or
+     * on any API failure or zero results, this returns null and the
+     * sidebar simply shows no hero image, same graceful-degradation
+     * pattern as Weather Bridge/Country Intelligence elsewhere in this
+     * plugin. Results are cached per destination for 30 days (a
+     * destination's representative photo has no reason to change day to
+     * day), which also keeps this comfortably inside Pexels' free-tier
+     * rate limits even on a busy site.
      */
-    public static function term_latest_thumbnail(string $taxonomy, string $slug): ?string {
-        if ('' === $slug) return null;
-        $query = new WP_Query([
-            'post_type' => 'post',
-            'post_status' => 'publish',
-            'posts_per_page' => 5,
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'tax_query' => [['taxonomy' => $taxonomy, 'field' => 'slug', 'terms' => $slug]],
-            'no_found_rows' => true,
-            'ignore_sticky_posts' => true,
-        ]);
-        foreach ($query->posts as $post) {
-            $url = get_the_post_thumbnail_url($post, 'large');
-            if ($url) {
-                wp_reset_postdata();
-                return $url;
-            }
+    public static function pexels_photo_url(string $slug, string $query): ?string {
+        if ('' === $slug || '' === $query) return null;
+        $api_key = trim((string) get_option('v3da_pexels_api_key', ''));
+        if ('' === $api_key) return null;
+
+        $cache_key = 'v3da_pexels_' . $slug;
+        $cached = get_transient($cache_key);
+        if (false !== $cached) {
+            return '' !== $cached ? $cached : null;
         }
-        wp_reset_postdata();
-        return null;
+
+        $url = add_query_arg([
+            'query' => $query,
+            'per_page' => 1,
+            'orientation' => 'landscape',
+        ], 'https://api.pexels.com/v1/search');
+
+        $response = wp_remote_get($url, [
+            'headers' => ['Authorization' => $api_key],
+            'timeout' => 8,
+        ]);
+
+        if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
+            // Cache the miss too, but briefly -- an API hiccup or a
+            // temporarily wrong key shouldn't be retried on every single
+            // page view, but should recover quickly once fixed.
+            set_transient($cache_key, '', HOUR_IN_SECONDS);
+            return null;
+        }
+
+        $body = json_decode((string) wp_remote_retrieve_body($response), true);
+        $photo_url = $body['photos'][0]['src']['large'] ?? null;
+        $photo_url = is_string($photo_url) ? esc_url_raw($photo_url) : null;
+
+        set_transient($cache_key, $photo_url ?: '', 30 * DAY_IN_SECONDS);
+        return $photo_url;
     }
 
     /**

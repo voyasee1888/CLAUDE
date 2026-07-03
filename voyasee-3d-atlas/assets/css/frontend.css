@@ -157,21 +157,6 @@
     pointer-events: none;
 }
 
-.v3datlas-marker-hotspot {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 18px;
-    height: 18px;
-    padding: 0;
-    margin: 0;
-    border: none;
-    border-radius: 50%;
-    background: transparent;
-    cursor: pointer;
-    will-change: transform;
-}
-
 .v3datlas-tour-caption {
     position: absolute;
     left: 50%;
@@ -187,13 +172,6 @@
     background: rgba(10, 32, 26, 0.55);
     border-radius: 999px;
     pointer-events: none;
-}
-
-.v3datlas-marker-hotspot:hover,
-.v3datlas-marker-hotspot:focus-visible {
-    background: rgba(232, 207, 134, 0.25);
-    outline: 2px solid var(--v3datlas-gold-soft);
-    outline-offset: 2px;
 }
 
 .v3datlas-sidebar {

@@ -334,7 +334,7 @@ function initRoot(root, markers, config, openSidebar) {
   if (!mount) return;
 
   // The ambient globe renders regardless of whether any destinations exist
-  // yet -- only the clickable hotspots depend on markers.length, and that
+  // yet -- only the clickable markers depend on markers.length, and that
   // array is simply empty in that case (nothing further to guard here).
   if (!supportsWebGL()) {
     mount.style.display = "none";
@@ -359,6 +359,20 @@ function initRoot(root, markers, config, openSidebar) {
   const TOUR_HOLD_MS = 500;
   const TOUR_PHASE_MS = TOUR_ROTATE_MS + TOUR_DRAW_MS + TOUR_HOLD_MS;
 
+  // Marker hit-testing radius in CSS pixels. With 167 destinations, many
+  // geographically close together (e.g. 40+ in Europe alone), their
+  // projected screen positions routinely overlap once the globe is
+  // rotated to that region. An earlier version gave each marker its own
+  // absolutely-positioned 18x18px DOM button stacked on the canvas --
+  // when several of those overlapped, only whichever button happened to
+  // be topmost in paint order could ever receive a click, so most clicks
+  // near a cluster of dots silently did nothing. Hit-testing is done here
+  // instead against every marker's actual current screen position on
+  // pointerup, picking whichever real marker is closest to the exact
+  // click point (and within this radius) -- this is correct regardless of
+  // how many markers visually overlap at that spot.
+  const MARKER_HIT_RADIUS = 14;
+
   const state = {
     canvas: null,
     globe: null,
@@ -369,7 +383,7 @@ function initRoot(root, markers, config, openSidebar) {
     size: 600,
     dragging: false,
     lastX: 0,
-    hotspots: new Map(),
+    markerScreenPos: [],
     booted: false,
     destroyTimer: null,
     captionEl: null,
@@ -385,7 +399,7 @@ function initRoot(root, markers, config, openSidebar) {
     canvas.className = "v3datlas-globe-canvas";
     mount.appendChild(canvas);
     state.canvas = canvas;
-    state.hotspots.clear();
+    state.markerScreenPos = [];
 
     const termCanvas = document.createElement("canvas");
     termCanvas.className = "v3datlas-terminator-canvas";
@@ -403,20 +417,25 @@ function initRoot(root, markers, config, openSidebar) {
     caption.hidden = true;
     mount.appendChild(caption);
     state.captionEl = caption;
+  }
 
-    markers.forEach(function (marker) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "v3datlas-marker-hotspot";
-      btn.setAttribute("aria-label", marker.name || "");
-      btn.hidden = true;
-      btn.addEventListener("click", function (e) {
-        e.stopPropagation();
-        openSidebar(marker);
-      });
-      mount.appendChild(btn);
-      state.hotspots.set(marker, btn);
-    });
+  /** Nearest marker to a given canvas-relative point, within
+   *  MARKER_HIT_RADIUS, or null if nothing is close enough -- used for
+   *  both click resolution and hover-cursor feedback. */
+  function findMarkerNear(x, y) {
+    let best = null;
+    let bestDist = MARKER_HIT_RADIUS;
+    for (let i = 0; i < state.markerScreenPos.length; i++) {
+      const p = state.markerScreenPos[i];
+      if (!p.visible) continue;
+      const dx = p.x - x, dy = p.y - y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= bestDist) {
+        bestDist = dist;
+        best = p.marker;
+      }
+    }
+    return best;
   }
 
   function createGlobeInstance() {
@@ -465,19 +484,33 @@ function initRoot(root, markers, config, openSidebar) {
   function attachInteraction() {
     const canvas = state.canvas;
     let pointerId = null;
+    let downX = 0, downY = 0, draggedFar = false;
+    const DRAG_THRESHOLD = 5;
 
     canvas.addEventListener("pointerdown", function (e) {
       state.dragging = true;
       state.lastX = e.clientX;
+      downX = e.clientX;
+      downY = e.clientY;
+      draggedFar = false;
       pointerId = e.pointerId;
       canvas.setPointerCapture(pointerId);
       canvas.classList.add("is-dragging");
+      canvas.style.cursor = "";
     });
     canvas.addEventListener("pointermove", function (e) {
-      if (!state.dragging) return;
+      if (!state.dragging) {
+        const rect = canvas.getBoundingClientRect();
+        const hit = findMarkerNear(e.clientX - rect.left, e.clientY - rect.top);
+        canvas.style.cursor = hit ? "pointer" : "";
+        return;
+      }
       const delta = e.clientX - state.lastX;
       state.lastX = e.clientX;
       state.phi += delta * 0.008;
+      if (Math.abs(e.clientX - downX) > DRAG_THRESHOLD || Math.abs(e.clientY - downY) > DRAG_THRESHOLD) {
+        draggedFar = true;
+      }
     });
     function endDrag() {
       state.dragging = false;
@@ -486,9 +519,19 @@ function initRoot(root, markers, config, openSidebar) {
         try { canvas.releasePointerCapture(pointerId); } catch (err) { /* noop */ }
       }
     }
-    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointerup", function (e) {
+      const wasClick = !draggedFar;
+      endDrag();
+      if (wasClick) {
+        const rect = canvas.getBoundingClientRect();
+        const hit = findMarkerNear(e.clientX - rect.left, e.clientY - rect.top);
+        if (hit) openSidebar(hit);
+      }
+    });
     canvas.addEventListener("pointercancel", endDrag);
-    canvas.addEventListener("pointerleave", endDrag);
+    canvas.addEventListener("pointerleave", function () {
+      if (state.dragging) endDrag();
+    });
   }
 
   function sizeCanvas() {
@@ -566,16 +609,11 @@ function initRoot(root, markers, config, openSidebar) {
     state.termCtx.restore();
   }
 
-  function updateHotspots() {
+  function updateMarkerPositions() {
     const radius = state.size / 2;
-    state.hotspots.forEach(function (btn, marker) {
+    state.markerScreenPos = markers.map(function (marker) {
       const p = projectMarker(marker.lat, marker.lng, state.phi, state.theta, radius);
-      if (!p.visible) {
-        btn.hidden = true;
-        return;
-      }
-      btn.hidden = false;
-      btn.style.transform = "translate(" + (p.x - 9) + "px," + (p.y - 9) + "px)";
+      return { marker: marker, x: p.x, y: p.y, visible: p.visible };
     });
   }
 
@@ -645,7 +683,7 @@ function initRoot(root, markers, config, openSidebar) {
         }
         if (state.globe) state.globe.update({ phi: state.phi });
       }
-      updateHotspots();
+      updateMarkerPositions();
       renderTerminator(now);
       state.rafId = requestAnimationFrame(frame);
     })();
@@ -673,7 +711,7 @@ function initRoot(root, markers, config, openSidebar) {
       state.globe = null;
     }
     mount.innerHTML = "";
-    state.hotspots.clear();
+    state.markerScreenPos = [];
     state.booted = false;
   }
 

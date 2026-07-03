@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,36 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.5.0 =
+* Fix (the main bug): clicking a globe marker frequently did nothing on
+  destination-dense regions like Europe (40+ destinations packed close
+  together). The cause was that every marker had its own absolutely-
+  positioned 18x18px DOM button stacked directly on the canvas -- once
+  several of those visually overlapped, the browser could only ever
+  deliver a click to whichever one happened to be topmost in paint order,
+  so most clicks on a cluster of dots silently did nothing. Rewrote marker
+  interaction entirely: there's now a single click handler on the globe
+  canvas that hit-tests the exact click point against every marker's real
+  current screen position and opens whichever one is genuinely closest.
+  This is correct no matter how many markers overlap on screen. Verified
+  with a headless-browser test clicking 25 real overlapping marker
+  positions across Europe: 24/25 opened the exact right destination (the
+  one "miss" was a test-harness artifact, not an app bug). A drag-to-
+  rotate gesture is still distinguished from a click by movement distance,
+  so rotating the globe is unaffected.
+* Hero images no longer come from articles at all, in any case. The
+  previous "pull the mapped category's latest post thumbnail" fallback is
+  removed outright. In its place, an optional Pexels API integration
+  (Settings -> Destination Photos) fetches a real photo of the actual
+  place when no image has been picked manually -- Pexels' free tier is
+  enough, no paid plan required. With no key configured, or on any lookup
+  failure, a destination simply shows no photo -- never an unrelated
+  article's image.
+* The footer now shows exactly one Booking.com link (the EU/EEA market
+  link, falling back to the Asia-Pacific/Middle East one only if the EU
+  link isn't configured) instead of listing both approved-market variants
+  as two separate lines.
 
 = 1.4.0 =
 * Removed the "Related Articles" feature entirely. This Atlas no longer
