@@ -182,22 +182,28 @@
 	};
 
 	/**
-	 * Closes the destination autocomplete dropdown when clicking outside
-	 * it. Bound once here (not inside renderStep1(), which re-runs on
-	 * every Back/Start Over navigation) so repeated navigation never
-	 * accumulates extra document-level listeners -- it looks up the
-	 * current autocomplete elements at click time instead of closing over
-	 * DOM nodes from whichever render pass first created it.
+	 * Closes any open autocomplete dropdown when clicking outside it.
+	 * Bound once here (not inside renderStep1(), which re-runs on every
+	 * Back/Start Over navigation) so repeated navigation never
+	 * accumulates extra document-level listeners -- it looks up whichever
+	 * autocomplete elements exist at click time instead of closing over
+	 * DOM nodes from whichever render pass first created them. Generic
+	 * over every ".vwtsm-autocomplete" instance (Step 1's destination
+	 * field and the results page's "compare with another destination"
+	 * field both use this same markup pattern) rather than hardcoding one
+	 * specific field's ID, so a future third instance doesn't silently
+	 * miss this behavior the way the compare-destination field originally
+	 * did.
 	 */
 	VoyaseeMatcher.prototype.bindOutsideAutocompleteClose = function () {
 		var self = this;
 		document.addEventListener( 'click', function ( e ) {
-			var resultsBox = self.container.querySelector( '[data-vwtsm-ac-results]' );
-			var destInput = self.container.querySelector( '#vwtsm-destination' );
-			if ( ! resultsBox || ! destInput ) { return; }
-			if ( ! resultsBox.contains( e.target ) && e.target !== destInput ) {
-				resultsBox.classList.remove( 'is-open' );
-			}
+			self.container.querySelectorAll( '.vwtsm-autocomplete-results.is-open' ).forEach( function ( resultsBox ) {
+				var wrapper = resultsBox.closest( '.vwtsm-autocomplete' );
+				if ( wrapper && ! wrapper.contains( e.target ) ) {
+					resultsBox.classList.remove( 'is-open' );
+				}
+			} );
 		} );
 	};
 
@@ -925,8 +931,8 @@
 			'<div class="vwtsm-report-issue" data-vwtsm-report-issue>' +
 				'<button type="button" class="vwtsm-report-issue-toggle" data-vwtsm-report-toggle>Notice something outdated? Suggest a correction</button>' +
 				'<form class="vwtsm-report-issue-form" data-vwtsm-report-form hidden>' +
-					'<textarea data-vwtsm-report-message maxlength="1000" rows="3" placeholder="What looks wrong or out of date?" required></textarea>' +
-					'<input type="email" data-vwtsm-report-email placeholder="Your email (optional, in case we have a follow-up question)" />' +
+					'<textarea id="vwtsm-report-message" data-vwtsm-report-message maxlength="1000" rows="3" placeholder="What looks wrong or out of date?" required></textarea>' +
+					'<input type="email" id="vwtsm-report-email" data-vwtsm-report-email placeholder="Your email (optional, in case we have a follow-up question)" />' +
 					'<div class="vwtsm-report-issue-actions">' +
 						'<button type="submit" class="vwtsm-btn-secondary">Send</button>' +
 						'<span class="vwtsm-report-issue-status" data-vwtsm-report-status></span>' +
@@ -1195,15 +1201,17 @@
 	VoyaseeMatcher.prototype.buildAirQualityFact = function ( airQuality ) {
 		if ( ! airQuality || null === airQuality.value || undefined === airQuality.value ) { return ''; }
 
-		// Weather Bridge's air quality index scale isn't a value this
-		// plugin owns or can confirm (US AQI vs. a regional/European
-		// scale would have very different "this number is fine" ranges),
-		// so this never invents its own good/moderate/unhealthy banding
-		// from the raw number -- only the source's own category label
-		// (when it supplies one) is shown alongside the number as-is.
+		// Weather Bridge itself derives the category label from standard
+		// EPA (US AQI) or its own 1-5 (OpenWeather) breakpoints -- this
+		// just relays that already-computed label, it doesn't invent one.
+		// The two scales read very differently (0-500 vs. 1-5), so the
+		// label always says which scale the number is on.
 		var categoryText = airQuality.category ? ' &middot; ' + escapeHtml( airQuality.category ) : '';
-		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127786;</span><span>' +
-			'Air quality index: ' + escapeHtml( String( airQuality.value ) ) + categoryText + '</span></div>';
+		var label = 'owm_1_5' === airQuality.scale
+			? 'Air quality index: ' + escapeHtml( String( airQuality.value ) ) + '/5' + categoryText
+			: 'Air quality (US AQI): ' + escapeHtml( String( airQuality.value ) ) + categoryText;
+
+		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127786;</span><span>' + label + '</span></div>';
 	};
 
 	VoyaseeMatcher.prototype.buildSeasonalFact = function ( seasonalNote ) {
@@ -1231,18 +1239,18 @@
 		var facts = [];
 
 		var flagEmoji = pick( countryIntel, [ 'core.flag.emoji', 'flag.emoji', 'core.flagEmoji' ] );
-		var countryName = pick( countryIntel, [ 'core.name.common', 'core.name', 'name.common', 'name' ] );
+		var countryName = pick( countryIntel, [ 'core.names.common', 'core.name.common', 'core.name', 'name.common', 'name' ] );
 
-		var driving = pick( countryIntel, [ 'core.drivingSide', 'travel.drivingSide', 'core.driving_side' ] );
+		var driving = pick( countryIntel, [ 'core.transport.drivingSide', 'core.drivingSide', 'travel.drivingSide', 'core.driving_side' ] );
 		if ( driving ) {
 			facts.push( { icon: '&#128663;', text: 'Drives on the <strong>' + escapeHtml( String( driving ) ) + '</strong>' } );
 		}
 
 		var plugTypes = pick( countryIntel, [ 'travel.electrical.plugTypes', 'travel.electrical.plug_types', 'core.electrical.plugTypes' ] );
-		var voltage = pick( countryIntel, [ 'travel.electrical.voltage', 'core.electrical.voltage' ] );
+		var voltage = pick( countryIntel, [ 'travel.electrical.nominalVoltage', 'travel.electrical.voltage', 'core.electrical.voltage' ] );
 		if ( plugTypes || voltage ) {
 			var plugList = Array.isArray( plugTypes ) ? plugTypes.join( '/' ) : plugTypes;
-			facts.push( { icon: '&#128268;', text: 'Plug type ' + ( plugList ? '<strong>' + escapeHtml( String( plugList ) ) + '</strong>' : '' ) + ( voltage ? ' · ' + escapeHtml( String( voltage ) ) : '' ) } );
+			facts.push( { icon: '&#128268;', text: 'Plug type ' + ( plugList ? '<strong>' + escapeHtml( String( plugList ) ) + '</strong>' : '' ) + ( voltage ? ' · ' + escapeHtml( String( voltage ) ) + 'V' : '' ) } );
 		}
 
 		var tipping = pick( countryIntel, [ 'travel.tipping.guidance', 'travel.tipping', 'travel.tippingGuidance' ] );
@@ -1332,7 +1340,7 @@
 				'<h3 class="vwtsm-subheading">Compare with another destination</h3>' +
 				'<p class="vwtsm-field-hint">See how your top match here stacks up against another city, using the same answers.</p>' +
 				'<div class="vwtsm-autocomplete vwtsm-compare-dest-autocomplete">' +
-					'<input type="text" class="vwtsm-input" data-vwtsm-compare-dest-input placeholder="e.g. Bali, Lisbon..." autocomplete="off" />' +
+					'<input type="text" id="vwtsm-compare-dest" class="vwtsm-input" data-vwtsm-compare-dest-input placeholder="e.g. Bali, Lisbon..." autocomplete="off" />' +
 					'<div class="vwtsm-autocomplete-results" data-vwtsm-compare-dest-results></div>' +
 				'</div>' +
 				'<div data-vwtsm-compare-dest-output></div>' +
@@ -1376,6 +1384,7 @@
 		}, 300 );
 
 		input.addEventListener( 'input', doSearch );
+		input.addEventListener( 'focus', doSearch );
 
 		resultsBox.addEventListener( 'click', function ( e ) {
 			var row = e.target.closest( '[data-slug]' );

@@ -427,12 +427,21 @@
    against that. Anchor to the field's own #id instead: an ID selector
    outweighs virtually any class-based selector a theme or builder is
    likely to use, so this wins regardless of where else on the page
-   competing focus styling comes from. */
+   competing focus styling comes from.
+   CONVENTION: every text input/textarea this plugin renders must get a
+   stable #id and be added to this selector list -- this bug has already
+   recurred once (the Step 1 destination field, fixed in 4.1.2) on a field
+   that predated this rule, and again (the "compare destination" field,
+   fixed in 4.2.1) on a field added after this rule existed but not added
+   to it. Skipping this step is exactly how it comes back a third time. */
 .vwtsm-root .vwtsm-input:focus,
 .vwtsm-root .vwtsm-select:focus,
 #vwtsm-destination:focus,
 #vwtsm-nights:focus,
-#vwtsm-travel-date:focus {
+#vwtsm-travel-date:focus,
+#vwtsm-compare-dest:focus,
+#vwtsm-report-message:focus,
+#vwtsm-report-email:focus {
 	background: rgba(10, 15, 28, 0.7) !important;
 	color: var(--vwtsm-cream) !important;
 	-webkit-text-fill-color: var(--vwtsm-cream) !important;
@@ -880,12 +889,13 @@
 	font-size: 0.85rem;
 	-webkit-text-fill-color: var(--vwtsm-cream) !important;
 }
-.vwtsm-report-issue-form textarea:focus,
-.vwtsm-report-issue-form input[type="email"]:focus {
-	background: rgba(10, 15, 28, 0.7) !important;
-	color: var(--vwtsm-cream) !important;
-	-webkit-text-fill-color: var(--vwtsm-cream) !important;
-	border-color: var(--vwtsm-gold-soft) !important;
+/* Color/background/border on focus for these two fields is handled by the
+   #vwtsm-report-message / #vwtsm-report-email ID-anchored rule above (see
+   the convention note there) -- this just adds the same focus outline the
+   .vwtsm-input/.vwtsm-select fields get, which these two don't inherit
+   since they intentionally aren't styled with those classes. */
+#vwtsm-report-message:focus,
+#vwtsm-report-email:focus {
 	outline: 2px solid var(--vwtsm-gold-soft);
 	outline-offset: 2px;
 }

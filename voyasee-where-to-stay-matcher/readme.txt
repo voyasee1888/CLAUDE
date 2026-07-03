@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.2.0
+Stable tag: 4.2.1
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -176,6 +176,34 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 4.2.1 =
+* Fixed: the "Compare with another destination" field (added in 4.2.0) had
+  the same invisible-text-while-typing bug fixed for the Step 1 fields in
+  4.1.2, because it was added after that fix and never added to it. Also
+  hardened the "Suggest a correction" form's two fields the same way,
+  pre-emptively. The CSS rule now carries an explicit convention note so
+  this can't quietly recur a third time.
+* Fixed: the "close autocomplete when clicking elsewhere" behavior was
+  hardcoded to only the Step 1 destination field, so the new compare-
+  destination dropdown stayed open after clicking away from it. Now
+  generic across every autocomplete instance on the page.
+* Fixed: Air Quality (added in 4.2.0) never actually appeared. The
+  function name/signature was correct, but the field names guessed for
+  the response shape (aqi/index/category/etc.) didn't match Weather
+  Bridge's real normalized shape (usAqiEstimate/usAqiCategory/owmIndex/
+  owmCategory), confirmed directly against Weather Bridge's own source.
+  Rewritten against the real shape -- prefers the US AQI estimate (with
+  Weather Bridge's own EPA-breakpoint category label) and falls back to
+  OpenWeather's 1-5 index when no US AQI could be derived.
+* Fixed: three Country Intelligence "Good to know" facts were silently
+  never appearing because their guessed field paths didn't match the
+  real data, confirmed the same way -- the country name in the panel
+  heading (real path is core.names.common, plural, not core.name.common),
+  the "Drives on the ___" fact (real path is core.transport.drivingSide,
+  nested under transport), and the electrical voltage (real field is
+  nominalVoltage, not voltage). Plug type, tipping, emergency numbers,
+  and currency were already correct and unaffected.
 
 = 4.2.0 =
 * Added: 15 of the bundled starter dataset's most globally-searched Tier 2

@@ -3,7 +3,7 @@
  * Plugin Name:       Voyasee Where to Stay Matcher
  * Plugin URI:        https://voyasee.com
  * Description:       All-in-one neighborhood-matching tool: self-hosted destination/neighborhood dataset, OpenStreetMap POI sync, admin CRUD + CSV import, and the interactive 2-step "where should I stay" quiz with an explainable Match Score and the signature Wrong Area Warning -- all in a single plugin, operated through one shortcode.
- * Version:           4.2.0
+ * Version:           4.2.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Voyasee
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /* ----------------------------------------------------------------------
  * Constants
  * -------------------------------------------------------------------- */
-define( 'WTSM_VERSION', '4.2.0' );
+define( 'WTSM_VERSION', '4.2.1' );
 define( 'WTSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WTSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -207,15 +207,21 @@ function voyasee_ni_maybe_get_weather( $lat, $lng, $date ) {
  * provider), so it's handled as its own optional call rather than folded
  * into voyasee_ni_maybe_get_weather().
  *
- * This plugin doesn't own Weather Bridge's exact response shape, so this
- * defensively checks a few plausible key names for the headline index and
- * its human-readable category, the same "degrade gracefully instead of
- * guessing" approach already used for Country Intelligence's currency
- * data -- if nothing recognizable is found, this returns null and the
- * frontend simply omits the air quality fact rather than showing
- * something wrong.
+ * The exact response shape below (usAqiEstimate/usAqiCategory/owmIndex/
+ * owmCategory) was confirmed directly against Weather Bridge's own
+ * VWB_Normalizer source, not guessed -- an earlier version of this
+ * function guessed at plausible field names (aqi/index/category/etc.)
+ * that didn't actually match, so the fact silently never appeared. Both
+ * of Weather Bridge's providers (OpenWeather, Visual Crossing fallback)
+ * normalize to this same shape, so one parse path covers both.
  *
- * @return array{value:int,category:string}|null
+ * Also note: this returns null (fact omitted, not an error) whenever
+ * Weather Bridge's own air-quality feature has no provider configured on
+ * this site (it requires its own OpenWeather key, separate from whatever
+ * powers the forecast/climate facts) -- that's a Weather Bridge settings
+ * matter, not a bug here.
+ *
+ * @return array{value:int,category:string,scale:string}|null
  */
 function voyasee_ni_maybe_get_air_quality( $lat, $lng ) {
 	if ( ! $lat || ! $lng || ! function_exists( 'voyasee_weather_get_air_quality' ) ) {
@@ -223,28 +229,35 @@ function voyasee_ni_maybe_get_air_quality( $lat, $lng ) {
 	}
 
 	$raw = voyasee_weather_get_air_quality( $lat, $lng );
-	if ( is_wp_error( $raw ) || empty( $raw ) || ! is_array( $raw ) ) {
+	if ( is_wp_error( $raw ) || empty( $raw['airQuality'] ) || ! is_array( $raw['airQuality'] ) ) {
 		return null;
 	}
 
-	// Unwrap one common level of nesting (e.g. { airQuality: {...} }),
-	// same defensive shape-guessing already used for weather/currency.
-	$candidate = $raw['airQuality'] ?? $raw['air_quality'] ?? $raw;
-	if ( ! is_array( $candidate ) ) {
-		return null;
+	$aq = $raw['airQuality'];
+
+	// Prefer the US AQI estimate (0-500 scale, the most globally
+	// recognized) -- Weather Bridge derives usAqiCategory itself from
+	// standard EPA breakpoints, so showing it is relaying an
+	// already-computed label, not this plugin guessing what a number means.
+	if ( isset( $aq['usAqiEstimate'] ) && is_numeric( $aq['usAqiEstimate'] ) ) {
+		return array(
+			'value'    => (int) round( (float) $aq['usAqiEstimate'] ),
+			'category' => sanitize_text_field( (string) ( $aq['usAqiCategory'] ?? '' ) ),
+			'scale'    => 'us_aqi',
+		);
 	}
 
-	$value = $candidate['aqi'] ?? $candidate['index'] ?? $candidate['us_aqi'] ?? $candidate['value'] ?? null;
-	if ( null === $value || ! is_numeric( $value ) ) {
-		return null;
+	// Fall back to OpenWeather's own 1-5 index when no US AQI estimate
+	// could be derived (e.g. the PM2.5/PM10 components were missing).
+	if ( isset( $aq['owmIndex'] ) && is_numeric( $aq['owmIndex'] ) ) {
+		return array(
+			'value'    => (int) $aq['owmIndex'],
+			'category' => sanitize_text_field( (string) ( $aq['owmCategory'] ?? '' ) ),
+			'scale'    => 'owm_1_5',
+		);
 	}
 
-	$category = $candidate['category'] ?? $candidate['level'] ?? $candidate['label'] ?? '';
-
-	return array(
-		'value'    => (int) round( (float) $value ),
-		'category' => sanitize_text_field( (string) $category ),
-	);
+	return null;
 }
 
 /**
