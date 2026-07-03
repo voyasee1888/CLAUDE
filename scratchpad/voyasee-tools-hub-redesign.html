@@ -1,121 +1,242 @@
 <style>
-.vtools-seo, .vtools-seo * { box-sizing: border-box; }
-.vtools-seo {
+#vtools-seo-page, #vtools-seo-page * { box-sizing: border-box; }
+#vtools-seo-page {
   --ink: #121a30;
   --muted: #5b6478;
   --line: #e3e7f0;
   --soft: #f6f7fb;
-  --navy: #0a0f1e;
-  --navy-deep: #141d38;
+  --navy: #06090f;
+  --navy-deep: #10182c;
+  --navy-mid: #1b2748;
   --gold: #c99a3f;
   --gold-soft: #e3c079;
+  --teal: #1f8a7a;
   --r: 20px;
   font-family: inherit;
   color: var(--ink);
   line-height: 1.72;
+  position: relative;
 }
-.vtools-seo a { color: #9a6a1f; text-decoration: none; }
-.vtools-seo a:hover { text-decoration: underline; }
-.vtools-seo h2, .vtools-seo h3 { color: #0e1428; line-height: 1.2; margin: 0 0 14px; }
-.vtools-seo h2 { font-size: clamp(1.6rem, 3vw, 2.35rem); margin-top: 40px; padding-bottom: 10px; border-bottom: 2px solid var(--line); }
-.vtools-seo h3 { font-size: clamp(1.15rem, 2vw, 1.5rem); margin-top: 20px; }
-.vtools-seo p { margin: 0 0 16px; color: var(--muted); }
+/* Every color-bearing rule below carries !important on purpose: WordPress
+   themes and page builders very commonly ship their own global link/button
+   color that otherwise wins over a plain scoped class selector. Anchoring
+   to the page's own #id (not just a class) plus !important closes that gap
+   for good, rather than leaving links/buttons at the mercy of whichever
+   theme this gets pasted into. */
+#vtools-seo-page a { color: var(--gold) !important; text-decoration: none !important; font-weight: 700; }
+#vtools-seo-page a:hover { color: var(--teal) !important; text-decoration: underline !important; }
+#vtools-seo-page h2, #vtools-seo-page h3 { color: #0e1428 !important; line-height: 1.2; margin: 0 0 14px; }
+#vtools-seo-page h2 {
+  position: relative;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin-top: 46px;
+  padding-bottom: 14px;
+  padding-left: 20px;
+  border-bottom: none;
+}
+#vtools-seo-page h2::before {
+  content: ""; position: absolute; left: 0; top: 4px; bottom: 14px; width: 5px;
+  border-radius: 4px; background: linear-gradient(180deg, var(--gold), var(--teal));
+}
+#vtools-seo-page h2::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: linear-gradient(90deg, var(--line) 0%, transparent 75%);
+}
+#vtools-seo-page h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); margin-top: 22px; }
+#vtools-seo-page p { margin: 0 0 16px; color: var(--muted); }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero: dark, layered, with a faint route/constellation motif ---------- */
 .vtools-hero {
   position: relative;
   overflow: hidden;
-  border-radius: 26px;
-  padding: clamp(28px, 5vw, 48px);
+  border-radius: 28px;
+  padding: clamp(30px, 5vw, 52px);
   background:
-    radial-gradient(circle at 85% 0%, rgba(201,154,63,.18), transparent 45%),
-    radial-gradient(circle at 5% 100%, rgba(80,120,190,.14), transparent 45%),
-    linear-gradient(135deg, #0a0f1e 0%, #141d38 60%, #0c1226 100%);
+    radial-gradient(circle at 88% -10%, rgba(201,154,63,.22), transparent 40%),
+    radial-gradient(circle at -5% 105%, rgba(31,138,122,.18), transparent 42%),
+    linear-gradient(140deg, #06090f 0%, #10182c 55%, #0a0f1e 100%);
   color: #f2ede0;
-  margin: 0 0 30px;
+  margin: 0 0 32px;
+  box-shadow: 0 30px 70px -25px rgba(6,9,15,.55);
 }
-.vtools-hero h2 { color: #f6f1e2; border-bottom: none; margin-top: 8px; font-size: clamp(1.9rem, 4vw, 2.6rem); letter-spacing: -.01em; }
-.vtools-hero p { color: #c6cbdc; max-width: 780px; }
-.vtools-eyebrow { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-soft); margin-bottom: 8px; }
-.vtools-hero-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-.vtools-hero-stats span { padding: 7px 14px; border-radius: 30px; background: rgba(255,255,255,.06); border: 1px solid rgba(227,192,121,.35); font-size: 13px; color: #efe4c8; }
+.vtools-hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(rgba(227,192,121,.35) 1px, transparent 1px),
+    radial-gradient(rgba(227,192,121,.18) 1px, transparent 1px);
+  background-size: 64px 64px, 34px 34px;
+  background-position: 0 0, 17px 17px;
+  opacity: .35;
+  pointer-events: none;
+}
+.vtools-hero-inner { position: relative; z-index: 1; }
+.vtools-hero h2 {
+  color: #f6f1e2 !important; border-bottom: none; margin-top: 10px; padding: 0;
+  font-size: clamp(1.9rem, 4vw, 2.7rem); letter-spacing: -.01em;
+  background: linear-gradient(100deg, #f6f1e2 40%, var(--gold-soft) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent !important;
+}
+.vtools-hero h2::before, .vtools-hero h2::after { display: none; }
+.vtools-hero p { color: #c6cbdc !important; max-width: 780px; }
+.vtools-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gold-soft) !important; margin-bottom: 10px;
+}
+.vtools-eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px rgba(31,138,122,.25); }
+.vtools-hero-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.vtools-hero-stats span {
+  padding: 8px 15px; border-radius: 30px; background: rgba(255,255,255,.055);
+  border: 1px solid rgba(227,192,121,.35); font-size: 13px; color: #efe4c8 !important;
+  backdrop-filter: blur(6px);
+}
 
 /* ---------- Category chips (color-coded per tool type) ---------- */
-.vtools-chip { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 11px; font-size: .78rem; font-weight: 800; margin-bottom: 10px; letter-spacing: .01em; }
-.vc-readiness   { background: #fdf3e0; color: #9a6a10; }
-.vc-discovery   { background: #e8f0fd; color: #1d5fb4; }
-.vc-intel       { background: #e3f7f2; color: #0f8a7a; }
-.vc-budget      { background: #e9f8ee; color: #2f8f4e; }
-.vc-packing     { background: #fdeee0; color: #c1631a; }
-.vc-baggage     { background: #ecebfb; color: #4a4fc4; }
-.vc-compliance  { background: #f3e8fa; color: #7a3fa0; }
-.vc-safety      { background: #fbe7ea; color: #c1354a; }
-.vc-inspiration { background: #fbe7f0; color: #b13c74; }
-.vc-compare     { background: #e2f5f7; color: #12798a; }
-.vc-month       { background: #fbf1dc; color: #a67c14; }
-.vc-rules       { background: #f3e4da; color: #8a4a2a; }
-.vc-recovery    { background: #ece5fa; color: #6a3fb0; }
-.vc-layover     { background: #e6eef4; color: #3a5a7a; }
-.vc-neighborhood{ background: #e2f6ee; color: #1f7a5c; }
+.vtools-chip { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 12px; font-size: .76rem; font-weight: 800; margin-bottom: 10px; letter-spacing: .02em; }
+.vc-readiness    { background: #fdf3e0; color: #9a6a10 !important; }
+.vc-discovery    { background: #e8f0fd; color: #1d5fb4 !important; }
+.vc-intel        { background: #e3f7f2; color: #0f8a7a !important; }
+.vc-budget       { background: #e9f8ee; color: #2f8f4e !important; }
+.vc-packing      { background: #fdeee0; color: #c1631a !important; }
+.vc-baggage      { background: #ecebfb; color: #4a4fc4 !important; }
+.vc-compliance   { background: #f3e8fa; color: #7a3fa0 !important; }
+.vc-safety       { background: #fbe7ea; color: #c1354a !important; }
+.vc-inspiration  { background: #fbe7f0; color: #b13c74 !important; }
+.vc-compare      { background: #e2f5f7; color: #12798a !important; }
+.vc-month        { background: #fbf1dc; color: #a67c14 !important; }
+.vc-rules        { background: #f3e4da; color: #8a4a2a !important; }
+.vc-recovery     { background: #ece5fa; color: #6a3fb0 !important; }
+.vc-layover      { background: #e6eef4; color: #3a5a7a !important; }
+.vc-neighborhood { background: #e2f6ee; color: #1f7a5c !important; }
+.vc-bar-readiness    { background: linear-gradient(90deg,#e0a723,#9a6a10); }
+.vc-bar-discovery    { background: linear-gradient(90deg,#4f8fe0,#1d5fb4); }
+.vc-bar-intel        { background: linear-gradient(90deg,#28b39e,#0f8a7a); }
+.vc-bar-budget       { background: linear-gradient(90deg,#4bbd77,#2f8f4e); }
+.vc-bar-packing      { background: linear-gradient(90deg,#e28a3d,#c1631a); }
+.vc-bar-baggage      { background: linear-gradient(90deg,#7377d6,#4a4fc4); }
+.vc-bar-compliance   { background: linear-gradient(90deg,#a166c4,#7a3fa0); }
+.vc-bar-safety       { background: linear-gradient(90deg,#dc6376,#c1354a); }
+.vc-bar-inspiration  { background: linear-gradient(90deg,#d1659a,#b13c74); }
+.vc-bar-compare      { background: linear-gradient(90deg,#33a8ba,#12798a); }
+.vc-bar-month        { background: linear-gradient(90deg,#cca034,#a67c14); }
+.vc-bar-rules        { background: linear-gradient(90deg,#ac6c4a,#8a4a2a); }
+.vc-bar-recovery     { background: linear-gradient(90deg,#8d68d1,#6a3fb0); }
+.vc-bar-layover      { background: linear-gradient(90deg,#5c7ea0,#3a5a7a); }
+.vc-bar-neighborhood { background: linear-gradient(90deg, var(--gold), var(--teal)); }
 
 /* ---------- Grid of tool cards ---------- */
-.vtools-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; margin: 22px 0 32px; }
-.vtools-card { position: relative; border: 1px solid var(--line); border-radius: 18px; background: #fff; overflow: hidden; box-shadow: 0 10px 28px rgba(15,25,55,.06); transition: transform .22s, box-shadow .22s; }
-.vtools-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15,25,55,.12); }
-.vtools-card.vtools-featured { border: 1.5px solid var(--gold-soft); box-shadow: 0 12px 32px rgba(201,154,63,.18); }
-.vtools-card-badge { position: absolute; top: 12px; right: 12px; z-index: 2; background: linear-gradient(135deg, var(--gold), #a67626); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 5px 10px; border-radius: 30px; }
-.vtools-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--soft); transition: transform .25s; }
-.vtools-card:hover img { transform: scale(1.03); }
-.vtools-card-body { padding: 18px 18px 20px; }
-.vtools-card-body h3 { margin: 0 0 8px; font-size: 1.15rem; }
-.vtools-btn {
-  display: inline-flex; align-items: center; justify-content: center; margin-top: 8px;
-  border-radius: 12px; background: linear-gradient(135deg, var(--navy-deep), var(--navy));
-  color: #fff !important; font-weight: 800; padding: 10px 16px; text-decoration: none !important;
-  transition: filter .2s, transform .2s; font-size: .92rem;
+.vtools-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; margin: 22px 0 34px; }
+.vtools-card {
+  position: relative; border: 1px solid var(--line); border-radius: 18px; background: #fff;
+  overflow: hidden; box-shadow: 0 10px 26px rgba(15,25,55,.07);
+  transition: transform .22s, box-shadow .22s;
 }
-.vtools-btn:hover { filter: brightness(1.2); transform: scale(1.02); }
-.vtools-btn-gold { background: linear-gradient(135deg, var(--gold), #a67626); }
+.vtools-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; z-index: 2; }
+.vtools-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(15,25,55,.14); }
+.vtools-card.vtools-featured { border: 1.5px solid var(--gold-soft); box-shadow: 0 16px 36px rgba(201,154,63,.22); }
+.vtools-card-badge {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  background: linear-gradient(135deg, var(--gold), #a67626); color: #fff !important;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 30px; box-shadow: 0 6px 14px rgba(201,154,63,.4);
+}
+.vtools-card img { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--soft); transition: transform .3s; }
+.vtools-card:hover img { transform: scale(1.04); }
+.vtools-card-body { padding: 19px 19px 21px; }
+.vtools-card-body h3 { margin: 0 0 8px; font-size: 1.12rem; }
+.vtools-btn {
+  display: inline-flex; align-items: center; gap: 6px; justify-content: center; margin-top: 8px;
+  border-radius: 12px; background: linear-gradient(135deg, var(--navy-mid), var(--navy)) !important;
+  color: #fff !important; font-weight: 800; padding: 11px 17px; text-decoration: none !important;
+  transition: filter .2s, transform .2s; font-size: .92rem; border: 1px solid rgba(227,192,121,.25);
+}
+.vtools-btn::after { content: "\2192"; }
+.vtools-btn:hover { filter: brightness(1.25); transform: scale(1.02); color: #fff !important; text-decoration: none !important; }
+.vtools-btn-gold { background: linear-gradient(135deg, var(--gold), #a67626) !important; border-color: transparent; }
 
-/* ---------- Detailed tool sections ---------- */
-.vtools-tool { border-top: 1px solid var(--line); padding-top: 30px; margin-top: 36px; }
-.vtools-tool.vtools-tool-featured { border-radius: 22px; padding: 28px; border: 1px solid var(--gold-soft); background: linear-gradient(180deg, #fffaf0, #fff); margin-top: 44px; }
-.vtools-tool-img { display: block; width: 100%; max-width: 980px; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; border: 1px solid var(--line); box-shadow: 0 16px 40px rgba(15,25,55,.08); margin: 14px 0 20px; background: var(--soft); }
+/* per-category top accent bar on each card, matched by nth-of-type to grid order */
+.vtools-grid .vtools-card:nth-of-type(1)::before  { background: linear-gradient(90deg, var(--gold), var(--teal)); }
+.vtools-grid .vtools-card:nth-of-type(2)::before  { background: linear-gradient(90deg,#e0a723,#9a6a10); }
+.vtools-grid .vtools-card:nth-of-type(3)::before  { background: linear-gradient(90deg,#4f8fe0,#1d5fb4); }
+.vtools-grid .vtools-card:nth-of-type(4)::before  { background: linear-gradient(90deg,#28b39e,#0f8a7a); }
+.vtools-grid .vtools-card:nth-of-type(5)::before  { background: linear-gradient(90deg,#4bbd77,#2f8f4e); }
+.vtools-grid .vtools-card:nth-of-type(6)::before  { background: linear-gradient(90deg,#e28a3d,#c1631a); }
+.vtools-grid .vtools-card:nth-of-type(7)::before  { background: linear-gradient(90deg,#7377d6,#4a4fc4); }
+.vtools-grid .vtools-card:nth-of-type(8)::before  { background: linear-gradient(90deg,#a166c4,#7a3fa0); }
+.vtools-grid .vtools-card:nth-of-type(9)::before  { background: linear-gradient(90deg,#dc6376,#c1354a); }
+.vtools-grid .vtools-card:nth-of-type(10)::before { background: linear-gradient(90deg,#d1659a,#b13c74); }
+.vtools-grid .vtools-card:nth-of-type(11)::before { background: linear-gradient(90deg,#33a8ba,#12798a); }
+.vtools-grid .vtools-card:nth-of-type(12)::before { background: linear-gradient(90deg,#cca034,#a67c14); }
+.vtools-grid .vtools-card:nth-of-type(13)::before { background: linear-gradient(90deg,#ac6c4a,#8a4a2a); }
+.vtools-grid .vtools-card:nth-of-type(14)::before { background: linear-gradient(90deg,#8d68d1,#6a3fb0); }
+.vtools-grid .vtools-card:nth-of-type(15)::before { background: linear-gradient(90deg,#5c7ea0,#3a5a7a); }
+
+/* ---------- Detailed tool sections (editorial style with a faint number mark) ---------- */
+.vtools-tool { position: relative; border-top: 1px solid var(--line); padding-top: 32px; margin-top: 38px; overflow: hidden; }
+.vtools-tool.vtools-tool-featured { border-radius: 24px; padding: 30px; border: 1px solid var(--gold-soft); background: linear-gradient(180deg, #fffaf0, #fff); margin-top: 46px; box-shadow: 0 20px 48px rgba(201,154,63,.14); }
+.vtools-tool[data-n]::after {
+  content: attr(data-n);
+  position: absolute; top: -10px; right: 6px; z-index: 0;
+  font-size: 6.5rem; font-weight: 900; color: var(--soft); line-height: 1;
+  font-family: Georgia, serif; user-select: none; pointer-events: none;
+}
+.vtools-tool > *:not(.vtools-tool-img) { position: relative; z-index: 1; }
+.vtools-tool-img { display: block; width: 100%; max-width: 980px; aspect-ratio: 16/9; object-fit: cover; border-radius: 18px; border: 1px solid var(--line); box-shadow: 0 16px 40px rgba(15,25,55,.08); margin: 14px 0 20px; background: var(--soft); position: relative; z-index: 1; }
 .vtools-list { margin: 0 0 18px; padding-left: 22px; color: var(--muted); }
 .vtools-list li { margin: 6px 0; }
 .vtools-note { border-left: 4px solid var(--gold); background: #fdf6e8; padding: 15px 17px; border-radius: 12px; margin: 20px 0; color: var(--ink); }
 
 /* ---------- FAQ ---------- */
-.vtools-faq details { border: 1px solid var(--line); border-radius: 12px; margin: 8px 0; background: #fff; }
-.vtools-faq summary { cursor: pointer; padding: 14px 16px; font-weight: 700; color: #0e1428; list-style: none; }
+.vtools-faq details { border: 1px solid var(--line); border-radius: 13px; margin: 9px 0; background: #fff; transition: border-color .2s; }
+.vtools-faq details[open] { border-color: var(--gold-soft); }
+.vtools-faq summary { cursor: pointer; padding: 15px 46px 15px 17px; font-weight: 700; color: #0e1428 !important; list-style: none; position: relative; }
 .vtools-faq summary::-webkit-details-marker { display: none; }
-.vtools-faq details p { padding: 0 16px 15px; margin: 0; }
+.vtools-faq summary::after {
+  content: "+"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 20px; color: var(--gold) !important; font-weight: 400;
+}
+.vtools-faq details[open] summary::after { content: "\2212"; }
+.vtools-faq details p { padding: 0 17px 16px; margin: 0; }
 
 /* ---------- Closing CTA ---------- */
-.vtools-cta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-radius: 22px; padding: 26px 30px; margin: 30px 0; background: linear-gradient(135deg, #0a0f1e, #141d38); color: #f2ede0; }
-.vtools-cta strong { display: block; font-size: 1.15rem; color: #f6f1e2; }
-.vtools-cta span { color: #b8bfd2; font-size: .92rem; }
+.vtools-cta {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px;
+  border-radius: 24px; padding: 28px 32px; margin: 32px 0;
+  background: linear-gradient(135deg, #06090f, #10182c); color: #f2ede0;
+  box-shadow: 0 24px 55px -20px rgba(6,9,15,.5);
+}
+.vtools-cta::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 90% 10%, rgba(201,154,63,.22), transparent 50%);
+}
+.vtools-cta > * { position: relative; z-index: 1; }
+.vtools-cta strong { display: block; font-size: 1.2rem; color: #f6f1e2 !important; }
+.vtools-cta span { color: #b8bfd2 !important; font-size: .92rem; }
 
 @media (max-width: 760px) {
   .vtools-grid { grid-template-columns: 1fr; }
   .vtools-hero { padding: 22px; }
   .vtools-card-body { padding: 16px; }
   .vtools-cta { flex-direction: column; text-align: center; }
+  .vtools-tool[data-n]::after { font-size: 4.2rem; }
 }
 </style>
 
-<section class="vtools-seo">
+<section class="vtools-seo" id="vtools-seo-page">
 
   <div class="vtools-hero">
-    <span class="vtools-eyebrow">15 free planning tools, one trip workflow</span>
-    <h2>Free Travel Tools to Plan Smarter, Spend Better and Avoid Travel Mistakes</h2>
-    <p>Voyasee travel tools are built for travellers who want more than inspiration. Beautiful photos can help you dream, but real planning needs answers: where should I go, which area should I actually stay in, what month is best, can I afford the trip, what should I pack, will my carry-on fit my airline, how many Schengen days do I have left, is my layover risky, can I bring my medicine, how do I recover from jet lag, and what tourist scams should I know before arrival?</p>
-    <p>This travel tools hub brings all 15 Voyasee tools into one place. Each tool solves a different travel planning problem, but they work best together as a full trip workflow &mdash; from choosing a destination all the way through to landing and knowing exactly what to do first.</p>
-    <div class="vtools-hero-stats">
-      <span>15 planning tools</span>
-      <span>No account required</span>
-      <span>Free to use</span>
-      <span>Built as one connected workflow</span>
+    <div class="vtools-hero-inner">
+      <span class="vtools-eyebrow">15 free planning tools, one trip workflow</span>
+      <h2>Free Travel Tools to Plan Smarter, Spend Better and Avoid Travel Mistakes</h2>
+      <p>Voyasee travel tools are built for travellers who want more than inspiration. Beautiful photos can help you dream, but real planning needs answers: where should I go, which area should I actually stay in, what month is best, can I afford the trip, what should I pack, will my carry-on fit my airline, how many Schengen days do I have left, is my layover risky, can I bring my medicine, how do I recover from jet lag, and what tourist scams should I know before arrival?</p>
+      <p>This travel tools hub brings all 15 Voyasee tools into one place. Each tool solves a different travel planning problem, but they work best together as a full trip workflow &mdash; from choosing a destination all the way through to landing and knowing exactly what to do first.</p>
+      <div class="vtools-hero-stats">
+        <span>15 planning tools</span>
+        <span>No account required</span>
+        <span>Free to use</span>
+        <span>Built as one connected workflow</span>
+      </div>
     </div>
   </div>
 
@@ -211,7 +332,7 @@
   <p>The easiest way to use Voyasee is to follow a simple planning flow. First, choose where you might go. Second, once you know the city, work out which specific area to actually stay in &mdash; the wrong hotel in the right city is still a mismatch. Third, check whether the month, budget and comfort level make sense. Fourth, prepare the practical details that create real travel stress: packing, medicine, scams, layovers and jet lag. This is why the tools are connected across the site rather than standing alone.</p>
   <p>If you are at the inspiration stage, start with the <a href="https://voyasee.com/interactive-travel-map/">Interactive Travel Map</a> or <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a>. If you have two strong finalists, use the <a href="https://voyasee.com/travel-destination-comparison-tool/">Travel Destination Comparison Tool</a> to battle them side by side before you go deeper. Once you know the city, use the <a href="https://voyasee.com/best-area-to-stay/">Best Area to Stay Finder</a> to work out which specific neighborhood actually fits your trip, then open the <a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a> and <a href="https://voyasee.com/best-time-to-visit-travel-planner/">Travel Month Planner</a> for deeper destination and timing context. If the destination still looks good, move to the <a href="https://voyasee.com/trip-budget-calculator/">Trip Budget Calculator</a>, <a href="https://voyasee.com/packing-list-generator/">Packing List Generator</a> and <a href="https://voyasee.com/carry-on-size-checker/">Carry-On Size Checker</a> to confirm your bags actually fit before you pack them. If you are travelling to the Schengen Area, check your day balance with the <a href="https://voyasee.com/schengen-calculator/">Schengen Calculator</a> before booking any flights. Then protect the trip with the <a href="https://voyasee.com/travel-scam-checker/">Travel Scam Checker</a>, <a href="https://voyasee.com/medicine-restricted-item-checker/">Medicine &amp; Restricted Items Checker</a>, <a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa Checker</a> and <a href="https://voyasee.com/jet-lag-recovery-planner/">Jet Lag Recovery Planner</a>. Before you book or fly, finish with the <a href="https://voyasee.com/trip-readiness-checklist/">Travel Passport</a> to see what is ready and what still needs attention.</p>
 
-  <article class="vtools-tool vtools-tool-featured" id="best-area-to-stay">
+  <article class="vtools-tool vtools-tool-featured" id="best-area-to-stay" data-n="01">
     <span class="vtools-chip vc-neighborhood">New tool</span>
     <h2>1. Best Area to Stay Finder: Match Your Trip to the Right Neighborhood</h2>
     <a href="https://voyasee.com/best-area-to-stay/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/07/Find-the-Best-Area-to-Stay-for-Your-Trip.png" alt="Voyasee Best Area to Stay Finder results page showing a matched neighborhood, match score and real map" loading="lazy" decoding="async"></a>
@@ -226,7 +347,7 @@
     <a class="vtools-btn vtools-btn-gold" href="https://voyasee.com/best-area-to-stay/">Find Your Area</a>
   </article>
 
-  <article class="vtools-tool" id="travel-passport">
+  <article class="vtools-tool" id="travel-passport" data-n="02">
     <h2>2. Travel Passport: Trip Readiness Checklist Before You Fly</h2>
     <a href="https://voyasee.com/trip-readiness-checklist/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-PASSPORT.png" alt="Travel Passport trip readiness checklist dashboard for checking a trip before flying" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/trip-readiness-checklist/">Voyasee Travel Passport</a> is the final readiness dashboard to use once a trip starts becoming real. It answers a simple but important question: is this trip ready before you book, pack, fly and land? Instead of keeping notes across weather pages, budget tabs, packing lists, airline rules and safety articles, it brings the major checks into one readable trip profile.</p>
@@ -239,7 +360,7 @@
     <a class="vtools-btn" href="https://voyasee.com/trip-readiness-checklist/">Use the Travel Passport</a>
   </article>
 
-  <article class="vtools-tool" id="interactive-travel-map">
+  <article class="vtools-tool" id="interactive-travel-map" data-n="03">
     <h2>3. Interactive Travel Map: Discover Destinations by Real Trip Fit</h2>
     <a href="https://voyasee.com/interactive-travel-map/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/INTERACTIVE-TRAVEL-MAP.jpg" alt="Voyasee Interactive Travel Map showing destination pins and match filters" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/interactive-travel-map/">Interactive Travel Map</a> is a visual destination-discovery tool for travellers who are still deciding where to go, built around real trip fit rather than geography alone. Filter destinations by month, budget, travel style, safety comfort, scam awareness, food strength and hidden-gem value, and compare up to four shortlisted destinations on a saved comparison board.</p>
@@ -252,7 +373,7 @@
     <a class="vtools-btn" href="https://voyasee.com/interactive-travel-map/">Open Travel Map</a>
   </article>
 
-  <article class="vtools-tool" id="smart-travel-hub">
+  <article class="vtools-tool" id="smart-travel-hub" data-n="04">
     <h2>4. Smart Travel Hub: Full Destination Intelligence in One Dashboard</h2>
     <a href="https://voyasee.com/free-smart-travel-hub/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/SMART-TRAVEL-HUB.jpg" alt="Voyasee Smart Travel Hub dashboard with weather, currency and safety information" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a> is a research dashboard for a destination you already have in mind. It combines live weather and forecasts, currency conversion, air quality and UV, public holidays, local emergency numbers, scam-watch notes, budget signals and a readiness score into one place, with a clear label on whether each piece of information is live, curated, or estimated.</p>
@@ -265,7 +386,7 @@
     <a class="vtools-btn" href="https://voyasee.com/free-smart-travel-hub/">Open Smart Hub</a>
   </article>
 
-  <article class="vtools-tool" id="trip-budget-calculator">
+  <article class="vtools-tool" id="trip-budget-calculator" data-n="05">
     <h2>5. Trip Budget Calculator: Your Real Travel Cost, Not Just Flights and Hotels</h2>
     <a href="https://voyasee.com/trip-budget-calculator/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/TRIP-BUDGET-CALCULATOR.jpg" alt="Voyasee Trip Budget Calculator showing a cost breakdown" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/trip-budget-calculator/">Trip Budget Calculator</a> estimates a full journey, not just flights and hotels, across 425+ destination presets. It covers food, transport, activities, insurance, eSIM, visas, transfers, baggage and an emergency buffer, then gives you a per-person, per-day and group-total estimate alongside a Budget Health score with plain verdicts like "Strong Fit" or "Budget Pressure."</p>
@@ -278,7 +399,7 @@
     <a class="vtools-btn" href="https://voyasee.com/trip-budget-calculator/">Calculate Trip Cost</a>
   </article>
 
-  <article class="vtools-tool" id="packing-list-generator">
+  <article class="vtools-tool" id="packing-list-generator" data-n="06">
     <h2>6. Smart Packing List Generator: A Checklist Built Around the Actual Trip</h2>
     <a href="https://voyasee.com/packing-list-generator/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/SMART-PACKING-LIST-GENERATOR.jpg" alt="Voyasee Packing List Generator showing a categorized packing checklist" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/packing-list-generator/">Smart Packing List Generator</a> builds a climate-aware, activity-aware, luggage-aware checklist rather than a generic list copied for every trip. It flags 100ml liquid limits, lithium batteries and cabin-only items, adjusts quantities for how often you'll do laundry, and adds destination-specific extras based on the activities you actually picked.</p>
@@ -291,7 +412,7 @@
     <a class="vtools-btn" href="https://voyasee.com/packing-list-generator/">Build Packing List</a>
   </article>
 
-  <article class="vtools-tool" id="carry-on-size-checker">
+  <article class="vtools-tool" id="carry-on-size-checker" data-n="07">
     <h2>7. Carry-On Size Checker (BagFit): Know Before the Gate, Not At It</h2>
     <a href="https://voyasee.com/carry-on-size-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/Carry-On-Size-Checker.png" alt="Voyasee BagFit Carry-On Size Checker showing a flight decision board" loading="lazy" decoding="async"></a>
     <p>Voyasee BagFit compares up to six bags against up to ten flights in a single check, across 250 airline profiles. It doesn't just say whether a bag fits &mdash; it names the exact dimension that's the problem, how strictly that airline enforces its own rule, and what a rejected bag is likely to cost at the counter, online, or at the gate.</p>
@@ -304,7 +425,7 @@
     <a class="vtools-btn" href="https://voyasee.com/carry-on-size-checker/">Check Your Bag</a>
   </article>
 
-  <article class="vtools-tool" id="schengen-calculator">
+  <article class="vtools-tool" id="schengen-calculator" data-n="08">
     <h2>8. Schengen Calculator: Check Your 90/180-Day Stay</h2>
     <a href="https://voyasee.com/schengen-calculator/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/Schengen-Calculator.jpg" alt="Schengen Calculator for checking 90/180-day rule compliance and future trip planning" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/schengen-calculator/">Voyasee Schengen Calculator</a> is a free, private tool that instantly shows your real remaining days under the 90/180-day rule. It rebuilds the rolling 180-day window for every date you ask about, including future dates, merges overlapping trips, and correctly handles the rolling look-back that EU border guards use &mdash; not a simple "90 minus days used" guess.</p>
@@ -317,7 +438,7 @@
     <a class="vtools-btn" href="https://voyasee.com/schengen-calculator/">Check Your Day Balance</a>
   </article>
 
-  <article class="vtools-tool" id="travel-scam-checker">
+  <article class="vtools-tool" id="travel-scam-checker" data-n="09">
     <h2>9. Travel Scam Checker: Spot Suspicious Offers Before You Pay or Click</h2>
     <a href="https://voyasee.com/travel-scam-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-22-2026-06_52_57-PM.png" alt="Travel Scam Checker for tourist scams and suspicious travel offers" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/travel-scam-checker/">Travel Scam Checker</a>, also called Scam Shield, helps travellers pause before paying, clicking, following or sharing documents. It's a structured risk-assessment assistant &mdash; not an automatic scanner &mdash; asking about contact method, payment request, offer type and pressure level, then giving a suggested action: pause, verify, contact the platform, or avoid payment.</p>
@@ -330,7 +451,7 @@
     <a class="vtools-btn" href="https://voyasee.com/travel-scam-checker/">Use the Travel Scam Checker</a>
   </article>
 
-  <article class="vtools-tool" id="destination-quiz">
+  <article class="vtools-tool" id="destination-quiz" data-n="10">
     <h2>10. Destination Quiz: A Fast, Personality-Led Shortlist</h2>
     <a href="https://voyasee.com/destination-quiz/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/DESTINATION-QUIZ.jpg" alt="Voyasee Destination Quiz question flow" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a> turns budget, month, climate preference, trip pace, and travel style into a ranked shortlist across 600 destination profiles, with a plain-language reason attached to each match. No signup, no long form &mdash; just 12 honest questions and a result you can act on.</p>
@@ -343,7 +464,7 @@
     <a class="vtools-btn" href="https://voyasee.com/destination-quiz/">Take the Quiz</a>
   </article>
 
-  <article class="vtools-tool" id="destination-comparison">
+  <article class="vtools-tool" id="destination-comparison" data-n="11">
     <h2>11. Travel Destination Comparison Tool: Battle Two Places Before You Book</h2>
     <a href="https://voyasee.com/travel-destination-comparison-tool/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-DESTINATION-TOOL.png" alt="Voyasee Travel Destination Comparison Tool preview" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/travel-destination-comparison-tool/">Travel Destination Comparison Tool</a>, also called Destination Battle Pro, is built for the moment a choice is already down to two realistic contenders. It compares month fit, budget fit, traveller-type fit, arrival ease, hidden-cost comfort and passport comfort, then explains not just which place wins but why it wins for your exact trip.</p>
@@ -356,7 +477,7 @@
     <a class="vtools-btn" href="https://voyasee.com/travel-destination-comparison-tool/">Compare Two Places</a>
   </article>
 
-  <article class="vtools-tool" id="travel-month-planner">
+  <article class="vtools-tool" id="travel-month-planner" data-n="12">
     <h2>12. Travel Month Planner: Find the Right Time, Not Just the Right Place</h2>
     <a href="https://voyasee.com/best-time-to-visit-travel-planner/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-29-2026-07_07_57-PM.jpg" alt="Voyasee Travel Month Planner showing a 12-month score map" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/best-time-to-visit-travel-planner/">Travel Month Planner</a> evaluates a selected month against the destination's full year, scoring weather comfort, crowd pressure, price season, public holidays and daylight, then gives a plain-language verdict &mdash; strong, workable, difficult, or poor &mdash; for that specific month and travel style.</p>
@@ -369,7 +490,7 @@
     <a class="vtools-btn" href="https://voyasee.com/best-time-to-visit-travel-planner/">Find Best Month</a>
   </article>
 
-  <article class="vtools-tool" id="medicine-restricted-items">
+  <article class="vtools-tool" id="medicine-restricted-items" data-n="13">
     <h2>13. Medicine &amp; Restricted Items Checker: What You Can Actually Carry</h2>
     <a href="https://voyasee.com/medicine-restricted-item-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/ChatGPT-Image-May-5-2026-09_06_04-PM.jpg" alt="Voyasee Medicine and Restricted Item Checker tool preview" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/medicine-restricted-item-checker/">Medicine &amp; Restricted Items Checker</a> covers a 120-country rules layer for prescription and over-the-counter medicine, controlled substances, injectables, power banks, vapes, drones and other customs-sensitive items, applying strictest-leg thinking across both your destination and any transit country.</p>
@@ -382,7 +503,7 @@
     <a class="vtools-btn" href="https://voyasee.com/medicine-restricted-item-checker/">Check Item Rules</a>
   </article>
 
-  <article class="vtools-tool" id="jet-lag-planner">
+  <article class="vtools-tool" id="jet-lag-planner" data-n="14">
     <h2>14. Jet Lag Recovery Planner: A Body-Clock Plan for Long-Haul Flights</h2>
     <a href="https://voyasee.com/jet-lag-recovery-planner/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/gpt-image-2_Create_an_ultra-premium_8K_landscape_featured_image_for_a_travel_website_tool_ti-0.jpg" alt="Voyasee Jet Lag Recovery Planner showing a body clock chart" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/jet-lag-recovery-planner/">Jet Lag Recovery Planner</a> converts your flight timing, time-zone change and the first important thing you need to do after landing &mdash; a meeting, a wedding, a race &mdash; into a practical light, sleep, caffeine and meal-timing schedule, built on a real body-clock model rather than generic advice to "just drink water and sleep on the plane."</p>
@@ -395,7 +516,7 @@
     <a class="vtools-btn" href="https://voyasee.com/jet-lag-recovery-planner/">Plan Jet Lag Recovery</a>
   </article>
 
-  <article class="vtools-tool" id="transit-visa-checker">
+  <article class="vtools-tool" id="transit-visa-checker" data-n="15">
     <h2>15. Transit Visa &amp; Layover Risk Checker: Know the Connection Before You Book It</h2>
     <a href="https://voyasee.com/transit-visa-layover-risk-checker/"><img class="vtools-tool-img" src="https://voyasee.com/wp-content/uploads/2026/05/TRANSIT-VISA.jpg" alt="Voyasee Transit Visa and Layover Risk Checker tool preview" loading="lazy" decoding="async"></a>
     <p>The <a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa &amp; Layover Risk Checker</a> looks at your passport, the transit airport, and whether your ticket is protected, separate, or self-transfer, then flags whether your layover may involve a transit visa, baggage collection, a terminal change, or weak connection protection &mdash; the details a cheap fare rarely surfaces on its own.</p>
