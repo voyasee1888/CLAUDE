@@ -27,11 +27,6 @@
     font-size: 28px;
 }
 
-.v3da-health-card.is-warning {
-    border-color: #dba617;
-    background: #fcf9e8;
-}
-
 @media (max-width: 782px) {
     .v3da-health-cards {
         grid-template-columns: repeat(2, 1fr);

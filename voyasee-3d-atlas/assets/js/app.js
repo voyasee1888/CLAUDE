@@ -371,7 +371,7 @@ function initRoot(root, markers, config, openSidebar) {
   // pointerup, picking whichever real marker is closest to the exact
   // click point (and within this radius) -- this is correct regardless of
   // how many markers visually overlap at that spot.
-  const MARKER_HIT_RADIUS = 14;
+  const MARKER_HIT_RADIUS = 16;
 
   const state = {
     canvas: null,
@@ -485,7 +485,16 @@ function initRoot(root, markers, config, openSidebar) {
     const canvas = state.canvas;
     let pointerId = null;
     let downX = 0, downY = 0, draggedFar = false;
-    const DRAG_THRESHOLD = 5;
+    // Real mice and especially trackpads report several small in-between
+    // pointermove events during an ordinary click -- a human hand rarely
+    // holds perfectly still for the ~100ms between pointerdown and
+    // pointerup. A too-tight threshold (checking each axis independently
+    // against a small number) was misclassifying a large fraction of real
+    // clicks as drags, silently cancelling the marker click. A genuine
+    // drag-to-rotate gesture moves tens of pixels, so a straight-line
+    // distance-from-start threshold in this range still cleanly tells the
+    // two apart while forgiving normal click jitter.
+    const DRAG_THRESHOLD = 9;
 
     canvas.addEventListener("pointerdown", function (e) {
       state.dragging = true;
@@ -508,7 +517,8 @@ function initRoot(root, markers, config, openSidebar) {
       const delta = e.clientX - state.lastX;
       state.lastX = e.clientX;
       state.phi += delta * 0.008;
-      if (Math.abs(e.clientX - downX) > DRAG_THRESHOLD || Math.abs(e.clientY - downY) > DRAG_THRESHOLD) {
+      const distFromStart = Math.sqrt(Math.pow(e.clientX - downX, 2) + Math.pow(e.clientY - downY, 2));
+      if (distFromStart > DRAG_THRESHOLD) {
         draggedFar = true;
       }
     });

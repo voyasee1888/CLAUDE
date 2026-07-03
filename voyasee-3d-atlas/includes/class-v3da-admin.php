@@ -75,7 +75,14 @@ final class V3DA_Admin {
         $destinations = V3DA_DB::get_all();
         $report = get_transient('v3da_automap_report');
 
-        $stats = ['total' => count($destinations), 'mapped' => 0, 'unmapped' => 0, 'with_hero' => 0, 'coord_outliers' => []];
+        $stats = [
+            'total' => count($destinations),
+            'mapped' => 0,
+            'unmapped' => 0,
+            'with_hero' => 0,
+            'pexels_configured' => '' !== self::get_pexels_api_key(),
+            'coord_outliers' => [],
+        ];
         foreach ($destinations as $d) {
             $link = V3DA_Content::term_link($d['content_taxonomy'], $d['content_term_slug']);
             if ($link) $stats['mapped']++; else $stats['unmapped']++;

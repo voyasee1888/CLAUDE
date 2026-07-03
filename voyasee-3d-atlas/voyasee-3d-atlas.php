@@ -3,7 +3,7 @@
  * Plugin Name: Voyasee 3D World Story Atlas
  * Plugin URI: https://voyasee.com/
  * Description: A premium, ambient, auto-rotating 3D globe entry point into Voyasee's destination content, built on a self-hosted, plugin-owned destinations dataset with live weather and country-intelligence enrichment on marker click.
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-3d-atlas
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('V3DA_VERSION', '1.5.0');
+define('V3DA_VERSION', '1.5.1');
 define('V3DA_FILE', __FILE__);
 define('V3DA_DIR', plugin_dir_path(__FILE__));
 define('V3DA_URL', plugin_dir_url(__FILE__));

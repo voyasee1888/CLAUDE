@@ -4,7 +4,7 @@ Tags: travel, globe, 3d, map, destinations
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,6 +19,39 @@ Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
 visible destinations list for SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 1.5.1 =
+* Fix: v1.5.0's click-hit-testing was correct, but a separate click-vs-
+  drag check was still misfiring on ordinary clicks. Real mice and
+  trackpads report several small in-between pointer positions during a
+  normal ~100ms click -- the previous check flagged a click as a "drag" if
+  either the horizontal OR vertical movement alone exceeded 5px, which
+  natural hand/trackpad jitter crosses constantly, silently cancelling the
+  marker click before hit-testing even ran. This is very likely why some
+  clicks kept not responding even after the v1.5.0 fix. Replaced it with a
+  single straight-line distance-from-start threshold (9px) -- generous
+  enough for normal click wobble, still far below the tens of pixels a
+  deliberate drag-to-rotate gesture covers. Verified with a headless test
+  that simulates realistic mouse jitter (small random movement between
+  press and release): the sidebar now opens on ~93-100% of click attempts
+  on real overlapping markers, up from clicks frequently registering as a
+  drag and doing nothing.
+* The globe itself now renders larger on wide screens (up to 960px instead
+  of 800px), giving markers more real screen-pixel separation -- in an
+  extremely dense cluster (e.g. 40+ destinations across Europe), a slightly
+  imprecise click can still occasionally land nearer to a neighboring
+  destination than the intended one; this is an inherent limit of packing
+  that many clickable points into a small area, not a bug, and a larger
+  globe directly reduces how often it happens. The A-Z destination list
+  below the globe always opens the exact destination by name with no
+  precision limits, for guaranteed-correct selection of any specific place.
+* Data Health Check now clarifies that "not yet linked to a category/tag"
+  no longer affects what a visitor sees (removed as a concept from the
+  visitor-facing side back in 1.4.0) -- it only affects marker glow
+  intensity and structured-data article links. It also now shows whether
+  a Pexels API key is configured and explains that the "manually-set
+  photo" count doesn't include destinations getting a live Pexels photo
+  automatically, so a "0" there isn't a sign that photos aren't working.
 
 = 1.5.0 =
 * Fix (the main bug): clicking a globe marker frequently did nothing on

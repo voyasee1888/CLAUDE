@@ -23,15 +23,26 @@ $notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_noti
             <strong><?php echo (int) $stats['mapped']; ?></strong>
             <span><?php echo esc_html__('Linked to a real category/tag', 'voyasee-3d-atlas'); ?></span>
         </div>
-        <div class="v3da-health-card <?php echo $stats['unmapped'] > 0 ? 'is-warning' : ''; ?>">
+        <div class="v3da-health-card">
             <strong><?php echo (int) $stats['unmapped']; ?></strong>
-            <span><?php echo esc_html__('Still using the search-fallback link', 'voyasee-3d-atlas'); ?></span>
+            <span><?php echo esc_html__('Not yet linked to a category/tag', 'voyasee-3d-atlas'); ?></span>
         </div>
         <div class="v3da-health-card">
             <strong><?php echo (int) $stats['with_hero']; ?></strong>
-            <span><?php echo esc_html__('Have a hero image set', 'voyasee-3d-atlas'); ?></span>
+            <span><?php echo esc_html__('Have a manually-set photo', 'voyasee-3d-atlas'); ?></span>
         </div>
     </div>
+
+    <p class="description">
+        <?php echo esc_html__('"Not yet linked to a category/tag" no longer affects what a visitor sees when clicking that destination -- every destination always shows its own weather/country/fact data in the sidebar regardless. It only slightly reduces that destination\'s marker glow intensity on the globe (based on how much related content exists) and means its structured-data entry has no article URL attached.', 'voyasee-3d-atlas'); ?>
+    </p>
+    <p class="description">
+        <?php if ($stats['pexels_configured']): ?>
+            <?php echo esc_html__('Pexels photo API: configured. "Have a manually-set photo" only counts images picked by hand in 3D Atlas -> Destinations -- destinations without one still get a live photo of the actual place from Pexels automatically, which isn\'t reflected in that count.', 'voyasee-3d-atlas'); ?>
+        <?php else: ?>
+            <?php echo esc_html__('Pexels photo API: not configured. Destinations without a manually-set photo currently show no photo at all. Add a free Pexels API key in Settings -> Destination Photos to have those destinations automatically show a real photo instead.', 'voyasee-3d-atlas'); ?>
+        <?php endif; ?>
+    </p>
 
     <h2><?php echo esc_html__('Auto-Map Content', 'voyasee-3d-atlas'); ?></h2>
     <p><?php echo esc_html__('Looks for a category/tag literally named after each destination first, and otherwise requires at least two published posts with that destination\'s name in their own title sharing a category/tag -- a single passing mention elsewhere in a post\'s body is never enough to map a destination on its own.', 'voyasee-3d-atlas'); ?></p>
@@ -44,7 +55,7 @@ $notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_noti
                 <?php echo esc_html__('Also re-check destinations that are already mapped', 'voyasee-3d-atlas'); ?>
             </label>
             <br>
-            <span class="description"><?php echo esc_html__('Use this once after updating the plugin if a destination looks mapped to the wrong category/tag -- a mapping that no longer meets the confidence bar above is cleared back to the safe search-fallback link rather than left pointing at the wrong content.', 'voyasee-3d-atlas'); ?></span>
+            <span class="description"><?php echo esc_html__('Use this once after updating the plugin if a destination looks mapped to the wrong category/tag -- a mapping that no longer meets the confidence bar above is cleared rather than left pointing at the wrong content.', 'voyasee-3d-atlas'); ?></span>
         </p>
         <?php submit_button(__('Run Auto-Map Now', 'voyasee-3d-atlas'), 'primary', 'submit', false); ?>
     </form>

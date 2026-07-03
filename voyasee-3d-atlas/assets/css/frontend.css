@@ -126,7 +126,12 @@
 
 .v3datlas-globe-mount {
     width: 100%;
-    max-width: clamp(280px, 60vw, 800px);
+    /* Larger on wide screens than before on purpose: with 167 destinations,
+       many clustered close together (40+ in Europe alone), a bigger
+       rendered globe puts more real screen pixels between neighboring
+       markers, which directly reduces how often an imprecise click in a
+       dense cluster can land nearer to the wrong destination. */
+    max-width: clamp(280px, 66vw, 960px);
     aspect-ratio: 1 / 1;
     margin: 0 auto;
     display: flex;

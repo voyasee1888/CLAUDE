@@ -7,8 +7,11 @@ defined('ABSPATH') || exit;
  * after the destination, or failing that, for published posts clearly
  * titled about that destination that share a common category/tag -- and
  * suggests (or, in bulk mode, applies) that real term. A destination keeps
- * pointing at its own guessed slug (safe search-fallback) whenever nothing
- * meets that bar, rather than being guessed into an unrelated category.
+ * pointing at its own guessed slug whenever nothing meets that bar, rather
+ * than being guessed into an unrelated category -- this only affects that
+ * destination's marker glow intensity and whether its structured-data
+ * entry has an article URL attached; every destination always shows its
+ * own weather/country/fact data in the sidebar either way.
  */
 final class V3DA_AutoMap {
     /**
@@ -29,8 +32,7 @@ final class V3DA_AutoMap {
      *      common category/tag -- titles are a much stronger relevance
      *      signal than a body-text mention, and requiring more than one
      *      such post rules out a single coincidental match.
-     * If neither holds, this returns null on purpose rather than guessing,
-     * leaving the destination on its safe site-search fallback link.
+     * If neither holds, this returns null on purpose rather than guessing.
      */
     private const MIN_TITLE_MATCHES = 2;
 
@@ -106,8 +108,8 @@ final class V3DA_AutoMap {
      *   old, looser matching logic (which could map a destination to an
      *   unrelated category on a weak text mention) can self-heal: a
      *   previously-mapped destination that no longer meets the stricter bar
-     *   gets its mapping cleared back to the safe search-fallback link
-     *   instead of silently keeping a wrong category.
+     *   gets its mapping cleared back to its own unmapped slug instead of
+     *   silently keeping a wrong category.
      * @return array<int,array{name:string,status:string,detail:string}>
      */
     public static function run_bulk(bool $force_recheck = false): array {
@@ -132,7 +134,7 @@ final class V3DA_AutoMap {
                         'status' => is_wp_error($result) ? 'error' : 'unmapped',
                         'detail' => is_wp_error($result)
                             ? $result->get_error_message()
-                            : __('Previous mapping no longer meets the confidence bar and was cleared -- now using the safe search-fallback link.', 'voyasee-3d-atlas'),
+                            : __('Previous mapping no longer meets the confidence bar and was cleared.', 'voyasee-3d-atlas'),
                     ];
                 } else {
                     $report[] = ['name' => $destination['name'], 'status' => 'no-match', 'detail' => __('No published posts are clearly about this destination yet.', 'voyasee-3d-atlas')];
