@@ -3,7 +3,7 @@ defined('ABSPATH') || exit;
 
 final class V3DA_DB {
     private const TABLE = 'v3da_destinations';
-    private const DB_VERSION = '1.1';
+    private const DB_VERSION = '1.2';
 
     public static function table(): string {
         global $wpdb;
@@ -30,6 +30,7 @@ final class V3DA_DB {
         self::maybe_backfill_story_content();
         self::maybe_seed_new_defaults();
         self::maybe_apply_known_corrections();
+        self::maybe_backfill_travel_snapshot();
     }
 
     private static function maybe_seed_defaults(): void {
@@ -129,6 +130,48 @@ final class V3DA_DB {
         update_option('v3da_corrections_v1', 1, false);
     }
 
+    private static function maybe_backfill_travel_snapshot(): void {
+        if (get_option('v3da_snapshot_backfilled')) return;
+        $defaults = require V3DA_DIR . 'includes/data/default-destinations.php';
+        $bySlug = [];
+        foreach ($defaults as $row) {
+            $bySlug[sanitize_title($row['name'])] = $row;
+        }
+        foreach (self::get_all() as $existing) {
+            $default = $bySlug[$existing['slug']] ?? null;
+            if (!$default) continue;
+            $update = [];
+            if (0 === (int) $existing['cost_level'] && !empty($default['cost_level'])) {
+                $update['cost_level'] = (int) $default['cost_level'];
+            }
+            if (0 === (int) $existing['safety_rating'] && !empty($default['safety_rating'])) {
+                $update['safety_rating'] = (int) $default['safety_rating'];
+            }
+            if ('' === $existing['english_level'] && !empty($default['english_level'])) {
+                $update['english_level'] = $default['english_level'];
+            }
+            if ('' === $existing['walkability'] && !empty($default['walkability'])) {
+                $update['walkability'] = $default['walkability'];
+            }
+            if ('' === $existing['best_for'] && !empty($default['best_for'])) {
+                $update['best_for'] = is_array($default['best_for']) ? implode(',', $default['best_for']) : $default['best_for'];
+            }
+            if ('' === $existing['avg_days'] && !empty($default['avg_days'])) {
+                $update['avg_days'] = $default['avg_days'];
+            }
+            if ('' === $existing['did_you_know'] && !empty($default['did_you_know'])) {
+                $update['did_you_know'] = $default['did_you_know'];
+            } elseif (strlen($existing['did_you_know']) < 100 && !empty($default['did_you_know']) && strlen($default['did_you_know']) > strlen($existing['did_you_know'])) {
+                $update['did_you_know'] = $default['did_you_know'];
+            }
+            if ($update) {
+                global $wpdb;
+                $wpdb->update(self::table(), $update, ['id' => $existing['id']]);
+            }
+        }
+        update_option('v3da_snapshot_backfilled', 1, false);
+    }
+
     private static function install(): void {
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -146,7 +189,13 @@ final class V3DA_DB {
             content_taxonomy VARCHAR(32) NOT NULL DEFAULT 'category',
             content_term_slug VARCHAR(191) NOT NULL DEFAULT '',
             signature_line VARCHAR(200) NOT NULL DEFAULT '',
-            did_you_know VARCHAR(400) NOT NULL DEFAULT '',
+            did_you_know TEXT NOT NULL,
+            cost_level TINYINT UNSIGNED NOT NULL DEFAULT 0,
+            safety_rating TINYINT UNSIGNED NOT NULL DEFAULT 0,
+            english_level VARCHAR(10) NOT NULL DEFAULT '',
+            walkability VARCHAR(10) NOT NULL DEFAULT '',
+            best_for VARCHAR(200) NOT NULL DEFAULT '',
+            avg_days VARCHAR(20) NOT NULL DEFAULT '',
             hero_image_id BIGINT UNSIGNED NULL,
             status VARCHAR(16) NOT NULL DEFAULT 'active',
             sort_order INT NOT NULL DEFAULT 0,
@@ -315,6 +364,12 @@ final class V3DA_DB {
             'content_term_slug' => sanitize_title((string) ($data['content_term_slug'] ?? '')),
             'signature_line' => sanitize_text_field((string) ($data['signature_line'] ?? '')),
             'did_you_know' => sanitize_text_field((string) ($data['did_you_know'] ?? '')),
+            'cost_level' => min(4, max(0, absint($data['cost_level'] ?? 0))),
+            'safety_rating' => min(5, max(0, absint($data['safety_rating'] ?? 0))),
+            'english_level' => in_array($data['english_level'] ?? '', ['low', 'medium', 'high'], true) ? $data['english_level'] : '',
+            'walkability' => in_array($data['walkability'] ?? '', ['low', 'medium', 'high'], true) ? $data['walkability'] : '',
+            'best_for' => sanitize_text_field(is_array($data['best_for'] ?? null) ? implode(',', $data['best_for']) : (string) ($data['best_for'] ?? '')),
+            'avg_days' => sanitize_text_field((string) ($data['avg_days'] ?? '')),
             'hero_image_id' => $hero_image_id > 0 ? $hero_image_id : null,
             'status' => $status,
             'sort_order' => absint($data['sort_order'] ?? 0),

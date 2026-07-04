@@ -29,6 +29,21 @@ final class V3DA_TravelMonth {
     }
 
     /**
+     * @return array{appeal:array<int,int>,months:array<int,string>}|null
+     */
+    public static function monthly_appeal(string $slug): ?array {
+        $entry = self::data()[$slug] ?? null;
+        if (!$entry || empty($entry['appeal']) || 12 !== count($entry['appeal'])) return null;
+        $max = max($entry['appeal']);
+        $min = min($entry['appeal']);
+        if (($max - $min) < self::MIN_VARIATION) return null;
+        return [
+            'appeal' => $entry['appeal'],
+            'months' => self::MONTHS,
+        ];
+    }
+
+    /**
      * @return array{months:array<int,string>,highlight:?string}|null
      */
     public static function best_time(string $slug): ?array {

@@ -18,10 +18,18 @@ $d = wp_parse_args($destination ?: [], [
     'content_term_slug' => '',
     'signature_line' => '',
     'did_you_know' => '',
+    'cost_level' => 0,
+    'safety_rating' => 0,
+    'english_level' => '',
+    'walkability' => '',
+    'best_for' => '',
+    'avg_days' => '',
     'hero_image_id' => '',
     'status' => 'active',
     'sort_order' => 0,
 ]);
+$best_for_selected = '' !== $d['best_for'] ? explode(',', $d['best_for']) : [];
+$best_for_options = ['history', 'beach', 'food', 'nature', 'nightlife', 'culture', 'adventure', 'shopping', 'architecture', 'romance', 'wildlife', 'hiking', 'diving', 'skiing', 'wellness', 'photography', 'art', 'music', 'family', 'spiritual'];
 $hero_thumb = $d['hero_image_id'] ? wp_get_attachment_image_url((int) $d['hero_image_id'], 'thumbnail') : '';
 ?>
 <div class="wrap v3da-admin-wrap">
@@ -98,8 +106,72 @@ $hero_thumb = $d['hero_image_id'] ? wp_get_attachment_image_url((int) $d['hero_i
             <tr>
                 <th><label for="v3da-did-you-know"><?php echo esc_html__('Did you know?', 'voyasee-3d-atlas'); ?></label></th>
                 <td>
-                    <textarea id="v3da-did-you-know" name="did_you_know" class="large-text" rows="2" maxlength="400"><?php echo esc_textarea($d['did_you_know']); ?></textarea>
-                    <p class="description"><?php echo esc_html__('One verified fact shown in the sidebar.', 'voyasee-3d-atlas'); ?></p>
+                    <textarea id="v3da-did-you-know" name="did_you_know" class="large-text" rows="3" maxlength="600"><?php echo esc_textarea($d['did_you_know']); ?></textarea>
+                    <p class="description"><?php echo esc_html__('One or two verified facts shown in the sidebar.', 'voyasee-3d-atlas'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-cost-level"><?php echo esc_html__('Cost level', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <select id="v3da-cost-level" name="cost_level">
+                        <option value="0" <?php selected((int) $d['cost_level'], 0); ?>><?php echo esc_html__('Not set', 'voyasee-3d-atlas'); ?></option>
+                        <option value="1" <?php selected((int) $d['cost_level'], 1); ?>>$ &mdash; <?php echo esc_html__('Budget', 'voyasee-3d-atlas'); ?></option>
+                        <option value="2" <?php selected((int) $d['cost_level'], 2); ?>>$$ &mdash; <?php echo esc_html__('Moderate', 'voyasee-3d-atlas'); ?></option>
+                        <option value="3" <?php selected((int) $d['cost_level'], 3); ?>>$$$ &mdash; <?php echo esc_html__('Expensive', 'voyasee-3d-atlas'); ?></option>
+                        <option value="4" <?php selected((int) $d['cost_level'], 4); ?>>$$$$ &mdash; <?php echo esc_html__('Luxury', 'voyasee-3d-atlas'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-safety-rating"><?php echo esc_html__('Safety rating', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <select id="v3da-safety-rating" name="safety_rating">
+                        <option value="0" <?php selected((int) $d['safety_rating'], 0); ?>><?php echo esc_html__('Not set', 'voyasee-3d-atlas'); ?></option>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <option value="<?php echo esc_attr($i); ?>" <?php selected((int) $d['safety_rating'], $i); ?>><?php echo esc_html($i); ?>/5</option>
+                        <?php endfor; ?>
+                    </select>
+                    <p class="description"><?php echo esc_html__('1 = exercise extreme caution, 5 = very safe.', 'voyasee-3d-atlas'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-english-level"><?php echo esc_html__('English level', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <select id="v3da-english-level" name="english_level">
+                        <option value="" <?php selected($d['english_level'], ''); ?>><?php echo esc_html__('Not set', 'voyasee-3d-atlas'); ?></option>
+                        <option value="low" <?php selected($d['english_level'], 'low'); ?>><?php echo esc_html__('Low', 'voyasee-3d-atlas'); ?></option>
+                        <option value="medium" <?php selected($d['english_level'], 'medium'); ?>><?php echo esc_html__('Medium', 'voyasee-3d-atlas'); ?></option>
+                        <option value="high" <?php selected($d['english_level'], 'high'); ?>><?php echo esc_html__('High', 'voyasee-3d-atlas'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-walkability"><?php echo esc_html__('Walkability', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <select id="v3da-walkability" name="walkability">
+                        <option value="" <?php selected($d['walkability'], ''); ?>><?php echo esc_html__('Not set', 'voyasee-3d-atlas'); ?></option>
+                        <option value="low" <?php selected($d['walkability'], 'low'); ?>><?php echo esc_html__('Low', 'voyasee-3d-atlas'); ?></option>
+                        <option value="medium" <?php selected($d['walkability'], 'medium'); ?>><?php echo esc_html__('Medium', 'voyasee-3d-atlas'); ?></option>
+                        <option value="high" <?php selected($d['walkability'], 'high'); ?>><?php echo esc_html__('High', 'voyasee-3d-atlas'); ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="v3da-avg-days"><?php echo esc_html__('Ideal stay', 'voyasee-3d-atlas'); ?></label></th>
+                <td>
+                    <input id="v3da-avg-days" name="avg_days" type="text" class="regular-text" placeholder="<?php echo esc_attr__('e.g. 3-5 days', 'voyasee-3d-atlas'); ?>" value="<?php echo esc_attr($d['avg_days']); ?>">
+                </td>
+            </tr>
+            <tr>
+                <th><?php echo esc_html__('Best for', 'voyasee-3d-atlas'); ?></th>
+                <td>
+                    <?php foreach ($best_for_options as $tag): ?>
+                        <label style="display:inline-block;width:130px;margin-bottom:4px;">
+                            <input type="checkbox" name="best_for[]" value="<?php echo esc_attr($tag); ?>" <?php checked(in_array($tag, $best_for_selected, true)); ?>>
+                            <?php echo esc_html(ucfirst($tag)); ?>
+                        </label>
+                    <?php endforeach; ?>
+                    <p class="description"><?php echo esc_html__('Pick 2-3 tags shown in the sidebar\'s travel snapshot.', 'voyasee-3d-atlas'); ?></p>
                 </td>
             </tr>
             <tr>

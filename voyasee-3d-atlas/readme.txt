@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 2.3.1
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,67 @@ Voyasee Country Intelligence, and a fully crawlable visible destinations list fo
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 3.0.0 =
+* Major upgrade adding real data depth and interaction, built entirely on
+  free, commercially-safe sources -- no paid API was added, and every new
+  external call degrades to "simply not shown" on failure, matching this
+  plugin's existing standard. Open-Meteo, REST Countries, UNESCO, and
+  WorldTimeAPI were all evaluated and excluded because their free tiers
+  prohibit use on ad/affiliate-monetized sites; Voyasee Weather Bridge and
+  Voyasee Country Intelligence continue to cover that ground instead.
+* New "Travel snapshot" card in the destination sidebar: at-a-glance cost
+  level ($-$$$$), safety rating, walkability, English-language ease, ideal
+  stay length, and 2-3 "best for" tags (beach, history, nightlife, etc.),
+  plus a small radar chart visualizing cost/safety/walkability/English
+  together. Backed by six new columns on the destinations table, backfilled
+  automatically for all 167 bundled destinations on upgrade without
+  touching any destination an admin has already hand-edited.
+* New "Right now" live strip at the top of each destination's sidebar:
+  local time (computed client-side from Country Intelligence's own IANA
+  timezone data), current temperature, and today's sunset time.
+* New monthly heatmap calendar in the Weather card, built from Travel Month
+  Planner's own bundled seasonal-appeal snapshot, color-coded from "avoid"
+  to "ideal" with the current month highlighted -- shown only for
+  destinations with genuine month-to-month variation in that data, never a
+  fabricated pattern over a flat score.
+* New live data, each free and commercially safe to use on a monetized
+  site, each cached via WordPress transients and each failing silently
+  (never a broken card) if unavailable:
+  - Sunrise/sunset times from sunrise-sunset.org (cached 6 hours).
+  - Live USD exchange rate for the destination's local currency from
+    Frankfurter.dev (ECB reference rates, cached 24 hours).
+  - A short, attributed Wikipedia excerpt for the destination (Wikimedia
+    REST API, CC BY-SA, cached 30 days).
+* Country cards (both the destination sidebar's "Country notes" and the
+  standalone "click a country" panel) now also show population, area,
+  capital, and languages, extending Country Intelligence's existing
+  integration rather than adding a new dependency.
+* Every destination now shows its country's flag as a Unicode emoji
+  (computed from the existing `country_code` column -- no icon files
+  bundled, no extra HTTP request).
+* New filter bar above the globe: filter destinations by region with one
+  click, and a "Surprise me" button that flies to and opens a random
+  destination from the current filter.
+* New "Visited" and "Want to go" tracking, stored locally in the visitor's
+  own browser (no account, no server-side tracking): toggle either from a
+  destination's sidebar, see a running count in a strip above the map, and
+  visited/want-to-go destinations get a distinct marker color on the globe.
+* New Share button on each destination (native share sheet on supporting
+  devices, copy-to-clipboard fallback elsewhere) and shareable deep links
+  (`#dest=slug` in the URL) that reopen the exact destination on load.
+* Globe visual upgrades: a soft atmospheric glow around the sphere's limb,
+  a real-time day/night terminator (computed client-side from solar
+  declination, no API), region-tinted country fills, animated great-circle
+  flight arcs from the visitor's browser-reported location (optional,
+  permission-gated) to whichever destination they click, and a small
+  inset minimap once zoomed in past 2x so orientation is never lost.
+* Full keyboard navigation: arrow keys rotate the globe, +/- zoom in and
+  out, in addition to the existing drag/wheel/button controls.
+* Every new sidebar section reuses this plugin's existing graceful-
+  degradation pattern throughout: a section is simply omitted, never
+  broken or half-rendered, whenever its underlying data isn't available
+  for a given destination or country.
 
 = 2.3.1 =
 * Pre-launch audit pass: verified every function end-to-end (drag-rotate,

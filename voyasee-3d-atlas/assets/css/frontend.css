@@ -1,8 +1,4 @@
 .v3datlas-root {
-    /* Deep emerald/forest base with the existing Voyasee gold as accent --
-       chosen over navy (the market-default dark-mode hue) and over blue
-       generally, to read as "expedition/atlas" rather than generic SaaS
-       trust-blue. Navy is kept only as a secondary shadow tone below. */
     --v3datlas-emerald-950: #0a201a;
     --v3datlas-emerald-900: #0f3d2e;
     --v3datlas-emerald-800: #17513d;
@@ -37,6 +33,8 @@
 .v3datlas-root *::after {
     box-sizing: inherit;
 }
+
+/* ── Hero ── */
 
 .v3datlas-hero {
     position: relative;
@@ -125,6 +123,97 @@
     transform: translateX(3px);
 }
 
+/* ── Filter bar ── */
+
+.v3datlas-filter-bar {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.v3datlas-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.v3datlas-filter-actions {
+    display: flex;
+    margin-left: auto;
+}
+
+.v3datlas-filter-chip {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 207, 134, 0.25);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--v3datlas-cream-dim);
+    font-family: var(--v3datlas-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+}
+
+.v3datlas-filter-chip:hover {
+    border-color: rgba(232, 207, 134, 0.5);
+    color: var(--v3datlas-cream);
+}
+
+.v3datlas-filter-chip.is-active {
+    border-color: var(--v3datlas-gold);
+    color: var(--v3datlas-emerald-950);
+    background: linear-gradient(135deg, var(--v3datlas-gold-soft), var(--v3datlas-gold));
+    font-weight: 700;
+}
+
+.v3datlas-surprise-btn {
+    margin-left: auto;
+    padding: 7px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 207, 134, 0.3);
+    background: rgba(201, 162, 75, 0.1);
+    color: var(--v3datlas-gold-soft);
+    font-family: var(--v3datlas-font-body);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.v3datlas-surprise-btn:hover {
+    background: rgba(201, 162, 75, 0.2);
+    transform: translateY(-1px);
+}
+
+/* ── Visited strip ── */
+
+.v3datlas-visited-strip {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 12px auto 0;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(201, 162, 75, 0.08);
+    border: 1px solid rgba(232, 207, 134, 0.15);
+    text-align: center;
+}
+
+.v3datlas-visited-count {
+    font-size: 13px;
+    color: var(--v3datlas-gold-soft);
+    font-weight: 500;
+}
+
+/* ── Map stage ── */
+
 .v3datlas-stage {
     position: relative;
     z-index: 1;
@@ -151,10 +240,6 @@
     width: 100%;
     height: 100%;
     cursor: grab;
-    /* Dragging (mouse or a single finger) rotates the globe itself, so the
-       browser's own touch-scroll gesture must not compete with it -- without
-       this, a finger-drag on mobile would scroll the page instead of (or as
-       well as) spinning the globe. */
     touch-action: none;
 }
 
@@ -162,18 +247,14 @@
     cursor: grabbing;
 }
 
-/* The globe's own sphere/ocean backdrop, filled so it reads as a solid
-   rotating body rather than a flat map cut into a circle -- rendered
-   behind the graticule, country shapes, routes, and markers. */
+/* ── Globe layers ── */
+
 .v3datlas-globe-sphere {
     fill: var(--v3datlas-emerald-950);
     stroke: rgba(232, 207, 134, 0.3);
     stroke-width: 1;
 }
 
-/* A faint latitude/longitude grid over the sphere -- the classic "globe"
-   visual cue, subtle enough not to compete with country shapes or
-   markers. */
 .v3datlas-globe-graticule {
     fill: none;
     stroke: rgba(246, 241, 230, 0.08);
@@ -182,13 +263,18 @@
     pointer-events: none;
 }
 
-/* Real country boundary shapes (bundled with the plugin, see
-   assets/data/SOURCES.md) -- a muted land tone on the deep emerald ocean
-   background, close enough in value to read as "map" without competing
-   with the gold destination markers for attention. Every country shape is
-   independently clickable (see class-v3da-rest.php's /countries/{code}
-   endpoint) to show country-level info even where there's no destination
-   pin, so the hover state doubles as a "this is clickable" affordance. */
+.v3datlas-atmosphere {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.v3datlas-terminator {
+    fill: rgba(0, 0, 0, 0.22);
+    stroke: none;
+    pointer-events: none;
+    transition: d 0.5s ease;
+}
+
 .v3datlas-country {
     fill: var(--v3datlas-emerald-800);
     stroke: rgba(246, 241, 230, 0.12);
@@ -201,6 +287,8 @@
     fill: rgba(201, 162, 75, 0.4);
 }
 
+/* ── Routes & arcs ── */
+
 .v3datlas-route {
     fill: none;
     stroke: var(--v3datlas-gold-soft);
@@ -208,6 +296,18 @@
     vector-effect: non-scaling-stroke;
     pointer-events: none;
 }
+
+.v3datlas-flight-arc {
+    fill: none;
+    stroke: var(--v3datlas-gold);
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* ── Markers ── */
 
 .v3datlas-point-dot {
     fill: var(--v3datlas-gold-soft);
@@ -223,6 +323,26 @@
 .v3datlas-marker-point:hover .v3datlas-point-dot,
 .v3datlas-marker-point:focus-visible .v3datlas-point-dot {
     fill: var(--v3datlas-cream);
+}
+
+.v3datlas-marker-point.is-visited .v3datlas-point-dot {
+    fill: #6dd49e;
+    stroke: var(--v3datlas-emerald-950);
+}
+
+.v3datlas-marker-point.is-visited .v3datlas-point-glow {
+    fill: #6dd49e;
+    opacity: 0.25;
+}
+
+.v3datlas-marker-point.is-wantgo .v3datlas-point-dot {
+    fill: #e8a44a;
+    stroke: var(--v3datlas-emerald-950);
+}
+
+.v3datlas-marker-point.is-wantgo .v3datlas-point-glow {
+    fill: #e8a44a;
+    opacity: 0.3;
 }
 
 .v3datlas-cluster-dot {
@@ -248,6 +368,42 @@
 .v3datlas-marker-cluster:focus-visible .v3datlas-cluster-dot {
     stroke: var(--v3datlas-cream);
 }
+
+/* ── Minimap ── */
+
+.v3datlas-minimap {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 100px;
+    height: 100px;
+    border-radius: var(--v3datlas-radius-md);
+    border: 1px solid rgba(232, 207, 134, 0.2);
+    background: rgba(10, 32, 26, 0.85);
+    overflow: hidden;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.v3datlas-minimap svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.v3datlas-mini-sphere {
+    fill: var(--v3datlas-emerald-950);
+    stroke: rgba(232, 207, 134, 0.2);
+    stroke-width: 0.5;
+}
+
+.v3datlas-mini-country {
+    fill: var(--v3datlas-emerald-800);
+    stroke: rgba(246, 241, 230, 0.08);
+    stroke-width: 0.3;
+}
+
+/* ── Zoom controls ── */
 
 .v3datlas-map-zoom-controls {
     position: absolute;
@@ -304,6 +460,8 @@
     color: var(--v3datlas-cream-dim);
 }
 
+/* ── Sidebar ── */
+
 .v3datlas-sidebar {
     position: absolute;
     top: 0;
@@ -356,7 +514,52 @@
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
+    z-index: 1;
 }
+
+.v3datlas-sidebar-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Sidebar action buttons ── */
+
+.v3datlas-sidebar-actions {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 12px;
+}
+
+.v3datlas-sidebar-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(232, 207, 134, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--v3datlas-cream-dim);
+    font-family: var(--v3datlas-font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.v3datlas-sidebar-action-btn:hover {
+    border-color: rgba(232, 207, 134, 0.4);
+    color: var(--v3datlas-cream);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.v3datlas-sidebar-action-btn.is-active {
+    border-color: var(--v3datlas-gold);
+    color: var(--v3datlas-gold-soft);
+    background: rgba(201, 162, 75, 0.12);
+}
+
+/* ── Sidebar content ── */
 
 .v3datlas-sidebar-hero {
     width: 100%;
@@ -371,15 +574,6 @@
     font-size: 26px;
     font-weight: 600;
     margin: 8px 0 0;
-    /* Explicit (and !important) on purpose: this is the one heading in the
-       plugin that was relying on inherited color rather than setting its
-       own, and on the live site a theme/page-builder global "heading
-       color" style (which typically targets h1-h6 directly, overriding
-       inherited color with more specific intent even at lower selector
-       specificity in practice) was winning, rendering the destination
-       name in the theme's dark heading color against this dark sidebar
-       background -- unreadable. Every other heading in this plugin
-       already sets its own color explicitly for the same reason. */
     color: var(--v3datlas-cream) !important;
 }
 
@@ -397,29 +591,270 @@
     margin: -8px 0 16px;
 }
 
-.v3datlas-fact p {
-    font-size: 14px;
-    line-height: 1.5;
-    margin: 0;
+/* ── Sidebar cards ── */
+
+.v3datlas-sidebar-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--v3datlas-radius-md);
+    padding: 14px;
+    margin-bottom: 12px;
 }
 
-.v3datlas-sidebar-section {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 14px 0;
-}
-
-.v3datlas-sidebar-section h4 {
-    font-size: 12px;
+.v3datlas-card-title {
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
+    font-weight: 700;
     color: var(--v3datlas-gold-soft);
-    margin: 0 0 8px;
+    margin: 0 0 10px;
 }
 
-.v3datlas-muted {
-    color: var(--v3datlas-cream-dim);
+/* ── Live strip ── */
+
+.v3datlas-live-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: rgba(201, 162, 75, 0.06);
+    border: 1px solid rgba(232, 207, 134, 0.12);
+}
+
+.v3datlas-live-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--v3datlas-cream);
+    white-space: nowrap;
+}
+
+.v3datlas-live-icon {
     font-size: 14px;
-    margin: 0;
+    line-height: 1;
+}
+
+/* ── Travel snapshot ── */
+
+.v3datlas-snapshot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.v3datlas-snapshot-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: center;
+}
+
+.v3datlas-snapshot-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--v3datlas-cream-dim);
+    font-weight: 600;
+}
+
+.v3datlas-snapshot-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--v3datlas-cream);
+}
+
+.v3datlas-snapshot-cost {
+    letter-spacing: 0.15em;
+    color: var(--v3datlas-gold-soft);
+}
+
+/* Safety rating bars */
+
+.v3datlas-snapshot-bars {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.v3datlas-bar {
+    width: 12px;
+    height: 6px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.v3datlas-bar.is-filled {
+    background: #6dd49e;
+}
+
+/* ── Best-for tags ── */
+
+.v3datlas-best-for-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.v3datlas-best-for-tag {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(201, 162, 75, 0.1);
+    border: 1px solid rgba(232, 207, 134, 0.18);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--v3datlas-gold-soft);
+    text-transform: capitalize;
+}
+
+/* ── Radar chart ── */
+
+.v3datlas-radar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+.v3datlas-radar-chart {
+    width: 120px;
+    height: 120px;
+}
+
+.v3datlas-radar-grid {
+    fill: none;
+    stroke: rgba(246, 241, 230, 0.1);
+    stroke-width: 0.5;
+}
+
+.v3datlas-radar-fill {
+    fill: rgba(201, 162, 75, 0.2);
+    stroke: var(--v3datlas-gold-soft);
+    stroke-width: 1.5;
+}
+
+.v3datlas-radar-label {
+    fill: var(--v3datlas-cream-dim);
+    font-family: var(--v3datlas-font-body);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+/* ── Stat row (country dashboard) ── */
+
+.v3datlas-stat-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.v3datlas-stat-tile {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 6px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: center;
+}
+
+.v3datlas-stat-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--v3datlas-cream);
+    font-variant-numeric: tabular-nums;
+}
+
+.v3datlas-stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--v3datlas-cream-dim);
+    font-weight: 600;
+}
+
+/* ── Weather ── */
+
+.v3datlas-weather-now {
+    font-size: 14px;
+    color: var(--v3datlas-cream);
+    margin: 0 0 6px;
+}
+
+.v3datlas-weather-normals {
+    font-size: 14px;
+    color: var(--v3datlas-cream-dim);
+    margin: 0 0 6px;
+}
+
+.v3datlas-best-time {
+    font-size: 13px;
+    color: var(--v3datlas-cream-dim);
+    margin: 8px 0 0;
+}
+
+/* ── Heatmap calendar ── */
+
+.v3datlas-heatmap-wrap {
+    margin-top: 10px;
+}
+
+.v3datlas-heatmap-strip {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.v3datlas-heatmap-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 2px;
+    min-height: 32px;
+    position: relative;
+}
+
+.v3datlas-heatmap-cell.is-current {
+    outline: 2px solid var(--v3datlas-cream);
+    outline-offset: -1px;
+    border-radius: 3px;
+    z-index: 1;
+}
+
+.v3datlas-heatmap-month {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.v3datlas-heatmap-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--v3datlas-cream-dim);
+}
+
+/* ── Country notes ── */
+
+.v3datlas-country-detail {
+    font-size: 13px;
+    color: var(--v3datlas-cream-dim);
+    margin: 0 0 8px;
 }
 
 .v3datlas-country-facts {
@@ -433,11 +868,29 @@
     padding: 4px 0;
 }
 
-.v3datlas-best-time {
-    font-size: 13px;
-    color: var(--v3datlas-cream-dim);
-    margin: 8px 0 0;
+/* ── Fact / Wiki / Attribution ── */
+
+.v3datlas-fact-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--v3datlas-cream);
+    margin: 0;
 }
+
+.v3datlas-wiki-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--v3datlas-cream-dim);
+    margin: 0 0 6px;
+}
+
+.v3datlas-attribution {
+    font-size: 10px;
+    color: rgba(207, 200, 184, 0.5);
+    margin: 4px 0 0;
+}
+
+/* ── Related chips ── */
 
 .v3datlas-related-chips {
     display: flex;
@@ -453,6 +906,7 @@
     color: var(--v3datlas-cream);
     font-size: 13px;
     cursor: pointer;
+    font-family: var(--v3datlas-font-body);
 }
 
 .v3datlas-related-chip:hover,
@@ -461,11 +915,40 @@
     color: var(--v3datlas-gold-soft);
 }
 
+/* ── Sidebar shared states ── */
+
 .v3datlas-sidebar-loading,
 .v3datlas-sidebar-error {
     color: var(--v3datlas-cream-dim);
     font-size: 14px;
 }
+
+.v3datlas-sidebar-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 0;
+}
+
+.v3datlas-sidebar-section h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--v3datlas-gold-soft);
+    margin: 0 0 8px;
+}
+
+.v3datlas-fact p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.v3datlas-muted {
+    color: var(--v3datlas-cream-dim);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ── Destination list ── */
 
 .v3datlas-destination-list {
     position: relative;
@@ -558,6 +1041,8 @@
     text-decoration: underline;
     outline: none;
 }
+
+/* ── Footer ── */
 
 .v3datlas-footer {
     position: relative;
@@ -730,7 +1215,35 @@
     opacity: 0.6;
 }
 
+/* ── Responsive ── */
+
 @media (max-width: 640px) {
+    .v3datlas-filter-bar {
+        gap: 6px;
+    }
+
+    .v3datlas-filter-chip {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+
+    .v3datlas-surprise-btn {
+        margin-left: 0;
+        flex: 1 1 100%;
+    }
+
+    .v3datlas-snapshot-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .v3datlas-heatmap-strip {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .v3datlas-heatmap-cell {
+        min-height: 26px;
+    }
+
     .v3datlas-footer-cards,
     .v3datlas-footer-cards--compact {
         grid-template-columns: 1fr 1fr;

@@ -17,13 +17,6 @@ final class V3DA_Content {
         return is_wp_error($link) ? null : $link;
     }
 
-    /**
-     * Mirrors the graceful-degradation pattern already used by
-     * voyasee-where-to-stay-matcher: check function_exists() before calling
-     * into Weather Bridge, never let a missing/inactive plugin break the page.
-     *
-     * @return array|null
-     */
     public static function weather_snapshot(float $lat, float $lng): ?array {
         if (!function_exists('voyasee_weather_get_current')) return null;
 
@@ -56,23 +49,6 @@ final class V3DA_Content {
         ];
     }
 
-    /**
-     * Automatic hero-image fallback via the Pexels API (https://www.pexels.com/api/),
-     * used only when a destination has no manually picked hero image. This
-     * Atlas never pulls a destination's photo from a blog post/article --
-     * the photo shown is always either hand-picked in 3D Atlas ->
-     * Destinations, or a real photo of that actual place fetched here.
-     *
-     * Requires a Pexels API key pasted into Settings (Pexels' free tier is
-     * enough for this -- no paid plan needed). With no key configured, or
-     * on any API failure or zero results, this returns null and the
-     * sidebar simply shows no hero image, same graceful-degradation
-     * pattern as Weather Bridge/Country Intelligence elsewhere in this
-     * plugin. Results are cached per destination for 30 days (a
-     * destination's representative photo has no reason to change day to
-     * day), which also keeps this comfortably inside Pexels' free-tier
-     * rate limits even on a busy site.
-     */
     public static function pexels_photo_url(string $slug, string $query): ?string {
         if ('' === $slug || '' === $query) return null;
         $api_key = trim((string) get_option('v3da_pexels_api_key', ''));
@@ -96,9 +72,6 @@ final class V3DA_Content {
         ]);
 
         if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
-            // Cache the miss too, but briefly -- an API hiccup or a
-            // temporarily wrong key shouldn't be retried on every single
-            // page view, but should recover quickly once fixed.
             set_transient($cache_key, '', HOUR_IN_SECONDS);
             return null;
         }
@@ -111,11 +84,6 @@ final class V3DA_Content {
         return $photo_url;
     }
 
-    /**
-     * Next public holiday in this country from today, using Country
-     * Intelligence's pre-compiled local holiday calendars (no external
-     * HTTP call). Mirrors the same graceful degradation pattern.
-     */
     public static function upcoming_holiday(string $country_code): ?array {
         if ('' === $country_code || !function_exists('voyasee_country_data_get_holidays')) return null;
 
@@ -134,10 +102,6 @@ final class V3DA_Content {
         return null;
     }
 
-    /**
-     * @param array $all Full destination rows (as from V3DA_DB::get_all()).
-     * @return array<int,array{name:string,slug:string,distanceKm:float}>
-     */
     public static function nearby_destinations(array $all, array $current, int $limit = 3): array {
         $withDistance = [];
         foreach ($all as $d) {
@@ -152,9 +116,6 @@ final class V3DA_Content {
         return array_slice($withDistance, 0, $limit);
     }
 
-    /**
-     * @return array<int,array{name:string,slug:string}>
-     */
     public static function same_country_destinations(array $all, array $current, int $limit = 4): array {
         if ('' === $current['country_code']) return [];
         $matches = [];
@@ -175,9 +136,6 @@ final class V3DA_Content {
         return $earthRadiusKm * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 
-    /**
-     * @return array|null
-     */
     public static function country_snapshot(string $country_code): ?array {
         if ('' === $country_code || !function_exists('voyasee_country_data_get_country')) return null;
 
@@ -202,6 +160,134 @@ final class V3DA_Content {
             'emergencyPolice' => $safety['emergencyNumbers']['police'] ?? null,
             'emergencyAmbulance' => $safety['emergencyNumbers']['ambulance'] ?? null,
             'advisoryLinks' => $safety['officialVerificationLinks']['globalTravelAdviceDirectories'] ?? [],
+            'population' => $core['population'] ?? null,
+            'area' => $core['area'] ?? null,
+            'languages' => $core['languages'] ?? [],
+            'capital' => $core['capital'] ?? null,
         ];
+    }
+
+    /**
+     * Sunrise/sunset times from sunrise-sunset.org (free, no key, attribution required).
+     * Cached for 6 hours per lat/lng pair.
+     */
+    public static function sunrise_sunset(float $lat, float $lng, ?string $timezone = null): ?array {
+        $cache_key = 'v3da_sun_' . md5($lat . '|' . $lng . '|' . gmdate('Y-m-d'));
+        $cached = get_transient($cache_key);
+        if (false !== $cached) {
+            return is_array($cached) ? $cached : null;
+        }
+
+        $url = add_query_arg([
+            'lat' => $lat,
+            'lng' => $lng,
+            'formatted' => 0,
+            'date' => gmdate('Y-m-d'),
+        ], 'https://api.sunrise-sunset.org/json');
+
+        $response = wp_remote_get($url, ['timeout' => 6]);
+        if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
+            set_transient($cache_key, 'null', 2 * HOUR_IN_SECONDS);
+            return null;
+        }
+
+        $body = json_decode((string) wp_remote_retrieve_body($response), true);
+        if ('OK' !== ($body['status'] ?? '') || empty($body['results'])) {
+            set_transient($cache_key, 'null', 2 * HOUR_IN_SECONDS);
+            return null;
+        }
+
+        $r = $body['results'];
+        $result = [
+            'sunrise' => $r['sunrise'] ?? null,
+            'sunset' => $r['sunset'] ?? null,
+            'day_length' => $r['day_length'] ?? null,
+            'timezone' => $timezone,
+        ];
+
+        set_transient($cache_key, $result, 6 * HOUR_IN_SECONDS);
+        return $result;
+    }
+
+    /**
+     * Exchange rate from Frankfurter (free, open-source, ECB data).
+     * Cached for 24 hours. Returns rate relative to USD.
+     */
+    public static function exchange_rate(?string $currency_code): ?array {
+        if (null === $currency_code || '' === $currency_code || 'USD' === $currency_code) return null;
+
+        $cache_key = 'v3da_fx_' . strtoupper($currency_code);
+        $cached = get_transient($cache_key);
+        if (false !== $cached) {
+            return is_array($cached) ? $cached : null;
+        }
+
+        $url = 'https://api.frankfurter.dev/v1/latest?base=USD&symbols=' . urlencode(strtoupper($currency_code));
+        $response = wp_remote_get($url, ['timeout' => 6]);
+        if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
+            set_transient($cache_key, 'null', 2 * HOUR_IN_SECONDS);
+            return null;
+        }
+
+        $body = json_decode((string) wp_remote_retrieve_body($response), true);
+        $rate = $body['rates'][strtoupper($currency_code)] ?? null;
+        if (null === $rate) {
+            set_transient($cache_key, 'null', 2 * HOUR_IN_SECONDS);
+            return null;
+        }
+
+        $result = [
+            'base' => 'USD',
+            'target' => strtoupper($currency_code),
+            'rate' => round((float) $rate, 2),
+            'date' => $body['date'] ?? gmdate('Y-m-d'),
+        ];
+
+        set_transient($cache_key, $result, DAY_IN_SECONDS);
+        return $result;
+    }
+
+    /**
+     * Short Wikipedia excerpt (2-3 sentences) for a destination.
+     * Uses MediaWiki REST API (CC BY-SA, free, no key).
+     * Cached for 30 days.
+     */
+    public static function wikipedia_excerpt(string $name, string $country): ?string {
+        if ('' === $name) return null;
+
+        $cache_key = 'v3da_wiki_' . sanitize_title($name);
+        $cached = get_transient($cache_key);
+        if (false !== $cached) {
+            return '' !== $cached ? $cached : null;
+        }
+
+        $search_term = $name;
+        $url = 'https://en.wikipedia.org/api/rest_v1/page/summary/' . rawurlencode(str_replace(' ', '_', $search_term));
+        $response = wp_remote_get($url, [
+            'timeout' => 6,
+            'headers' => ['Accept' => 'application/json'],
+        ]);
+
+        if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
+            set_transient($cache_key, '', 7 * DAY_IN_SECONDS);
+            return null;
+        }
+
+        $body = json_decode((string) wp_remote_retrieve_body($response), true);
+        $extract = $body['extract'] ?? '';
+
+        if ('' === $extract) {
+            set_transient($cache_key, '', 7 * DAY_IN_SECONDS);
+            return null;
+        }
+
+        $sentences = preg_split('/(?<=[.!?])\s+/', $extract, 4);
+        $short = implode(' ', array_slice($sentences, 0, 3));
+        if (mb_strlen($short) > 400) {
+            $short = mb_substr($short, 0, 397) . '...';
+        }
+
+        set_transient($cache_key, $short, 30 * DAY_IN_SECONDS);
+        return $short;
     }
 }

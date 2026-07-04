@@ -4,6 +4,7 @@
  * @var string $config JSON-encoded {restBase, markers, strings}.
  * @var array<string,array> $groups Destinations grouped by region.
  * @var array<string,string> $settings
+ * @var string[] $regions
  */
 defined('ABSPATH') || exit;
 
@@ -17,19 +18,12 @@ $comparison_url = $settings['tool_destination_comparison'] ?? '';
 $packing_url = $settings['tool_smart_packing_list'] ?? '';
 $scam_shield_url = $settings['tool_travel_scam_shield'] ?? '';
 $jetlag_url = $settings['tool_jet_lag_planner'] ?? '';
-// Only one Booking.com link is ever shown in the footer, not both approved
-// market variants -- the EU/EEA link is preferred, falling back to the
-// Asia-Pacific/Middle East one only if the EU link isn't configured.
 $booking_url = ($settings['affiliate_booking_eu'] ?? '') ?: ($settings['affiliate_booking_apac'] ?? '');
 $aviasales_url = $settings['affiliate_aviasales'] ?? '';
 $kiwi_url = $settings['affiliate_kiwi'] ?? '';
 $safetywing_url = $settings['affiliate_safetywing'] ?? '';
 $visa_url = $settings['affiliate_visa'] ?? '';
 
-// Hero CTA deliberately doesn't name a specific Voyasee tool (avoids reading
-// like it's pointing away to a competing "explore the map" concept right
-// next to this Atlas) -- it still links to whichever discovery tool is
-// configured, just with generic wording.
 $hero_cta_url = $trip_readiness ?: ($quiz_url ?: $map_url);
 
 $has_plan_links = $trip_readiness || $hub_url || $map_url || $month_planner_url || $budget_url;
@@ -41,12 +35,24 @@ $has_safety_links = $safetywing_url || $visa_url;
     <div class="v3datlas-hero">
         <p class="v3datlas-eyebrow"><?php echo esc_html__('Voyasee World Story Atlas', 'voyasee-3d-atlas'); ?></p>
         <h2 class="v3datlas-title"><?php echo esc_html__('An interactive map of every place Voyasee has covered', 'voyasee-3d-atlas'); ?></h2>
-        <p class="v3datlas-intro"><?php echo esc_html__('Pan and zoom the map, click a destination for weather and country notes, or browse the full A–Z list below.', 'voyasee-3d-atlas'); ?></p>
+        <p class="v3datlas-intro"><?php echo esc_html__('Spin the globe, click any destination for live data and travel insights, or browse the full A–Z list below.', 'voyasee-3d-atlas'); ?></p>
         <?php if ($hero_cta_url): ?>
             <p class="v3datlas-hero-cta">
                 <a href="<?php echo esc_url($hero_cta_url); ?>"><?php echo esc_html__('Not sure where to start? Find your next destination', 'voyasee-3d-atlas'); ?></a>
             </p>
         <?php endif; ?>
+    </div>
+
+    <div class="v3datlas-filter-bar" data-v3datlas-filter-bar>
+        <div class="v3datlas-filter-group" data-v3datlas-filter-region>
+            <button type="button" class="v3datlas-filter-chip is-active" data-filter-value="all"><?php echo esc_html__('All', 'voyasee-3d-atlas'); ?></button>
+            <?php foreach ($regions as $region): ?>
+                <button type="button" class="v3datlas-filter-chip" data-filter-value="<?php echo esc_attr($region); ?>"><?php echo esc_html($region); ?></button>
+            <?php endforeach; ?>
+        </div>
+        <div class="v3datlas-filter-actions">
+            <button type="button" class="v3datlas-surprise-btn" data-v3datlas-surprise aria-label="<?php echo esc_attr__('Random destination', 'voyasee-3d-atlas'); ?>"><?php echo esc_html__('Surprise me', 'voyasee-3d-atlas'); ?></button>
+        </div>
     </div>
 
     <div class="v3datlas-stage">
@@ -55,11 +61,20 @@ $has_safety_links = $safetywing_url || $visa_url;
         </div>
 
         <aside class="v3datlas-sidebar" data-v3datlas-sidebar hidden aria-label="<?php echo esc_attr__('Destination details', 'voyasee-3d-atlas'); ?>">
-            <button type="button" class="v3datlas-sidebar-close" data-v3datlas-sidebar-close aria-label="<?php echo esc_attr__('Close', 'voyasee-3d-atlas'); ?>">&times;</button>
+            <div class="v3datlas-sidebar-actions">
+                <button type="button" class="v3datlas-sidebar-action-btn" data-v3datlas-sidebar-visited aria-label="<?php echo esc_attr__('Mark as visited', 'voyasee-3d-atlas'); ?>">&#10003;</button>
+                <button type="button" class="v3datlas-sidebar-action-btn" data-v3datlas-sidebar-wantgo aria-label="<?php echo esc_attr__('Add to want-to-go list', 'voyasee-3d-atlas'); ?>">&#9734;</button>
+                <button type="button" class="v3datlas-sidebar-action-btn" data-v3datlas-sidebar-share aria-label="<?php echo esc_attr__('Share destination', 'voyasee-3d-atlas'); ?>">&#8599;</button>
+                <button type="button" class="v3datlas-sidebar-close" data-v3datlas-sidebar-close aria-label="<?php echo esc_attr__('Close', 'voyasee-3d-atlas'); ?>">&times;</button>
+            </div>
             <div class="v3datlas-sidebar-body" data-v3datlas-sidebar-body>
                 <p class="v3datlas-sidebar-loading"><?php echo esc_html__('Loading…', 'voyasee-3d-atlas'); ?></p>
             </div>
         </aside>
+    </div>
+
+    <div class="v3datlas-visited-strip" data-v3datlas-visited-strip hidden>
+        <span class="v3datlas-visited-count" data-v3datlas-visited-count></span>
     </div>
 
     <div class="v3datlas-destination-list" data-v3datlas-destination-list>
@@ -101,70 +116,70 @@ $has_safety_links = $safetywing_url || $visa_url;
             <div class="v3datlas-footer-cards">
                 <?php if ($trip_readiness): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($trip_readiness); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">✅</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#10004;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Trip Readiness Checklist', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__("Make sure nothing gets left behind before you go.", 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($hub_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($hub_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🧭</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#9741;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Smart Travel Hub', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('One place for guides, tips, and destination stories.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($map_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($map_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🗺️</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#128506;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Interactive Travel Map', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Browse destinations visually before you decide.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($month_planner_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($month_planner_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">📅</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#128197;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Travel Month Planner', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Find the best month to visit any destination.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($budget_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($budget_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🧮</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#129518;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Trip Budget Calculator', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Estimate what your trip will really cost.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($quiz_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($quiz_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">❓</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#10068;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Destination Quiz', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Not sure where to go? Answer a few questions.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($comparison_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($comparison_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">⚖️</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#9878;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Destination Comparison Tool', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Compare two destinations side by side.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($packing_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($packing_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🎒</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#127890;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Smart Packing List Generator', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Get a packing list tailored to your trip.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($scam_shield_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($scam_shield_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🛡️</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#128737;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Travel Scam Shield', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Learn the common scams at your destination.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($jetlag_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($jetlag_url); ?>">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🌙</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#127769;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Jet Lag Recovery Planner', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Adjust your sleep schedule before you fly.', 'voyasee-3d-atlas'); ?></span>
                 </a>
@@ -179,35 +194,35 @@ $has_safety_links = $safetywing_url || $visa_url;
             <div class="v3datlas-footer-cards v3datlas-footer-cards--compact">
                 <?php if ($booking_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($booking_url); ?>" rel="nofollow sponsored noopener" target="_blank">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🏨</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#127976;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Booking.com', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Find and book your accommodation.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($aviasales_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($aviasales_url); ?>" rel="nofollow sponsored noopener" target="_blank">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">✈️</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#9992;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Aviasales', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Search and compare flight deals.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($kiwi_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($kiwi_url); ?>" rel="nofollow sponsored noopener" target="_blank">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🥝</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#129373;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Kiwi.com', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Book flights with flexible routing.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($safetywing_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($safetywing_url); ?>" rel="nofollow sponsored noopener" target="_blank">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🛟</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#128735;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('SafetyWing Insurance', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Travel insurance built for nomads.', 'voyasee-3d-atlas'); ?></span>
                 </a>
                 <?php endif; ?>
                 <?php if ($visa_url): ?>
                 <a class="v3datlas-footer-card" href="<?php echo esc_url($visa_url); ?>" rel="nofollow sponsored noopener" target="_blank">
-                    <span class="v3datlas-footer-card-icon" aria-hidden="true">🛂</span>
+                    <span class="v3datlas-footer-card-icon" aria-hidden="true">&#128706;</span>
                     <span class="v3datlas-footer-card-title"><?php echo esc_html__('Check Visa Requirements', 'voyasee-3d-atlas'); ?></span>
                     <span class="v3datlas-footer-card-desc"><?php echo esc_html__('Confirm entry rules before you fly.', 'voyasee-3d-atlas'); ?></span>
                 </a>
