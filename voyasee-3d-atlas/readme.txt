@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 2.1.0
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,37 @@ Voyasee Country Intelligence, and a fully crawlable visible destinations list fo
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 2.2.0 =
+* Fixed a destination-name legibility bug in the sidebar: `.v3datlas-sidebar-name`
+  was the only heading in the plugin relying on inherited text color instead of
+  setting its own, which let a WordPress theme/page-builder's global heading
+  color win on the live site and render destination names (e.g. "Beijing") in
+  a dark color against the sidebar's dark background. Every heading in the
+  plugin now sets its own explicit color, as the rest already did.
+* Fixed the hero "Find your next destination" call-to-action button
+  referencing an undefined CSS variable (`--v3datlas-navy-950`, which was
+  never declared) for its text color, which silently fell back to inherited
+  cream text on a light gold pill background -- also illegible. The button
+  is now restyled with a proper gold gradient, explicit dark text, a subtle
+  arrow, and a hover lift.
+* Added ambient auto-pan: once a visitor zooms in on a destination (so the
+  whole world no longer fits the viewport, the way it does at the default
+  zoomed-out view), the map now gently keeps drifting on its own after a
+  couple of seconds of inactivity -- similar in spirit to the old rotating
+  globe -- so the hidden far side of the map cycles back into view without
+  requiring the visitor to manually drag. It pauses instantly on any real
+  drag/zoom/click and resumes automatically after a short idle delay, and
+  is fully disabled under `prefers-reduced-motion: reduce`.
+* Enlarged and restyled the hero header: the "Voyasee World Story Atlas"
+  eyebrow now has flanking rule lines and wider letter-spacing, and the main
+  heading scales up to 56px on wide screens (previously capped at 40px).
+* Redesigned the footer from a plain four-column link list into a richer,
+  branded section: a gradient "Turn this map into your next trip" banner
+  with its own call-to-action, an icon-title-description card grid split
+  into Voyasee's own trip-planning tools and booking/safety resources, and
+  a bottom bar with the Voyasee wordmark, tagline, a link back to
+  voyasee.com, and a version stamp.
 
 = 2.1.0 =
 * Replaced the v2.0.0 MapLibre GL JS map (which depended on OpenFreeMap's

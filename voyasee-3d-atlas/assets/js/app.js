@@ -382,14 +382,87 @@ function initMap(root, markers, config, openSidebar) {
 
   const zoom = d3.zoom()
     .scaleExtent([MAP_MIN_SCALE, MAP_MAX_SCALE])
+    .on("start", function (event) {
+      if (event.sourceEvent) stopAutoPan();
+    })
     .on("zoom", function (event) {
       currentTransform = event.transform;
       worldGroup.attr("transform", currentTransform);
       renderMarkers();
+    })
+    .on("end", function (event) {
+      if (event.sourceEvent) scheduleAutoPanResume();
     });
   svg.call(zoom);
 
   let currentTransform = d3.zoomIdentity;
+
+  /** Ambient "world keeps turning" drift: once a user zooms in on a
+   *  destination the whole world no longer fits the viewport, so -- like
+   *  the old rotating globe -- the map gently keeps panning on its own
+   *  once idle, cycling the hidden far side back into view, and pauses
+   *  the instant a real user gesture (drag/wheel/pinch) starts. At the
+   *  default fully-zoomed-out view the whole world already fits the
+   *  frame (nothing is hidden), so the drift naturally has no distance
+   *  to travel and stays still until the user zooms in. */
+  let autoPanFrame = null;
+  let autoPanActive = false;
+  let autoPanResumeTimer = null;
+  let autoPanLastTime = null;
+  let autoPanDirection = 1;
+  const AUTO_PAN_UNITS_PER_SEC = 16;
+  const AUTO_PAN_RESUME_DELAY = 2500;
+
+  function stopAutoPan() {
+    autoPanActive = false;
+    autoPanLastTime = null;
+    if (autoPanResumeTimer) {
+      clearTimeout(autoPanResumeTimer);
+      autoPanResumeTimer = null;
+    }
+    if (autoPanFrame) {
+      cancelAnimationFrame(autoPanFrame);
+      autoPanFrame = null;
+    }
+  }
+
+  function scheduleAutoPanResume() {
+    if (reduceMotion) return;
+    if (autoPanResumeTimer) clearTimeout(autoPanResumeTimer);
+    autoPanResumeTimer = setTimeout(startAutoPan, AUTO_PAN_RESUME_DELAY);
+  }
+
+  function startAutoPan() {
+    if (reduceMotion || autoPanActive) return;
+    autoPanActive = true;
+    autoPanLastTime = null;
+    autoPanFrame = requestAnimationFrame(stepAutoPan);
+  }
+
+  function stepAutoPan(now) {
+    if (!autoPanActive) return;
+    if (autoPanLastTime === null) autoPanLastTime = now;
+    const dt = (now - autoPanLastTime) / 1000;
+    autoPanLastTime = now;
+
+    const k = currentTransform.k;
+    const minX = MAP_WIDTH * (1 - k);
+    const maxX = 0;
+
+    if (minX < maxX) {
+      let x = currentTransform.x + autoPanDirection * AUTO_PAN_UNITS_PER_SEC * dt;
+      if (x <= minX) {
+        x = minX;
+        autoPanDirection = 1;
+      } else if (x >= maxX) {
+        x = maxX;
+        autoPanDirection = -1;
+      }
+      zoom.transform(svg, d3.zoomIdentity.translate(x, currentTransform.y).scale(k));
+    }
+
+    autoPanFrame = requestAnimationFrame(stepAutoPan);
+  }
 
   /** Approximate Supercluster "zoom level" for the current D3 scale
    *  factor -- Supercluster's clustering radius is calibrated in web-
@@ -458,12 +531,17 @@ function initMap(root, markers, config, openSidebar) {
   }
 
   function zoomToPoint(lngLat, targetScale) {
+    stopAutoPan();
     const [x0, y0] = projection(lngLat);
     const t = d3.zoomIdentity
       .translate(MAP_WIDTH / 2, MAP_HEIGHT / 2)
       .scale(targetScale)
       .translate(-x0, -y0);
-    (reduceMotion ? svg : svg.transition().duration(900)).call(zoom.transform, t);
+    if (reduceMotion) {
+      svg.call(zoom.transform, t);
+    } else {
+      svg.transition().duration(900).call(zoom.transform, t).on("end", scheduleAutoPanResume);
+    }
   }
 
   function flyToMarker(marker) {
@@ -473,10 +551,22 @@ function initMap(root, markers, config, openSidebar) {
   }
 
   zoomControls.querySelector("[data-zoom-in]").addEventListener("click", function () {
-    (reduceMotion ? svg : svg.transition().duration(300)).call(zoom.scaleBy, 1.6);
+    stopAutoPan();
+    if (reduceMotion) {
+      svg.call(zoom.scaleBy, 1.6);
+      scheduleAutoPanResume();
+    } else {
+      svg.transition().duration(300).call(zoom.scaleBy, 1.6).on("end", scheduleAutoPanResume);
+    }
   });
   zoomControls.querySelector("[data-zoom-out]").addEventListener("click", function () {
-    (reduceMotion ? svg : svg.transition().duration(300)).call(zoom.scaleBy, 1 / 1.6);
+    stopAutoPan();
+    if (reduceMotion) {
+      svg.call(zoom.scaleBy, 1 / 1.6);
+      scheduleAutoPanResume();
+    } else {
+      svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.6).on("end", scheduleAutoPanResume);
+    }
   });
 
   function addFeaturedRoutes() {
@@ -526,6 +616,7 @@ function initMap(root, markers, config, openSidebar) {
 
       addFeaturedRoutes();
       renderMarkers();
+      scheduleAutoPanResume();
     })
     .catch(function () {
       // The bundled world-shape data is served from this same site, not a
