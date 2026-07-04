@@ -30,7 +30,7 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
   const sidebarBody = root.querySelector("[data-v3datlas-sidebar-body]");
   const sidebarClose = root.querySelector("[data-v3datlas-sidebar-close]");
   if (!sidebar || !sidebarBody) {
-    return { openSidebar: function () {}, byslug: byslug };
+    return { openSidebar: function () {}, openCountry: function () {}, byslug: byslug };
   }
 
   const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -72,6 +72,69 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
   function closeSidebar() {
     sidebar.classList.remove("is-open");
     setTimeout(function () { sidebar.hidden = true; }, reduceMotion ? 0 : 300);
+  }
+
+  /**
+   * Opens the same sidebar panel for a bare country click (a country shape
+   * with no destination pin under the cursor, or clicked away from any
+   * pin) -- shows whatever country-level facts are available instead of a
+   * single destination's page, so clicking "blank" parts of the globe
+   * still surfaces something useful rather than doing nothing.
+   */
+  function openCountry(code, name) {
+    sidebar.hidden = false;
+    requestAnimationFrame(function () { sidebar.classList.add("is-open"); });
+    sidebarBody.innerHTML = "";
+
+    if (!code) {
+      renderCountrySidebar(null, name);
+      return;
+    }
+
+    sidebarBody.appendChild(el("p", "v3datlas-sidebar-loading", strings.loading || "Loading…"));
+    fetch(restBase + "countries/" + encodeURIComponent(code), { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+      })
+      .then(function (result) {
+        if (!result.ok || !result.data || false === result.data.ok) throw new Error("load failed");
+        renderCountrySidebar(result.data, name);
+      })
+      .catch(function () {
+        renderCountrySidebar(null, name);
+      });
+  }
+
+  function renderCountrySidebar(data, name) {
+    sidebarBody.innerHTML = "";
+    sidebarBody.appendChild(el("h3", "v3datlas-sidebar-name", name || strings.countryFallbackName || "This country"));
+    sidebarBody.appendChild(el("p", "v3datlas-sidebar-country", strings.countryOverviewLabel || "Country overview"));
+
+    if (!data) {
+      sidebarBody.appendChild(el("p", "v3datlas-sidebar-error", strings.countryNoData || "No information is available for this country yet."));
+      return;
+    }
+
+    sidebarBody.appendChild(renderCountry(data.country, data.upcomingHoliday));
+
+    if (data.destinations && data.destinations.length) {
+      const section = el("div", "v3datlas-sidebar-section v3datlas-related");
+      section.appendChild(el("h4", null, strings.destinationsInCountry || "Destinations we cover here"));
+      const list = el("div", "v3datlas-related-chips");
+      data.destinations.slice(0, 8).forEach(function (item) {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "v3datlas-related-chip";
+        chip.textContent = item.name;
+        chip.addEventListener("click", function () {
+          const marker = byslug[item.slug];
+          if (marker) openSidebar(marker);
+        });
+        list.appendChild(chip);
+      });
+      section.appendChild(list);
+      sidebarBody.appendChild(section);
+    }
   }
 
   function renderSidebar(data) {
@@ -194,7 +257,7 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
     return section;
   }
 
-  return { openSidebar: openSidebar, byslug: byslug };
+  return { openSidebar: openSidebar, openCountry: openCountry, byslug: byslug };
 }
 
 /**
@@ -313,24 +376,31 @@ const DEFAULT_FEATURED_ARC_PAIRS = [
 // to know or care about real pixel dimensions or window resizes.
 const MAP_WIDTH = 960;
 const MAP_HEIGHT = 600;
+// Zoom bounds, expressed as a multiple of the globe's own fitted radius
+// (baseScale below) rather than an absolute pixel value, since that radius
+// itself depends on the container size.
 const MAP_MIN_SCALE = 1;
-const MAP_MAX_SCALE = 10;
+const MAP_MAX_SCALE = 8;
 
 /**
- * A self-contained SVG world map: real country boundary shapes (bundled
- * with the plugin, no external tile/map server involved at all), rendered
- * via D3's geographic projection, with Supercluster grouping destination
- * markers at low zoom. Every marker is a real SVG element handling its
- * own native click/hover -- there is no custom hit-testing math here to
- * get subtly wrong, which is the whole reason this replaced the earlier
- * COBE 3D globe (manual sphere-projection hit-testing) and, before that,
- * an external-tile-server map this project's own environment couldn't
- * verify was rendering correctly. Needs d3, Supercluster, and topojson
- * (each vendored as a classic global) plus the bundled world country
- * topology; if any of those didn't load for some reason, this fails
- * gracefully to a text message rather than a broken half-rendered map.
+ * A self-contained SVG rotating globe: real country boundary shapes
+ * (bundled with the plugin, no external tile/map server involved at all)
+ * rendered via D3's orthographic geographic projection, with Supercluster
+ * grouping destination markers at low zoom. Every marker and every country
+ * shape is a real SVG element handling its own native click/hover -- there
+ * is no custom hit-testing math here to get subtly wrong. Rotation is
+ * driven by dragging (mouse or touch) directly manipulating the
+ * projection's own rotate() parameters, which is what makes this a true
+ * 360-degree globe rather than a flat map: the far side of the world is
+ * never permanently out of reach, only ever a drag (or, left idle, a
+ * gentle continuous auto-rotation) away, mirroring how the original 3D
+ * globe felt while keeping this version's fully-native-SVG click
+ * reliability. Needs d3, Supercluster, and topojson (each vendored as a
+ * classic global) plus the bundled world country topology; if any of
+ * those didn't load for some reason, this fails gracefully to a text
+ * message rather than a broken half-rendered map.
  */
-function initMap(root, markers, config, openSidebar) {
+function initMap(root, markers, config, openSidebar, openCountry) {
   const mount = root.querySelector("[data-v3datlas-map-mount]");
   if (!mount || !markers.length) return { flyToMarker: function () {} };
 
@@ -353,13 +423,29 @@ function initMap(root, markers, config, openSidebar) {
     .attr("role", "img")
     .attr("aria-label", strings.mapAriaLabel || "");
 
-  const worldGroup = svg.append("g").attr("class", "v3datlas-map-world");
-  const countriesLayer = worldGroup.append("g").attr("class", "v3datlas-map-countries");
-  const routesLayer = worldGroup.append("g").attr("class", "v3datlas-map-routes");
+  const sphere = svg.append("path").attr("class", "v3datlas-globe-sphere");
+  const graticuleLayer = svg.append("path").attr("class", "v3datlas-globe-graticule");
+  const countriesLayer = svg.append("g").attr("class", "v3datlas-map-countries");
+  const routesLayer = svg.append("g").attr("class", "v3datlas-map-routes");
   const markersLayer = svg.append("g").attr("class", "v3datlas-map-markers");
 
-  const projection = d3.geoEqualEarth();
+  // A slight initial tilt (rather than a dead-on equatorial view) shows a
+  // bit of both hemispheres right away, closer to how a physical globe
+  // usually sits than a flat head-on view would.
+  const projection = d3.geoOrthographic().clipAngle(90).rotate([-10, -15, 0]);
   const path = d3.geoPath(projection);
+  const graticule = d3.geoGraticule();
+  projection.fitSize([MAP_WIDTH, MAP_HEIGHT], { type: "Sphere" });
+  const baseScale = projection.scale();
+  // Points beyond this angular distance from the view center are on the
+  // globe's far side; a small pad keeps markers from rendering right at
+  // the horizon edge, where the orthographic projection gets visually
+  // distorted just before a point would disappear.
+  const HORIZON_LIMIT = Math.PI / 2 - 0.02;
+
+  function clampScale(s) {
+    return Math.max(baseScale * MAP_MIN_SCALE, Math.min(baseScale * MAP_MAX_SCALE, s));
+  }
 
   const zoomControls = document.createElement("div");
   zoomControls.className = "v3datlas-map-zoom-controls";
@@ -380,37 +466,29 @@ function initMap(root, markers, config, openSidebar) {
     };
   }));
 
-  const zoom = d3.zoom()
-    .scaleExtent([MAP_MIN_SCALE, MAP_MAX_SCALE])
-    .on("start", function (event) {
-      if (event.sourceEvent) stopAutoPan();
-    })
-    .on("zoom", function (event) {
-      currentTransform = event.transform;
-      worldGroup.attr("transform", currentTransform);
-      renderMarkers();
-    })
-    .on("end", function (event) {
-      if (event.sourceEvent) scheduleAutoPanResume();
-    });
-  svg.call(zoom);
+  let countryPaths = null;
+  let routePaths = null;
 
-  let currentTransform = d3.zoomIdentity;
+  function render() {
+    sphere.attr("d", path({ type: "Sphere" }));
+    graticuleLayer.attr("d", path(graticule()));
+    if (countryPaths) countryPaths.attr("d", path);
+    if (routePaths) routePaths.attr("d", path);
+    renderMarkers();
+  }
 
-  /** Ambient "world keeps turning" drift: once a user zooms in on a
-   *  destination the whole world no longer fits the viewport, so -- like
-   *  the old rotating globe -- the map gently keeps panning on its own
-   *  once idle, cycling the hidden far side back into view, and pauses
-   *  the instant a real user gesture (drag/wheel/pinch) starts. At the
-   *  default fully-zoomed-out view the whole world already fits the
-   *  frame (nothing is hidden), so the drift naturally has no distance
-   *  to travel and stays still until the user zooms in. */
+  /** Ambient "world keeps turning" auto-rotation: a continuous, unbounded
+   *  spin around the polar axis whenever the globe is left idle -- unlike
+   *  a flat map, every rotation is always hiding half the world, so this
+   *  runs by default (not just once zoomed in), the same way the original
+   *  3D globe rotated on its own. It pauses the instant a real drag/wheel
+   *  gesture starts and resumes automatically a couple of seconds after
+   *  the user lets go. */
   let autoPanFrame = null;
   let autoPanActive = false;
   let autoPanResumeTimer = null;
   let autoPanLastTime = null;
-  let autoPanDirection = 1;
-  const AUTO_PAN_UNITS_PER_SEC = 16;
+  const AUTO_ROTATE_DEG_PER_SEC = 4;
   const AUTO_PAN_RESUME_DELAY = 2500;
 
   function stopAutoPan() {
@@ -445,39 +523,133 @@ function initMap(root, markers, config, openSidebar) {
     const dt = (now - autoPanLastTime) / 1000;
     autoPanLastTime = now;
 
-    const k = currentTransform.k;
-    const minX = MAP_WIDTH * (1 - k);
-    const maxX = 0;
-
-    if (minX < maxX) {
-      let x = currentTransform.x + autoPanDirection * AUTO_PAN_UNITS_PER_SEC * dt;
-      if (x <= minX) {
-        x = minX;
-        autoPanDirection = 1;
-      } else if (x >= maxX) {
-        x = maxX;
-        autoPanDirection = -1;
-      }
-      zoom.transform(svg, d3.zoomIdentity.translate(x, currentTransform.y).scale(k));
-    }
+    const r = projection.rotate();
+    let lambda = r[0] + AUTO_ROTATE_DEG_PER_SEC * dt;
+    if (lambda > 360 || lambda < -360) lambda %= 360;
+    projection.rotate([lambda, r[1], r[2]]);
+    render();
 
     autoPanFrame = requestAnimationFrame(stepAutoPan);
   }
 
-  /** Approximate Supercluster "zoom level" for the current D3 scale
-   *  factor -- Supercluster's clustering radius is calibrated in web-
-   *  mercator-style zoom levels (roughly a doubling of visual scale per
-   *  level), which is a close enough match to D3's linear scale factor
-   *  for the purpose of deciding how aggressively to group markers. */
+  // Dragging (mouse or a single finger) rotates the globe directly --
+  // degrees-per-pixel is derived from the current scale so a drag always
+  // feels like grabbing the globe's own surface, at any zoom level.
+  // clickDistance() is what keeps this reliable: d3 suppresses the
+  // resulting native "click" event on the dragged element whenever the
+  // pointer moved more than that many pixels, so a drag-rotate can never
+  // misfire as a marker/country click (the exact bug class that made the
+  // original COBE globe's manual hit-testing unreliable).
+  let dragRotateStart = null;
+  let dragRotateFrom = null;
+  const drag = d3.drag()
+    .clickDistance(6)
+    .on("start", function (event) {
+      stopAutoPan();
+      dragRotateFrom = projection.rotate();
+      dragRotateStart = [event.x, event.y];
+    })
+    .on("drag", function (event) {
+      const degPerPixel = 180 / (Math.PI * projection.scale());
+      const dx = event.x - dragRotateStart[0];
+      const dy = event.y - dragRotateStart[1];
+      const lambda = dragRotateFrom[0] + dx * degPerPixel;
+      const phi = Math.max(-90, Math.min(90, dragRotateFrom[1] - dy * degPerPixel));
+      projection.rotate([lambda, phi, 0]);
+      render();
+    })
+    .on("end", function () {
+      scheduleAutoPanResume();
+    });
+  svg.call(drag);
+
+  svg.on("wheel", function (event) {
+    event.preventDefault();
+    stopAutoPan();
+    const factor = event.deltaY < 0 ? 1.08 : 1 / 1.08;
+    projection.scale(clampScale(projection.scale() * factor));
+    render();
+    scheduleAutoPanResume();
+  });
+
+  function animateScale(targetScale, duration) {
+    const clamped = clampScale(targetScale);
+    if (reduceMotion || !duration) {
+      projection.scale(clamped);
+      render();
+      scheduleAutoPanResume();
+      return;
+    }
+    const interp = d3.interpolate(projection.scale(), clamped);
+    d3.transition().duration(duration).tween("v3da-scale", function () {
+      return function (t) {
+        projection.scale(interp(t));
+        render();
+      };
+    }).on("end", scheduleAutoPanResume);
+  }
+
+  function zoomBy(factor) {
+    stopAutoPan();
+    animateScale(projection.scale() * factor, reduceMotion ? 0 : 300);
+  }
+
+  zoomControls.querySelector("[data-zoom-in]").addEventListener("click", function () { zoomBy(1.6); });
+  zoomControls.querySelector("[data-zoom-out]").addEventListener("click", function () { zoomBy(1 / 1.6); });
+
+  /** Rotates the globe to center the given [lng, lat] point (taking the
+   *  shorter way around the pole rather than however d3.interpolate's raw
+   *  linear array interpolation would happen to go) while animating to a
+   *  target scale, used by marker/cluster/list/search/country-click "fly
+   *  to" moves alike. */
+  function flyToPoint(lngLat, targetScale, duration) {
+    stopAutoPan();
+    const current = projection.rotate();
+    let dLambda = -lngLat[0] - current[0];
+    dLambda = ((dLambda + 180) % 360 + 360) % 360 - 180;
+    const targetRotate = [current[0] + dLambda, -lngLat[1], 0];
+    const clampedScale = clampScale(targetScale);
+
+    if (reduceMotion || !duration) {
+      projection.rotate(targetRotate).scale(clampedScale);
+      render();
+      scheduleAutoPanResume();
+      return;
+    }
+
+    const rotateInterp = d3.interpolate(current, targetRotate);
+    const scaleInterp = d3.interpolate(projection.scale(), clampedScale);
+    d3.transition().duration(duration).tween("v3da-globe", function () {
+      return function (t) {
+        projection.rotate(rotateInterp(t)).scale(scaleInterp(t));
+        render();
+      };
+    }).on("end", scheduleAutoPanResume);
+  }
+
+  /** Approximate Supercluster "zoom level" for the current globe scale --
+   *  Supercluster's clustering radius is calibrated in web-mercator-style
+   *  zoom levels (roughly a doubling of visual scale per level), which is
+   *  a close enough match here for the purpose of deciding how
+   *  aggressively to group markers. */
   function superclusterZoom() {
-    return Math.max(0, Math.min(9, Math.round(Math.log2(currentTransform.k) + 2)));
+    const ratio = projection.scale() / baseScale;
+    return Math.max(0, Math.min(9, Math.round(Math.log2(Math.max(ratio, 1e-6)) + 2)));
   }
 
   function renderMarkers() {
     const clusters = index.getClusters([-180, -85, 180, 85], superclusterZoom());
+    const rotate = projection.rotate();
+    const center = [-rotate[0], -rotate[1]];
+    // Only the front hemisphere is ever drawn -- a marker on the far side
+    // of the globe is exactly as reachable as any other, just a rotation
+    // away, rather than rendered (wrongly) on top of the visible side.
+    const visible = clusters.filter(function (d) {
+      return d3.geoDistance(d.geometry.coordinates, center) < HORIZON_LIMIT;
+    });
 
     const sel = markersLayer.selectAll("g.v3datlas-marker")
-      .data(clusters, function (d) { return d.properties.cluster ? "cluster-" + d.id : d.properties.slug; });
+      .data(visible, function (d) { return d.properties.cluster ? "cluster-" + d.id : d.properties.slug; });
 
     sel.exit().remove();
 
@@ -501,7 +673,7 @@ function initMap(root, markers, config, openSidebar) {
 
     const merged = entered.merge(sel);
     merged.each(function (d) {
-      const [x, y] = currentTransform.apply(projection(d.geometry.coordinates));
+      const [x, y] = projection(d.geometry.coordinates);
       const g = d3.select(this);
       g.attr("transform", "translate(" + x + "," + y + ")");
       if (d.properties.cluster) {
@@ -522,52 +694,19 @@ function initMap(root, markers, config, openSidebar) {
   function handleMarkerClick(d) {
     if (d.properties.cluster) {
       const expansionZoom = Math.min(9, index.getClusterExpansionZoom(d.id));
-      const targetScale = Math.min(MAP_MAX_SCALE, Math.pow(2, expansionZoom - 2));
-      zoomToPoint(d.geometry.coordinates, targetScale);
+      const targetScale = baseScale * Math.pow(2, expansionZoom - 2);
+      flyToPoint(d.geometry.coordinates, targetScale, 900);
     } else {
       const marker = byslug[d.properties.slug];
       if (marker) openSidebar(marker);
     }
   }
 
-  function zoomToPoint(lngLat, targetScale) {
-    stopAutoPan();
-    const [x0, y0] = projection(lngLat);
-    const t = d3.zoomIdentity
-      .translate(MAP_WIDTH / 2, MAP_HEIGHT / 2)
-      .scale(targetScale)
-      .translate(-x0, -y0);
-    if (reduceMotion) {
-      svg.call(zoom.transform, t);
-    } else {
-      svg.transition().duration(900).call(zoom.transform, t).on("end", scheduleAutoPanResume);
-    }
-  }
-
   function flyToMarker(marker) {
     if (!marker) return;
-    const targetScale = Math.max(currentTransform.k, 4);
-    zoomToPoint([marker.lng, marker.lat], targetScale);
+    const targetScale = Math.max(projection.scale(), baseScale * 4);
+    flyToPoint([marker.lng, marker.lat], targetScale, 900);
   }
-
-  zoomControls.querySelector("[data-zoom-in]").addEventListener("click", function () {
-    stopAutoPan();
-    if (reduceMotion) {
-      svg.call(zoom.scaleBy, 1.6);
-      scheduleAutoPanResume();
-    } else {
-      svg.transition().duration(300).call(zoom.scaleBy, 1.6).on("end", scheduleAutoPanResume);
-    }
-  });
-  zoomControls.querySelector("[data-zoom-out]").addEventListener("click", function () {
-    stopAutoPan();
-    if (reduceMotion) {
-      svg.call(zoom.scaleBy, 1 / 1.6);
-      scheduleAutoPanResume();
-    } else {
-      svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.6).on("end", scheduleAutoPanResume);
-    }
-  });
 
   function addFeaturedRoutes() {
     const arcPairs = Array.isArray(config.arcs) && config.arcs.length ? config.arcs : DEFAULT_FEATURED_ARC_PAIRS;
@@ -587,7 +726,7 @@ function initMap(root, markers, config, openSidebar) {
       });
     });
 
-    const routeSel = routesLayer.selectAll("path")
+    routePaths = routesLayer.selectAll("path")
       .data(lines)
       .enter()
       .append("path")
@@ -596,7 +735,7 @@ function initMap(root, markers, config, openSidebar) {
       .style("opacity", reduceMotion ? 0.45 : 0);
 
     if (!reduceMotion) {
-      routeSel.transition().duration(1200).style("opacity", 0.45);
+      routePaths.transition().duration(1200).style("opacity", 0.45);
     }
   }
 
@@ -605,17 +744,26 @@ function initMap(root, markers, config, openSidebar) {
     .then(function (topo) {
       const objectName = Object.keys(topo.objects)[0];
       const world = topojson.feature(topo, topo.objects[objectName]);
-      projection.fitSize([MAP_WIDTH, MAP_HEIGHT], world);
+      const numericToAlpha2 = window.V3DA_ISO_NUMERIC_ALPHA2 || {};
 
-      countriesLayer.selectAll("path")
+      countryPaths = countriesLayer.selectAll("path")
         .data(world.features)
         .enter()
         .append("path")
         .attr("class", "v3datlas-country")
-        .attr("d", path);
+        .style("cursor", "pointer")
+        .on("click", function (event, d) {
+          const code = numericToAlpha2[String(d.id)] || null;
+          const name = (d.properties && d.properties.name) || "";
+          if (openCountry) openCountry(code, name);
+          const centroid = d3.geoCentroid(d);
+          if (centroid && isFinite(centroid[0]) && isFinite(centroid[1])) {
+            flyToPoint(centroid, projection.scale(), 900);
+          }
+        });
 
       addFeaturedRoutes();
-      renderMarkers();
+      render();
       scheduleAutoPanResume();
     })
     .catch(function () {
@@ -657,5 +805,5 @@ document.querySelectorAll("[data-v3datlas-root]").forEach(function (root) {
   });
   initListSearch(root);
   initDestinationList(root, sidebarApi.openSidebar, sidebarApi.byslug);
-  mapApi = initMap(root, markers, config, sidebarApi.openSidebar);
+  mapApi = initMap(root, markers, config, sidebarApi.openSidebar, sidebarApi.openCountry);
 });

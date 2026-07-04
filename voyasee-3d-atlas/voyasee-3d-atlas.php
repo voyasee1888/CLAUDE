@@ -3,7 +3,7 @@
  * Plugin Name: Voyasee 3D World Story Atlas
  * Plugin URI: https://voyasee.com/
  * Description: A premium, interactive vector-map entry point into Voyasee's destination content, built on a self-hosted, plugin-owned destinations dataset with live weather and country-intelligence enrichment on marker click.
- * Version: 2.2.0
+ * Version: 2.3.0
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-3d-atlas
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('V3DA_VERSION', '2.2.0');
+define('V3DA_VERSION', '2.3.0');
 define('V3DA_FILE', __FILE__);
 define('V3DA_DIR', plugin_dir_path(__FILE__));
 define('V3DA_URL', plugin_dir_url(__FILE__));
@@ -64,6 +64,7 @@ final class Voyasee_3D_Atlas {
         wp_register_script('v3da-d3', V3DA_URL . 'assets/js/vendor/d3.min.js', [], V3DA_VERSION);
         wp_register_script('v3da-supercluster', V3DA_URL . 'assets/js/vendor/supercluster.min.js', [], V3DA_VERSION);
         wp_register_script('v3da-topojson', V3DA_URL . 'assets/js/vendor/topojson-client.min.js', [], V3DA_VERSION);
+        wp_register_script('v3da-iso-country-codes', V3DA_URL . 'assets/js/vendor/iso-country-codes.js', [], V3DA_VERSION);
         wp_register_script_module('v3da-app', V3DA_URL . 'assets/js/app.js', [], V3DA_VERSION);
     }
 

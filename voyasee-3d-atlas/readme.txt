@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,13 +14,61 @@ A premium, interactive vector-map entry point into Voyasee's destination content
 
 Renders via the `[voyasee_3d_atlas]` shortcode. Built on a self-hosted, plugin-owned
 destinations dataset (no dependency on any other Voyasee plugin), with a
-self-contained interactive vector map (real country shapes, pan/zoom, marker
-clustering -- no external tile/map server involved at all), live weather and
+self-contained interactive rotating globe (real country shapes, drag-to-rotate,
+zoom, marker clustering, click any country for its own facts even without a
+destination pin -- no external tile/map server involved at all), live weather and
 country-intelligence enrichment on marker click via Voyasee Weather Bridge and
 Voyasee Country Intelligence, and a fully crawlable visible destinations list for
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 2.3.0 =
+* Replaced the flat "Equal Earth" map projection with a true rotating
+  globe (D3's orthographic projection), at the user's explicit request
+  that the map "go fully round" the way the original 3D globe did rather
+  than only ever showing a flat, front-on slice of the world. Dragging
+  (mouse or a single finger) rotates the globe directly by manipulating
+  the projection's own rotate() parameters, so the far side of the world
+  is always just a drag away rather than permanently out of reach, in any
+  direction -- up, down, left, or right, including all the way round the
+  poles and back.
+* Added a continuous, unbounded ambient auto-rotation whenever the globe
+  is left idle (replacing the previous bounded left-right auto-pan, which
+  only ever worked on the old flat map's fixed edges) -- it pauses the
+  instant a real drag/wheel gesture starts and resumes automatically a
+  couple of seconds after the user lets go, and is fully disabled under
+  prefers-reduced-motion.
+* Marker visibility now correctly follows the globe's current
+  orientation: only destinations on the currently-facing hemisphere are
+  ever rendered, so rotating the globe reveals a different, correct set
+  of destination pins rather than showing every pin overlaid onto a flat
+  projection regardless of which "side" it's really on.
+* Fixed click-vs-drag reliability the same way the browser's own drag
+  gesture recognizer is designed to: d3's clickDistance() setting
+  suppresses the native click event on whatever marker or country was
+  under the pointer if the drag moved more than a few pixels, so
+  rotating the globe by dragging can never misfire as a destination or
+  country click -- the exact bug class that made the original COBE 3D
+  globe's manual hit-testing unreliable, now solved structurally rather
+  than by patching symptoms.
+* Added a new "click a country" info panel: every country shape on the
+  globe is independently clickable, even ones with no destination pins
+  of their own, and shows whatever country-level facts Voyasee Country
+  Intelligence has for it (currency, driving side, power plugs, tipping
+  and tap-water guidance, emergency numbers, upcoming public holidays)
+  plus a list of any Atlas destinations in that country, via a new
+  `/countries/{code}` REST endpoint. If neither is available for a given
+  country, it shows a graceful "no information available" message
+  instead of doing nothing.
+* Added a small bundled ISO 3166-1 numeric-to-alpha-2 country code table
+  (extracted from the i18n-iso-countries package, MIT-licensed, see
+  assets/js/vendor/SOURCES.md) to bridge the bundled world topology's
+  numeric country IDs to the alpha-2 codes Country Intelligence and every
+  destination's own `country_code` column already use.
+* Added a subtle latitude/longitude graticule and a filled sphere/ocean
+  backdrop so the globe reads as a solid rotating body, plus a hover
+  highlight on every country shape as a "this is clickable" affordance.
 
 = 2.2.0 =
 * Fixed a destination-name legibility bug in the sidebar: `.v3datlas-sidebar-name`

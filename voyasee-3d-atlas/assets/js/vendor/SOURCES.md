@@ -29,6 +29,21 @@
   more compact encoding than plain GeoJSON) into real country boundary
   GeoJSON features for rendering.
 
+## iso-country-codes.js
+
+- Source: https://www.npmjs.com/package/i18n-iso-countries
+- Version: 7.14.0 (data extracted at build time, package itself not vendored)
+- License: MIT (see ISO-COUNTRY-CODES-LICENSE.txt)
+- Not a vendored library -- a static data table (ISO 3166-1 numeric ->
+  alpha-2 code) extracted from this package's `getNumericCodes()` via a
+  one-off Node script and written out as a plain object literal attached
+  to `window.V3DA_ISO_NUMERIC_ALPHA2`. Needed because the bundled world
+  topology (../data/world-countries-110m.topo.json) identifies each
+  country by its ISO numeric code, but Voyasee Country Intelligence (the
+  optional bridge plugin queried for the "click a country" info panel,
+  see class-v3da-rest.php) is keyed by ISO alpha-2 code, the same format
+  already used for every destination's `country_code` column.
+
 ## Replaced approach (v2.0.0 -> v2.1.0)
 
 v2.0.0 briefly used MapLibre GL JS with third-party-hosted vector tiles

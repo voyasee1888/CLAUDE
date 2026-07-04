@@ -14,6 +14,11 @@ final class V3DA_REST {
             'callback' => [self::class, 'destination'],
             'permission_callback' => [self::class, 'public_permission'],
         ]);
+        register_rest_route(self::NS, '/countries/(?P<code>[A-Za-z]{2})', [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [self::class, 'country'],
+            'permission_callback' => [self::class, 'public_permission'],
+        ]);
     }
 
     public static function public_permission(): bool|WP_Error {
@@ -66,6 +71,45 @@ final class V3DA_REST {
             'upcomingHoliday' => $holiday,
             'nearby' => V3DA_Content::nearby_destinations($all_destinations, $destination, 3),
             'sameCountry' => V3DA_Content::same_country_destinations($all_destinations, $destination, 4),
+        ], 200);
+        $response->header('Cache-Control', 'public, max-age=300, stale-while-revalidate=900');
+        return $response;
+    }
+
+    /**
+     * Backs the "click a bare country shape on the map" info panel -- unlike
+     * /destinations/{slug}, this has no destination record to key off of, so
+     * it's reached purely by the ISO alpha-2 country code the client already
+     * resolved (from the map's own country-shape data) rather than anything
+     * looked up server-side first. Still returns real data whenever this
+     * country either has Country Intelligence data or Atlas destinations of
+     * its own, so clicking blank ocean-less countries with no specific
+     * destination pins still shows something useful.
+     */
+    public static function country(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $code = strtoupper(sanitize_text_field((string) $request['code']));
+        if (!preg_match('/^[A-Z]{2}$/', $code)) {
+            return new WP_Error('v3da_invalid_country', __('Invalid country code.', 'voyasee-3d-atlas'), ['status' => 400]);
+        }
+
+        $country = V3DA_Content::country_snapshot($code);
+        $holiday = V3DA_Content::upcoming_holiday($code);
+        $destinations = V3DA_DB::get_all(['status' => 'active', 'country_code' => $code]);
+        $destination_list = array_map(
+            static fn(array $d): array => ['slug' => $d['slug'], 'name' => $d['name']],
+            $destinations
+        );
+
+        if (null === $country && empty($destination_list)) {
+            return new WP_Error('v3da_country_unavailable', __('No information is available for this country yet.', 'voyasee-3d-atlas'), ['status' => 404]);
+        }
+
+        $response = new WP_REST_Response([
+            'ok' => true,
+            'countryCode' => $code,
+            'country' => $country,
+            'upcomingHoliday' => $holiday,
+            'destinations' => $destination_list,
         ], 200);
         $response->header('Cache-Control', 'public, max-age=300, stale-while-revalidate=900');
         return $response;

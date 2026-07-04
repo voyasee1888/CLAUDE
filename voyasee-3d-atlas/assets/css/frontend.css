@@ -151,21 +151,54 @@
     width: 100%;
     height: 100%;
     cursor: grab;
+    /* Dragging (mouse or a single finger) rotates the globe itself, so the
+       browser's own touch-scroll gesture must not compete with it -- without
+       this, a finger-drag on mobile would scroll the page instead of (or as
+       well as) spinning the globe. */
+    touch-action: none;
 }
 
 .v3datlas-map-svg:active {
     cursor: grabbing;
 }
 
+/* The globe's own sphere/ocean backdrop, filled so it reads as a solid
+   rotating body rather than a flat map cut into a circle -- rendered
+   behind the graticule, country shapes, routes, and markers. */
+.v3datlas-globe-sphere {
+    fill: var(--v3datlas-emerald-950);
+    stroke: rgba(232, 207, 134, 0.3);
+    stroke-width: 1;
+}
+
+/* A faint latitude/longitude grid over the sphere -- the classic "globe"
+   visual cue, subtle enough not to compete with country shapes or
+   markers. */
+.v3datlas-globe-graticule {
+    fill: none;
+    stroke: rgba(246, 241, 230, 0.08);
+    stroke-width: 0.5;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
 /* Real country boundary shapes (bundled with the plugin, see
    assets/data/SOURCES.md) -- a muted land tone on the deep emerald ocean
    background, close enough in value to read as "map" without competing
-   with the gold destination markers for attention. */
+   with the gold destination markers for attention. Every country shape is
+   independently clickable (see class-v3da-rest.php's /countries/{code}
+   endpoint) to show country-level info even where there's no destination
+   pin, so the hover state doubles as a "this is clickable" affordance. */
 .v3datlas-country {
     fill: var(--v3datlas-emerald-800);
     stroke: rgba(246, 241, 230, 0.12);
     stroke-width: 0.5;
     vector-effect: non-scaling-stroke;
+    transition: fill 0.15s ease;
+}
+
+.v3datlas-country:hover {
+    fill: rgba(201, 162, 75, 0.4);
 }
 
 .v3datlas-route {

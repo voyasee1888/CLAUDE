@@ -14,6 +14,7 @@ final class V3DA_Shortcode {
         wp_enqueue_script('v3da-d3');
         wp_enqueue_script('v3da-supercluster');
         wp_enqueue_script('v3da-topojson');
+        wp_enqueue_script('v3da-iso-country-codes');
         wp_enqueue_script_module('v3da-app');
 
         $uid = 'v3da-' . wp_unique_id();
@@ -36,6 +37,10 @@ final class V3DA_Shortcode {
                 'close' => __('Close', 'voyasee-3d-atlas'),
                 'mapUnavailable' => __('The interactive map isn\'t available in this browser. Browse all destinations in the list below.', 'voyasee-3d-atlas'),
                 'mapAriaLabel' => __('Interactive world map of Voyasee destinations', 'voyasee-3d-atlas'),
+                'countryOverviewLabel' => __('Country overview', 'voyasee-3d-atlas'),
+                'countryNoData' => __('No information is available for this country yet.', 'voyasee-3d-atlas'),
+                'destinationsInCountry' => __('Destinations we cover here', 'voyasee-3d-atlas'),
+                'countryFallbackName' => __('This country', 'voyasee-3d-atlas'),
             ],
         ]);
 
