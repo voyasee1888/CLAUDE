@@ -72,7 +72,7 @@ $affiliate_fields = [
             </tr>
         </table>
 
-        <h2><?php echo esc_html__('Globe Intro Tour', 'voyasee-3d-atlas'); ?></h2>
+        <h2><?php echo esc_html__('Map Featured Routes', 'voyasee-3d-atlas'); ?></h2>
         <table class="form-table">
             <tr>
                 <th><label for="v3da-featured-arcs"><?php echo esc_html__('Featured route pairs', 'voyasee-3d-atlas'); ?></label></th>
@@ -82,7 +82,7 @@ $affiliate_fields = [
                             echo esc_textarea($pair[0] . ', ' . $pair[1]) . "\n";
                         }
                     ?></textarea>
-                    <p class="description"><?php echo esc_html__('One destination-slug pair per line (e.g. "tokyo, paris"). Draws an animated arc between each pair as a short intro tour when the globe loads. Leave blank to use the built-in default route set.', 'voyasee-3d-atlas'); ?></p>
+                    <p class="description"><?php echo esc_html__('One destination-slug pair per line (e.g. "tokyo, paris"). Draws a curved flight-route line between each pair on the map. Leave blank to use the built-in default route set.', 'voyasee-3d-atlas'); ?></p>
                 </td>
             </tr>
         </table>

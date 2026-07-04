@@ -11,6 +11,7 @@ final class V3DA_Shortcode {
     public static function render(array $atts = []): string {
         wp_enqueue_style('v3da-fonts', 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@400;500;700&display=swap', [], null);
         wp_enqueue_style('v3da-frontend');
+        wp_enqueue_script('v3da-maplibre');
         wp_enqueue_script_module('v3da-app');
 
         $uid = 'v3da-' . wp_unique_id();
@@ -30,6 +31,7 @@ final class V3DA_Shortcode {
                 'countryUnavailable' => __('Country details are temporarily unavailable for this destination.', 'voyasee-3d-atlas'),
                 'loadError' => __('This destination could not be loaded. Please try again.', 'voyasee-3d-atlas'),
                 'close' => __('Close', 'voyasee-3d-atlas'),
+                'mapUnavailable' => __('The interactive map isn\'t available in this browser. Browse all destinations in the list below.', 'voyasee-3d-atlas'),
             ],
         ]);
 
@@ -65,13 +67,17 @@ final class V3DA_Shortcode {
 
         $markers = [];
         foreach ($destinations as $d) {
-            $glow = 0.35 + (0.65 * min(1, ($counts[$d['id']] ?? 0) / $max_count));
+            // Normalized 0-1 "how much content exists for this destination"
+            // signal, used to scale marker radius/glow on the map -- a
+            // purely cosmetic, non-essential signal (a destination with no
+            // linked content still renders and works identically otherwise).
+            $weight = round(min(1, ($counts[$d['id']] ?? 0) / $max_count), 4);
             $markers[] = [
                 'slug' => $d['slug'],
                 'name' => $d['name'],
                 'lat' => (float) $d['lat'],
                 'lng' => (float) $d['lng'],
-                'size' => round(0.04 + (0.03 * $glow), 4),
+                'weight' => $weight,
             ];
         }
         return $markers;

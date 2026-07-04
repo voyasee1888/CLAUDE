@@ -1,118 +1,7 @@
-import createGlobe from "v3da-cobe";
-
-/**
- * Subsolar point (the lat/lng where the sun is directly overhead right now)
- * from a standard low-precision solar-position algorithm (the same family
- * of equations used by NOAA's solar calculator and the common
- * Leaflet.Terminator technique): ecliptic longitude from orbital elements,
- * obliquity-corrected right ascension/declination, then subsolar longitude
- * from the difference between right ascension and Greenwich Mean Sidereal
- * Time. Verified against known solstice/equinox reference points (e.g. the
- * June solstice at 12:00 UTC should give ~+23.4 deg latitude, ~0 deg
- * longitude) before being wired into rendering.
- */
-function getSubsolarPoint(date) {
-  const jd = date.getTime() / 86400000 + 2440587.5;
-  const n = jd - 2451545.0;
-  const rad = Math.PI / 180;
-  let L = (280.46 + 0.9856474 * n) % 360; if (L < 0) L += 360;
-  let g = (357.528 + 0.9856003 * n) % 360; if (g < 0) g += 360;
-  const lambda = L + 1.915 * Math.sin(g * rad) + 0.02 * Math.sin(2 * g * rad);
-  const epsilon = 23.439 - 0.0000004 * n;
-  const lambdaRad = lambda * rad, epsilonRad = epsilon * rad;
-  let alpha = Math.atan2(Math.cos(epsilonRad) * Math.sin(lambdaRad), Math.cos(lambdaRad)) / rad;
-  const delta = Math.asin(Math.sin(epsilonRad) * Math.sin(lambdaRad)) / rad;
-  const T = n / 36525;
-  let gmst = (280.46061837 + 360.98564736629 * n + T * T * (0.000387933 - T / 38710000)) % 360;
-  if (gmst < 0) gmst += 360;
-  if (alpha < 0) alpha += 360;
-  let lng = alpha - gmst;
-  lng = (((lng + 180) % 360) + 360) % 360 - 180;
-  return { lat: delta, lng: lng };
-}
-
-/**
- * Marker screen-space projection, empirically calibrated against the
- * vendored cobe build (it exposes no hit-testing API of its own): for a
- * given lat/lng/phi/theta it reproduces the exact rotation math cobe uses
- * to place markers, so DOM hotspot buttons can be kept in sync with the
- * rendered dots every frame. Verified against known marker pixel positions
- * captured from real WebGL renders at several phi/theta combinations.
- */
-function projectMarker(lat, lng, phi, theta, radius) {
-  const latRad = (lat * Math.PI) / 180;
-  const lngRad = (lng * Math.PI) / 180;
-  const cosLat = Math.cos(latRad);
-  const x0 = cosLat * Math.cos(lngRad + phi);
-  const y0 = Math.sin(latRad);
-  const z0 = -cosLat * Math.sin(lngRad + phi);
-  const cosT = Math.cos(theta);
-  const sinT = Math.sin(theta);
-  const y1 = y0 * cosT - z0 * sinT;
-  const z1 = y0 * sinT + z0 * cosT;
-  const x1 = x0;
-  return {
-    x: radius + radius * x1,
-    y: radius - radius * y1,
-    visible: z1 > 0.02,
-  };
-}
-
-/** Standard geographic-to-unit-vector conversion for great-circle math
- *  (independent of the view-projection formula above -- this is purely
- *  about interpolating a point between two real lat/lng coordinates). */
-function latLngToVec3(lat, lng) {
-  const latRad = (lat * Math.PI) / 180;
-  const lngRad = (lng * Math.PI) / 180;
-  const cosLat = Math.cos(latRad);
-  return [cosLat * Math.cos(lngRad), cosLat * Math.sin(lngRad), Math.sin(latRad)];
-}
-
-function vec3ToLatLng(v) {
-  return [(Math.asin(v[2]) * 180) / Math.PI, (Math.atan2(v[1], v[0]) * 180) / Math.PI];
-}
-
-/** Spherical linear interpolation between two points on a great circle. */
-function slerp(a, b, t) {
-  let dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-  dot = Math.max(-1, Math.min(1, dot));
-  const omega = Math.acos(dot);
-  if (omega < 1e-6) return a;
-  const sinOmega = Math.sin(omega);
-  const s0 = Math.sin((1 - t) * omega) / sinOmega;
-  const s1 = Math.sin(t * omega) / sinOmega;
-  return [a[0] * s0 + b[0] * s1, a[1] * s0 + b[1] * s1, a[2] * s0 + b[2] * s1];
-}
-
-function easeInOutCubic(t) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
-/** Default "world tour" pairs for the on-load intro animation, used only
- *  when the site owner hasn't configured their own route list in
- *  Settings -> Globe Intro Tour. Resolved against whichever destinations
- *  actually exist on this site -- a pair is simply skipped if either slug
- *  isn't found (e.g. a destination was deleted, or the seed data was
- *  never populated). */
-const DEFAULT_FEATURED_ARC_PAIRS = [
-  ["new-york-city", "london"],
-  ["paris", "tokyo"],
-  ["dubai", "sydney"],
-  ["cape-town", "rio-de-janeiro"],
-  ["singapore", "los-angeles"],
-];
-
-// Low-res grid the day/night mask is computed at, then upscaled with
-// smoothing onto the full-size overlay -- cheap enough to recompute every
-// frame (needed since the mapping from screen pixel to real lat/lng shifts
-// as the globe rotates), and the softness this resolution produces looks
-// like a natural twilight gradient rather than a hard line.
-const TERMINATOR_RES = 100;
-
 function supportsWebGL() {
   try {
     const canvas = document.createElement("canvas");
-    return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+    return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("webgl2")));
   } catch (err) {
     return false;
   }
@@ -127,16 +16,22 @@ function el(tag, className, text) {
 
 /**
  * Owns the destination detail sidebar: fetching, rendering, open/close.
- * Deliberately independent of the globe/WebGL code below -- clicking a
- * destination (from the globe, the A-Z list, or the search box) must show
+ * Deliberately independent of the map/WebGL code below -- clicking a
+ * destination (from the map, the A-Z list, or the search box) must show
  * that destination's own weather/country/fact data even on a device or
- * browser where the WebGL globe itself can't render. This intentionally
+ * browser where the WebGL map itself can't render. This intentionally
  * never links out to blog posts or a site-search results page: every
  * destination's own particular data (weather, country notes, "did you
  * know") is shown directly in this sidebar, with no dependency on whether
  * any article has been written about that place yet.
+ *
+ * @param {(marker: object) => void} [onOpen] Optional callback fired with
+ *   the marker every time the sidebar opens, regardless of what triggered
+ *   it (map marker click, A-Z list, search box, or a "you might also
+ *   like" chip) -- used by the map to fly the camera to that destination
+ *   even when the sidebar was opened from outside the map itself.
  */
-function initSidebar(root, markers, strings, restBase) {
+function initSidebar(root, markers, strings, restBase, onOpen) {
   const byslug = {};
   markers.forEach(function (m) { byslug[m.slug] = m; });
 
@@ -163,6 +58,7 @@ function initSidebar(root, markers, strings, restBase) {
 
   function openSidebar(marker) {
     if (!marker) return;
+    if (onOpen) onOpen(marker);
     sidebar.hidden = false;
     requestAnimationFrame(function () { sidebar.classList.add("is-open"); });
     sidebarBody.innerHTML = "";
@@ -313,9 +209,9 @@ function initSidebar(root, markers, strings, restBase) {
 /**
  * Wires the server-rendered A-Z destination list (and, by extension, its
  * search-filtered subset) so clicking any destination name opens the same
- * sidebar a globe marker click would, instead of navigating to a category
+ * sidebar a map marker click would, instead of navigating to a category
  * archive or a site-search results page. This is the one click handler for
- * every non-globe entry point into a destination's data.
+ * every non-map entry point into a destination's data.
  */
 function initDestinationList(root, openSidebar, byslug) {
   const list = root.querySelector("[data-v3datlas-destination-list]");
@@ -329,432 +225,11 @@ function initDestinationList(root, openSidebar, byslug) {
   });
 }
 
-function initRoot(root, markers, config, openSidebar) {
-  const mount = root.querySelector("[data-v3datlas-globe-mount]");
-  if (!mount) return;
-
-  // The ambient globe renders regardless of whether any destinations exist
-  // yet -- only the clickable markers depend on markers.length, and that
-  // array is simply empty in that case (nothing further to guard here).
-  if (!supportsWebGL()) {
-    mount.style.display = "none";
-    return;
-  }
-
-  const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-
-  const byslug = {};
-  markers.forEach(function (m) { byslug[m.slug] = m; });
-  const arcPairs = Array.isArray(config.arcs) && config.arcs.length ? config.arcs : DEFAULT_FEATURED_ARC_PAIRS;
-  const featuredArcs = arcPairs
-    .map(function (pair) {
-      const from = byslug[pair[0]];
-      const to = byslug[pair[1]];
-      return from && to ? { from: from, to: to } : null;
-    })
-    .filter(Boolean);
-
-  const TOUR_ROTATE_MS = 1200;
-  const TOUR_DRAW_MS = 2200;
-  const TOUR_HOLD_MS = 500;
-  const TOUR_PHASE_MS = TOUR_ROTATE_MS + TOUR_DRAW_MS + TOUR_HOLD_MS;
-
-  // Marker hit-testing radius in CSS pixels. With 167 destinations, many
-  // geographically close together (e.g. 40+ in Europe alone), their
-  // projected screen positions routinely overlap once the globe is
-  // rotated to that region. An earlier version gave each marker its own
-  // absolutely-positioned 18x18px DOM button stacked on the canvas --
-  // when several of those overlapped, only whichever button happened to
-  // be topmost in paint order could ever receive a click, so most clicks
-  // near a cluster of dots silently did nothing. Hit-testing is done here
-  // instead against every marker's actual current screen position on
-  // pointerup, picking whichever real marker is closest to the exact
-  // click point (and within this radius) -- this is correct regardless of
-  // how many markers visually overlap at that spot.
-  const MARKER_HIT_RADIUS = 16;
-
-  const state = {
-    canvas: null,
-    globe: null,
-    rafId: null,
-    phi: 0,
-    theta: 0.3,
-    dpr: 1,
-    size: 600,
-    dragging: false,
-    lastX: 0,
-    markerScreenPos: [],
-    booted: false,
-    destroyTimer: null,
-    captionEl: null,
-    tourActive: !reduceMotion && featuredArcs.length > 0,
-    tourIndex: 0,
-    tourPhaseStartedAt: 0,
-    tourFromPhi: 0,
-  };
-
-  function buildCanvasAndHotspots() {
-    mount.innerHTML = "";
-    const canvas = document.createElement("canvas");
-    canvas.className = "v3datlas-globe-canvas";
-    mount.appendChild(canvas);
-    state.canvas = canvas;
-    state.markerScreenPos = [];
-
-    const termCanvas = document.createElement("canvas");
-    termCanvas.className = "v3datlas-terminator-canvas";
-    mount.appendChild(termCanvas);
-    state.termCanvas = termCanvas;
-    state.termCtx = termCanvas.getContext("2d");
-    state.termOffscreen = document.createElement("canvas");
-    state.termOffscreen.width = TERMINATOR_RES;
-    state.termOffscreen.height = TERMINATOR_RES;
-    state.termOffCtx = state.termOffscreen.getContext("2d");
-    state.termImageData = state.termOffCtx.createImageData(TERMINATOR_RES, TERMINATOR_RES);
-
-    const caption = document.createElement("p");
-    caption.className = "v3datlas-tour-caption";
-    caption.hidden = true;
-    mount.appendChild(caption);
-    state.captionEl = caption;
-  }
-
-  /** Nearest marker to a given canvas-relative point, within
-   *  MARKER_HIT_RADIUS, or null if nothing is close enough -- used for
-   *  both click resolution and hover-cursor feedback. */
-  function findMarkerNear(x, y) {
-    let best = null;
-    let bestDist = MARKER_HIT_RADIUS;
-    for (let i = 0; i < state.markerScreenPos.length; i++) {
-      const p = state.markerScreenPos[i];
-      if (!p.visible) continue;
-      const dx = p.x - x, dy = p.y - y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist <= bestDist) {
-        bestDist = dist;
-        best = p.marker;
-      }
-    }
-    return best;
-  }
-
-  function createGlobeInstance() {
-    // cobe multiplies width/height by devicePixelRatio internally
-    // (canvas.width = options.width * options.devicePixelRatio) -- pass
-    // CSS pixel dimensions here, not pre-multiplied, or the backing store
-    // ends up devicePixelRatio^2 too large.
-    state.globe = createGlobe(state.canvas, {
-      devicePixelRatio: state.dpr,
-      width: state.size,
-      height: state.size,
-      phi: state.phi,
-      theta: state.theta,
-      dark: 1,
-      diffuse: 1.2,
-      mapSamples: 16000,
-      mapBrightness: 6,
-      baseColor: [0.06, 0.24, 0.18],
-      markerColor: [0.79, 0.64, 0.29],
-      glowColor: [0.51, 0.4, 0.16],
-      markers: markers.map(function (m) {
-        return { location: [m.lat, m.lng], size: m.size || 0.05 };
-      }),
-    });
-    state.canvas.addEventListener("webglcontextlost", onContextLost, false);
-    state.canvas.addEventListener("webglcontextrestored", onContextRestored, false);
-  }
-
-  function onContextLost(e) {
-    e.preventDefault();
-    stopLoop();
-    if (state.globe) {
-      try { state.globe.destroy(); } catch (err) { /* context already gone */ }
-      state.globe = null;
-    }
-  }
-
-  function onContextRestored() {
-    buildCanvasAndHotspots();
-    sizeCanvas();
-    createGlobeInstance();
-    attachInteraction();
-    startLoop();
-  }
-
-  function attachInteraction() {
-    const canvas = state.canvas;
-    let pointerId = null;
-    let downX = 0, downY = 0, draggedFar = false;
-    // Real mice and especially trackpads report several small in-between
-    // pointermove events during an ordinary click -- a human hand rarely
-    // holds perfectly still for the ~100ms between pointerdown and
-    // pointerup. A too-tight threshold (checking each axis independently
-    // against a small number) was misclassifying a large fraction of real
-    // clicks as drags, silently cancelling the marker click. A genuine
-    // drag-to-rotate gesture moves tens of pixels, so a straight-line
-    // distance-from-start threshold in this range still cleanly tells the
-    // two apart while forgiving normal click jitter.
-    const DRAG_THRESHOLD = 9;
-
-    canvas.addEventListener("pointerdown", function (e) {
-      state.dragging = true;
-      state.lastX = e.clientX;
-      downX = e.clientX;
-      downY = e.clientY;
-      draggedFar = false;
-      pointerId = e.pointerId;
-      canvas.setPointerCapture(pointerId);
-      canvas.classList.add("is-dragging");
-      canvas.style.cursor = "";
-    });
-    canvas.addEventListener("pointermove", function (e) {
-      if (!state.dragging) {
-        const rect = canvas.getBoundingClientRect();
-        const hit = findMarkerNear(e.clientX - rect.left, e.clientY - rect.top);
-        canvas.style.cursor = hit ? "pointer" : "";
-        return;
-      }
-      const delta = e.clientX - state.lastX;
-      state.lastX = e.clientX;
-      state.phi += delta * 0.008;
-      const distFromStart = Math.sqrt(Math.pow(e.clientX - downX, 2) + Math.pow(e.clientY - downY, 2));
-      if (distFromStart > DRAG_THRESHOLD) {
-        draggedFar = true;
-      }
-    });
-    function endDrag() {
-      state.dragging = false;
-      canvas.classList.remove("is-dragging");
-      if (null !== pointerId) {
-        try { canvas.releasePointerCapture(pointerId); } catch (err) { /* noop */ }
-      }
-    }
-    canvas.addEventListener("pointerup", function (e) {
-      const wasClick = !draggedFar;
-      endDrag();
-      if (wasClick) {
-        const rect = canvas.getBoundingClientRect();
-        const hit = findMarkerNear(e.clientX - rect.left, e.clientY - rect.top);
-        if (hit) openSidebar(hit);
-      }
-    });
-    canvas.addEventListener("pointercancel", endDrag);
-    canvas.addEventListener("pointerleave", function () {
-      if (state.dragging) endDrag();
-    });
-  }
-
-  function sizeCanvas() {
-    state.size = mount.clientWidth || 600;
-    state.dpr = Math.min(window.devicePixelRatio || 1, 2);
-    // Backing-store pixel dimensions are set by cobe itself from the
-    // width/height/devicePixelRatio passed to createGlobe(); only the CSS
-    // display size needs setting here.
-    state.canvas.style.width = state.size + "px";
-    state.canvas.style.height = state.size + "px";
-    state.termCanvas.width = state.size;
-    state.termCanvas.height = state.size;
-  }
-
-  function renderTerminator(now) {
-    // Real subsolar position moves slowly -- recomputing it once every 60s
-    // (rather than every frame) is indistinguishable visually and avoids
-    // redoing the trig for it 60 times a second.
-    if (!state.subsolar || now - state.subsolarComputedAt > 60000) {
-      state.subsolar = getSubsolarPoint(new Date());
-      state.subsolarComputedAt = now;
-    }
-    const decRad = (state.subsolar.lat * Math.PI) / 180;
-    const subLngRad = (state.subsolar.lng * Math.PI) / 180;
-    const sinDec = Math.sin(decRad), cosDec = Math.cos(decRad);
-    const cosT = Math.cos(state.theta), sinT = Math.sin(state.theta);
-    const res = TERMINATOR_RES;
-    const data = state.termImageData.data;
-
-    for (let py = 0; py < res; py++) {
-      for (let px = 0; px < res; px++) {
-        const idx = (py * res + px) * 4;
-        const u = ((px + 0.5) / res) * 2 - 1;
-        const v = -(((py + 0.5) / res) * 2 - 1);
-        const rr = u * u + v * v;
-        if (rr > 1) {
-          data[idx + 3] = 0;
-          continue;
-        }
-        const z1 = Math.sqrt(Math.max(0, 1 - rr));
-        // Undo the theta tilt, then the phi spin, to recover this pixel's
-        // real (unrotated) latitude/longitude on the globe as it's
-        // currently oriented -- the inverse of projectMarker() above.
-        const y0 = v * cosT + z1 * sinT;
-        const z0 = -v * sinT + z1 * cosT;
-        const x0 = u;
-        const lat = Math.asin(Math.max(-1, Math.min(1, y0)));
-        const lngPlusPhi = Math.atan2(-z0, x0);
-        const lngReal = lngPlusPhi - state.phi;
-
-        const cosZenith = Math.sin(lat) * sinDec + Math.cos(lat) * cosDec * Math.cos(lngReal - subLngRad);
-        // Smooth twilight band roughly +-8 degrees either side of the
-        // terminator, rather than a hard day/night line.
-        const t = Math.max(0, Math.min(1, 0.5 - cosZenith * 3.5));
-        data[idx] = 3;
-        data[idx + 1] = 10;
-        data[idx + 2] = 8;
-        data[idx + 3] = Math.round(t * 100);
-      }
-    }
-
-    state.termOffCtx.putImageData(state.termImageData, 0, 0);
-    state.termCtx.clearRect(0, 0, state.size, state.size);
-    // CSS border-radius on the element does not reliably clip a canvas's
-    // own raster content (confirmed empirically -- upscale smoothing was
-    // spreading edge darkness into the square canvas's corners, outside the
-    // circle, visible as a dark crescent). Clipping via the 2D API instead
-    // constrains the draw operation itself, which is reliable everywhere.
-    state.termCtx.save();
-    state.termCtx.beginPath();
-    state.termCtx.arc(state.size / 2, state.size / 2, state.size / 2, 0, Math.PI * 2);
-    state.termCtx.clip();
-    state.termCtx.imageSmoothingEnabled = true;
-    state.termCtx.drawImage(state.termOffscreen, 0, 0, state.size, state.size);
-    state.termCtx.restore();
-  }
-
-  function updateMarkerPositions() {
-    const radius = state.size / 2;
-    state.markerScreenPos = markers.map(function (marker) {
-      const p = projectMarker(marker.lat, marker.lng, state.phi, state.theta, radius);
-      return { marker: marker, x: p.x, y: p.y, visible: p.visible };
-    });
-  }
-
-  function wrapAngle(a) {
-    while (a > Math.PI) a -= 2 * Math.PI;
-    while (a < -Math.PI) a += 2 * Math.PI;
-    return a;
-  }
-
-  function destinationMarkerConfigs() {
-    return markers.map(function (m) {
-      return { location: [m.lat, m.lng], size: m.size || 0.05 };
-    });
-  }
-
-  function runTourFrame(now) {
-    const arc = featuredArcs[state.tourIndex];
-    if (!state.tourPhaseStartedAt) {
-      state.tourPhaseStartedAt = now;
-      state.tourFromPhi = state.phi;
-      const midpoint = vec3ToLatLng(slerp(latLngToVec3(arc.from.lat, arc.from.lng), latLngToVec3(arc.to.lat, arc.to.lng), 0.5));
-      state.tourTargetPhi = state.phi + wrapAngle(-((midpoint[1] * Math.PI) / 180) - state.phi);
-    }
-
-    const elapsed = now - state.tourPhaseStartedAt;
-    const update = {};
-
-    if (elapsed < TOUR_ROTATE_MS) {
-      const t = easeInOutCubic(elapsed / TOUR_ROTATE_MS);
-      state.phi = state.tourFromPhi + (state.tourTargetPhi - state.tourFromPhi) * t;
-      update.arcs = [];
-      state.captionEl.hidden = true;
-    } else if (elapsed < TOUR_ROTATE_MS + TOUR_DRAW_MS) {
-      state.phi = state.tourTargetPhi;
-      const t = (elapsed - TOUR_ROTATE_MS) / TOUR_DRAW_MS;
-      const dotLatLng = vec3ToLatLng(slerp(latLngToVec3(arc.from.lat, arc.from.lng), latLngToVec3(arc.to.lat, arc.to.lng), Math.min(1, t)));
-      update.arcs = [{ from: [arc.from.lat, arc.from.lng], to: [arc.to.lat, arc.to.lng], color: [0.91, 0.8, 0.55] }];
-      update.markers = destinationMarkerConfigs().concat([{ location: dotLatLng, size: 0.07 }]);
-      state.captionEl.hidden = false;
-      state.captionEl.textContent = arc.from.name + " → " + arc.to.name;
-    } else {
-      state.phi = state.tourTargetPhi;
-      if (elapsed >= TOUR_PHASE_MS) {
-        state.tourIndex += 1;
-        state.tourPhaseStartedAt = 0;
-        if (state.tourIndex >= featuredArcs.length) {
-          state.tourActive = false;
-          state.captionEl.hidden = true;
-          update.arcs = [];
-          update.markers = destinationMarkerConfigs();
-        }
-      }
-    }
-
-    update.phi = state.phi;
-    if (state.globe) state.globe.update(update);
-  }
-
-  function startLoop() {
-    (function frame(now) {
-      now = now || performance.now();
-      if (state.tourActive) {
-        runTourFrame(now);
-      } else {
-        if (!state.dragging && !reduceMotion) {
-          state.phi += 0.0032;
-        }
-        if (state.globe) state.globe.update({ phi: state.phi });
-      }
-      updateMarkerPositions();
-      renderTerminator(now);
-      state.rafId = requestAnimationFrame(frame);
-    })();
-  }
-
-  function stopLoop() {
-    if (state.rafId) cancelAnimationFrame(state.rafId);
-    state.rafId = null;
-  }
-
-  function boot() {
-    if (state.booted) return;
-    buildCanvasAndHotspots();
-    sizeCanvas();
-    createGlobeInstance();
-    attachInteraction();
-    state.booted = true;
-    startLoop();
-  }
-
-  function teardown() {
-    stopLoop();
-    if (state.globe) {
-      try { state.globe.destroy(); } catch (err) { /* noop */ }
-      state.globe = null;
-    }
-    mount.innerHTML = "";
-    state.markerScreenPos = [];
-    state.booted = false;
-  }
-
-  const io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          if (state.destroyTimer) {
-            clearTimeout(state.destroyTimer);
-            state.destroyTimer = null;
-          }
-          boot();
-        } else if (state.booted && !state.destroyTimer) {
-          // Scrolled far out of view: free the WebGL context after a grace
-          // period rather than immediately, so brief scroll-past doesn't
-          // thrash context creation.
-          state.destroyTimer = setTimeout(function () {
-            teardown();
-            state.destroyTimer = null;
-          }, 20000);
-        }
-      });
-    },
-    { threshold: 0.01 }
-  );
-  io.observe(mount);
-}
-
 /**
  * Type-to-filter search over the server-rendered A-Z destination list.
- * Deliberately independent of the globe/WebGL init above -- this list is
+ * Deliberately independent of the map/WebGL init below -- this list is
  * plain server-rendered HTML and must keep working (including for
- * accessibility/no-WebGL visitors) whether or not the globe boots at all.
+ * accessibility/no-WebGL visitors) whether or not the map boots at all.
  */
 function initListSearch(root) {
   const input = root.querySelector("[data-v3datlas-list-search]");
@@ -776,6 +251,312 @@ function initListSearch(root) {
   });
 }
 
+/** Standard geographic-to-unit-vector conversion, used only for great-
+ *  circle interpolation of the featured-route lines below (independent of
+ *  the map's own flat Web Mercator projection, which MapLibre owns). */
+function latLngToVec3(lat, lng) {
+  const latRad = (lat * Math.PI) / 180;
+  const lngRad = (lng * Math.PI) / 180;
+  const cosLat = Math.cos(latRad);
+  return [cosLat * Math.cos(lngRad), cosLat * Math.sin(lngRad), Math.sin(latRad)];
+}
+
+function vec3ToLatLng(v) {
+  return [(Math.asin(v[2]) * 180) / Math.PI, (Math.atan2(v[1], v[0]) * 180) / Math.PI];
+}
+
+/** Spherical linear interpolation between two points on a great circle --
+ *  this is what makes a route between, say, Tokyo and Paris draw as a
+ *  real curved flight path over the pole/high latitudes on the flat map,
+ *  rather than a straight line cutting through the earth. */
+function slerp(a, b, t) {
+  let dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  dot = Math.max(-1, Math.min(1, dot));
+  const omega = Math.acos(dot);
+  if (omega < 1e-6) return a;
+  const sinOmega = Math.sin(omega);
+  const s0 = Math.sin((1 - t) * omega) / sinOmega;
+  const s1 = Math.sin(t * omega) / sinOmega;
+  return [a[0] * s0 + b[0] * s1, a[1] * s0 + b[1] * s1, a[2] * s0 + b[2] * s1];
+}
+
+/** Builds a great-circle route as a GeoJSON LineString of [lng,lat] pairs.
+ *  Splits at the antimeridian if the route crosses it, since MapLibre (like
+ *  any Mercator-based renderer) draws a LineString as literal straight
+ *  segments between consecutive coordinates -- a route that crosses +-180
+ *  degrees longitude needs two separate line pieces to avoid a spurious
+ *  line drawn all the way across the map. */
+function greatCircleLine(from, to, steps) {
+  const a = latLngToVec3(from.lat, from.lng);
+  const b = latLngToVec3(to.lat, to.lng);
+  const points = [];
+  for (let i = 0; i <= steps; i++) {
+    const [lat, lng] = vec3ToLatLng(slerp(a, b, i / steps));
+    points.push([lng, lat]);
+  }
+  const lines = [[]];
+  for (let i = 0; i < points.length; i++) {
+    const cur = points[i];
+    const prev = points[i - 1];
+    if (prev && Math.abs(cur[0] - prev[0]) > 180) {
+      lines.push([]);
+    }
+    lines[lines.length - 1].push(cur);
+  }
+  return lines.filter(function (line) { return line.length > 1; });
+}
+
+/** Free, no-API-key vector tile styles (https://openfreemap.org) -- tries
+ *  the dark style first for a look matching this Atlas's existing emerald/
+ *  gold theme, and falls back to their flagship default style if that
+ *  particular style name doesn't exist or fails to load, so the map still
+ *  renders correctly either way rather than showing nothing. */
+const STYLE_CANDIDATES = [
+  "https://tiles.openfreemap.org/styles/dark",
+  "https://tiles.openfreemap.org/styles/liberty",
+];
+
+const DEFAULT_FEATURED_ARC_PAIRS = [
+  ["new-york-city", "london"],
+  ["paris", "tokyo"],
+  ["dubai", "sydney"],
+  ["cape-town", "rio-de-janeiro"],
+  ["singapore", "los-angeles"],
+];
+
+function initMap(root, markers, config, openSidebar) {
+  const mount = root.querySelector("[data-v3datlas-map-mount]");
+  if (!mount || !markers.length) return { flyToMarker: function () {} };
+
+  const strings = config.strings || {};
+  if (!supportsWebGL() || !window.maplibregl) {
+    mount.innerHTML = "";
+    const msg = el("p", "v3datlas-map-unavailable", strings.mapUnavailable || "");
+    mount.appendChild(msg);
+    return { flyToMarker: function () {} };
+  }
+
+  const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const byslug = {};
+  markers.forEach(function (m) { byslug[m.slug] = m; });
+
+  const container = document.createElement("div");
+  container.className = "v3datlas-map-canvas";
+  mount.innerHTML = "";
+  mount.appendChild(container);
+
+  const map = new maplibregl.Map({
+    container: container,
+    style: STYLE_CANDIDATES[0],
+    center: [10, 25],
+    zoom: 1.2,
+    minZoom: 0.6,
+    maxZoom: 12,
+    attributionControl: { compact: true },
+    dragRotate: false,
+    pitchWithRotate: false,
+    touchPitch: false,
+  });
+
+  // Only ever fall back to the second style candidate if the FIRST style
+  // never finished loading at all. Once the map has successfully loaded
+  // once, later 'error' events are usually benign, unrelated style-spec
+  // warnings (e.g. a symbol layer's text-field needing a glyphs URL the
+  // base style didn't define) -- reacting to those by calling setStyle()
+  // would destructively tear down and replace the entire style, wiping
+  // out every layer this code has already added, for no good reason.
+  let styleLoaded = false;
+  let styleFallbackTried = false;
+  map.on("error", function (e) {
+    if (styleLoaded || styleFallbackTried) return;
+    const isStyleFailure = e && e.error && /style|tile|fetch/i.test(String(e.error.message || ""));
+    if (isStyleFailure) {
+      styleFallbackTried = true;
+      map.setStyle(STYLE_CANDIDATES[1]);
+    }
+  });
+
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+
+  function markersToGeoJSON() {
+    return {
+      type: "FeatureCollection",
+      features: markers.map(function (m) {
+        return {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [m.lng, m.lat] },
+          properties: { slug: m.slug, name: m.name, weight: m.weight || 0 },
+        };
+      }),
+    };
+  }
+
+  function addMarkerLayers() {
+    map.addSource("v3da-destinations", {
+      type: "geojson",
+      data: markersToGeoJSON(),
+      cluster: true,
+      clusterMaxZoom: 6,
+      clusterRadius: 46,
+    });
+
+    map.addLayer({
+      id: "v3da-cluster-glow",
+      type: "circle",
+      source: "v3da-destinations",
+      filter: ["has", "point_count"],
+      paint: {
+        "circle-radius": ["step", ["get", "point_count"], 22, 10, 28, 30, 36],
+        "circle-color": "#c9a24b",
+        "circle-opacity": 0.18,
+        "circle-blur": 1,
+      },
+    });
+
+    map.addLayer({
+      id: "v3da-clusters",
+      type: "circle",
+      source: "v3da-destinations",
+      filter: ["has", "point_count"],
+      paint: {
+        "circle-radius": ["step", ["get", "point_count"], 14, 10, 18, 30, 22],
+        "circle-color": "#0f3d2e",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#e8cf86",
+      },
+    });
+
+    map.addLayer({
+      id: "v3da-cluster-count",
+      type: "symbol",
+      source: "v3da-destinations",
+      filter: ["has", "point_count"],
+      layout: {
+        "text-field": "{point_count_abbreviated}",
+        "text-font": ["Noto Sans Bold"],
+        "text-size": 12,
+        "text-allow-overlap": true,
+      },
+      paint: { "text-color": "#f6f1e6" },
+    });
+
+    map.addLayer({
+      id: "v3da-point-glow",
+      type: "circle",
+      source: "v3da-destinations",
+      filter: ["!", ["has", "point_count"]],
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["get", "weight"], 0, 9, 1, 14],
+        "circle-color": "#c9a24b",
+        "circle-opacity": 0.22,
+        "circle-blur": 1,
+      },
+    });
+
+    map.addLayer({
+      id: "v3da-points",
+      type: "circle",
+      source: "v3da-destinations",
+      filter: ["!", ["has", "point_count"]],
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["get", "weight"], 0, 4.5, 1, 7],
+        "circle-color": "#e8cf86",
+        "circle-stroke-width": 1.5,
+        "circle-stroke-color": "#0a201a",
+      },
+    });
+
+    ["v3da-clusters", "v3da-points"].forEach(function (layerId) {
+      map.on("mouseenter", layerId, function () { map.getCanvas().style.cursor = "pointer"; });
+      map.on("mouseleave", layerId, function () { map.getCanvas().style.cursor = ""; });
+    });
+
+    map.on("click", "v3da-clusters", function (e) {
+      const feature = e.features && e.features[0];
+      if (!feature) return;
+      const clusterId = feature.properties.cluster_id;
+      map.getSource("v3da-destinations").getClusterExpansionZoom(clusterId).then(function (zoom) {
+        map.flyTo({ center: feature.geometry.coordinates, zoom: zoom, essential: true });
+      }).catch(function () { /* noop -- worst case the cluster just doesn't expand on click */ });
+    });
+
+    map.on("click", "v3da-points", function (e) {
+      const feature = e.features && e.features[0];
+      if (!feature) return;
+      const marker = byslug[feature.properties.slug];
+      if (marker) openSidebar(marker);
+    });
+  }
+
+  function addFeaturedArcs() {
+    const arcPairs = Array.isArray(config.arcs) && config.arcs.length ? config.arcs : DEFAULT_FEATURED_ARC_PAIRS;
+    const featuredArcs = arcPairs
+      .map(function (pair) {
+        const from = byslug[pair[0]];
+        const to = byslug[pair[1]];
+        return from && to ? { from: from, to: to } : null;
+      })
+      .filter(Boolean);
+    if (!featuredArcs.length) return;
+
+    const features = [];
+    featuredArcs.forEach(function (arc) {
+      greatCircleLine(arc.from, arc.to, 48).forEach(function (line) {
+        features.push({ type: "Feature", geometry: { type: "LineString", coordinates: line }, properties: {} });
+      });
+    });
+
+    map.addSource("v3da-routes", { type: "geojson", data: { type: "FeatureCollection", features: features } });
+    map.addLayer(
+      {
+        id: "v3da-routes",
+        type: "line",
+        source: "v3da-routes",
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": "#e8cf86", "line-width": 1.5, "line-opacity": 0 },
+      },
+      "v3da-cluster-glow"
+    );
+
+    if (reduceMotion) {
+      map.setPaintProperty("v3da-routes", "line-opacity", 0.45);
+      return;
+    }
+    // Simple one-time fade-in rather than a per-frame animated "draw" --
+    // deliberately less elaborate than possible, to keep this new map
+    // layer robust on the first pass; a scripted flyTo tour can be added
+    // back later the same way the previous globe's intro tour worked.
+    let opacity = 0;
+    const fade = setInterval(function () {
+      if (!map.getLayer("v3da-routes")) {
+        clearInterval(fade);
+        return;
+      }
+      opacity = Math.min(0.45, opacity + 0.02);
+      map.setPaintProperty("v3da-routes", "line-opacity", opacity);
+      if (opacity >= 0.45) clearInterval(fade);
+    }, 40);
+  }
+
+  map.on("load", function () {
+    styleLoaded = true;
+    addMarkerLayers();
+    addFeaturedArcs();
+  });
+
+  function flyToMarker(marker) {
+    if (!marker) return;
+    map.flyTo({
+      center: [marker.lng, marker.lat],
+      zoom: Math.max(map.getZoom(), 5),
+      essential: true,
+      duration: reduceMotion ? 0 : 1400,
+    });
+  }
+
+  return { flyToMarker: flyToMarker };
+}
+
 document.querySelectorAll("[data-v3datlas-root]").forEach(function (root) {
   if (root.hasAttribute("data-v3datlas-ready")) return;
   root.setAttribute("data-v3datlas-ready", "1");
@@ -791,12 +572,17 @@ document.querySelectorAll("[data-v3datlas-root]").forEach(function (root) {
   const restBase = config.restBase || "";
 
   // The sidebar and the A-Z list click handler are wired up regardless of
-  // WebGL support, so every destination -- whether clicked on the globe,
-  // in the search-filtered A-Z list, or via a "you might also like" chip --
-  // shows the same in-page detail view. Only the globe rendering itself
-  // needs WebGL.
-  const sidebarApi = initSidebar(root, markers, strings, restBase);
+  // WebGL support, so every destination -- whether clicked on the map, in
+  // the search-filtered A-Z list, or via a "you might also like" chip --
+  // shows the same in-page detail view. Only the map rendering itself
+  // needs WebGL. mapApi is created after sidebarApi but referenced by it
+  // (via the onOpen callback) since both need each other; the callback
+  // indirection avoids a circular construction order.
+  let mapApi = { flyToMarker: function () {} };
+  const sidebarApi = initSidebar(root, markers, strings, restBase, function (marker) {
+    mapApi.flyToMarker(marker);
+  });
   initListSearch(root);
   initDestinationList(root, sidebarApi.openSidebar, sidebarApi.byslug);
-  initRoot(root, markers, config, sidebarApi.openSidebar);
+  mapApi = initMap(root, markers, config, sidebarApi.openSidebar);
 });

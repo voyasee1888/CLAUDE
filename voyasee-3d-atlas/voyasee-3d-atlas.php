@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Voyasee 3D World Story Atlas
  * Plugin URI: https://voyasee.com/
- * Description: A premium, ambient, auto-rotating 3D globe entry point into Voyasee's destination content, built on a self-hosted, plugin-owned destinations dataset with live weather and country-intelligence enrichment on marker click.
- * Version: 1.5.1
+ * Description: A premium, interactive vector-map entry point into Voyasee's destination content, built on a self-hosted, plugin-owned destinations dataset with live weather and country-intelligence enrichment on marker click.
+ * Version: 2.0.0
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-3d-atlas
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('V3DA_VERSION', '1.5.1');
+define('V3DA_VERSION', '2.0.0');
 define('V3DA_FILE', __FILE__);
 define('V3DA_DIR', plugin_dir_path(__FILE__));
 define('V3DA_URL', plugin_dir_url(__FILE__));
@@ -52,9 +52,17 @@ final class Voyasee_3D_Atlas {
     }
 
     public function register_assets(): void {
-        wp_register_style('v3da-frontend', V3DA_URL . 'assets/css/frontend.css', [], V3DA_VERSION);
-        wp_register_script_module('v3da-cobe', V3DA_URL . 'assets/js/vendor/cobe.esm.js', [], V3DA_VERSION);
-        wp_register_script_module('v3da-app', V3DA_URL . 'assets/js/app.js', ['v3da-cobe'], V3DA_VERSION);
+        wp_register_style('v3da-maplibre', V3DA_URL . 'assets/css/vendor/maplibre-gl.css', [], V3DA_VERSION);
+        wp_register_style('v3da-frontend', V3DA_URL . 'assets/css/frontend.css', ['v3da-maplibre'], V3DA_VERSION);
+        // maplibre-gl has no published ESM build, so it's registered as a classic
+        // script (attaches the `maplibregl` global) rather than a script module.
+        // Classic scripts without a defer/async strategy run synchronously in
+        // document order, and script modules are always deferred by spec, so
+        // this always finishes evaluating before v3da-app runs -- no explicit
+        // dependency link between the two is needed (WP's module dependency
+        // list only accepts other modules, not classic scripts, anyway).
+        wp_register_script('v3da-maplibre', V3DA_URL . 'assets/js/vendor/maplibre-gl.js', [], V3DA_VERSION);
+        wp_register_script_module('v3da-app', V3DA_URL . 'assets/js/app.js', [], V3DA_VERSION);
     }
 
     public function action_links(array $links): array {

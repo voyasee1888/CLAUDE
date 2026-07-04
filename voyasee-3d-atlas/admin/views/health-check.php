@@ -34,7 +34,7 @@ $notice = isset($_GET['v3da_notice']) ? sanitize_key(wp_unslash($_GET['v3da_noti
     </div>
 
     <p class="description">
-        <?php echo esc_html__('"Not yet linked to a category/tag" no longer affects what a visitor sees when clicking that destination -- every destination always shows its own weather/country/fact data in the sidebar regardless. It only slightly reduces that destination\'s marker glow intensity on the globe (based on how much related content exists) and means its structured-data entry has no article URL attached.', 'voyasee-3d-atlas'); ?>
+        <?php echo esc_html__('"Not yet linked to a category/tag" no longer affects what a visitor sees when clicking that destination -- every destination always shows its own weather/country/fact data in the sidebar regardless. It only slightly reduces that destination\'s marker glow/size on the map (based on how much related content exists) and means its structured-data entry has no article URL attached.', 'voyasee-3d-atlas'); ?>
     </p>
     <p class="description">
         <?php if ($stats['pexels_configured']): ?>

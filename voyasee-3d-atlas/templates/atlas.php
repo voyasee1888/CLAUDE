@@ -38,12 +38,10 @@ $has_book_links = $booking_url || $aviasales_url || $kiwi_url;
 $has_safety_links = $safetywing_url || $visa_url;
 ?>
 <section class="v3datlas-root" id="<?php echo esc_attr($uid); ?>" data-v3datlas-root data-v3datlas-config="<?php echo esc_attr($config); ?>">
-    <div class="v3datlas-starfield" aria-hidden="true"></div>
-
     <div class="v3datlas-hero">
         <p class="v3datlas-eyebrow"><?php echo esc_html__('Voyasee World Story Atlas', 'voyasee-3d-atlas'); ?></p>
-        <h2 class="v3datlas-title"><?php echo esc_html__('An interactive globe of every place Voyasee has covered', 'voyasee-3d-atlas'); ?></h2>
-        <p class="v3datlas-intro"><?php echo esc_html__('Spin the globe, click a destination for weather and country notes, or browse the full A–Z list below.', 'voyasee-3d-atlas'); ?></p>
+        <h2 class="v3datlas-title"><?php echo esc_html__('An interactive map of every place Voyasee has covered', 'voyasee-3d-atlas'); ?></h2>
+        <p class="v3datlas-intro"><?php echo esc_html__('Pan and zoom the map, click a destination for weather and country notes, or browse the full A–Z list below.', 'voyasee-3d-atlas'); ?></p>
         <?php if ($hero_cta_url): ?>
             <p class="v3datlas-hero-cta">
                 <a href="<?php echo esc_url($hero_cta_url); ?>"><?php echo esc_html__('Not sure where to start? Find your next destination', 'voyasee-3d-atlas'); ?></a>
@@ -52,8 +50,8 @@ $has_safety_links = $safetywing_url || $visa_url;
     </div>
 
     <div class="v3datlas-stage">
-        <div class="v3datlas-globe-mount" data-v3datlas-globe-mount aria-hidden="true">
-            <noscript><?php echo esc_html__('Enable JavaScript to view the interactive globe.', 'voyasee-3d-atlas'); ?></noscript>
+        <div class="v3datlas-map-mount" data-v3datlas-map-mount aria-hidden="true">
+            <noscript><?php echo esc_html__('Enable JavaScript to view the interactive map.', 'voyasee-3d-atlas'); ?></noscript>
         </div>
 
         <aside class="v3datlas-sidebar" data-v3datlas-sidebar hidden aria-label="<?php echo esc_attr__('Destination details', 'voyasee-3d-atlas'); ?>">

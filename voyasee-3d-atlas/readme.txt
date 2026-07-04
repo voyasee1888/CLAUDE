@@ -1,24 +1,81 @@
 === Voyasee 3D World Story Atlas ===
 Contributors: voyasee
-Tags: travel, globe, 3d, map, destinations
+Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.5.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A premium, ambient, auto-rotating 3D globe entry point into Voyasee's destination content.
+A premium, interactive vector-map entry point into Voyasee's destination content.
 
 == Description ==
 
 Renders via the `[voyasee_3d_atlas]` shortcode. Built on a self-hosted, plugin-owned
-destinations dataset (no dependency on any other Voyasee plugin), with a COBE-based
-dot-matrix globe, live weather and country-intelligence enrichment on marker click via
-Voyasee Weather Bridge and Voyasee Country Intelligence, and a fully crawlable
-visible destinations list for SEO and no-WebGL fallback.
+destinations dataset (no dependency on any other Voyasee plugin), with a MapLibre
+GL JS interactive map (real pan/zoom, marker clustering), live weather and
+country-intelligence enrichment on marker click via Voyasee Weather Bridge and
+Voyasee Country Intelligence, and a fully crawlable visible destinations list for
+SEO and no-WebGL fallback.
 
 == Changelog ==
+
+= 2.0.0 =
+* Replaced the COBE 3D dot-matrix globe with an interactive MapLibre GL JS
+  vector map, at the user's explicit request after repeated marker-click
+  reliability problems on the globe. COBE's dot-matrix rendering had no
+  reliable way to hit-test clicks at high marker density (167 destinations,
+  40+ clustered in Europe alone) without a full rewrite of its internals --
+  every fix attempt (hit-radius tuning, drag-threshold tuning, bigger
+  render size) reduced but never eliminated the problem, because it was
+  structural to that renderer, not a tunable parameter. MapLibre GL JS
+  gives real, browser/library-native click and hover picking on actual
+  map features, the same class of technology behind Google Maps-style
+  products, so a click is now resolved correctly by construction rather
+  than by custom projection math.
+* Real pan and scroll/pinch zoom, exactly like a familiar map product,
+  replacing the fixed-radius rotate-only globe interaction.
+* Marker clustering: destinations close together at low zoom collapse into
+  a single numbered cluster circle; clicking one flies the camera in and
+  expands it, down to individual destinations -- solves marker-density
+  crowding structurally instead of via hit-radius tuning.
+* Every entry point into a destination -- a map marker, a cluster expanding
+  down to it, the A-Z list, the search box, or a "you might also like"
+  chip -- now also flies the map camera to that destination's exact
+  location as its sidebar opens, unifying map and list/search interaction.
+* The great-circle "featured routes" (previously an animated arc tour on
+  the globe) are now curved flight-path lines drawn directly on the map,
+  correctly split at the antimeridian so a route like Tokyo-Los Angeles
+  doesn't draw a spurious line across the whole map. Configured the same
+  way as before (Settings -> Map Featured Routes).
+* Map tiles are served by OpenFreeMap (openfreemap.org), a free,
+  no-API-key, no-signup vector tile provider -- consistent with this
+  plugin's zero-paid-API constraint. The map tries a dark-themed style
+  first and automatically falls back to OpenFreeMap's flagship default
+  style if that particular one is ever unavailable, so the map still
+  renders correctly either way.
+* Dropped the real-time day/night terminator and the multi-phase scripted
+  intro-tour camera animation that the previous globe had -- both were
+  tightly coupled to the globe's spherical rendering and don't carry over
+  directly to a flat map. Kept the sidebar, weather/country/fact data,
+  A-Z list, search, and footer completely unchanged; only the map
+  rendering layer itself was replaced. A day/night band and a scripted
+  camera tour are both feasible to re-add on the new map (as a curved
+  overlay band and a sequence of flyTo animations respectively) as a
+  future enhancement if wanted.
+* Verified with a headless-browser test suite covering the parts under
+  this plugin's own control: map initialization with zero JS errors,
+  marker/cluster layer setup, clicking an individual marker opens the
+  correct destination's sidebar with real data, clicking a cluster
+  expands and flies the camera in (confirmed zoom level increases),
+  and clicking a destination in the A-Z list flies the map to that
+  destination's exact coordinates while opening its sidebar. The live
+  OpenFreeMap tile service itself could not be reached from the
+  development sandbox's network (an environment-level restriction, not a
+  code issue) -- the base map's real visual appearance should be checked
+  once installed on the live site, the same way every other visual change
+  in this plugin has been verified against real screenshots.
 
 = 1.5.1 =
 * Fix: v1.5.0's click-hit-testing was correct, but a separate click-vs-
