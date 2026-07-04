@@ -262,14 +262,7 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
     }
   }
 
-  function renderCountryDashboard(country, upcomingHoliday) {
-    var card = el("div", "v3datlas-sidebar-card");
-    card.appendChild(el("h4", "v3datlas-card-title", "Country notes"));
-    if (!country) {
-      card.appendChild(el("p", "v3datlas-muted", strings.countryUnavailable || "Country details are temporarily unavailable."));
-      return card;
-    }
-
+  function renderCountryStatsAndLanguages(card, country) {
     if (country.population || country.area || country.capital) {
       var statsRow = el("div", "v3datlas-stat-row");
       if (country.population) {
@@ -289,6 +282,17 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
     if (country.languages && country.languages.length) {
       card.appendChild(el("p", "v3datlas-country-detail", "Languages: " + (Array.isArray(country.languages) ? country.languages.slice(0, 4).join(", ") : country.languages)));
     }
+  }
+
+  function renderCountryDashboard(country, upcomingHoliday) {
+    var card = el("div", "v3datlas-sidebar-card");
+    card.appendChild(el("h4", "v3datlas-card-title", "Country notes"));
+    if (!country) {
+      card.appendChild(el("p", "v3datlas-muted", strings.countryUnavailable || "Country details are temporarily unavailable."));
+      return card;
+    }
+
+    renderCountryStatsAndLanguages(card, country);
 
     var list = el("ul", "v3datlas-country-facts");
     if (country.currencyName) {
@@ -485,10 +489,15 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
     ];
     var size = 120, cx = size / 2, cy = size / 2, r = size / 2 - 20;
     var n = axes.length;
+    // Side axis labels ("English", "Safety") sit close to the plot's own
+    // 0/120 edges at this radius, so a plain 0-size viewBox clips them --
+    // pad the viewBox itself rather than the geometry so cx/cy/r (and the
+    // polygon math below) stay simple.
+    var pad = 20;
 
     var svgNS = "http://www.w3.org/2000/svg";
     var svg = document.createElementNS(svgNS, "svg");
-    svg.setAttribute("viewBox", "0 0 " + size + " " + size);
+    svg.setAttribute("viewBox", (-pad) + " " + (-pad) + " " + (size + pad * 2) + " " + (size + pad * 2));
     svg.setAttribute("class", "v3datlas-radar-chart");
     svg.setAttribute("aria-hidden", "true");
 
@@ -611,6 +620,9 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
       card.appendChild(el("p", "v3datlas-muted", strings.countryUnavailable || "Country details are temporarily unavailable."));
       return card;
     }
+
+    renderCountryStatsAndLanguages(card, country);
+
     var list = el("ul", "v3datlas-country-facts");
     if (country.currencyName) {
       var currText = "Currency: " + country.currencyName + (country.currencyCode ? " (" + country.currencyCode + ")" : "");

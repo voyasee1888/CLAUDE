@@ -147,6 +147,15 @@ final class V3DA_Content {
         $safety = $record['safety'] ?? [];
         $currency = $core['currencies'][0] ?? null;
 
+        // core.languages and core.capital are structured records
+        // ({code,name,localeHint} / {name,latitude,longitude}), not plain
+        // strings/scalars -- flatten them here so the frontend never has to
+        // guess a shape and risk rendering a raw object.
+        $languages = array_values(array_filter(array_map(
+            static fn($l) => is_array($l) ? ($l['name'] ?? null) : null,
+            $core['languages'] ?? []
+        )));
+
         return [
             'currencyCode' => $currency['code'] ?? null,
             'currencyName' => $currency['name'] ?? null,
@@ -160,10 +169,10 @@ final class V3DA_Content {
             'emergencyPolice' => $safety['emergencyNumbers']['police'] ?? null,
             'emergencyAmbulance' => $safety['emergencyNumbers']['ambulance'] ?? null,
             'advisoryLinks' => $safety['officialVerificationLinks']['globalTravelAdviceDirectories'] ?? [],
-            'population' => $core['population'] ?? null,
-            'area' => $core['area'] ?? null,
-            'languages' => $core['languages'] ?? [],
-            'capital' => $core['capital'] ?? null,
+            'population' => $core['populationSnapshot']['value'] ?? null,
+            'area' => $core['geography']['areaKm2'] ?? null,
+            'languages' => $languages,
+            'capital' => $core['capital']['name'] ?? null,
         ];
     }
 
