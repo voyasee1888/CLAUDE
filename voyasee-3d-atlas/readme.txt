@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,13 +13,57 @@ A premium, interactive vector-map entry point into Voyasee's destination content
 == Description ==
 
 Renders via the `[voyasee_3d_atlas]` shortcode. Built on a self-hosted, plugin-owned
-destinations dataset (no dependency on any other Voyasee plugin), with a MapLibre
-GL JS interactive map (real pan/zoom, marker clustering), live weather and
+destinations dataset (no dependency on any other Voyasee plugin), with a
+self-contained interactive vector map (real country shapes, pan/zoom, marker
+clustering -- no external tile/map server involved at all), live weather and
 country-intelligence enrichment on marker click via Voyasee Weather Bridge and
 Voyasee Country Intelligence, and a fully crawlable visible destinations list for
-SEO and no-WebGL fallback.
+SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 2.1.0 =
+* Replaced the v2.0.0 MapLibre GL JS map (which depended on OpenFreeMap's
+  externally-hosted vector tiles) with a fully self-contained SVG world
+  map: real country boundary shapes are now bundled directly with the
+  plugin (Natural Earth data via the world-atlas package, see
+  assets/data/SOURCES.md) and rendered client-side via D3's geographic
+  projection -- there is no external map/tile server involved at runtime
+  at all, removing that entire class of dependency risk. This was a
+  direct response to the external tile host not rendering an acceptable
+  real map on the live site, which this project's own development
+  environment had no way to verify or debug against a third party.
+* Real, recognizable country/continent shapes are now guaranteed to
+  render exactly the same way regardless of any third-party service's
+  availability, styling choices, or API changes -- the previous approach
+  could look broken if a tile host had an outage, changed its style
+  format, or simply styled things differently than expected, none of
+  which this plugin could detect or control.
+* Marker clustering is now handled by Supercluster (recomputed live as
+  the map's zoom level changes), with the same numbered-circle-that-
+  expands-on-click behavior as v2.0.0.
+* Every marker (individual or cluster) is a real SVG element with native
+  browser click/hover handling -- not a custom hit-test against a canvas,
+  and not dependent on any particular map-library's internal feature-
+  picking implementation. This is the most structurally reliable of the
+  three approaches this plugin has now tried for marker interaction.
+* No longer requires WebGL at all (the previous two approaches both did,
+  first for the 3D globe, then for MapLibre's vector-tile rendering) --
+  SVG rendering works on essentially every browser released in the last
+  15+ years, meaningfully widening real-world compatibility.
+* The great-circle featured-route lines and the "fly to this destination"
+  camera behavior on marker/list/search selection both carry over
+  unchanged in spirit, reimplemented using D3's zoom-transform and path
+  APIs instead of MapLibre's.
+* Verified with a headless-browser test suite: 177 real country shapes
+  render correctly, clicking an individual marker opens the correct
+  destination's sidebar with real fetched data, clicking a cluster
+  expands and zooms in (confirmed via the map's transform changing and
+  the visible marker count increasing), the manual zoom in/out controls
+  work, and clicking a destination in the A-Z list flies the map to that
+  destination while opening its sidebar -- all using the plugin's own
+  bundled data with no external network dependency to verify against,
+  unlike the previous two approaches.
 
 = 2.0.0 =
 * Replaced the COBE 3D dot-matrix globe with an interactive MapLibre GL JS

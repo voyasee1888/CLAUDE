@@ -1,12 +1,3 @@
-function supportsWebGL() {
-  try {
-    const canvas = document.createElement("canvas");
-    return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("webgl2")));
-  } catch (err) {
-    return false;
-  }
-}
-
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -253,7 +244,8 @@ function initListSearch(root) {
 
 /** Standard geographic-to-unit-vector conversion, used only for great-
  *  circle interpolation of the featured-route lines below (independent of
- *  the map's own flat Web Mercator projection, which MapLibre owns). */
+ *  the map's own D3 geographic projection, which handles rendering the
+ *  resulting points/lines separately via d3.geoPath). */
 function latLngToVec3(lat, lng) {
   const latRad = (lat * Math.PI) / 180;
   const lngRad = (lng * Math.PI) / 180;
@@ -281,11 +273,11 @@ function slerp(a, b, t) {
 }
 
 /** Builds a great-circle route as a GeoJSON LineString of [lng,lat] pairs.
- *  Splits at the antimeridian if the route crosses it, since MapLibre (like
- *  any Mercator-based renderer) draws a LineString as literal straight
- *  segments between consecutive coordinates -- a route that crosses +-180
- *  degrees longitude needs two separate line pieces to avoid a spurious
- *  line drawn all the way across the map. */
+ *  Splits at the antimeridian if the route crosses it, since d3.geoPath
+ *  draws a LineString as literal straight segments between consecutive
+ *  coordinates -- a route that crosses +-180 degrees longitude needs two
+ *  separate line pieces to avoid a spurious line drawn all the way across
+ *  the map. */
 function greatCircleLine(from, to, steps) {
   const a = latLngToVec3(from.lat, from.lng);
   const b = latLngToVec3(to.lat, to.lng);
@@ -306,16 +298,6 @@ function greatCircleLine(from, to, steps) {
   return lines.filter(function (line) { return line.length > 1; });
 }
 
-/** Free, no-API-key vector tile styles (https://openfreemap.org) -- tries
- *  the dark style first for a look matching this Atlas's existing emerald/
- *  gold theme, and falls back to their flagship default style if that
- *  particular style name doesn't exist or fails to load, so the map still
- *  renders correctly either way rather than showing nothing. */
-const STYLE_CANDIDATES = [
-  "https://tiles.openfreemap.org/styles/dark",
-  "https://tiles.openfreemap.org/styles/liberty",
-];
-
 const DEFAULT_FEATURED_ARC_PAIRS = [
   ["new-york-city", "london"],
   ["paris", "tokyo"],
@@ -324,15 +306,38 @@ const DEFAULT_FEATURED_ARC_PAIRS = [
   ["singapore", "los-angeles"],
 ];
 
+// Logical SVG coordinate space (a 16:10 canvas, matched by the CSS
+// aspect-ratio on the map container) -- D3's projection is fit to this
+// fixed box once, and the SVG's viewBox scales it to whatever size the
+// container actually renders at, so none of the geometry math below needs
+// to know or care about real pixel dimensions or window resizes.
+const MAP_WIDTH = 960;
+const MAP_HEIGHT = 600;
+const MAP_MIN_SCALE = 1;
+const MAP_MAX_SCALE = 10;
+
+/**
+ * A self-contained SVG world map: real country boundary shapes (bundled
+ * with the plugin, no external tile/map server involved at all), rendered
+ * via D3's geographic projection, with Supercluster grouping destination
+ * markers at low zoom. Every marker is a real SVG element handling its
+ * own native click/hover -- there is no custom hit-testing math here to
+ * get subtly wrong, which is the whole reason this replaced the earlier
+ * COBE 3D globe (manual sphere-projection hit-testing) and, before that,
+ * an external-tile-server map this project's own environment couldn't
+ * verify was rendering correctly. Needs d3, Supercluster, and topojson
+ * (each vendored as a classic global) plus the bundled world country
+ * topology; if any of those didn't load for some reason, this fails
+ * gracefully to a text message rather than a broken half-rendered map.
+ */
 function initMap(root, markers, config, openSidebar) {
   const mount = root.querySelector("[data-v3datlas-map-mount]");
   if (!mount || !markers.length) return { flyToMarker: function () {} };
 
   const strings = config.strings || {};
-  if (!supportsWebGL() || !window.maplibregl) {
+  if (!window.d3 || !window.Supercluster || !window.topojson || !config.worldDataUrl) {
     mount.innerHTML = "";
-    const msg = el("p", "v3datlas-map-unavailable", strings.mapUnavailable || "");
-    mount.appendChild(msg);
+    mount.appendChild(el("p", "v3datlas-map-unavailable", strings.mapUnavailable || ""));
     return { flyToMarker: function () {} };
   }
 
@@ -340,155 +345,141 @@ function initMap(root, markers, config, openSidebar) {
   const byslug = {};
   markers.forEach(function (m) { byslug[m.slug] = m; });
 
-  const container = document.createElement("div");
-  container.className = "v3datlas-map-canvas";
   mount.innerHTML = "";
-  mount.appendChild(container);
+  const svg = d3.select(mount)
+    .append("svg")
+    .attr("class", "v3datlas-map-svg")
+    .attr("viewBox", "0 0 " + MAP_WIDTH + " " + MAP_HEIGHT)
+    .attr("role", "img")
+    .attr("aria-label", strings.mapAriaLabel || "");
 
-  const map = new maplibregl.Map({
-    container: container,
-    style: STYLE_CANDIDATES[0],
-    center: [10, 25],
-    zoom: 1.2,
-    minZoom: 0.6,
-    maxZoom: 12,
-    attributionControl: { compact: true },
-    dragRotate: false,
-    pitchWithRotate: false,
-    touchPitch: false,
-  });
+  const worldGroup = svg.append("g").attr("class", "v3datlas-map-world");
+  const countriesLayer = worldGroup.append("g").attr("class", "v3datlas-map-countries");
+  const routesLayer = worldGroup.append("g").attr("class", "v3datlas-map-routes");
+  const markersLayer = svg.append("g").attr("class", "v3datlas-map-markers");
 
-  // Only ever fall back to the second style candidate if the FIRST style
-  // never finished loading at all. Once the map has successfully loaded
-  // once, later 'error' events are usually benign, unrelated style-spec
-  // warnings (e.g. a symbol layer's text-field needing a glyphs URL the
-  // base style didn't define) -- reacting to those by calling setStyle()
-  // would destructively tear down and replace the entire style, wiping
-  // out every layer this code has already added, for no good reason.
-  let styleLoaded = false;
-  let styleFallbackTried = false;
-  map.on("error", function (e) {
-    if (styleLoaded || styleFallbackTried) return;
-    const isStyleFailure = e && e.error && /style|tile|fetch/i.test(String(e.error.message || ""));
-    if (isStyleFailure) {
-      styleFallbackTried = true;
-      map.setStyle(STYLE_CANDIDATES[1]);
-    }
-  });
+  const projection = d3.geoEqualEarth();
+  const path = d3.geoPath(projection);
 
-  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+  const zoomControls = document.createElement("div");
+  zoomControls.className = "v3datlas-map-zoom-controls";
+  zoomControls.innerHTML =
+    '<button type="button" class="v3datlas-map-zoom-btn" data-zoom-in aria-label="Zoom in">+</button>' +
+    '<button type="button" class="v3datlas-map-zoom-btn" data-zoom-out aria-label="Zoom out">−</button>';
+  mount.appendChild(zoomControls);
 
-  function markersToGeoJSON() {
+  const attribution = el("p", "v3datlas-map-attribution", "Map data © Natural Earth");
+  mount.appendChild(attribution);
+
+  const index = new Supercluster({ radius: 50, maxZoom: 9 });
+  index.load(markers.map(function (m) {
     return {
-      type: "FeatureCollection",
-      features: markers.map(function (m) {
-        return {
-          type: "Feature",
-          geometry: { type: "Point", coordinates: [m.lng, m.lat] },
-          properties: { slug: m.slug, name: m.name, weight: m.weight || 0 },
-        };
-      }),
+      type: "Feature",
+      properties: { slug: m.slug, name: m.name, weight: m.weight || 0 },
+      geometry: { type: "Point", coordinates: [m.lng, m.lat] },
     };
+  }));
+
+  const zoom = d3.zoom()
+    .scaleExtent([MAP_MIN_SCALE, MAP_MAX_SCALE])
+    .on("zoom", function (event) {
+      currentTransform = event.transform;
+      worldGroup.attr("transform", currentTransform);
+      renderMarkers();
+    });
+  svg.call(zoom);
+
+  let currentTransform = d3.zoomIdentity;
+
+  /** Approximate Supercluster "zoom level" for the current D3 scale
+   *  factor -- Supercluster's clustering radius is calibrated in web-
+   *  mercator-style zoom levels (roughly a doubling of visual scale per
+   *  level), which is a close enough match to D3's linear scale factor
+   *  for the purpose of deciding how aggressively to group markers. */
+  function superclusterZoom() {
+    return Math.max(0, Math.min(9, Math.round(Math.log2(currentTransform.k) + 2)));
   }
 
-  function addMarkerLayers() {
-    map.addSource("v3da-destinations", {
-      type: "geojson",
-      data: markersToGeoJSON(),
-      cluster: true,
-      clusterMaxZoom: 6,
-      clusterRadius: 46,
+  function renderMarkers() {
+    const clusters = index.getClusters([-180, -85, 180, 85], superclusterZoom());
+
+    const sel = markersLayer.selectAll("g.v3datlas-marker")
+      .data(clusters, function (d) { return d.properties.cluster ? "cluster-" + d.id : d.properties.slug; });
+
+    sel.exit().remove();
+
+    const entered = sel.enter().append("g").attr("class", "v3datlas-marker");
+    entered.each(function (d) {
+      const g = d3.select(this);
+      if (d.properties.cluster) {
+        g.attr("class", "v3datlas-marker v3datlas-marker-cluster");
+        g.append("circle").attr("class", "v3datlas-cluster-glow");
+        g.append("circle").attr("class", "v3datlas-cluster-dot");
+        g.append("text").attr("class", "v3datlas-cluster-label").attr("text-anchor", "middle").attr("dy", "0.32em");
+      } else {
+        g.attr("class", "v3datlas-marker v3datlas-marker-point");
+        g.append("circle").attr("class", "v3datlas-point-glow");
+        g.append("circle").attr("class", "v3datlas-point-dot");
+        g.append("title");
+      }
+      g.style("cursor", "pointer");
+      g.on("click", function (event, dd) { handleMarkerClick(dd); });
     });
 
-    map.addLayer({
-      id: "v3da-cluster-glow",
-      type: "circle",
-      source: "v3da-destinations",
-      filter: ["has", "point_count"],
-      paint: {
-        "circle-radius": ["step", ["get", "point_count"], 22, 10, 28, 30, 36],
-        "circle-color": "#c9a24b",
-        "circle-opacity": 0.18,
-        "circle-blur": 1,
-      },
+    const merged = entered.merge(sel);
+    merged.each(function (d) {
+      const [x, y] = currentTransform.apply(projection(d.geometry.coordinates));
+      const g = d3.select(this);
+      g.attr("transform", "translate(" + x + "," + y + ")");
+      if (d.properties.cluster) {
+        const count = d.properties.point_count;
+        const r = count < 10 ? 13 : count < 30 ? 17 : 21;
+        g.select(".v3datlas-cluster-glow").attr("r", r + 8);
+        g.select(".v3datlas-cluster-dot").attr("r", r);
+        g.select(".v3datlas-cluster-label").text(d.properties.point_count_abbreviated);
+      } else {
+        const r = 4.5 + 2.5 * (d.properties.weight || 0);
+        g.select(".v3datlas-point-glow").attr("r", r + 6);
+        g.select(".v3datlas-point-dot").attr("r", r);
+        g.select("title").text(d.properties.name);
+      }
     });
+  }
 
-    map.addLayer({
-      id: "v3da-clusters",
-      type: "circle",
-      source: "v3da-destinations",
-      filter: ["has", "point_count"],
-      paint: {
-        "circle-radius": ["step", ["get", "point_count"], 14, 10, 18, 30, 22],
-        "circle-color": "#0f3d2e",
-        "circle-stroke-width": 2,
-        "circle-stroke-color": "#e8cf86",
-      },
-    });
-
-    map.addLayer({
-      id: "v3da-cluster-count",
-      type: "symbol",
-      source: "v3da-destinations",
-      filter: ["has", "point_count"],
-      layout: {
-        "text-field": "{point_count_abbreviated}",
-        "text-font": ["Noto Sans Bold"],
-        "text-size": 12,
-        "text-allow-overlap": true,
-      },
-      paint: { "text-color": "#f6f1e6" },
-    });
-
-    map.addLayer({
-      id: "v3da-point-glow",
-      type: "circle",
-      source: "v3da-destinations",
-      filter: ["!", ["has", "point_count"]],
-      paint: {
-        "circle-radius": ["interpolate", ["linear"], ["get", "weight"], 0, 9, 1, 14],
-        "circle-color": "#c9a24b",
-        "circle-opacity": 0.22,
-        "circle-blur": 1,
-      },
-    });
-
-    map.addLayer({
-      id: "v3da-points",
-      type: "circle",
-      source: "v3da-destinations",
-      filter: ["!", ["has", "point_count"]],
-      paint: {
-        "circle-radius": ["interpolate", ["linear"], ["get", "weight"], 0, 4.5, 1, 7],
-        "circle-color": "#e8cf86",
-        "circle-stroke-width": 1.5,
-        "circle-stroke-color": "#0a201a",
-      },
-    });
-
-    ["v3da-clusters", "v3da-points"].forEach(function (layerId) {
-      map.on("mouseenter", layerId, function () { map.getCanvas().style.cursor = "pointer"; });
-      map.on("mouseleave", layerId, function () { map.getCanvas().style.cursor = ""; });
-    });
-
-    map.on("click", "v3da-clusters", function (e) {
-      const feature = e.features && e.features[0];
-      if (!feature) return;
-      const clusterId = feature.properties.cluster_id;
-      map.getSource("v3da-destinations").getClusterExpansionZoom(clusterId).then(function (zoom) {
-        map.flyTo({ center: feature.geometry.coordinates, zoom: zoom, essential: true });
-      }).catch(function () { /* noop -- worst case the cluster just doesn't expand on click */ });
-    });
-
-    map.on("click", "v3da-points", function (e) {
-      const feature = e.features && e.features[0];
-      if (!feature) return;
-      const marker = byslug[feature.properties.slug];
+  function handleMarkerClick(d) {
+    if (d.properties.cluster) {
+      const expansionZoom = Math.min(9, index.getClusterExpansionZoom(d.id));
+      const targetScale = Math.min(MAP_MAX_SCALE, Math.pow(2, expansionZoom - 2));
+      zoomToPoint(d.geometry.coordinates, targetScale);
+    } else {
+      const marker = byslug[d.properties.slug];
       if (marker) openSidebar(marker);
-    });
+    }
   }
 
-  function addFeaturedArcs() {
+  function zoomToPoint(lngLat, targetScale) {
+    const [x0, y0] = projection(lngLat);
+    const t = d3.zoomIdentity
+      .translate(MAP_WIDTH / 2, MAP_HEIGHT / 2)
+      .scale(targetScale)
+      .translate(-x0, -y0);
+    (reduceMotion ? svg : svg.transition().duration(900)).call(zoom.transform, t);
+  }
+
+  function flyToMarker(marker) {
+    if (!marker) return;
+    const targetScale = Math.max(currentTransform.k, 4);
+    zoomToPoint([marker.lng, marker.lat], targetScale);
+  }
+
+  zoomControls.querySelector("[data-zoom-in]").addEventListener("click", function () {
+    (reduceMotion ? svg : svg.transition().duration(300)).call(zoom.scaleBy, 1.6);
+  });
+  zoomControls.querySelector("[data-zoom-out]").addEventListener("click", function () {
+    (reduceMotion ? svg : svg.transition().duration(300)).call(zoom.scaleBy, 1 / 1.6);
+  });
+
+  function addFeaturedRoutes() {
     const arcPairs = Array.isArray(config.arcs) && config.arcs.length ? config.arcs : DEFAULT_FEATURED_ARC_PAIRS;
     const featuredArcs = arcPairs
       .map(function (pair) {
@@ -499,60 +490,51 @@ function initMap(root, markers, config, openSidebar) {
       .filter(Boolean);
     if (!featuredArcs.length) return;
 
-    const features = [];
+    const lines = [];
     featuredArcs.forEach(function (arc) {
-      greatCircleLine(arc.from, arc.to, 48).forEach(function (line) {
-        features.push({ type: "Feature", geometry: { type: "LineString", coordinates: line }, properties: {} });
+      greatCircleLine(arc.from, arc.to, 64).forEach(function (coords) {
+        lines.push({ type: "Feature", geometry: { type: "LineString", coordinates: coords }, properties: {} });
       });
     });
 
-    map.addSource("v3da-routes", { type: "geojson", data: { type: "FeatureCollection", features: features } });
-    map.addLayer(
-      {
-        id: "v3da-routes",
-        type: "line",
-        source: "v3da-routes",
-        layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#e8cf86", "line-width": 1.5, "line-opacity": 0 },
-      },
-      "v3da-cluster-glow"
-    );
+    const routeSel = routesLayer.selectAll("path")
+      .data(lines)
+      .enter()
+      .append("path")
+      .attr("class", "v3datlas-route")
+      .attr("d", path)
+      .style("opacity", reduceMotion ? 0.45 : 0);
 
-    if (reduceMotion) {
-      map.setPaintProperty("v3da-routes", "line-opacity", 0.45);
-      return;
+    if (!reduceMotion) {
+      routeSel.transition().duration(1200).style("opacity", 0.45);
     }
-    // Simple one-time fade-in rather than a per-frame animated "draw" --
-    // deliberately less elaborate than possible, to keep this new map
-    // layer robust on the first pass; a scripted flyTo tour can be added
-    // back later the same way the previous globe's intro tour worked.
-    let opacity = 0;
-    const fade = setInterval(function () {
-      if (!map.getLayer("v3da-routes")) {
-        clearInterval(fade);
-        return;
-      }
-      opacity = Math.min(0.45, opacity + 0.02);
-      map.setPaintProperty("v3da-routes", "line-opacity", opacity);
-      if (opacity >= 0.45) clearInterval(fade);
-    }, 40);
   }
 
-  map.on("load", function () {
-    styleLoaded = true;
-    addMarkerLayers();
-    addFeaturedArcs();
-  });
+  fetch(config.worldDataUrl)
+    .then(function (r) { return r.json(); })
+    .then(function (topo) {
+      const objectName = Object.keys(topo.objects)[0];
+      const world = topojson.feature(topo, topo.objects[objectName]);
+      projection.fitSize([MAP_WIDTH, MAP_HEIGHT], world);
 
-  function flyToMarker(marker) {
-    if (!marker) return;
-    map.flyTo({
-      center: [marker.lng, marker.lat],
-      zoom: Math.max(map.getZoom(), 5),
-      essential: true,
-      duration: reduceMotion ? 0 : 1400,
+      countriesLayer.selectAll("path")
+        .data(world.features)
+        .enter()
+        .append("path")
+        .attr("class", "v3datlas-country")
+        .attr("d", path);
+
+      addFeaturedRoutes();
+      renderMarkers();
+    })
+    .catch(function () {
+      // The bundled world-shape data is served from this same site, not a
+      // third-party host, so a failure here almost always means a caching/
+      // hosting hiccup rather than an external outage -- still fails
+      // gracefully rather than leaving a half-built map on screen.
+      mount.innerHTML = "";
+      mount.appendChild(el("p", "v3datlas-map-unavailable", strings.mapUnavailable || ""));
     });
-  }
 
   return { flyToMarker: flyToMarker };
 }

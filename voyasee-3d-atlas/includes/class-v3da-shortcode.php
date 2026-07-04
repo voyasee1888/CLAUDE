@@ -11,7 +11,9 @@ final class V3DA_Shortcode {
     public static function render(array $atts = []): string {
         wp_enqueue_style('v3da-fonts', 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@400;500;700&display=swap', [], null);
         wp_enqueue_style('v3da-frontend');
-        wp_enqueue_script('v3da-maplibre');
+        wp_enqueue_script('v3da-d3');
+        wp_enqueue_script('v3da-supercluster');
+        wp_enqueue_script('v3da-topojson');
         wp_enqueue_script_module('v3da-app');
 
         $uid = 'v3da-' . wp_unique_id();
@@ -23,6 +25,7 @@ final class V3DA_Shortcode {
 
         $config = wp_json_encode([
             'restBase' => esc_url_raw(rest_url('voyasee-3d-atlas/v1/')),
+            'worldDataUrl' => esc_url_raw(V3DA_URL . 'assets/data/world-countries-110m.topo.json'),
             'markers' => $markers,
             'arcs' => V3DA_Admin::get_featured_arcs(),
             'strings' => [
@@ -32,6 +35,7 @@ final class V3DA_Shortcode {
                 'loadError' => __('This destination could not be loaded. Please try again.', 'voyasee-3d-atlas'),
                 'close' => __('Close', 'voyasee-3d-atlas'),
                 'mapUnavailable' => __('The interactive map isn\'t available in this browser. Browse all destinations in the list below.', 'voyasee-3d-atlas'),
+                'mapAriaLabel' => __('Interactive world map of Voyasee destinations', 'voyasee-3d-atlas'),
             ],
         ]);
 
