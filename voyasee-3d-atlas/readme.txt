@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,46 @@ Voyasee Country Intelligence, and a fully crawlable visible destinations list fo
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 2.3.1 =
+* Pre-launch audit pass: verified every function end-to-end (drag-rotate,
+  auto-rotate, wheel/button zoom, marker click, cluster expand, country
+  click, A-Z list, search, sidebar close) and cross-checked all 167
+  bundled destinations' coordinates against real country boundary data
+  and their stated country codes.
+* Fixed a real data error found during that check: "Victoria Falls" was
+  labeled as being in Zambia (ZM), but its stored coordinates are
+  precisely the Zimbabwean side of the falls (Zambia's side is a
+  separate town, Livingstone) -- corrected to Zimbabwe (ZW) both in the
+  default dataset for new installs and via a one-time, narrowly-targeted
+  backfill for sites that already seeded the old value (an admin who
+  already hand-edited this destination is never overwritten).
+* Fixed a real functional bug found during the same audit: pressing
+  Escape did not close the sidebar when it was opened by clicking a map
+  marker or a country shape (both are SVG elements with no keyboard
+  focus, so the Escape listener -- previously scoped to receive only
+  events bubbling from inside the widget -- never saw the keypress).
+  Escape now reliably closes the sidebar however it was opened.
+* Note on Jerusalem: real country-boundary data used elsewhere in this
+  audit reflects contested international boundaries in a few places.
+  This was reviewed and deliberately left as Israel (matching the
+  practical travel facts -- currency, driving side, emergency numbers --
+  a visitor actually encounters there), rather than "corrected" based on
+  one boundary dataset's political stance; flagging this explicitly
+  rather than silently deciding it either way.
+* Confirmed (not a bug): a handful of small-island destinations --
+  Puerto Ayora/Galapagos, Okinawa, Santorini, Zanzibar, Nassau, and
+  similar -- sit outside their country's polygon in the bundled 110m-
+  resolution world data because those specific small islands aren't
+  separately rendered at that simplification level. Their marker
+  placement and country/weather data are correct; only the country
+  *shape* is too coarse to include that particular island. A handful of
+  very small nations (Singapore, Hong Kong, Aruba, Barbados, Saint
+  Lucia, Mauritius, Maldives, Seychelles, Tonga, Samoa, French
+  Polynesia) aren't rendered as distinct clickable shapes at all for the
+  same reason -- their destination markers still work normally either
+  way, only the new "click bare country territory" feature has nothing
+  to click there.
 
 = 2.3.0 =
 * Replaced the flat "Equal Earth" map projection with a true rotating

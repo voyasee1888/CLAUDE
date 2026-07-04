@@ -312,7 +312,7 @@ return [
     ['name' => 'Zanzibar City', 'country' => 'Tanzania', 'country_code' => 'TZ', 'region' => 'Africa', 'lat' => -6.1659, 'lng' => 39.2026,
         'signature_line' => "Stone Town's coral-stone streets once anchored a global spice trade.",
         'did_you_know' => "Freddie Mercury of the band Queen was born in Zanzibar's Stone Town in 1946."],
-    ['name' => 'Victoria Falls', 'country' => 'Zambia', 'country_code' => 'ZM', 'region' => 'Africa', 'lat' => -17.9243, 'lng' => 25.8572,
+    ['name' => 'Victoria Falls', 'country' => 'Zimbabwe', 'country_code' => 'ZW', 'region' => 'Africa', 'lat' => -17.9243, 'lng' => 25.8572,
         'signature_line' => "Locally called 'the smoke that thunders,' with spray visible for miles.",
         'did_you_know' => "Victoria Falls' local name, Mosi-oa-Tunya, means 'the smoke that thunders,' describing spray visible from about 30 kilometers away."],
     ['name' => 'Accra', 'country' => 'Ghana', 'country_code' => 'GH', 'region' => 'Africa', 'lat' => 5.6037, 'lng' => -0.1870,

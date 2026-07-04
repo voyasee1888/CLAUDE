@@ -43,8 +43,14 @@ function initSidebar(root, markers, strings, restBase, onOpen) {
   ro.observe(root);
 
   sidebarClose && sidebarClose.addEventListener("click", closeSidebar);
-  root.addEventListener("keydown", function (e) {
-    if ("Escape" === e.key) closeSidebar();
+  // Listens on the document, not just root, because the sidebar is most
+  // often opened by clicking an SVG marker or country shape on the map --
+  // neither is focusable, so keyboard focus stays wherever it was before
+  // the click (often nowhere inside root at all). Scoping this to root
+  // would mean Escape silently did nothing for exactly the two most common
+  // ways of opening the sidebar.
+  document.addEventListener("keydown", function (e) {
+    if ("Escape" === e.key && !sidebar.hidden) closeSidebar();
   });
 
   function openSidebar(marker) {

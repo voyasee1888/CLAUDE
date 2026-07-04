@@ -29,6 +29,7 @@ final class V3DA_DB {
         self::maybe_seed_defaults();
         self::maybe_backfill_story_content();
         self::maybe_seed_new_defaults();
+        self::maybe_apply_known_corrections();
     }
 
     private static function maybe_seed_defaults(): void {
@@ -102,6 +103,30 @@ final class V3DA_DB {
             }
         }
         update_option('v3da_story_backfilled', 1, false);
+    }
+
+    /**
+     * One-time correction for a factual data error found in a pre-launch
+     * audit: the bundled default dataset originally labeled "Victoria
+     * Falls" as being in Zambia (ZM), but its coordinates are the
+     * Zimbabwean side of the falls (verified against real country boundary
+     * data) -- Zambia's side of the same falls is a separate town,
+     * Livingstone. Fixed at the source in default-destinations.php for new
+     * installs; this backfills any site that already seeded the old, wrong
+     * value, but only if the row still holds exactly that old value -- an
+     * admin who already hand-corrected or otherwise edited this row is
+     * never overwritten.
+     */
+    private static function maybe_apply_known_corrections(): void {
+        if (get_option('v3da_corrections_v1')) return;
+        $victoria_falls = self::get_by_slug('victoria-falls');
+        if ($victoria_falls && 'ZM' === $victoria_falls['country_code'] && 'Zambia' === $victoria_falls['country']) {
+            self::update((int) $victoria_falls['id'], array_merge($victoria_falls, [
+                'country' => 'Zimbabwe',
+                'country_code' => 'ZW',
+            ]));
+        }
+        update_option('v3da_corrections_v1', 1, false);
     }
 
     private static function install(): void {
