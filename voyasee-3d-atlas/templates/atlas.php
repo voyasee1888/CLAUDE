@@ -33,8 +33,8 @@ $has_safety_links = $safetywing_url || $visa_url;
 ?>
 <section class="v3datlas-root" id="<?php echo esc_attr($uid); ?>" data-v3datlas-root data-v3datlas-config="<?php echo esc_attr($config); ?>">
     <div class="v3datlas-hero">
-        <p class="v3datlas-eyebrow"><?php echo esc_html__('Voyasee World Story Atlas', 'voyasee-3d-atlas'); ?></p>
-        <h2 class="v3datlas-title"><?php echo esc_html__('An interactive map of every place Voyasee has covered', 'voyasee-3d-atlas'); ?></h2>
+        <p class="v3datlas-eyebrow"><?php echo esc_html__('Interactive World Map', 'voyasee-3d-atlas'); ?></p>
+        <h2 class="v3datlas-title"><?php echo esc_html__('Spin the Globe and Discover Your Next Destination', 'voyasee-3d-atlas'); ?></h2>
         <p class="v3datlas-intro"><?php echo esc_html__('Spin the globe, click any destination for live data and travel insights, or browse the full A–Z list below.', 'voyasee-3d-atlas'); ?></p>
         <?php if ($hero_cta_url): ?>
             <p class="v3datlas-hero-cta">
@@ -233,7 +233,7 @@ $has_safety_links = $safetywing_url || $visa_url;
 
         <div class="v3datlas-footer-bottom">
             <div class="v3datlas-footer-wordmark"><?php echo esc_html__('Voyasee', 'voyasee-3d-atlas'); ?></div>
-            <p class="v3datlas-footer-tagline"><?php echo esc_html__('World Story Atlas — every place, one map.', 'voyasee-3d-atlas'); ?></p>
+            <p class="v3datlas-footer-tagline"><?php echo esc_html__('Interactive World Map — every place, one map.', 'voyasee-3d-atlas'); ?></p>
             <div class="v3datlas-footer-legal">
                 <a href="<?php echo esc_url(home_url('/')); ?>"><?php echo esc_html__('voyasee.com', 'voyasee-3d-atlas'); ?></a>
                 <span class="v3datlas-footer-version">v<?php echo esc_html(V3DA_VERSION); ?></span>

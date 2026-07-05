@@ -143,7 +143,7 @@ final class V3DA_Shortcode {
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'ItemList',
-            'name' => __('Voyasee World Story Atlas — Destinations', 'voyasee-3d-atlas'),
+            'name' => __('Interactive World Map — Destinations', 'voyasee-3d-atlas'),
             'itemListElement' => $items,
         ];
         return '<script type="application/ld+json">' . wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';

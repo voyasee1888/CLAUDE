@@ -1,10 +1,10 @@
-=== Voyasee 3D World Story Atlas ===
+=== Voyasee Interactive World Map ===
 Contributors: voyasee
 Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,22 @@ Voyasee Country Intelligence, and a fully crawlable visible destinations list fo
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 3.0.3 =
+* Renamed the plugin's on-page branding from "Voyasee World Story Atlas"
+  to "Interactive World Map" to match the site's chosen SEO focus keyword,
+  H1, and URL slug for the page this shortcode lives on -- updated the
+  hero eyebrow, hero heading, footer tagline, and the JSON-LD structured
+  data's `name` field (all visitor/crawler-facing text), plus the plugin's
+  own admin-visible name (Plugin Name header, readme title) for internal
+  consistency. Left every internal PHP class name, function name, the
+  `voyasee_3d_atlas` shortcode tag, the `voyasee-3d-atlas` text domain,
+  and file/folder names untouched -- renaming those has no SEO effect and
+  would only add risk (breaking anywhere a class or the shortcode tag is
+  referenced) for no benefit. Not touched: the separate, pre-existing
+  "Interactive Travel Map" footer link, which is a different Voyasee tool
+  entirely (voyasee.com/interactive-travel-map/) and was already using
+  that name before this change.
 
 = 3.0.2 =
 * Fixed a real mobile-only layout bug found via screenshot: on narrow
