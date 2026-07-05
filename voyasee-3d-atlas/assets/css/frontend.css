@@ -215,8 +215,16 @@
 /* ── Map stage ── */
 
 .v3datlas-stage {
+    /* This establishes its own stacking context (position + z-index), so
+       everything nested in it -- including the sidebar, even once it
+       becomes position:fixed for the mobile bottom-sheet -- stacks against
+       .v3datlas-destination-list/.v3datlas-footer as one unit, not
+       individually. Those later siblings share the same z-index:1 and
+       would otherwise win ties by DOM order, painting over the open
+       mobile sidebar no matter how high its own z-index is set. Kept
+       above the sidebar's own z-index (5) so that can never happen. */
     position: relative;
-    z-index: 1;
+    z-index: 6;
     max-width: 1100px;
     margin: 0 auto;
     overflow: hidden;
@@ -484,13 +492,19 @@
 }
 
 .v3datlas-root[data-v3datlas-narrow] .v3datlas-sidebar {
+    /* Anchor to the actual viewport, not .v3datlas-stage (the map box) --
+       .v3datlas-sidebar's containing block is otherwise the map's own
+       small aspect-ratio box, which on a narrow phone is only ~200px
+       tall, so "bottom sheet" would render as a cramped strip pinned to
+       the bottom of the map rather than a real drawer over the screen. */
+    position: fixed;
     top: auto;
     bottom: 0;
     left: 0;
     right: 0;
     width: 100%;
     height: auto;
-    max-height: 75%;
+    max-height: 80vh;
     border-left: none;
     border-top: 1px solid rgba(232, 207, 134, 0.2);
     border-radius: var(--v3datlas-radius-lg) var(--v3datlas-radius-lg) 0 0;
@@ -524,9 +538,20 @@
 /* ── Sidebar action buttons ── */
 
 .v3datlas-sidebar-actions {
+    /* .v3datlas-sidebar (the <aside>, not this row) is the scroll
+       container, so without sticky positioning, scrolling down through a
+       destination's cards would carry the close button out of view with
+       everything else -- leaving no way to dismiss the sidebar by touch
+       on mobile, where there's no Escape key to fall back on. */
+    position: sticky;
+    top: -20px;
+    margin-top: -20px;
+    padding-top: 20px;
+    padding-bottom: 8px;
+    z-index: 2;
     display: flex;
     gap: 8px;
-    margin: 0 0 12px;
+    background: var(--v3datlas-glass-bg);
 }
 
 .v3datlas-sidebar-action-btn {

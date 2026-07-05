@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 3.0.0
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,59 @@ Voyasee Country Intelligence, and a fully crawlable visible destinations list fo
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 3.0.2 =
+* Fixed a real mobile-only layout bug found via screenshot: on narrow
+  screens the destination sidebar switches to a full-width "bottom sheet"
+  drawer, but it was positioned relative to the map box (`.v3datlas-stage`)
+  rather than the actual screen -- since the map box on a phone is only
+  a couple hundred pixels tall, the drawer rendered as a small strip
+  confined to that box instead of a real full-height sheet. It's now
+  `position: fixed` to the viewport in that mode.
+* Fixed the cause of a second, related bug this exposed: `.v3datlas-stage`
+  sets its own `z-index`, which (per normal CSS stacking rules) traps
+  everything nested inside it -- including the now-fixed-position mobile
+  sidebar -- into competing as one unit against later same-level siblings
+  (the destinations list, the footer). Those siblings share the same
+  z-index and, tied on z-index, win by DOM order, so they were painting
+  over the open mobile sidebar. `.v3datlas-stage`'s z-index is now kept
+  above the sidebar's own, so this can't happen regardless of what else
+  changes on the page later.
+* Fixed the sidebar's close/visited/want-to-go/share button row scrolling
+  out of reach: the row lived in the same scrollable area as the rest of
+  a destination's cards, so scrolling down to read them could carry the
+  close button out of view entirely -- with no Escape key to fall back on
+  for a touch/mobile visitor, there was then no way to dismiss the sidebar
+  without scrolling back up first. That row is now sticky to the top of
+  the sidebar's own scroll area.
+* Verified the Travel Snapshot radar chart's axis labels ("Safety",
+  "English") render fully on their own, in isolation from any theme/cache
+  interaction -- confirmed via a real headless-browser render that the
+  v3.0.1 padding fix was correct; a version bump was still needed here
+  since a plugin asset's cache-busting query string only changes when the
+  plugin version itself does, and a prior patch had shipped a real fix
+  without bumping it, leaving sites with a cached script.
+* Verified with real headless-browser screenshots at 320px, 375px, 390px,
+  414px, 768px and 1440px widths, covering the smallest common phones up
+  through desktop, with zero horizontal page overflow at any width tested.
+
+= 3.0.1 =
+* Fixed country_snapshot() reading the wrong shape from Voyasee Country
+  Intelligence's real data for capital, languages, population, and area,
+  which rendered as literal "[object Object]" text (capital/languages) or
+  simply never appeared (population/area) -- found via a live-site
+  screenshot. Country Intelligence returns capital as a
+  {name,latitude,longitude} record and languages as an array of
+  {code,name,localeHint} records, not plain strings, and stores
+  population/area under different keys entirely; this plugin was reading
+  paths that don't exist in the real data.
+* Fixed the destination sidebar's own "Country notes" card never showing
+  population/area/capital/languages at all, unlike the separate "click a
+  country on the globe" panel -- both now render identically via one
+  shared function.
+* Fixed the Travel Snapshot radar chart's side-axis labels ("English",
+  "Safety") being visibly clipped by the SVG's own viewBox, rendering as
+  "glish" and "Safe".
 
 = 3.0.0 =
 * Major upgrade adding real data depth and interaction, built entirely on
