@@ -715,12 +715,12 @@
 
   /* Region presets in viewBox coords (0..100 of the stage) approx, derived from project() lat/lon ranges */
   var REGION_VIEW={
-    world:    {cx:50, cy:50, scale:1},
-    europe:   {cx:52, cy:30, scale:2.4},
-    asia:     {cx:74, cy:42, scale:2.1},
-    americas: {cx:25, cy:50, scale:1.9},
-    africa:   {cx:54, cy:60, scale:2.1},
-    oceania:  {cx:82, cy:74, scale:2.4}
+    world:    {cx:50, cy:50, scale:1,   ll:null},
+    europe:   {cx:52, cy:30, scale:2.4, ll:[52,12]},
+    asia:     {cx:74, cy:42, scale:2.1, ll:[30,100]},
+    americas: {cx:25, cy:50, scale:1.9, ll:[8,-80]},
+    africa:   {cx:54, cy:60, scale:2.1, ll:[2,20]},
+    oceania:  {cx:82, cy:74, scale:2.4, ll:[-25,140]}
   };
 
   function zoomMeasure(){
@@ -798,7 +798,9 @@
   function zoomToRegion(reg){
     if(vmapView==='globe'&&GLOBE.ready){globeFlyToRegion(reg);$$('#vmapRegionJump button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.region===reg?'true':'false');});return;}
     var p=REGION_VIEW[reg];if(!p){zoomReset();return;}
-    zoomTo(p.scale,p.cx,p.cy,true);
+    var cx=p.cx,cy=p.cy;
+    if(p.ll&&typeof flatProject==='function'){var fp=flatProject(p.ll[0],p.ll[1]);cx=fp.x;cy=fp.y;}
+    zoomTo(p.scale,cx,cy,true);
     $$('#vmapRegionJump button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.region===reg?'true':'false');});
     /* region jump is a VISUAL zoom only — the region dropdown remains an independent data filter. */
   }
@@ -1191,10 +1193,11 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
   function selectedDest(){var found=DEST.find(function(d){return d.id===activeId});return found||ranked(cfg())[0]||DEST[0];}
   function setMonthOptions(){var sel=$('#vmapMonth');sel.innerHTML=months.map(function(m,i){var n=i+1;return '<option value="'+n+'">'+m+'</option>';}).join('');sel.value=String(new Date().getMonth()+1);}
   function pinColor(d,c){var s=score(d,c);if(mode==='budget'){return d.max<=45?'#56d98b':d.max<=80?'#34e0d1':d.max<=140?'#f5c85b':'#ff8066'}if(mode==='season'){return d.months.indexOf(c.month)>-1?'#34e0d1':'#a995ff'}if(mode==='safety'){return d.safety>=5?'#56d98b':d.safety>=4?'#34e0d1':d.safety>=3?'#f5c85b':'#ff8066'}if(mode==='scam'){return d.scam==='low'?'#56d98b':d.scam==='medium'?'#f5c85b':'#ff5e7d'}if(mode==='hidden'){return d.styles.indexOf('hidden')>-1?'#a995ff':'#62b6ff'}if(mode==='food'){return d.styles.indexOf('food')>-1?'#34e0d1':'#62b6ff'}if(mode==='risk'){var adv=(typeof advisoryFor==='function')?advisoryFor(d):null;var lvl=adv?adv.level:1;return lvl>=4?'#ff5e7d':lvl>=3?'#ff8066':lvl>=2?'#f5c85b':'#56d98b';}var ls=(typeof scoreLive==='function'?scoreLive(d,c):s);return ls>=82?'#34e0d1':ls>=68?'#f5c85b':ls>=52?'#ff8066':'#ff5e7d';}
-  function project(d){if(vmapView==='globe'&&GLOBE.ready){var g=globeProject(d.lat,d.lon);return {x:g.x,y:g.y,hidden:!g.visible,scale:g.scale};}var minLat=-58,maxLat=83;var x=(d.lon+180)/360*100;var y=(maxLat-d.lat)/(maxLat-minLat)*100;return {x:Math.max(1.5,Math.min(98.5,x)),y:Math.max(2,Math.min(98,y))};}
+  function project(d){if(vmapView==='globe'&&GLOBE.ready){var g=globeProject(d.lat,d.lon);return {x:g.x,y:g.y,hidden:!g.visible,scale:g.scale};}var p=flatProject(Number(d.lat),Number(d.lon));return {x:p.x,y:p.y};}
   function pinHTML(d,c,topIds){var p=project(d);var active=d.id===activeId?' is-active':'';var top=topIds.indexOf(d.id)>-1?' is-top':' is-dim';var behind=p.hidden?' is-behind':'';var style='left:'+p.x+'%;top:'+p.y+'%;--pin-color:'+pinColor(d,c);return '<button class="vmap-pin'+active+top+behind+'" type="button" data-id="'+esc(d.id)+'" data-label="'+esc(d.name)+'" data-lat="'+d.lat+'" data-lon="'+d.lon+'" style="'+style+'" aria-label="Open '+esc(d.name)+'"></button>';}
   function clusterColor(score){return score>=85?['#34e0d1','rgba(52,224,209,.55)']:score>=70?['#56d98b','rgba(86,217,139,.5)']:score>=55?['#f5c85b','rgba(245,200,91,.5)']:['#ff8066','rgba(255,128,102,.5)'];}
   function renderPins(){
+    if(vmapView!=='globe')refreshFlatBox();
     var c=cfg();var list=ranked(c);var topIds=list.slice(0,20).map(function(d){return d.id});
     var clusters=0,html='';
     if(shouldCluster(c)){
@@ -1483,6 +1486,22 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     for(var lat=-60;lat<=60;lat+=30){var par=[];for(var lo=-180;lo<=180;lo+=4)par.push([lo,lat]);GLOBE.graticule.push(par);}
   }
 
+  /* ---- FLAT map projection: match the SVG atlas exactly ----
+     The SVG uses plate-carrée with lon∈[-180,180]→x[0,1000] and a latitude
+     ramp of 80°N→y29.5 … 80°S→y472.1 inside a 1000×520 viewBox, drawn with
+     preserveAspectRatio="xMidYMid meet". The old pin projection used a
+     different latitude range and ignored the meet letterbox, so pins sat
+     ~9% too far south. This reprojects pins onto the identical geometry. */
+  var FLATBOX=null;
+  function refreshFlatBox(){var st=root.querySelector('.vmap-map-stage');if(st&&st.offsetWidth){FLATBOX={W:st.offsetWidth,H:st.offsetHeight};}return FLATBOX;}
+  function flatProject(lat,lon){
+    var box=FLATBOX||refreshFlatBox();
+    if(!box||!box.W){var x0=(lon+180)/360*100,y0=(83-lat)/141*100;return {x:Math.max(1.5,Math.min(98.5,x0)),y:Math.max(2,Math.min(98,y0))};}
+    var W=box.W,H=box.H;
+    var sx=(lon+180)/360*1000, sy=29.5+(80-lat)/160*442.6;
+    var s=Math.min(W/1000,H/520), ox=(W-1000*s)/2, oy=(H-520*s)/2;
+    return {x:(ox+sx*s)/W*100, y:(oy+sy*s)/H*100};
+  }
   function globeProject(lat,lon){
     var R=GLOBE.R,cx=GLOBE.cx,cy=GLOBE.cy;
     var phi0=GLOBE.phi*DEG,lam0=GLOBE.lambda*DEG;
@@ -1671,7 +1690,7 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     if(GLOBE.reduceMotion)GLOBE.autoRotate=false;
     vmapParseGeometry();globeResize();GLOBE.ready=true;GLOBE.moved=true;
     globeBindPointer();
-    var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){globeResize();},180);});
+    var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){FLATBOX=null;globeResize();if(vmapView==='flat')renderPins();},180);});
     document.addEventListener('visibilitychange',function(){if(!document.hidden){GLOBE.lastT=0;GLOBE.moved=true;}});
     /* lazy-load country borders once, off the main thread-ish */
     setTimeout(function(){try{var bn=root.querySelectorAll('.vmap-country-lines path');var arr=[];bn.forEach(function(p){arr=arr.concat(parsePathToRings(p.getAttribute('d')||''));});GLOBE.borders=arr;}catch(e){GLOBE.borders=null;}},1200);
