@@ -801,7 +801,8 @@ function initMap(root, markers, config, openSidebar, openCountry) {
   if (!mount || !markers.length) return { flyToMarker: function () {} };
 
   var strings = config.strings || {};
-  if (!window.d3 || !window.Supercluster || !window.topojson || !config.worldDataUrl) {
+  var hasWorldData = !!((window.V3DA_WORLD_TOPO && window.V3DA_WORLD_TOPO.objects) || config.worldDataUrl);
+  if (!window.d3 || !window.Supercluster || !window.topojson || !hasWorldData) {
     mount.innerHTML = "";
     mount.appendChild(el("p", "v3datlas-map-unavailable", strings.mapUnavailable || ""));
     return { flyToMarker: function () {} };
@@ -1275,9 +1276,7 @@ function initMap(root, markers, config, openSidebar, openCountry) {
     });
   }
 
-  fetch(config.worldDataUrl)
-    .then(function (r) { return r.json(); })
-    .then(function (topo) {
+  function buildWorld(topo) {
       var objectName = Object.keys(topo.objects)[0];
       var world = topojson.feature(topo, topo.objects[objectName]);
       worldFeatures = world.features;
@@ -1323,11 +1322,44 @@ function initMap(root, markers, config, openSidebar, openCountry) {
           }, 500);
         }
       }
-    })
-    .catch(function () {
-      mount.innerHTML = "";
-      mount.appendChild(el("p", "v3datlas-map-unavailable", strings.mapUnavailable || ""));
-    });
+  }
+
+  function showMapUnavailable() {
+    mount.innerHTML = "";
+    mount.appendChild(el("p", "v3datlas-map-unavailable", strings.mapUnavailable || ""));
+  }
+
+  // Load the world topology. It is normally already present as a
+  // classic-script global (window.V3DA_WORLD_TOPO) -- the most reliable path
+  // across desktop, tablet, mobile and in-app browsers (Facebook, Instagram,
+  // WebView), where a plain fetch() can be blocked or fail. Only if that
+  // global is missing do we fall back to fetching the JSON file, retrying a
+  // couple of times so a transient mobile-network hiccup doesn't permanently
+  // drop the map to the plain list below.
+  function fetchWorldWithRetry(url, attemptsLeft) {
+    fetch(url, { credentials: "same-origin" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (topo) { buildWorld(topo); })
+      .catch(function () {
+        if (attemptsLeft > 1) {
+          setTimeout(function () { fetchWorldWithRetry(url, attemptsLeft - 1); }, 1200);
+        } else {
+          showMapUnavailable();
+        }
+      });
+  }
+
+  if (window.V3DA_WORLD_TOPO && window.V3DA_WORLD_TOPO.objects) {
+    try { buildWorld(window.V3DA_WORLD_TOPO); }
+    catch (e) { showMapUnavailable(); }
+  } else if (config.worldDataUrl && window.fetch) {
+    fetchWorldWithRetry(config.worldDataUrl, 3);
+  } else {
+    showMapUnavailable();
+  }
 
   return { flyToMarker: flyToMarker };
 }

@@ -11,11 +11,10 @@ final class V3DA_Shortcode {
     public static function render(array $atts = []): string {
         wp_enqueue_style('v3da-fonts', 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@400;500;700&display=swap', [], null);
         wp_enqueue_style('v3da-frontend');
-        wp_enqueue_script('v3da-d3');
-        wp_enqueue_script('v3da-supercluster');
-        wp_enqueue_script('v3da-topojson');
-        wp_enqueue_script('v3da-iso-country-codes');
-        wp_enqueue_script_module('v3da-app');
+        // v3da-app declares d3, supercluster, topojson, the ISO table and the
+        // world-topology data as dependencies, so enqueuing it pulls all of
+        // them in, in the right order.
+        wp_enqueue_script('v3da-app');
 
         $uid = 'v3da-' . wp_unique_id();
         $settings = V3DA_Admin::get_settings();

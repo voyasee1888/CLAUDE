@@ -3,7 +3,7 @@
  * Plugin Name: Voyasee Interactive World Map
  * Plugin URI: https://voyasee.com/
  * Description: A premium, interactive vector-map entry point into Voyasee's destination content, built on a self-hosted, plugin-owned destinations dataset with live weather and country-intelligence enrichment on marker click.
- * Version: 3.0.3
+ * Version: 3.0.4
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-3d-atlas
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('V3DA_VERSION', '3.0.3');
+define('V3DA_VERSION', '3.0.4');
 define('V3DA_FILE', __FILE__);
 define('V3DA_DIR', plugin_dir_path(__FILE__));
 define('V3DA_URL', plugin_dir_url(__FILE__));
@@ -53,19 +53,28 @@ final class Voyasee_3D_Atlas {
 
     public function register_assets(): void {
         wp_register_style('v3da-frontend', V3DA_URL . 'assets/css/frontend.css', [], V3DA_VERSION);
-        // None of these vendored libraries publish an ESM build, so they're
-        // registered as classic scripts (each attaches its own global:
-        // `d3`, `Supercluster`, `topojson`) rather than script modules.
-        // Classic scripts without a defer/async strategy run synchronously
-        // in document order, and script modules are always deferred by
-        // spec, so all three always finish evaluating before v3da-app runs
-        // -- no explicit dependency link is needed (WP's module dependency
-        // list only accepts other modules, not classic scripts, anyway).
-        wp_register_script('v3da-d3', V3DA_URL . 'assets/js/vendor/d3.min.js', [], V3DA_VERSION);
-        wp_register_script('v3da-supercluster', V3DA_URL . 'assets/js/vendor/supercluster.min.js', [], V3DA_VERSION);
-        wp_register_script('v3da-topojson', V3DA_URL . 'assets/js/vendor/topojson-client.min.js', [], V3DA_VERSION);
-        wp_register_script('v3da-iso-country-codes', V3DA_URL . 'assets/js/vendor/iso-country-codes.js', [], V3DA_VERSION);
-        wp_register_script_module('v3da-app', V3DA_URL . 'assets/js/app.js', [], V3DA_VERSION);
+        // Everything here is a plain classic script -- the vendored libraries
+        // each attach their own global (`d3`, `Supercluster`, `topojson`),
+        // the ISO table and world-topology data assign globals too, and the
+        // app itself is authored in ES5-safe style. Classic scripts are the
+        // most universally supported load mechanism: they run in every
+        // desktop, tablet, mobile and in-app browser (Facebook / Instagram /
+        // WebView included), where `type="module"` scripts can be silently
+        // skipped or blocked. v3da-app declares all four as dependencies, so
+        // WordPress emits them ahead of it and their globals are guaranteed
+        // to exist by the time the app runs.
+        wp_register_script('v3da-d3', V3DA_URL . 'assets/js/vendor/d3.min.js', [], V3DA_VERSION, true);
+        wp_register_script('v3da-supercluster', V3DA_URL . 'assets/js/vendor/supercluster.min.js', [], V3DA_VERSION, true);
+        wp_register_script('v3da-topojson', V3DA_URL . 'assets/js/vendor/topojson-client.min.js', [], V3DA_VERSION, true);
+        wp_register_script('v3da-iso-country-codes', V3DA_URL . 'assets/js/vendor/iso-country-codes.js', [], V3DA_VERSION, true);
+        wp_register_script('v3da-world-data', V3DA_URL . 'assets/data/world-countries-110m.topo.js', [], V3DA_VERSION, true);
+        wp_register_script(
+            'v3da-app',
+            V3DA_URL . 'assets/js/app.js',
+            ['v3da-d3', 'v3da-supercluster', 'v3da-topojson', 'v3da-iso-country-codes', 'v3da-world-data'],
+            V3DA_VERSION,
+            true
+        );
     }
 
     public function action_links(array $links): array {

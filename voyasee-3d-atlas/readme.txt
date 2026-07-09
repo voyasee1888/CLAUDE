@@ -4,7 +4,7 @@ Tags: travel, map, destinations, vector map, interactive
 Requires at least: 6.5
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,32 @@ Voyasee Country Intelligence, and a fully crawlable visible destinations list fo
 SEO and no-JavaScript fallback.
 
 == Changelog ==
+
+= 3.0.4 =
+* Fixed the interactive globe falling back to the plain "The interactive map
+  isn't available in this browser" list inside in-app browsers (Facebook,
+  Instagram, and other WebViews) and on some mobile networks. Two changes
+  make the map render reliably everywhere -- desktop, tablet, mobile, and
+  in-app browsers:
+  - The map data is now loaded as an ordinary classic `<script>` that
+    assigns a `window.V3DA_WORLD_TOPO` global (assets/data/world-countries-110m.topo.js),
+    rather than being pulled in with `fetch()`. A `<script src>` tag is the
+    most universally supported load mechanism and is immune to the CORS,
+    MIME-type, and proxy restrictions that make `fetch()` fail inside some
+    in-app browsers. If the global is ever missing the code still falls back
+    to fetching the JSON file, now with two automatic retries so a transient
+    mobile-network hiccup no longer permanently drops the map to the list.
+  - The front-end app script is now enqueued as a classic script that
+    declares d3, Supercluster, topojson, the ISO code table, and the world
+    data as explicit dependencies, instead of a `type="module"` script.
+    The app was already authored in ES5-safe style, so this only removes the
+    ES-module requirement that some older or in-app browsers handle poorly,
+    while WordPress's dependency ordering guarantees every library global
+    exists before the app runs.
+  Verified in a headless browser at desktop (1280px), tablet (820px), and
+  mobile (390px) widths, including a simulation of the in-app-browser case
+  where the topojson fetch is blocked entirely -- the globe still renders all
+  177 country shapes and every destination marker from the preloaded global.
 
 = 3.0.3 =
 * Renamed the plugin's on-page branding from "Voyasee World Story Atlas"
