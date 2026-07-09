@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 5.1.0
+Stable tag: 5.2.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -36,7 +36,7 @@ Or pre-fill a destination on a landing page:
 
 == Setup ==
 
-1. Activate the plugin. A starter dataset of 156 destinations and 489
+1. Activate the plugin. A starter dataset of 156 destinations and 488
    neighborhoods loads automatically the first time it activates --
    there is no manual CSV import step. (Import CSV still exists in the
    admin menu, but only as an optional way to add more destinations
@@ -124,23 +124,20 @@ close in score).
 * All editorial fields (why_fits, why_caution, local_tip, best_for) are
   meant to be written in your own words -- never paste text from
   Wikivoyage, Wikipedia, or any blog.
-* The bundled starter dataset auto-loads on activation: 51 destinations
-  have real, named neighborhoods written from general well-documented
-  travel knowledge (Tier 1) -- as of 4.2.0 this includes 15 of the
-  world's most globally searched destinations (Los Angeles, San
-  Francisco, Chicago, Miami, Las Vegas, Rio de Janeiro, Buenos Aires,
-  Cape Town, Bali (Denpasar), Kuala Lumpur, Cancun, Delhi, Kyoto,
-  Shanghai, and Beijing), upgraded from generic zones to real named
-  neighborhoods. The remaining 105 destinations use honest generic zones
-  ("City Center", "Business District", "Quiet Residential Area", or
-  "Beachfront" for coastal towns) rather than invented neighborhood
-  names for places we don't have confident street-level detail on
-  (Tier 2) -- this is flagged to the traveler in the result page and in
-  each zone's caution text. Expand any destination from Tier 2 to
-  Tier 1 over time via the admin screens or CSV import once you have
-  real local detail to add. A site that already seeded the old generic
-  zones for those 15 destinations migrates automatically the first time
-  it loads after updating to 4.2.0 -- see WTSM_Tier1_Upgrade.
+* The bundled starter dataset auto-loads on activation: as of 5.2.0,
+  every one of the 156 destinations now has real, named neighborhoods
+  written from well-documented travel knowledge (for example Edinburgh's
+  Old Town / New Town / Leith, Kyoto's Gion, Krakow's Kazimierz, Havana's
+  Habana Vieja). The earlier "generic zone" placeholders ("City Center",
+  "Business District", "Quiet Residential Area", "Beachfront", etc.) that
+  older versions used for less-documented cities have all been replaced
+  with genuine, existing neighborhoods -- there are no invented or
+  placeholder profiles left in the dataset. Each area still carries a
+  data_tier flag, and you can keep refining any destination's
+  neighborhoods over time via the admin screens or CSV import. The two
+  editorial fields that stay honest about confidence -- the result page's
+  "not synced" / "est." labels -- continue to disclose where POI, photo,
+  or boundary data has not yet been synced for a given area.
 
 == What's deliberately simplified in this version (documented upgrade path) ==
 
@@ -176,6 +173,31 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 5.2.0 =
+Dataset-wide cleanup: every generic placeholder neighborhood replaced with a
+real, existing named area. This completes the "real neighborhoods only" goal --
+there are no invented or placeholder profiles left anywhere in the starter data.
+
+* Replaced all 313 generic placeholder rows -- the auto-generated "<City> City
+  Center / Town Center / Business District / Quiet Residential Area / Old Town /
+  Beachfront" entries that older versions used for less-documented cities --
+  with 312 genuine, named neighborhoods across 104 cities. Examples: Edinburgh
+  (Old Town, New Town, Leith), Copenhagen (Indre By, Vesterbro, Norrebro),
+  Krakow (Stare Miasto, Kazimierz, Podgorze), Osaka (Namba, Umeda, Shinsekai),
+  Havana (Habana Vieja, Vedado, Centro Habana), Cartagena (Centro Historico,
+  Getsemani, Bocagrande), Montreal (Vieux-Montreal, Plateau, Downtown), and so
+  on across Europe, Asia, the Middle East, Africa, the Americas and Oceania.
+* Each replacement is a real area with approximately correct coordinates
+  (distances recomputed by haversine, consistent with the rest of the data),
+  realistic price band and safety tier, and genuine, area-specific editorial
+  copy in best_for / why_fits / why_caution / local_tip.
+* Deliberately kept the two real areas that superficially looked generic --
+  Dubai Marina and Amsterdam Zuid -- rather than removing them.
+* The dataset is now 156 destinations / 488 neighborhoods, all real. The
+  archetype spread is far more realistic than before (nightlife, luxury and
+  budget_backpacker areas roughly tripled now that the three repetitive
+  placeholder archetypes are gone).
 
 = 5.1.0 =
 Focused data expansion -- more real, genuinely-existing neighborhoods, plus a
