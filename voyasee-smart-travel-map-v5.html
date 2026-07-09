@@ -147,6 +147,30 @@
 #vmap .vmap-badge.night{border-color:rgba(98,182,255,.3);background:rgba(98,182,255,.08);color:var(--sky);}
 #vmap .vmap-badge.aurora{border-color:rgba(169,149,255,.38);background:rgba(169,149,255,.1);color:var(--violet);}
 #vmap .vmap-badge.dist{border-color:rgba(52,224,209,.32);background:rgba(52,224,209,.08);color:var(--teal);}
+/* country cluster bubbles (de-congestion) */
+#vmap .vmap-cluster{position:absolute;transform:translate(-50%,-50%);border:0;cursor:pointer;pointer-events:auto;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-weight:900;font-size:12px;line-height:1;color:#03121f;background:radial-gradient(circle at 34% 30%,#eafffb,var(--cl,#34e0d1));box-shadow:0 0 0 3px rgba(3,7,15,.55),0 0 16px 2px var(--clg,rgba(52,224,209,.5));transition:transform .14s ease,box-shadow .14s ease;z-index:6}
+#vmap .vmap-cluster:hover{transform:translate(-50%,-50%) scale(1.14);box-shadow:0 0 0 3px rgba(3,7,15,.55),0 0 22px 4px var(--clg,rgba(52,224,209,.7))}
+#vmap .vmap-cluster:after{content:attr(data-cname);position:absolute;left:50%;bottom:calc(100% + 5px);transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:900;letter-spacing:.03em;color:var(--ink);background:rgba(3,7,15,.82);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:2px 7px;opacity:0;transition:opacity .14s ease;pointer-events:none;text-transform:none}
+#vmap .vmap-cluster:hover:after{opacity:1}
+#vmap .vmap-cluster.is-behind{opacity:0!important;pointer-events:none}
+#vmap .vmap-cluster.lg{width:40px;height:40px;font-size:13px}
+#vmap .vmap-cluster-hint{position:absolute;z-index:6;left:16px;bottom:150px;pointer-events:none;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(3,7,15,.7);backdrop-filter:blur(10px);color:var(--muted);padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.03em;max-width:calc(100% - 32px)}
+@media(max-width:780px){#vmap .vmap-cluster-hint{display:none}}
+/* result-panel affiliate card (region-aware) */
+#vmap .vmap-aff-card{margin:14px 0 4px;border:1px solid rgba(245,200,91,.24);border-radius:16px;background:linear-gradient(160deg,rgba(245,200,91,.09),rgba(52,224,209,.05),rgba(8,17,34,.6));padding:14px;position:relative;overflow:hidden}
+#vmap .vmap-aff-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--teal),transparent)}
+#vmap .vmap-aff-head b{display:block;font-size:14px;font-weight:900;color:var(--gold2);letter-spacing:.01em}
+#vmap .vmap-aff-head span{display:block;color:var(--dim);font-size:10.5px;font-weight:700;margin-top:3px}
+#vmap .vmap-aff-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+#vmap .vmap-aff{display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.045);padding:9px 10px;text-decoration:none;transition:border-color .16s ease,background .16s ease,transform .16s ease}
+#vmap .vmap-aff:hover{border-color:rgba(245,200,91,.4);background:rgba(245,200,91,.06);transform:translateY(-1px)}
+#vmap .vmap-aff-i{font-size:19px;line-height:1;flex:0 0 auto}
+#vmap .vmap-aff-t{min-width:0;flex:1}
+#vmap .vmap-aff-t b{display:block;color:var(--ink);font-size:12px;font-weight:800;line-height:1.15}
+#vmap .vmap-aff-t small{display:block;color:var(--dim);font-size:10px;font-weight:700;margin-top:2px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#vmap .vmap-aff-cta{flex:0 0 auto;color:var(--teal);font-size:9.5px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+#vmap .vmap-aff-disc{margin:10px 0 0;color:rgba(248,243,231,.4);font-size:9.5px;font-weight:600;line-height:1.4}
+@media(max-width:520px){#vmap .vmap-aff-grid{grid-template-columns:1fr}#vmap .vmap-aff-t small{white-space:normal}}
 
 /* ===== Voyasee Map v2 intelligence styles ===== */
 #vmap .vmap-trust{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
@@ -283,6 +307,58 @@
 #vmap .vmap-live-adj{font-size:9px;font-weight:900;letter-spacing:.08em;padding:2px 7px;border:1px solid rgba(52,224,209,.35);border-radius:999px;color:var(--teal);background:rgba(52,224,209,.08);vertical-align:middle;margin-left:6px;}
 @media(max-width:520px){#vmap .vmap-carbon-grid{grid-template-columns:1fr}#vmap .vmap-infographic-row{flex-direction:column}}
 
+/* ===== v6 map-head mobile stacking fix (region chips vs counter overlap) ===== */
+@media(max-width:780px){
+  #vmap .vmap-map-head{position:absolute;top:10px;left:10px;right:10px;display:block;z-index:8;pointer-events:none}
+  #vmap .vmap-mode{max-width:100%;overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;pointer-events:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  #vmap .vmap-mode::-webkit-scrollbar{display:none}
+  #vmap .vmap-counter{position:absolute;top:88px;left:0;margin:0;z-index:7;font-size:10px;padding:6px 10px}
+  #vmap .vmap-region-jump{position:absolute;top:48px;left:10px;right:10px;bottom:auto;max-width:none;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;transform:none;gap:5px;z-index:7;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  #vmap .vmap-region-jump::-webkit-scrollbar{display:none}
+  #vmap .vmap-map-stage{inset:124px 10px 116px!important}
+  #vmap .vmap-pins{inset:124px 10px 116px!important}
+  #vmap .vmap-globe-hint{bottom:96px}
+}
+@media(max-width:520px){
+  #vmap .vmap-map-stage{inset:124px 8px 116px!important}
+  #vmap .vmap-pins{inset:124px 8px 116px!important}
+}
+
+/* ===== v6 infographic footer ===== */
+#vmap .vmap-foot2{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:36px 22px 44px}
+#vmap .vmap-foot2-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.09)}
+#vmap .vmap-foot2-brand{font-family:var(--serif);font-size:2.1rem;font-weight:700;color:var(--gold2);line-height:1}
+#vmap .vmap-foot2-brand span{color:var(--teal)}
+#vmap .vmap-foot2-tag{color:var(--dim);font-size:12.5px;line-height:1.5;max-width:440px;margin-top:7px}
+#vmap .vmap-foot2-cta{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:linear-gradient(135deg,var(--gold2),#d49e2e);color:#06111e;border-radius:12px;padding:12px 18px;font-size:12px;font-weight:900;letter-spacing:.04em;box-shadow:0 12px 30px rgba(245,200,91,.22)}
+#vmap .vmap-foot2-cta:hover{filter:brightness(1.06)}
+#vmap .vmap-foot2-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+#vmap .vmap-foot2-stat{border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.04);padding:13px 14px;text-align:center}
+#vmap .vmap-foot2-stat b{display:block;font-family:var(--serif);font-size:1.7rem;color:var(--gold2);line-height:1}
+#vmap .vmap-foot2-stat span{display:block;color:var(--dim);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-top:5px}
+#vmap .vmap-foot2-label{font-size:10.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0 0 13px;display:flex;align-items:center;gap:8px}
+#vmap .vmap-foot2-label:before{content:"";width:22px;height:2px;background:linear-gradient(90deg,var(--teal),transparent);border-radius:2px}
+#vmap .vmap-tool-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-bottom:26px}
+#vmap .vmap-tool-card{display:flex;flex-direction:column;gap:4px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.04);padding:11px 10px;text-decoration:none;transition:border-color .16s ease,background .16s ease,transform .16s ease;min-height:82px}
+#vmap .vmap-tool-card:hover{border-color:rgba(52,224,209,.42);background:rgba(52,224,209,.06);transform:translateY(-2px)}
+#vmap .vmap-tool-card .ic{font-size:18px;line-height:1;margin-bottom:2px}
+#vmap .vmap-tool-card b{color:var(--ink);font-size:11.5px;font-weight:800;line-height:1.18}
+#vmap .vmap-tool-card small{color:var(--dim);font-size:9.5px;font-weight:600;line-height:1.3}
+#vmap .vmap-tool-card.cur{border-color:rgba(245,200,91,.55);background:rgba(245,200,91,.09)}
+#vmap .vmap-tool-card.cur b{color:var(--gold2)}
+#vmap .vmap-foot2-aff{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+#vmap .vmap-affchip{display:flex;align-items:center;gap:8px;border:1px solid rgba(245,200,91,.2);border-radius:12px;background:rgba(245,200,91,.05);padding:10px;text-decoration:none;transition:border-color .16s ease,background .16s ease,transform .16s ease}
+#vmap .vmap-affchip:hover{border-color:rgba(245,200,91,.45);background:rgba(245,200,91,.09);transform:translateY(-2px)}
+#vmap .vmap-affchip .ic{font-size:17px;line-height:1;flex:0 0 auto}
+#vmap .vmap-affchip b{display:block;font-size:11px;color:var(--ink);font-weight:800;line-height:1.15}
+#vmap .vmap-affchip small{display:block;font-size:9px;color:var(--dim);font-weight:600;margin-top:1px}
+#vmap .vmap-foot2-disc{margin:14px 0 0;color:rgba(248,243,231,.4);font-size:10px;font-weight:600;line-height:1.5}
+#vmap .vmap-foot2-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.09);color:var(--dim);font-size:11px}
+#vmap .vmap-foot2-bottom a{color:var(--muted);text-decoration:none;font-weight:800;margin-left:14px}
+#vmap .vmap-foot2-bottom a:hover{color:var(--gold2)}
+@media(max-width:1080px){#vmap .vmap-tool-grid{grid-template-columns:repeat(4,minmax(0,1fr))}#vmap .vmap-foot2-aff{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){#vmap .vmap-tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#vmap .vmap-foot2-aff{grid-template-columns:repeat(2,minmax(0,1fr))}#vmap .vmap-foot2-stats{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 <div id="vmap">
   <div class="vmap-wrap">
@@ -334,7 +410,64 @@
     <section class="vmap-seo" aria-label="Interactive travel map guide"><div><h2>Interactive country map built for real trip decisions</h2><p>This interactive map combines a real-looking world layout with coordinate-based destination pins and practical trip signals travellers can use immediately: monthly fit, estimated daily cost, safety comfort, scam awareness, local movement, stay type, food strength, hidden-gem value, calendar watch and packing clues.</p><p>Use it to shortlist destinations before planning routes, accommodation, packing, budget and local safety checks.</p></div><div class="vmap-seo-grid"><div class="vmap-seo-card"><b>Best places by month</b><p>Choose any month to see destinations that match season, crowd profile and travel style.</p></div><div class="vmap-seo-card"><b>Budget travel map</b><p>Filter destinations by estimated daily budget and compare trip length against your total budget.</p></div><div class="vmap-seo-card"><b>Reality-first trip signals</b><p>Each result explains transport friction, packing clues, scam awareness, visa friction and first-day comfort.</p></div><div class="vmap-seo-card"><b>Voyasee tool ecosystem</b><p>Result cards link to Smart Travel Hub, budget calculator, packing list, scam checker, transit checker and best-time planner.</p></div></div></section>
     <div id="vmapStatus" class="vmap-status" aria-live="polite"></div>
   </div>
-  <footer class="vmap-footer"><div class="vmap-foot-inner"><div class="vmap-foot-grid"><div class="vmap-foot"><a class="vmap-logo" href="https://voyasee.com">Voyasee</a><p>Smart travel tools, destination planning, trip readiness and practical travel guides for better decisions before booking.</p></div><div class="vmap-foot"><h3>Travel Tools</h3><a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a><a href="https://voyasee.com/trip-budget-calculator/">Trip Budget Calculator</a><a href="https://voyasee.com/packing-list-generator/">Packing List Generator</a><a href="https://voyasee.com/best-time-to-visit-travel-planner/">Best Time Planner</a></div><div class="vmap-foot"><h3>Travel Safety</h3><a href="https://voyasee.com/travel-scam-checker/">Travel Scam Checker</a><a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa & Layover Risk Checker</a><a href="https://voyasee.com/medicine-restricted-items-checker/">Medicine & Restricted Items Checker</a><a href="https://voyasee.com/visa-requirements-first-time-travelers/">Visa Requirements Guide</a></div><div class="vmap-foot"><h3>Explore</h3><a href="https://voyasee.com/categories-voyasee/destination-travel-guides/">Destination Guides</a><a href="https://voyasee.com/categories-voyasee/travel-tips/">Travel Tips</a><a href="https://voyasee.com/destination-quiz/">Destination Quiz</a><a href="https://voyasee.com/jet-lag-recovery-planner/">Jet Lag Recovery Planner</a></div></div><div class="vmap-copy"><span>© Voyasee. Planning information only.</span><span>Always verify visa, safety and entry rules with official sources before travelling.</span></div></div></footer>
+  <footer class="vmap-foot2" aria-label="Voyasee toolkit and partners">
+    <div class="vmap-foot2-hero">
+      <div>
+        <div class="vmap-foot2-brand">Voya<span>see</span></div>
+        <p class="vmap-foot2-tag">The free travel-intelligence toolkit — discover destinations, time your trip, budget it, pack it and land ready. One connected system, no sign-up.</p>
+      </div>
+      <a class="vmap-foot2-cta" href="https://voyasee.com/free-smart-travel-hub/">Open the Smart Travel Hub →</a>
+    </div>
+
+    <div class="vmap-foot2-stats">
+      <div class="vmap-foot2-stat"><b>18+</b><span>Free planning tools</span></div>
+      <div class="vmap-foot2-stat"><b>207+</b><span>Destinations mapped</span></div>
+      <div class="vmap-foot2-stat"><b>12</b><span>Month-fit layers</span></div>
+      <div class="vmap-foot2-stat"><b>100%</b><span>Free · no sign-up</span></div>
+    </div>
+
+    <div class="vmap-foot2-label">Plan &amp; discover</div>
+    <div class="vmap-tool-grid">
+      <a class="vmap-tool-card cur" href="https://voyasee.com/interactive-travel-map/"><span class="ic">🗺️</span><b>Interactive Travel Map</b><small>Discover by budget &amp; month</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/interactive-world-map/"><span class="ic">🌐</span><b>Interactive World Map</b><small>Explore the living globe</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/destination-quiz/"><span class="ic">❓</span><b>Destination Quiz</b><small>Find your match in 8 steps</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/travel-destination-comparison-tool/"><span class="ic">⚔️</span><b>Destination Battle</b><small>Compare two places</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/best-time-to-visit-travel-planner/"><span class="ic">📅</span><b>Travel Month Planner</b><small>Best time to visit</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/free-smart-travel-hub/"><span class="ic">🧠</span><b>Smart Travel Hub</b><small>Live destination dashboard</small></a>
+    </div>
+
+    <div class="vmap-foot2-label">Prepare &amp; protect</div>
+    <div class="vmap-tool-grid">
+      <a class="vmap-tool-card" href="https://voyasee.com/trip-readiness-checklist/"><span class="ic">🧭</span><b>Travel Passport</b><small>Trip readiness score</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/trip-budget-calculator/"><span class="ic">💰</span><b>Budget Calculator</b><small>Real trip costs</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/best-area-to-stay/"><span class="ic">🏨</span><b>Best Area to Stay</b><small>Where to base yourself</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/packing-list-generator/"><span class="ic">🧳</span><b>Packing List</b><small>Climate-aware packing</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/carry-on-size-checker/"><span class="ic">📏</span><b>Carry-On Checker</b><small>Does your bag fit?</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/travel-scam-checker/"><span class="ic">🛡️</span><b>Scam Shield</b><small>Avoid tourist scams</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/transit-visa-layover-risk-checker/"><span class="ic">🔁</span><b>Transit &amp; Layover Risk</b><small>Connection risk check</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/medicine-restricted-item-checker/"><span class="ic">💊</span><b>Medicine Checker</b><small>Restricted items</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/jet-lag-recovery-planner/"><span class="ic">😴</span><b>Jet Lag Planner</b><small>Recover faster</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/schengen-90-180-day-calculator/"><span class="ic">🇪🇺</span><b>Schengen 90/180</b><small>Day-bank counter</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/visa-requirements-first-time-travelers/"><span class="ic">🛂</span><b>Visa Requirements</b><small>First-timer guide</small></a>
+      <a class="vmap-tool-card" href="https://voyasee.com/travel-printables/"><span class="ic">📋</span><b>Travel Printables</b><small>Free offline checklists</small></a>
+    </div>
+
+    <div class="vmap-foot2-label">Trusted booking partners</div>
+    <div class="vmap-foot2-aff">
+      <a class="vmap-affchip" href="https://www.dpbolvw.net/click-101719993-11891539" target="_blank" rel="noopener sponsored"><span class="ic">🏨</span><span><b>Booking.com</b><small>Hotels &amp; stays</small></span></a>
+      <a class="vmap-affchip" href="https://aviasales.tpm.li/jergleAu" target="_blank" rel="noopener sponsored"><span class="ic">✈️</span><span><b>Aviasales</b><small>Compare flights</small></span></a>
+      <a class="vmap-affchip" href="https://gyg.me/6BogCHuY" target="_blank" rel="noopener sponsored"><span class="ic">🎟️</span><span><b>GetYourGuide</b><small>Tours &amp; tickets</small></span></a>
+      <a class="vmap-affchip" href="https://www.discovercars.com/?a_aid=jagu1888" target="_blank" rel="noopener sponsored"><span class="ic">🚗</span><span><b>DiscoverCars</b><small>Car rental</small></span></a>
+      <a class="vmap-affchip" href="https://airalo.tpm.li/SYrMCqBw" target="_blank" rel="noopener sponsored"><span class="ic">📶</span><span><b>Airalo</b><small>Travel eSIM</small></span></a>
+      <a class="vmap-affchip" href="https://safetywing.com/?referenceID=26504574&utm_source=26504574&utm_medium=Ambassador" target="_blank" rel="noopener sponsored"><span class="ic">🛡️</span><span><b>SafetyWing</b><small>Travel insurance</small></span></a>
+    </div>
+    <p class="vmap-foot2-disc">Partner links above are affiliate links: Voyasee may earn a small commission if you book, at no extra cost to you. Availability, pricing, coverage and terms are set by each provider — always read their terms and verify official visa, safety, health and entry rules before booking.</p>
+
+    <div class="vmap-foot2-bottom">
+      <span>© Voyasee. Planning information only — not an official visa, safety, medical or airline authority.</span>
+      <span><a href="https://voyasee.com/">Home</a><a href="https://voyasee.com/free-smart-travel-hub/">Smart Hub</a><a href="https://voyasee.com/travel-printables/">Printables</a></span>
+    </div>
+  </footer>
 </div>
 <script>
 (function(){
@@ -619,6 +752,7 @@
     var inBtn=$('#vmapZoomIn'),outBtn=$('#vmapZoomOut');
     if(inBtn)inBtn.disabled=ZOOM.scale>=ZOOM.max-0.01;
     if(outBtn)outBtn.disabled=ZOOM.scale<=ZOOM.min+0.01;
+    if(typeof vmapView!=='undefined'&&vmapView==='flat'){var fc=ZOOM.scale>=1.9;if(fc!==ZOOM._flatCluster){ZOOM._flatCluster=fc;if(typeof renderPins==='function')renderPins();}}
   }
 
   function zoomTo(scale,cxPct,cyPct,animate){
@@ -658,7 +792,7 @@
     zoomApply();
   }
 
-  function zoomReset(){if(vmapView==='globe'&&GLOBE.ready){GLOBE.zoom=1;GLOBE.targetZoom=1;$$('#vmapRegionJump button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.region==='world'?'true':'false');});return;}zoomTo(1,null,null,true);
+  function zoomReset(){if(typeof resetClusters==='function')resetClusters();if(vmapView==='globe'&&GLOBE.ready){GLOBE.zoom=1;GLOBE.targetZoom=1;GLOBE.autoRotate=!GLOBE.reduceMotion;GLOBE.moved=true;if(typeof renderPins==='function')renderPins();$$('#vmapRegionJump button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.region==='world'?'true':'false');});return;}zoomTo(1,null,null,true);if(typeof renderPins==='function')renderPins();
     $$('#vmapRegionJump button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.region==='world'?'true':'false');});}
 
   function zoomToRegion(reg){
@@ -1058,7 +1192,39 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
   function setMonthOptions(){var sel=$('#vmapMonth');sel.innerHTML=months.map(function(m,i){var n=i+1;return '<option value="'+n+'">'+m+'</option>';}).join('');sel.value=String(new Date().getMonth()+1);}
   function pinColor(d,c){var s=score(d,c);if(mode==='budget'){return d.max<=45?'#56d98b':d.max<=80?'#34e0d1':d.max<=140?'#f5c85b':'#ff8066'}if(mode==='season'){return d.months.indexOf(c.month)>-1?'#34e0d1':'#a995ff'}if(mode==='safety'){return d.safety>=5?'#56d98b':d.safety>=4?'#34e0d1':d.safety>=3?'#f5c85b':'#ff8066'}if(mode==='scam'){return d.scam==='low'?'#56d98b':d.scam==='medium'?'#f5c85b':'#ff5e7d'}if(mode==='hidden'){return d.styles.indexOf('hidden')>-1?'#a995ff':'#62b6ff'}if(mode==='food'){return d.styles.indexOf('food')>-1?'#34e0d1':'#62b6ff'}if(mode==='risk'){var adv=(typeof advisoryFor==='function')?advisoryFor(d):null;var lvl=adv?adv.level:1;return lvl>=4?'#ff5e7d':lvl>=3?'#ff8066':lvl>=2?'#f5c85b':'#56d98b';}var ls=(typeof scoreLive==='function'?scoreLive(d,c):s);return ls>=82?'#34e0d1':ls>=68?'#f5c85b':ls>=52?'#ff8066':'#ff5e7d';}
   function project(d){if(vmapView==='globe'&&GLOBE.ready){var g=globeProject(d.lat,d.lon);return {x:g.x,y:g.y,hidden:!g.visible,scale:g.scale};}var minLat=-58,maxLat=83;var x=(d.lon+180)/360*100;var y=(maxLat-d.lat)/(maxLat-minLat)*100;return {x:Math.max(1.5,Math.min(98.5,x)),y:Math.max(2,Math.min(98,y))};}
-  function renderPins(){var c=cfg();var list=ranked(c);var topIds=list.slice(0,20).map(function(d){return d.id});$('#vmapPins').innerHTML=list.map(function(d){var p=project(d);var active=d.id===activeId?' is-active':'';var top=topIds.indexOf(d.id)>-1?' is-top':' is-dim';var behind=p.hidden?' is-behind':'';var style='left:'+p.x+'%;top:'+p.y+'%;--pin-color:'+pinColor(d,c);return '<button class="vmap-pin'+active+top+behind+'" type="button" data-id="'+esc(d.id)+'" data-label="'+esc(d.name)+'" data-lat="'+d.lat+'" data-lon="'+d.lon+'" style="'+style+'" aria-label="Open '+esc(d.name)+'"></button>';}).join('');$('#vmapCounter').textContent=list.length+' destinations · '+modeLabel()+' layer';if(vmapView==='globe'&&GLOBE.ready){vmapPositionPins();}}
+  function pinHTML(d,c,topIds){var p=project(d);var active=d.id===activeId?' is-active':'';var top=topIds.indexOf(d.id)>-1?' is-top':' is-dim';var behind=p.hidden?' is-behind':'';var style='left:'+p.x+'%;top:'+p.y+'%;--pin-color:'+pinColor(d,c);return '<button class="vmap-pin'+active+top+behind+'" type="button" data-id="'+esc(d.id)+'" data-label="'+esc(d.name)+'" data-lat="'+d.lat+'" data-lon="'+d.lon+'" style="'+style+'" aria-label="Open '+esc(d.name)+'"></button>';}
+  function clusterColor(score){return score>=85?['#34e0d1','rgba(52,224,209,.55)']:score>=70?['#56d98b','rgba(86,217,139,.5)']:score>=55?['#f5c85b','rgba(245,200,91,.5)']:['#ff8066','rgba(255,128,102,.5)'];}
+  function renderPins(){
+    var c=cfg();var list=ranked(c);var topIds=list.slice(0,20).map(function(d){return d.id});
+    var clusters=0,html='';
+    if(shouldCluster(c)){
+      var groups={},order=[];
+      var activeCountry=(activeId&&DEST_BY_ID[activeId])?DEST_BY_ID[activeId].country:null;
+      list.forEach(function(d){var k=d.country||'—';if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(d);});
+      order.forEach(function(k){
+        var items=groups[k];
+        if(items.length>1&&!clusterExpanded[k]&&k!==activeCountry){
+          clusters++;
+          var best=items.reduce(function(a,b){return b._score>a._score?b:a;});
+          var mlat=items.reduce(function(s,x){return s+x.lat;},0)/items.length;
+          var mlon=items.reduce(function(s,x){return s+x.lon;},0)/items.length;
+          var p=project({lat:mlat,lon:mlon});var col=clusterColor(best._score);
+          var behind=p.hidden?' is-behind':'';var big=items.length>=5?' lg':'';
+          html+='<button class="vmap-cluster'+behind+big+'" type="button" data-country="'+esc(k)+'" data-cname="'+esc(k)+' · '+items.length+' places" data-lat="'+mlat.toFixed(3)+'" data-lon="'+mlon.toFixed(3)+'" style="left:'+p.x+'%;top:'+p.y+'%;--cl:'+col[0]+';--clg:'+col[1]+'" aria-label="'+esc(k)+', '+items.length+' destinations. Tap to expand.">'+items.length+'</button>';
+        } else {
+          items.forEach(function(d){html+=pinHTML(d,c,topIds);});
+        }
+      });
+    } else {
+      html=list.map(function(d){return pinHTML(d,c,topIds);}).join('');
+    }
+    $('#vmapPins').innerHTML=html;
+    $('#vmapCounter').textContent=list.length+' destinations · '+modeLabel()+' layer';
+    var hint=$('#vmapClusterHint');
+    if(clusters>0){if(!hint){hint=document.createElement('div');hint.id='vmapClusterHint';hint.className='vmap-cluster-hint';var mc=$('#vmapMapCard');if(mc)mc.appendChild(hint);}hint.textContent='🔢 Tap a number to reveal that country · zoom in to expand all';hint.style.display='';}
+    else if(hint){hint.style.display='none';}
+    if(vmapView==='globe'&&GLOBE.ready){vmapPositionPins();}
+  }
   function modeLabel(){return {match:'Match',budget:'Budget',season:'Season',safety:'Safety',scam:'Scam',risk:'Live risk',hidden:'Hidden',food:'Food'}[mode]||'Match';}
   function renderTop(){var c=cfg();$('#vmapTopMatches').innerHTML=ranked(c).slice(0,5).map(function(d){return '<button class="vmap-match" type="button" data-id="'+esc(d.id)+'"><b>'+esc(d.flag+' '+d.name)+'</b><span>$'+d.min+'–$'+d.max+'/day · '+esc(d.country)+'</span><strong>'+d._score+'%</strong></button>';}).join('');}
   function monthDistance(d,m){var best=d.months||[];var min=12;best.forEach(function(b){var gap=Math.abs(b-m);gap=Math.min(gap,12-gap);if(gap<min){min=gap}});return min===12?3:min;}
@@ -1105,8 +1271,8 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     var dataPts=[];for(var i=0;i<n;i++){var p=pt(i,vals[i]);dataPts.push(p[0]+','+p[1]);}
     var dataPath='<polygon points="'+dataPts.join(' ')+'" fill="rgba(52,224,209,0.18)" stroke="#34e0d1" stroke-width="1.8"/>';
     var dots='';for(var i=0;i<n;i++){var p=pt(i,vals[i]);dots+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#34e0d1"/>';}
-    var lbls='';for(var i=0;i<n;i++){var a=ang(i),lx=(cx+(r+16)*Math.cos(a)).toFixed(1),ly=(cy+(r+16)*Math.sin(a)).toFixed(1);var anchor=Math.cos(a)>0.3?'start':Math.cos(a)<-0.3?'end':'middle';lbls+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="8.5" font-weight="700" fill="#8899aa" letter-spacing=".06em" text-transform="uppercase">'+labels[i].toUpperCase()+'</text>'+'<text x="'+lx+'" y="'+(Number(ly)+10)+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="9" font-weight="900" fill="#34e0d1">'+vals[i]+'%</text>';}
-    return '<div class="vmap-radar-wrap"><div class="vmap-section-label">Match Radar</div><svg viewBox="0 0 180 180" width="180" height="180" xmlns="http://www.w3.org/2000/svg">'+gridLines+axLines+dataPath+dots+lbls+'</svg></div>';
+    var lbls='';for(var i=0;i<n;i++){var a=ang(i),lx=(cx+(r+14)*Math.cos(a)).toFixed(1),ly=(cy+(r+14)*Math.sin(a)).toFixed(1);var anchor=Math.cos(a)>0.3?'start':Math.cos(a)<-0.3?'end':'middle';lbls+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="8" font-weight="700" fill="#9fb0c2" letter-spacing=".04em">'+labels[i].toUpperCase()+'</text>'+'<text x="'+lx+'" y="'+(Number(ly)+10)+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="9" font-weight="900" fill="#34e0d1">'+vals[i]+'%</text>';}
+    return '<div class="vmap-radar-wrap"><div class="vmap-section-label">Match Radar</div><svg viewBox="-34 -12 248 214" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style="max-width:230px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">'+gridLines+axLines+dataPath+dots+lbls+'</svg></div>';
   }
 
   /* 12-month comfort sparkline (uses CLIMATE data if loaded, else editorial estimate) */
@@ -1250,6 +1416,7 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
           '<a class="vmap-btn ghost" href="'+esc(d.guide)+'">Destination Guide</a>'+
           '<a class="vmap-btn ghost" href="https://voyasee.com/medicine-restricted-items-checker/">Medicine Checker</a>'+
         '</div>'+
+        (typeof affiliateCard==='function'?affiliateCard(d):'')+
       '</div>';
     loadLiveIntel(d,c,false);
   }
@@ -1281,6 +1448,16 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     auroraKp:null,reduceMotion:false,lastT:0};
   var DEG=Math.PI/180;
   var DEST_BY_ID={};DEST.forEach(function(d){DEST_BY_ID[d.id]=d;});
+  /* ---- country clustering state (de-congestion) ---- */
+  var clusterExpanded={};
+  function shouldCluster(c){
+    if(c.region&&c.region!=='world')return false;      /* region filter already narrows the field */
+    if($('#vmapListPanel')&&$('#vmapListPanel').classList.contains('is-visible'))return false;
+    if(vmapView==='globe'&&GLOBE.ready&&GLOBE.zoom>=2.0)return false; /* zoomed in on the globe */
+    if(vmapView==='flat'&&typeof ZOOM!=='undefined'&&ZOOM.scale>=1.9)return false; /* zoomed in on the flat map */
+    return true;
+  }
+  function resetClusters(){clusterExpanded={};}
 
   function invPt(X,Y){return [X/1000*360-180, 80-(Y-29.5)/442.6*160];}
   function parsePathToRings(d){
@@ -1359,6 +1536,26 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
       if(!p.front){started=false;continue;}
       if(!started){ctx.moveTo(p.x,p.y);started=true;}else{ctx.lineTo(p.x,p.y);}}
   }
+  /* fill helper: projects every vertex, but clamps back-hemisphere vertices
+     onto the sphere rim so hidden portions hug the limb instead of cutting a
+     straight chord ("spike") across the visible disc. Combined with the circle
+     clip this fills whole continents cleanly at any rotation. */
+  function fillRingClamped(ctx,ring){
+    var R=GLOBE.R,cx=GLOBE.cx,cy=GLOBE.cy;
+    var phi0=GLOBE.phi*DEG,lam0=GLOBE.lambda*DEG,anyFront=false,i;
+    ctx.beginPath();
+    for(i=0;i<ring.length;i++){
+      var phi=ring[i][1]*DEG,lam=ring[i][0]*DEG-lam0;
+      var cosc=Math.sin(phi0)*Math.sin(phi)+Math.cos(phi0)*Math.cos(phi)*Math.cos(lam);
+      var x=R*Math.cos(phi)*Math.sin(lam);
+      var y=R*(Math.cos(phi0)*Math.sin(phi)-Math.sin(phi0)*Math.cos(phi)*Math.cos(lam));
+      var px,py;
+      if(cosc>=0){px=cx+x;py=cy-y;anyFront=true;}
+      else{var m=Math.hypot(x,y)||1e-6;px=cx+R*x/m;py=cy-R*y/m;}
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+    }
+    ctx.closePath();if(anyFront)ctx.fill();
+  }
   function globeDraw(){
     var ctx=GLOBE.ctx;if(!ctx)return;var W=GLOBE.W,H=GLOBE.H,cx=GLOBE.cx,cy=GLOBE.cy,R=GLOBE.R;
     ctx.clearRect(0,0,W,H);
@@ -1377,7 +1574,7 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     /* land fill */
     var lg=ctx.createLinearGradient(cx-R,cy-R,cx+R,cy+R);lg.addColorStop(0,'rgba(40,120,110,0.62)');lg.addColorStop(0.5,'rgba(46,140,96,0.58)');lg.addColorStop(1,'rgba(120,132,70,0.55)');
     ctx.fillStyle=lg;
-    for(var li=0;li<GLOBE.land.length;li++){var ring=GLOBE.land[li];if(ring.length<3)continue;ctx.beginPath();drawPoly(ctx,ring,true);ctx.closePath();ctx.fill();}
+    for(var li=0;li<GLOBE.land.length;li++){var ring=GLOBE.land[li];if(ring.length<3)continue;fillRingClamped(ctx,ring);}
     /* coastlines */
     ctx.lineWidth=0.7;ctx.strokeStyle='rgba(150,244,222,0.42)';ctx.lineJoin='round';
     for(var ci=0;ci<GLOBE.coast.length;ci++){ctx.beginPath();drawPoly(ctx,GLOBE.coast[ci],false);ctx.stroke();}
@@ -1410,6 +1607,12 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
       if(p.visible){el.classList.remove('is-behind');el.style.left=p.x+'%';el.style.top=p.y+'%';el.style.transform='translate(-50%,-50%) scale('+(0.72+0.5*(p.scale-0.55)/0.45).toFixed(2)+')';}
       else{el.classList.add('is-behind');}
     }
+    var cls=root.querySelectorAll('.vmap-cluster');
+    for(var j=0;j<cls.length;j++){var ce=cls[j];var cla=parseFloat(ce.dataset.lat),clo=parseFloat(ce.dataset.lon);
+      if(isNaN(cla)||isNaN(clo))continue;var cp=globeProject(cla,clo);
+      if(cp.visible){ce.classList.remove('is-behind');ce.style.left=cp.x+'%';ce.style.top=cp.y+'%';}
+      else{ce.classList.add('is-behind');}
+    }
   }
 
   function globeLoop(t){
@@ -1425,6 +1628,8 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
         GLOBE.phi=Math.max(-82,Math.min(82,GLOBE.phi));GLOBE.moved=true;}
       /* ease zoom */
       if(Math.abs(GLOBE.targetZoom-GLOBE.zoom)>0.002){GLOBE.zoom+=(GLOBE.targetZoom-GLOBE.zoom)*0.16;GLOBE.R=GLOBE.baseR*GLOBE.zoom;GLOBE.moved=true;}
+      /* re-render pins when crossing the cluster/expand zoom threshold */
+      var zc=GLOBE.zoom>=2.0;if(zc!==GLOBE._zoomCluster){GLOBE._zoomCluster=zc;renderPins();}
       /* fly-to easing */
       if(GLOBE.fly){var f=GLOBE.fly;GLOBE.lambda+=(f.lambda-GLOBE.lambda)*0.1;GLOBE.phi+=(f.phi-GLOBE.phi)*0.1;GLOBE.moved=true;if(Math.abs(f.lambda-GLOBE.lambda)<0.3&&Math.abs(f.phi-GLOBE.phi)<0.3){GLOBE.lambda=f.lambda;GLOBE.phi=f.phi;GLOBE.fly=null;}}
       if(GLOBE.lambda>180)GLOBE.lambda-=360;if(GLOBE.lambda<-180)GLOBE.lambda+=360;
@@ -1435,7 +1640,7 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
 
   function globeZoomBy(f){GLOBE.targetZoom=Math.max(1,Math.min(3.4,GLOBE.targetZoom*f));GLOBE.moved=true;}
   var REGION_LL={world:{lambda:20,phi:12,zoom:1},europe:{lambda:15,phi:50,zoom:2.1},asia:{lambda:95,phi:34,zoom:1.7},americas:{lambda:-85,phi:18,zoom:1.6},africa:{lambda:20,phi:4,zoom:1.8},oceania:{lambda:140,phi:-22,zoom:1.9}};
-  function globeFlyToRegion(reg){var r=REGION_LL[reg]||REGION_LL.world;GLOBE.fly={lambda:r.lambda,phi:r.phi};GLOBE.targetZoom=r.zoom;GLOBE.autoRotate=(reg==='world');GLOBE.moved=true;}
+  function globeFlyToRegion(reg){var r=REGION_LL[reg]||REGION_LL.world;GLOBE.fly={lambda:r.lambda,phi:r.phi};GLOBE.targetZoom=r.zoom;GLOBE.autoRotate=(reg==='world');GLOBE.moved=true;if(reg==='world'){resetClusters();renderPins();}}
 
   function globeBindPointer(){
     var cv=GLOBE.canvas;var last=null,moved=false;
@@ -1449,9 +1654,13 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     cv.addEventListener('touchstart',function(e){for(var i=0;i<e.touches.length;i++){var t=e.touches[i];pts[t.identifier]={x:t.clientX,y:t.clientY};}if(Object.keys(pts).length>=2){var k=Object.keys(pts);var a=pts[k[0]],b=pts[k[1]];pd=Math.hypot(a.x-b.x,a.y-b.y);pz=GLOBE.targetZoom;GLOBE.dragging=false;}},{passive:true});
     cv.addEventListener('touchmove',function(e){for(var i=0;i<e.touches.length;i++){var t=e.touches[i];if(pts[t.identifier]){pts[t.identifier]={x:t.clientX,y:t.clientY};}}if(Object.keys(pts).length>=2&&pd>0){e.preventDefault();var k=Object.keys(pts);var a=pts[k[0]],b=pts[k[1]];var d=Math.hypot(a.x-b.x,a.y-b.y);GLOBE.targetZoom=Math.max(1,Math.min(3.4,pz*(d/pd)));GLOBE.moved=true;}},{passive:false});
     cv.addEventListener('touchend',function(e){pts={};if(e.touches.length===0){pd=0;}},{passive:true});
-    /* pause auto-rotate on hover (desktop) */
-    cv.addEventListener('mouseenter',function(){GLOBE.paused=true;showGlobeHint();});
-    cv.addEventListener('mouseleave',function(){if(!GLOBE.dragging)GLOBE.paused=false;});
+    /* pause auto-rotate whenever the pointer is over the map card (so overlay
+       pins & cluster bubbles are stationary and easy to click on desktop) */
+    var card=$('#vmapMapCard');
+    if(card&&window.matchMedia&&window.matchMedia('(hover:hover)').matches){
+      card.addEventListener('mouseenter',function(){GLOBE.paused=true;showGlobeHint();});
+      card.addEventListener('mouseleave',function(){if(!GLOBE.dragging)GLOBE.paused=false;});
+    }
   }
   function showGlobeHint(){var h=$('#vmapGlobeHint');if(!h||h._shown)return;h._shown=true;h.classList.add('is-on');setTimeout(function(){h.classList.remove('is-on');},2600);}
 
@@ -1481,6 +1690,30 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     if(mode==='globe'){if(typeof zoomReset==='function'&&ZOOM){ZOOM.scale=1;ZOOM.x=0;ZOOM.y=0;if(typeof zoomApply==='function')zoomApply();}globeResize();GLOBE.moved=true;GLOBE.lastT=0;showGlobeHint();}
     renderPins();
     if(vmapView==='flat'){root.querySelectorAll('.vmap-pin').forEach(function(el){el.classList.remove('is-behind');el.style.transform='';});}
+  }
+
+  /* ---- region-aware affiliate card (result panel) ---- */
+  function bookingLinkFor(region){
+    /* Booking.com EU/global approved link vs Asia-Pacific/Middle-East approved link */
+    return (region==='asia'||region==='oceania')?'https://www.kqzyfj.com/click-101719993-17289006':'https://www.dpbolvw.net/click-101719993-11891539';
+  }
+  function affiliateCard(d){
+    var region=d.region||'';
+    var booking=bookingLinkFor(region);
+    var bookingDesc=(region==='asia'||region==='oceania')?'Asia-Pacific hotels & stays':'Europe & global hotels & stays';
+    var acts=region==='asia'?{u:'https://klook.tpm.li/mCJbps88',n:'Klook',d:'Asia tours & tickets',i:'🎡'}
+            :region==='europe'?{u:'https://gyg.me/6BogCHuY',n:'GetYourGuide',d:'City tours & skip-the-line',i:'🎟️'}
+            :{u:'https://vi.me/4fnvM',n:'Viator',d:'Tours & experiences',i:'🗺️'};
+    var cards=[
+      {u:booking,n:'Stays',d:bookingDesc,i:'🏨',cta:'Compare'},
+      {u:'https://aviasales.tpm.li/jergleAu',n:'Flights',d:'Compare airfares & routes',i:'✈️',cta:'Search'},
+      {u:acts.u,n:acts.n,d:acts.d,i:acts.i,cta:'Browse'},
+      {u:'https://airalo.tpm.li/SYrMCqBw',n:'eSIM data',d:'Airalo · online on arrival',i:'📶',cta:'Get eSIM'},
+      {u:'https://safetywing.com/?referenceID=26504574&utm_source=26504574&utm_medium=Ambassador',n:'Insurance',d:'SafetyWing · flexible cover',i:'🛡️',cta:'Cover'}
+    ];
+    if(region==='asia')cards.splice(4,0,{u:'https://12go.asia/?z=15621940',n:'Transport',d:'12Go · trains, buses, ferries',i:'🚆',cta:'Routes'});
+    var items=cards.map(function(a){return '<a class="vmap-aff" href="'+a.u+'" target="_blank" rel="noopener sponsored"><span class="vmap-aff-i">'+a.i+'</span><span class="vmap-aff-t"><b>'+esc(a.n)+'</b><small>'+esc(a.d)+'</small></span><span class="vmap-aff-cta">'+esc(a.cta)+' →</span></a>';}).join('');
+    return '<div class="vmap-aff-card"><div class="vmap-aff-head"><b>🧭 Book '+esc(d.name)+'</b><span>Hand-picked partners for '+esc(region||'this trip')+' · affiliate links, no extra cost to you</span></div><div class="vmap-aff-grid">'+items+'</div><p class="vmap-aff-disc">Affiliate links — Voyasee may earn a small commission at no extra cost to you. Availability, pricing, cover and terms are set by each provider; always verify before booking.</p></div>';
   }
 
   /* ---- side-panel decoration: mini-globe locator + live badges ---- */
@@ -1523,8 +1756,22 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
   }
   var _origRenderSide=renderSide;renderSide=function(){_origRenderSide.apply(this,arguments);vmapDecorateSide();};
 
-  /* view toggle + region-jump aria for globe */
-  document.addEventListener('click',function(e){var vb=e.target.closest&&e.target.closest('#vmapViewToggle button[data-view-mode]');if(vb&&root.contains(vb)){setView(vb.dataset.viewMode);}},true);
+  /* view toggle + cluster expand (capture phase so it runs before generic pin handling) */
+  document.addEventListener('click',function(e){
+    if(!e.target.closest)return;
+    var vb=e.target.closest('#vmapViewToggle button[data-view-mode]');
+    if(vb&&root.contains(vb)){setView(vb.dataset.viewMode);return;}
+    var cb=e.target.closest('.vmap-cluster');
+    if(cb&&root.contains(cb)){
+      e.preventDefault();e.stopPropagation();
+      var country=cb.dataset.country;clusterExpanded[country]=true;
+      var la=parseFloat(cb.dataset.lat),lo=parseFloat(cb.dataset.lon);
+      if(vmapView==='globe'&&GLOBE.ready){GLOBE.fly={lambda:lo,phi:Math.max(-82,Math.min(82,la*0.85))};GLOBE.targetZoom=Math.max(GLOBE.targetZoom,1.7);GLOBE.autoRotate=false;GLOBE.moved=true;}
+      else if(typeof zoomTo==='function'&&!isNaN(la)){var pp=project({lat:la,lon:lo});zoomTo(1.85,pp.x,pp.y,true);}
+      renderPins();
+      status(country+' expanded — showing every destination there.');
+    }
+  },true);
 
   setMonthOptions();if(typeof readDeepLink==='function'){var __dl=readDeepLink();if(__dl&&typeof applyDeepLink==='function'){applyDeepLink(__dl);}}bind();root.classList.add('is-globe');updateAll();if(typeof bindZoom==='function'){bindZoom();}bootGlobe();renderPins();if(typeof bootstrapGlobal==='function'){bootstrapGlobal();}
 })();
