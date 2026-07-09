@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 5.2.0
+Stable tag: 5.3.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -36,7 +36,7 @@ Or pre-fill a destination on a landing page:
 
 == Setup ==
 
-1. Activate the plugin. A starter dataset of 156 destinations and 488
+1. Activate the plugin. A starter dataset of 200 destinations and 641
    neighborhoods loads automatically the first time it activates --
    there is no manual CSV import step. (Import CSV still exists in the
    admin menu, but only as an optional way to add more destinations
@@ -124,8 +124,8 @@ close in score).
 * All editorial fields (why_fits, why_caution, local_tip, best_for) are
   meant to be written in your own words -- never paste text from
   Wikivoyage, Wikipedia, or any blog.
-* The bundled starter dataset auto-loads on activation: as of 5.2.0,
-  every one of the 156 destinations now has real, named neighborhoods
+* The bundled starter dataset auto-loads on activation: as of 5.3.0,
+  every one of the 200 destinations now has real, named neighborhoods
   written from well-documented travel knowledge (for example Edinburgh's
   Old Town / New Town / Leith, Kyoto's Gion, Krakow's Kazimierz, Havana's
   Habana Vieja). The earlier "generic zone" placeholders ("City Center",
@@ -173,6 +173,27 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 5.3.0 =
+Dataset growth: expanded from 156 to 200 destinations, all with real
+neighborhoods, and topped up every previously thin city to a minimum of three.
+
+* Added 44 new real destinations across every region -- e.g. Jerusalem,
+  Jakarta, Bruges, Salzburg, Split, Granada, Bologna, Gdansk, Vilnius, Bergen,
+  Hiroshima, Nara, Hoi An, Yogyakarta, Bengaluru, Varanasi, Udaipur, Phnom
+  Penh, Luang Prabang, Pokhara, Fez, Johannesburg, Luxor, Boston, Washington
+  DC, San Diego, Austin, Nashville, Panama City, Oaxaca, Arequipa, Adelaide and
+  Cairns -- each with 3-4 real, named neighborhoods.
+* Topped up the 16 existing destinations that had only two neighborhoods
+  (Los Angeles, San Francisco, Chicago, Miami, Las Vegas, Rio de Janeiro,
+  Buenos Aires, Cape Town, Bali, Cancun, Delhi, Kuala Lumpur, Kyoto, Shanghai,
+  Beijing, Phuket) with one more real area each, so every destination now has at
+  least three.
+* Every added area is a genuine, existing neighborhood with realistic
+  coordinates (haversine distances), price/safety tiers and real editorial copy
+  -- no invented or placeholder profiles.
+* The starter dataset is now 200 destinations / 641 neighborhoods across 85
+  countries, minimum 3 and maximum 6 neighborhoods per destination.
 
 = 5.2.0 =
 Dataset-wide cleanup: every generic placeholder neighborhood replaced with a

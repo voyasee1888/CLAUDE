@@ -155,3 +155,47 @@ Montevideo,Uruguay,-34.9011,-56.1645,Carrasco International (MVD),-34.8384,-56.0
 Perth,Australia,-31.9505,115.8605,Perth Airport (PER),-31.9403,115.9669,2,Australia/Perth,4,starter-dataset-v3-generic-zones
 Brisbane,Australia,-27.4698,153.0251,Brisbane Airport (BNE),-27.3942,153.1218,2,Australia/Brisbane,4,starter-dataset-v3-generic-zones
 Wellington,New Zealand,-41.2865,174.7762,Wellington International (WLG),-41.3272,174.805,2,Pacific/Auckland,4,starter-dataset-v3-generic-zones
+Bruges,Belgium,51.2093,3.2247,Ostend-Bruges (OST),51.1989,2.8622,2,Europe/Brussels,4,starter-dataset-v5.3-real-expansion
+Salzburg,Austria,47.8095,13.055,Salzburg (SZG),47.7933,12.9944,2,Europe/Vienna,4,starter-dataset-v5.3-real-expansion
+Split,Croatia,43.5081,16.4402,Split (SPU),43.5389,16.2981,2,Europe/Zagreb,3,starter-dataset-v5.3-real-expansion
+Granada,Spain,37.1773,-3.5986,Granada (GRX),37.1887,-3.7776,2,Europe/Madrid,3,starter-dataset-v5.3-real-expansion
+Bologna,Italy,44.4949,11.3426,Bologna (BLQ),44.5354,11.2887,2,Europe/Rome,3,starter-dataset-v5.3-real-expansion
+Gdansk,Poland,54.352,18.6466,Gdansk Lech Walesa (GDN),54.3776,18.4662,2,Europe/Warsaw,2,starter-dataset-v5.3-real-expansion
+Vilnius,Lithuania,54.6872,25.2797,Vilnius (VNO),54.6341,25.2858,2,Europe/Vilnius,2,starter-dataset-v5.3-real-expansion
+Bergen,Norway,60.3913,5.3221,Bergen Flesland (BGO),60.2934,5.2181,2,Europe/Oslo,4,starter-dataset-v5.3-real-expansion
+Gothenburg,Sweden,57.7089,11.9746,Gothenburg Landvetter (GOT),57.6688,12.2798,2,Europe/Stockholm,4,starter-dataset-v5.3-real-expansion
+Antwerp,Belgium,51.2194,4.4025,Brussels (BRU),50.9014,4.4844,2,Europe/Brussels,3,starter-dataset-v5.3-real-expansion
+Bordeaux,France,44.8378,-0.5792,Bordeaux Merignac (BOD),44.8283,-0.7156,2,Europe/Paris,3,starter-dataset-v5.3-real-expansion
+Nuremberg,Germany,49.4521,11.0767,Nuremberg (NUE),49.4987,11.078,2,Europe/Berlin,3,starter-dataset-v5.3-real-expansion
+Palermo,Italy,38.1157,13.3615,Palermo (PMO),38.1759,13.091,2,Europe/Rome,3,starter-dataset-v5.3-real-expansion
+Jakarta,Indonesia,-6.2088,106.8456,Soekarno-Hatta (CGK),-6.1256,106.6559,1,Asia/Jakarta,2,starter-dataset-v5.3-real-expansion
+Hoi An,Vietnam,15.8801,108.338,Da Nang (DAD),16.0439,108.1994,1,Asia/Ho_Chi_Minh,2,starter-dataset-v5.3-real-expansion
+Yogyakarta,Indonesia,-7.7956,110.3695,Yogyakarta (YIA),-7.9055,110.0553,1,Asia/Jakarta,2,starter-dataset-v5.3-real-expansion
+Bengaluru,India,12.9716,77.5946,Kempegowda (BLR),13.1986,77.7066,1,Asia/Kolkata,2,starter-dataset-v5.3-real-expansion
+Varanasi,India,25.3176,82.9739,Lal Bahadur Shastri (VNS),25.4524,82.8593,1,Asia/Kolkata,2,starter-dataset-v5.3-real-expansion
+Udaipur,India,24.5854,73.7125,Maharana Pratap (UDR),24.6177,73.8961,1,Asia/Kolkata,2,starter-dataset-v5.3-real-expansion
+Phnom Penh,Cambodia,11.5564,104.9282,Phnom Penh (PNH),11.5466,104.8441,1,Asia/Phnom_Penh,2,starter-dataset-v5.3-real-expansion
+Luang Prabang,Laos,19.8845,102.1348,Luang Prabang (LPQ),19.8973,102.1607,1,Asia/Vientiane,2,starter-dataset-v5.3-real-expansion
+Pokhara,Nepal,28.2096,83.9856,Pokhara (PKR),28.2003,83.9821,1,Asia/Kathmandu,2,starter-dataset-v5.3-real-expansion
+Kota Kinabalu,Malaysia,5.9804,116.0735,Kota Kinabalu (BKI),5.9372,116.051,1,Asia/Kuching,3,starter-dataset-v5.3-real-expansion
+Hiroshima,Japan,34.3853,132.4553,Hiroshima (HIJ),34.4361,132.9195,1,Asia/Tokyo,3,starter-dataset-v5.3-real-expansion
+Nara,Japan,34.6851,135.8048,Kansai (KIX),34.432,135.2304,1,Asia/Tokyo,3,starter-dataset-v5.3-real-expansion
+Kandy,Sri Lanka,7.2906,80.6337,Bandaranaike / Colombo (CMB),7.1808,79.8841,1,Asia/Colombo,2,starter-dataset-v5.3-real-expansion
+Jerusalem,Israel,31.7683,35.2137,Ben Gurion (TLV),32.0114,34.8867,1,Asia/Jerusalem,4,starter-dataset-v5.3-real-expansion
+Riyadh,Saudi Arabia,24.7136,46.6753,King Khalid (RUH),24.9578,46.6989,1,Asia/Riyadh,3,starter-dataset-v5.3-real-expansion
+Jeddah,Saudi Arabia,21.4858,39.1925,King Abdulaziz (JED),21.6796,39.1565,1,Asia/Riyadh,3,starter-dataset-v5.3-real-expansion
+Fez,Morocco,34.0181,-5.0078,Fes-Saiss (FEZ),34.0511,-4.9779,1,Africa/Casablanca,2,starter-dataset-v5.3-real-expansion
+Johannesburg,South Africa,-26.2041,28.0473,O.R. Tambo (JNB),-26.1367,28.2411,1,Africa/Johannesburg,3,starter-dataset-v5.3-real-expansion
+Luxor,Egypt,25.6872,32.6396,Luxor (LXR),25.671,32.7066,1,Africa/Cairo,2,starter-dataset-v5.3-real-expansion
+Dar es Salaam,Tanzania,-6.7924,39.2083,Julius Nyerere (DAR),-6.8781,39.2026,1,Africa/Dar_es_Salaam,2,starter-dataset-v5.3-real-expansion
+Mombasa,Kenya,-4.0435,39.6682,Moi International (MBA),-4.0348,39.5942,1,Africa/Nairobi,2,starter-dataset-v5.3-real-expansion
+Boston,United States,42.3601,-71.0589,Logan International (BOS),42.3656,-71.0096,1,America/New_York,4,starter-dataset-v5.3-real-expansion
+Washington,United States,38.9072,-77.0369,Reagan National (DCA),38.8512,-77.0402,1,America/New_York,4,starter-dataset-v5.3-real-expansion
+San Diego,United States,32.7157,-117.1611,San Diego International (SAN),32.7338,-117.1933,1,America/Los_Angeles,4,starter-dataset-v5.3-real-expansion
+Austin,United States,30.2672,-97.7431,Austin-Bergstrom (AUS),30.1975,-97.6664,1,America/Chicago,3,starter-dataset-v5.3-real-expansion
+Nashville,United States,36.1627,-86.7816,Nashville International (BNA),36.1245,-86.6782,1,America/Chicago,3,starter-dataset-v5.3-real-expansion
+Panama City,Panama,8.9824,-79.5199,Tocumen International (PTY),9.0714,-79.3835,1,America/Panama,3,starter-dataset-v5.3-real-expansion
+Oaxaca,Mexico,17.0732,-96.7266,Oaxaca (OAX),16.999,-96.7266,1,America/Mexico_City,2,starter-dataset-v5.3-real-expansion
+Arequipa,Peru,-16.409,-71.5375,Rodriguez Ballon (AQP),-16.3411,-71.583,1,America/Lima,2,starter-dataset-v5.3-real-expansion
+Adelaide,Australia,-34.9285,138.6007,Adelaide (ADL),-34.945,138.531,1,Australia/Adelaide,4,starter-dataset-v5.3-real-expansion
+Cairns,Australia,-16.9186,145.7781,Cairns (CNS),-16.8858,145.755,1,Australia/Brisbane,4,starter-dataset-v5.3-real-expansion

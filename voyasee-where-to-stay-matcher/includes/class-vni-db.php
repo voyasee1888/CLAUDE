@@ -123,7 +123,7 @@ class VNI_DB {
 	}
 
 	/**
-	 * Auto-load the bundled starter dataset (156 destinations / 488
+	 * Auto-load the bundled starter dataset (200 destinations / 641
 	 * neighborhoods) the first time the plugin activates, so there is no
 	 * manual CSV-import step required to see the tool working. Only runs
 	 * if the destinations table is currently empty -- safe to call again
