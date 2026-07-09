@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Schengen Calculator: 90/180-Day Rule &amp; Day Bank Balance | Voyasee</title>
+<meta name="description" content="Enter your Schengen trips to see your real Day Bank balance under the 90/180 rule — remaining days, overstay risk, and your earliest safe return date. Free, instant, updated for 2026 EES rules.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<style>
+/* ============================================================
+   SCHENGEN DAY BANK — scoped to .vsdb-wrap to prevent WordPress
+   / Elementor / Astra theme bleed. No global selectors.
+   ============================================================ */
+.vsdb-wrap, .vsdb-wrap *, .vsdb-wrap *::before, .vsdb-wrap *::after { box-sizing: border-box; }
+.vsdb-wrap {
+  --navy-950:#060a14; --navy-900:#0b1220; --navy-850:#0e1729; --navy-800:#121c30;
+  --navy-700:#1c2a47; --navy-600:#283a5e;
+  --gold-400:#d9b865; --gold-300:#ecd28f; --gold-100:#f7ecd0;
+  --ink-100:#f5f3ec; --ink-300:#c7cedd; --ink-500:#8d96ac;
+  --green-500:#36d399; --green-600:#1f9c6f;
+  --amber-500:#f0ab3d; --amber-600:#c97f15;
+  --red-500:#ef5d5d; --red-600:#c23a3a;
+  --glass-bg:rgba(255,255,255,.045); --glass-bd:rgba(255,255,255,.09);
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px;
+  --serif:'Cormorant Garamond', Georgia, serif;
+  --sans:'DM Sans', -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: var(--sans);
+  color: var(--ink-100) !important;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(217,184,101,.10), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 10%, rgba(54,211,153,.06), transparent 60%),
+    radial-gradient(circle at 92% 88%, rgba(217,184,101,.08), transparent 45%),
+    linear-gradient(165deg, var(--navy-950), var(--navy-900) 55%, var(--navy-850));
+  position: relative;
+  isolation: isolate;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding-bottom: 96px; /* room for sticky footer-lite bar */
+}
+.vsdb-wrap .vsdb-stars {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .55;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 8%, var(--gold-300), transparent),
+    radial-gradient(1.5px 1.5px at 22% 18%, var(--gold-300), transparent),
+    radial-gradient(1px 1px at 33% 6%, var(--gold-300), transparent),
+    radial-gradient(1.5px 1.5px at 47% 14%, var(--gold-300), transparent),
+    radial-gradient(1px 1px at 58% 4%, var(--gold-300), transparent),
+    radial-gradient(1.5px 1.5px at 70% 11%, var(--gold-300), transparent),
+    radial-gradient(1px 1px at 81% 5%, var(--gold-300), transparent),
+    radial-gradient(1.5px 1.5px at 91% 16%, var(--gold-300), transparent),
+    radial-gradient(1px 1px at 6% 28%, var(--gold-300), transparent),
+    radial-gradient(1.5px 1.5px at 96% 30%, var(--gold-300), transparent);
+  background-repeat: no-repeat;
+}
+/* ---------- signature ambient layer: a living flight-map sky ---------- */
+.vsdb-skyfield { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.vsdb-flightpaths { position:absolute; inset:0; width:100%; height:100%; }
+.vsdb-fpath { fill:none; stroke:var(--gold-300); stroke-width:1.1; stroke-dasharray:3 6; stroke-linecap:round; opacity:.2; animation:vsdbFlightDash 42s linear infinite; }
+.vsdb-fpath.fp2 { opacity:.15; animation-duration:58s; animation-direction:reverse; }
+.vsdb-fpath.fp3 { opacity:.13; animation-duration:70s; }
+@keyframes vsdbFlightDash { to { stroke-dashoffset:-180; } }
+.vsdb-driftobj { position:absolute; line-height:1; filter:grayscale(1) brightness(1.7); opacity:.11; will-change:transform; }
+.vsdb-driftobj.d1 { top:10%; left:9%; font-size:25px; animation:vsdbDrift1 64s ease-in-out infinite; }
+.vsdb-driftobj.d2 { top:64%; left:80%; font-size:21px; animation:vsdbDrift2 78s ease-in-out infinite; }
+.vsdb-driftobj.d3 { top:38%; left:46%; font-size:19px; animation:vsdbDrift3 88s ease-in-out infinite; }
+@keyframes vsdbDrift1 { 0%,100%{transform:translate(0,0) rotate(-8deg);} 25%{transform:translate(50px,28px) rotate(5deg);} 50%{transform:translate(14px,70px) rotate(-3deg);} 75%{transform:translate(-36px,32px) rotate(9deg);} }
+@keyframes vsdbDrift2 { 0%,100%{transform:translate(0,0) rotate(0deg);} 33%{transform:translate(-62px,-36px) rotate(10deg);} 66%{transform:translate(-26px,42px) rotate(-6deg);} }
+@keyframes vsdbDrift3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(44px,-52px) scale(1.08);} }
+@media (prefers-reduced-motion: reduce){ .vsdb-fpath, .vsdb-driftobj { animation:none !important; } }
+.vsdb-shell { position:relative; z-index:1; max-width:880px; margin:0 auto; padding:0 18px; }
+.vsdb-h { font-family:var(--serif); font-weight:700; color:var(--ink-100) !important; margin:0; letter-spacing:.2px; }
+.vsdb-eyebrow { font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-300) !important; font-weight:600; }
+.vsdb-sub { color:var(--ink-300) !important; font-size:15px; line-height:1.6; }
+.vsdb-muted { color:var(--ink-500) !important; }
+
+/* ---------- glass card ---------- */
+.vsdb-card {
+  background:var(--glass-bg); border:1px solid var(--glass-bd); border-radius:var(--r-lg);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -20px rgba(0,0,0,.6);
+  padding:22px; margin-bottom:16px;
+}
+.vsdb-card.vsdb-glow { box-shadow: 0 0 0 1px rgba(217,184,101,.18) inset, 0 18px 40px -20px rgba(0,0,0,.6); }
+
+/* ---------- sticky header ---------- */
+.vsdb-header {
+  position: sticky; top:0; z-index:30;
+  background: rgba(8,12,22,.78); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom:1px solid var(--glass-bd);
+}
+.vsdb-header-row { display:flex; align-items:center; justify-content:space-between; padding:13px 18px; max-width:880px; margin:0 auto; }
+.vsdb-brand { display:flex; align-items:center; gap:9px; }
+.vsdb-brand-mark {
+  width:30px; height:30px; border-radius:8px; flex:0 0 auto;
+  background: conic-gradient(from 220deg, var(--gold-300), var(--gold-400), var(--navy-700), var(--gold-300));
+  display:flex; align-items:center; justify-content:center; font-size:14px;
+}
+.vsdb-brand-text { font-family:var(--serif); font-weight:700; font-size:17px; color:var(--ink-100) !important; }
+.vsdb-brand-text small { display:block; font-family:var(--sans); font-weight:500; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-300) !important; }
+.vsdb-progress { display:flex; gap:6px; align-items:center; }
+.vsdb-dot { width:7px; height:7px; border-radius:50%; background:var(--navy-600); transition:.25s; }
+.vsdb-dot.is-active { background:var(--gold-400); width:20px; border-radius:5px; }
+.vsdb-dot.is-done { background:var(--green-500); }
+.vsdb-step-label { font-size:11px; color:var(--ink-500) !important; margin-left:4px; white-space:nowrap; }
+
+/* ---------- buttons / inputs ---------- */
+.vsdb-btn {
+  font-family:var(--sans); font-weight:600; font-size:14.5px; border:none; border-radius:999px;
+  padding:13px 22px; cursor:pointer; transition:.15s transform, .15s box-shadow, .15s opacity;
+  display:inline-flex; align-items:center; gap:8px; justify-content:center;
+}
+.vsdb-btn:active { transform: scale(.97); }
+.vsdb-btn-primary { background:linear-gradient(135deg, var(--gold-300), var(--gold-400)) !important; color:#1a1306 !important; box-shadow:0 10px 24px -10px rgba(217,184,101,.55); }
+.vsdb-btn-primary:hover { box-shadow:0 14px 30px -10px rgba(217,184,101,.7); }
+.vsdb-btn-primary:disabled { opacity:.45; cursor:not-allowed; box-shadow:none; }
+.vsdb-btn-ghost { background:var(--glass-bg) !important; color:var(--ink-100) !important; border:1px solid var(--glass-bd) !important; }
+.vsdb-btn-ghost:hover { background:rgba(255,255,255,.08); }
+.vsdb-btn-sm { padding:9px 15px; font-size:13px; border-radius:999px; }
+.vsdb-btn-block { width:100%; }
+.vsdb-btn-danger-text { background:transparent; color:var(--red-500) !important; border:none; font-size:13px; font-weight:600; cursor:pointer; padding:6px 8px; }
+
+.vsdb-field { margin-bottom:14px; }
+.vsdb-label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-300) !important; margin-bottom:6px; letter-spacing:.02em; }
+.vsdb-input, .vsdb-select {
+  width:100%; background:var(--navy-850); border:1px solid var(--glass-bd); border-radius:var(--r-sm);
+  color:var(--ink-100) !important; font-family:var(--sans); font-size:15px; padding:12px 13px; outline:none;
+  transition:.15s border-color, .15s box-shadow;
+}
+.vsdb-input::-webkit-calendar-picker-indicator { filter:invert(.85) brightness(1.3); cursor:pointer; }
+.vsdb-input:focus, .vsdb-select:focus { border-color:var(--gold-400); box-shadow:0 0 0 3px rgba(217,184,101,.18); }
+.vsdb-row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.vsdb-help { font-size:12px; color:var(--ink-500) !important; margin-top:5px; }
+
+.vsdb-choicecards { display:grid; gap:9px; }
+.vsdb-choice {
+  display:flex; align-items:flex-start; gap:11px; padding:13px 14px; border-radius:var(--r-md);
+  border:1px solid var(--glass-bd); background:var(--glass-bg); cursor:pointer; transition:.15s;
+}
+.vsdb-choice:hover { border-color:rgba(217,184,101,.4); }
+.vsdb-choice.is-selected { border-color:var(--gold-400); background:rgba(217,184,101,.08); }
+.vsdb-choice input { accent-color:var(--gold-400); margin-top:3px; flex:0 0 auto; }
+.vsdb-choice-title { font-weight:600; font-size:14.5px; color:var(--ink-100) !important; }
+.vsdb-choice-desc { font-size:12.5px; color:var(--ink-500) !important; margin-top:2px; }
+
+.vsdb-toggle-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; }
+.vsdb-toggle { position:relative; width:42px; height:24px; flex:0 0 auto; }
+.vsdb-toggle input { opacity:0; width:100%; height:100%; position:absolute; margin:0; cursor:pointer; }
+.vsdb-toggle-track { position:absolute; inset:0; background:var(--navy-700); border-radius:999px; transition:.15s; border:1px solid var(--glass-bd); }
+.vsdb-toggle-thumb { position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:var(--ink-300); transition:.15s; }
+.vsdb-toggle input:checked + .vsdb-toggle-track { background:rgba(217,184,101,.35); }
+.vsdb-toggle input:checked + .vsdb-toggle-track .vsdb-toggle-thumb { background:var(--gold-300); left:21px; }
+.vsdb-toggle-label-txt { font-size:13.5px; }
+.vsdb-toggle-label-txt b { display:block; font-size:14px; }
+.vsdb-toggle-label-txt span { color:var(--ink-500) !important; font-size:12px; }
+
+/* ---------- step panels ---------- */
+.vsdb-step { display:none; padding:22px 0 28px; animation: vsdbFade .35s ease; }
+.vsdb-step.is-active { display:block; }
+@keyframes vsdbFade { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+/* ---------- trip rows (step 2) ---------- */
+.vsdb-trip { border:1px solid var(--glass-bd); border-radius:var(--r-md); padding:14px; margin-bottom:10px; background:rgba(255,255,255,.02); position:relative; }
+.vsdb-trip-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.vsdb-trip-tag { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-300) !important; }
+.vsdb-trip-future .vsdb-trip-tag { color:#7fc7ff !important; }
+
+/* ---------- gauge ---------- */
+.vsdb-gauge-wrap { display:flex; flex-direction:column; align-items:center; padding:6px 0 4px; }
+#vsdbGaugeArc { transition: stroke-dashoffset .9s cubic-bezier(.4,0,.2,1), stroke .35s ease; }
+.vsdb-gauge-num { font-family:var(--serif); font-size:58px; font-weight:700; line-height:1; }
+.vsdb-gauge-label { font-size:13px; color:var(--ink-500) !important; margin-top:2px; }
+.vsdb-gauge-status { margin-top:10px; font-size:13.5px; font-weight:600; padding:7px 14px; border-radius:999px; }
+.vsdb-status-ok { color:var(--green-500) !important; background:rgba(54,211,153,.12); }
+.vsdb-status-warn { color:var(--amber-500) !important; background:rgba(240,171,61,.14); }
+.vsdb-status-bad { color:var(--red-500) !important; background:rgba(239,93,93,.14); }
+.vsdb-status-bad.vsdb-pulse { animation: vsdbPulseBad 1.6s ease-in-out infinite; }
+@keyframes vsdbPulseBad { 0%,100%{opacity:1;} 50%{opacity:.65;} }
+@media (prefers-reduced-motion: reduce){ .vsdb-status-bad.vsdb-pulse { animation:none; } }
+.vsdb-stat-pill { text-align:center; padding:8px 4px; border-radius:var(--r-sm); background:rgba(255,255,255,.03); border:1px solid var(--glass-bd); }
+.vsdb-stat-pill b { display:block; font-family:var(--serif); font-size:20px; line-height:1.1; color:var(--ink-100); }
+.vsdb-stat-pill span { font-size:10px; color:var(--ink-500) !important; text-transform:uppercase; letter-spacing:.03em; }
+
+/* ---------- calendar heatmap ---------- */
+.vsdb-cal-legend { display:flex; gap:14px; font-size:11.5px; color:var(--ink-500) !important; margin:4px 0 12px; flex-wrap:wrap; }
+.vsdb-cal-legend span { display:inline-flex; align-items:center; gap:5px; }
+.vsdb-cal-range { font-size:11px; color:var(--ink-500) !important; margin-bottom:8px; }
+.vsdb-cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:5px; }
+.vsdb-cal-weekdays span { text-align:center; font-size:10px; color:var(--ink-500) !important; font-weight:600; letter-spacing:.03em; }
+.vsdb-cal-empty { background:transparent !important; cursor:default !important; }
+.vsdb-cal-empty:hover { transform:none !important; }
+.vsdb-swatch { width:9px; height:9px; border-radius:3px; display:inline-block; }
+.vsdb-cal-grid { display:grid; grid-template-columns:repeat(7, 1fr); gap:5px; }
+.vsdb-cal-cell {
+  aspect-ratio:1; border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:10.5px; font-weight:600; cursor:pointer; border:1px solid transparent; position:relative;
+  transition:.12s transform;
+}
+.vsdb-cal-month { font-size:7.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; opacity:.75; line-height:1; margin-bottom:1px; }
+.vsdb-cal-cell:hover { transform:scale(1.12); border-color:var(--gold-300); z-index:2; }
+.vsdb-cal-cell:focus-visible { transform:scale(1.12); outline:none; border-color:var(--gold-300); box-shadow:0 0 0 2px var(--gold-300); z-index:2; }
+.vsdb-cal-cell.lvl-ok { background:rgba(54,211,153,.22); color:#bff5dd !important; }
+.vsdb-cal-cell.lvl-warn { background:rgba(240,171,61,.28); color:#ffe2b0 !important; }
+.vsdb-cal-cell.lvl-bad { background:rgba(239,93,93,.32); color:#ffd0d0 !important; }
+.vsdb-cal-cell.is-today { box-shadow:0 0 0 2px var(--gold-300) inset; }
+
+/* ---------- timeline ---------- */
+.vsdb-timeline-item { display:flex; gap:12px; padding:9px 0; border-bottom:1px dashed var(--glass-bd); font-size:13.5px; }
+.vsdb-timeline-item:last-child { border-bottom:none; }
+.vsdb-timeline-date { color:var(--gold-300) !important; font-weight:600; min-width:96px; }
+
+/* ---------- mini-gantt (audit modal) ---------- */
+.vsdb-gantt { margin:2px 0 16px; }
+.vsdb-gantt-axis { display:flex; justify-content:space-between; font-size:10px; color:var(--ink-500) !important; margin-bottom:8px; letter-spacing:.02em; }
+.vsdb-gantt-row { margin-bottom:9px; }
+.vsdb-gantt-label { font-size:11.5px; color:var(--ink-300) !important; display:block; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vsdb-gantt-track { position:relative; height:9px; background:rgba(255,255,255,.06); border-radius:5px; overflow:hidden; }
+.vsdb-gantt-bar { position:absolute; top:0; height:100%; border-radius:5px; min-width:3px; }
+.vsdb-gantt-divider { height:1px; background:var(--glass-bd); margin:14px 0; }
+
+/* ---------- modal ---------- */
+.vsdb-modal-backdrop { position:fixed; inset:0; background:rgba(4,7,14,.7); backdrop-filter:blur(3px); z-index:90; display:none; align-items:center; justify-content:center; padding:18px; }
+.vsdb-modal-backdrop.is-open { display:flex; }
+.vsdb-modal { background:var(--navy-850); border:1px solid var(--glass-bd); border-radius:var(--r-lg); padding:22px; max-width:420px; width:100%; max-height:80vh; overflow:auto; }
+.vsdb-modal-close { float:right; background:none; border:none; color:var(--ink-500) !important; font-size:20px; cursor:pointer; line-height:1; }
+
+/* ---------- reminder banner ---------- */
+.vsdb-banner { display:none; align-items:flex-start; gap:10px; padding:13px 14px; border-radius:var(--r-md); margin-bottom:16px; font-size:13.5px; }
+.vsdb-banner.is-visible { display:flex; }
+.vsdb-banner.bn-warn { background:rgba(240,171,61,.12); border:1px solid rgba(240,171,61,.35); }
+.vsdb-banner.bn-bad { background:rgba(239,93,93,.12); border:1px solid rgba(239,93,93,.35); }
+.vsdb-banner-x { background:none; border:none; color:var(--ink-500) !important; cursor:pointer; font-size:16px; }
+
+/* ---------- what-if ---------- */
+.vsdb-whatif-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.vsdb-whatif-result { margin-top:10px; padding:10px 12px; border-radius:var(--r-sm); font-size:13px; background:rgba(255,255,255,.03); }
+
+/* ---------- affiliate cards ---------- */
+.vsdb-aff-grid { display:grid; gap:9px; }
+.vsdb-aff-card { display:flex; align-items:center; gap:12px; padding:13px 14px; border-radius:var(--r-md); border:1px solid var(--glass-bd) !important; background:var(--glass-bg) !important; text-decoration:none !important; color:var(--ink-100) !important; transition:.15s; }
+.vsdb-aff-card:hover { border-color:rgba(217,184,101,.4); background:rgba(217,184,101,.06); }
+.vsdb-aff-ico { width:38px; height:38px; border-radius:10px; background:var(--navy-700); display:flex; align-items:center; justify-content:center; font-size:17px; flex:0 0 auto; }
+.vsdb-aff-name { font-weight:600; font-size:14px; }
+.vsdb-aff-desc { font-size:12px; color:var(--ink-500) !important; }
+.vsdb-aff-badge { margin-left:auto; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold-300) !important; background:rgba(217,184,101,.12); padding:4px 9px; border-radius:999px; flex:0 0 auto; }
+
+/* ---------- profile switcher ---------- */
+.vsdb-profile-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.vsdb-profile-group { display:inline-flex; align-items:center; gap:3px; }
+.vsdb-chip-del { width:20px; height:20px; border-radius:50%; border:1px solid var(--glass-bd) !important; background:var(--glass-bg) !important; color:var(--ink-500) !important; font-size:10px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; padding:0; flex:0 0 auto; }
+.vsdb-chip-del:hover { color:var(--red-500) !important; border-color:rgba(239,93,93,.4) !important; }
+.vsdb-profile-chip { padding:7px 13px; border-radius:999px; border:1px solid var(--glass-bd) !important; background:var(--glass-bg) !important; font-size:12.5px; cursor:pointer; color:var(--ink-100) !important; }
+.vsdb-profile-chip.is-active { border-color:var(--gold-400); background:rgba(217,184,101,.14); color:var(--gold-300) !important; font-weight:600; }
+
+/* ---------- export row ---------- */
+.vsdb-export-row { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+@media (min-width:520px){ .vsdb-export-row { grid-template-columns:repeat(4,1fr); } }
+
+/* ---------- footer ---------- */
+.vsdb-footer { position:relative; z-index:1; margin-top:30px; border-top:1px solid var(--glass-bd); padding:26px 18px 90px; background:rgba(5,8,15,.5); }
+.vsdb-footer-cols { max-width:880px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+@media (min-width:680px){ .vsdb-footer-cols { grid-template-columns:repeat(4,1fr); } }
+.vsdb-footer-col h4 { font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-300) !important; margin:0 0 10px; }
+.vsdb-footer-col a { display:block; color:var(--ink-300) !important; text-decoration:none; font-size:13px; margin-bottom:8px; }
+.vsdb-footer-col a:hover { color:var(--ink-100) !important; }
+.vsdb-footer-legal { max-width:880px; margin:22px auto 0; padding-top:16px; border-top:1px solid var(--glass-bd); font-size:11.5px; color:var(--ink-500) !important; display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; }
+
+/* ---------- persistent mini bar (stays visible at all 3 steps, per requirement) ---------- */
+.vsdb-stickybar {
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  background:rgba(8,12,22,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-top:1px solid var(--glass-bd); padding:11px 18px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.vsdb-stickybar-txt { font-size:12px; color:var(--ink-500) !important; }
+.vsdb-stickybar-txt b { color:var(--ink-100) !important; }
+
+/* ---------- disclaimer ---------- */
+.vsdb-disclaimer { font-size:12px; color:var(--ink-500) !important; line-height:1.6; padding:14px; border-radius:var(--r-md); background:rgba(255,255,255,.02); border:1px solid var(--glass-bd); }
+
+/* ---------- misc ---------- */
+.vsdb-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.vsdb-flex-between { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.vsdb-pill { font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; letter-spacing:.04em; }
+.vsdb-pill-ees { background:rgba(54,211,153,.14); color:var(--green-500) !important; }
+.vsdb-pill-etias { background:rgba(127,199,255,.14); color:#7fc7ff !important; }
+.vsdb-info-box { border:1px solid rgba(127,199,255,.25); background:rgba(127,199,255,.06); border-radius:var(--r-md); padding:14px; font-size:13px; color:var(--ink-300) !important; }
+.vsdb-info-box.ib-warn { border-color:rgba(240,171,61,.35); background:rgba(240,171,61,.08); }
+.vsdb-info-box.ib-bad { border-color:rgba(239,93,93,.35); background:rgba(239,93,93,.08); }
+.vsdb-link-btn { background:none; border:none; color:var(--gold-300) !important; font-size:13px; font-weight:600; cursor:pointer; padding:0; text-decoration:underline; }
+@media (max-width:480px){
+  .vsdb-row2, .vsdb-whatif-grid, .vsdb-grid2 { grid-template-columns:1fr; }
+  .vsdb-gauge-num { font-size:46px; }
+  .vsdb-cal-cell { font-size:9px; }
+}
+@media print {
+  .vsdb-stars, .vsdb-skyfield, .vsdb-header, .vsdb-stickybar, .vsdb-footer,
+  .vsdb-btn, .vsdb-export-row, .vsdb-profile-bar, .vsdb-compare-toggle,
+  #vsdbCompareToggle, #vsdbCompareCard, #vsdbWhatIfCard, .vsdb-modal-backdrop,
+  .vsdb-progress, #vsdbStartOver, #vsdbEditTrips { display:none !important; }
+  .vsdb-wrap { background:#fff !important; color:#111 !important; padding-bottom:0 !important; }
+  .vsdb-wrap, .vsdb-wrap * { color:#111 !important; text-shadow:none !important; }
+  .vsdb-card { background:#fff !important; border:1px solid #ccc !important; box-shadow:none !important; backdrop-filter:none !important; break-inside:avoid; }
+  .vsdb-h, .vsdb-eyebrow, .vsdb-gauge-num { color:#111 !important; }
+  .vsdb-cal-cell.lvl-ok { background:#d8f3e4 !important; }
+  .vsdb-cal-cell.lvl-warn { background:#fde6c2 !important; }
+  .vsdb-cal-cell.lvl-bad { background:#fbd5d5 !important; }
+  .vsdb-disclaimer { border:1px solid #ccc !important; }
+}
+</style>
+</head>
+<body>
+<div class="vsdb-wrap" id="vsdbApp">
+<div class="vsdb-stars" aria-hidden="true"></div>
+<div class="vsdb-skyfield" aria-hidden="true">
+  <svg class="vsdb-flightpaths" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <path class="vsdb-fpath fp1" vector-effect="non-scaling-stroke" d="M10,8 Q40,1 70,11"></path>
+    <path class="vsdb-fpath fp2" vector-effect="non-scaling-stroke" d="M22,18 Q55,4 91,16"></path>
+    <path class="vsdb-fpath fp3" vector-effect="non-scaling-stroke" d="M6,28 Q35,38 58,4"></path>
+  </svg>
+  <span class="vsdb-driftobj d1">✈</span>
+  <span class="vsdb-driftobj d2">🧭</span>
+  <span class="vsdb-driftobj d3">🛂</span>
+</div>
+
+<header class="vsdb-header">
+  <div class="vsdb-header-row">
+    <div class="vsdb-brand">
+      <div class="vsdb-brand-mark" aria-hidden="true">🇪🇺</div>
+      <div class="vsdb-brand-text">Schengen Day Bank<small>by Voyasee</small></div>
+    </div>
+    <div class="vsdb-progress" id="vsdbProgress" aria-hidden="true">
+      <span class="vsdb-dot" data-step="1"></span>
+      <span class="vsdb-dot" data-step="2"></span>
+      <span class="vsdb-dot" data-step="3"></span>
+      <span class="vsdb-step-label" id="vsdbStepLabel">Step 1 of 3</span>
+    </div>
+  </div>
+</header>
+
+<main class="vsdb-shell">
+  <div role="heading" aria-level="2" class="vsdb-h" style="font-size:26px;margin:22px 0 4px;">Schengen Day Bank — Check Your 90/180-Day Balance</div>
+  <p class="vsdb-sub" style="margin-bottom:18px;">A free, private 90/180-day rule calculator built for the EES era — no login, no data leaves your device.</p>
+
+  <!-- STEP PANELS INSERTED BELOW -->
+  <section class="vsdb-step is-active" id="vsdbStep1" data-step="1">
+    <div class="vsdb-card vsdb-glow">
+      <div class="vsdb-eyebrow">Did you know?</div>
+      <p class="vsdb-sub" style="font-size:16px;color:var(--ink-100);margin:6px 0 0;">Your Schengen days <em>come back</em>. The 90-day limit isn't a one-time allowance — it's a rolling 180-day window, so old trip-days drop out and refill your balance automatically. Most travelers have more days left than a simple "90 minus days used" guess suggests.</p>
+    </div>
+
+    <div class="vsdb-card">
+      <div class="vsdb-flex-between" style="margin-bottom:10px;">
+        <span class="vsdb-pill vsdb-pill-ees">EES: Live since 10 Apr 2026</span>
+        <span class="vsdb-pill vsdb-pill-etias">ETIAS: Targeting Q4 2026</span>
+      </div>
+      <p class="vsdb-sub" style="font-size:13px;margin:0;">Border crossings are now digitally recorded — manual stamp-counting is no longer a safe fallback. This calculator uses the same rolling-window method published by EU authorities, entirely on your device.</p>
+    </div>
+
+    <div class="vsdb-card">
+      <div class="vsdb-label" style="font-size:14px;margin-bottom:10px;">Who is this calculation for?</div>
+      <div class="vsdb-field">
+        <label class="vsdb-label" for="vsdbTravelerName">Traveler name (optional — for your records only)</label>
+        <input type="text" class="vsdb-input" id="vsdbTravelerName" placeholder="e.g. Me, or a family member's name" maxlength="40">
+      </div>
+
+      <div class="vsdb-label" style="margin-top:6px;">Your travel document status</div>
+      <div class="vsdb-choicecards" id="vsdbDocStatus">
+        <label class="vsdb-choice is-selected" data-val="visa-free">
+          <input type="radio" name="vsdbDoc" value="visa-free" checked>
+          <span><span class="vsdb-choice-title">Visa-free traveler</span><span class="vsdb-choice-desc">e.g. US, UK, Canada, Australia, Japan, and ~60 other passports — the 90/180 rule applies to you.</span></span>
+        </label>
+        <label class="vsdb-choice" data-val="visa">
+          <input type="radio" name="vsdbDoc" value="visa">
+          <span><span class="vsdb-choice-title">Schengen short-stay (Type C) visa holder</span><span class="vsdb-choice-desc">The 90/180 rule applies, but check the exact authorised stay printed on your visa sticker — if it's shorter than 90 days, that number governs instead.</span></span>
+        </label>
+        <label class="vsdb-choice" data-val="exempt">
+          <input type="radio" name="vsdbDoc" value="exempt">
+          <span><span class="vsdb-choice-title">EU/Schengen passport, long-stay visa, or residence permit</span><span class="vsdb-choice-desc">The 90/180 rule does not apply to your stay in that country. You can still use this tool for any separate short trips elsewhere.</span></span>
+        </label>
+        <label class="vsdb-choice" data-val="unsure">
+          <input type="radio" name="vsdbDoc" value="unsure">
+          <span><span class="vsdb-choice-title">Not sure</span><span class="vsdb-choice-desc">No problem — we'll calculate under the standard 90/180 rule and you can adjust later.</span></span>
+        </label>
+      </div>
+      <div class="vsdb-info-box" id="vsdbExemptNote" style="display:none;margin-top:12px;">You indicated an EU/Schengen passport, long-stay visa, or residence permit. The 90/180-day rule generally does not restrict that stay — <b>in Step 2, remember to toggle "Long-stay visa / residence permit" on for that specific trip</b> so it's excluded from the count. This tool is most useful for separate short Schengen trips on top of it.</div>
+      <div class="vsdb-field" id="vsdbVisaDaysField" style="display:none;margin-top:12px;">
+        <label class="vsdb-label" for="vsdbVisaDays">Your visa's authorised stay (days) — check the sticker on your visa</label>
+        <input type="number" class="vsdb-input" id="vsdbVisaDays" min="1" max="90" placeholder="e.g. 30">
+        <p class="vsdb-help">If your visa authorises fewer than 90 days, that shorter number is your real limit — this calculator will use it instead of 90.</p>
+      </div>
+      <div class="vsdb-field" style="margin-top:12px;">
+        <label class="vsdb-label" for="vsdbWarnThreshold">Warn me when this many days or fewer remain</label>
+        <input type="number" class="vsdb-input" id="vsdbWarnThreshold" min="1" max="89" value="15">
+      </div>
+      <div class="vsdb-field" style="margin-top:12px;">
+        <label class="vsdb-label" for="vsdbPassportExpiry">Passport expiry date (optional)</label>
+        <input type="date" class="vsdb-input" id="vsdbPassportExpiry">
+        <p class="vsdb-help">Many Schengen countries expect at least 3 months of validity beyond your last planned exit date — we'll flag it if it looks tight.</p>
+      </div>
+    </div>
+
+    <div class="vsdb-card">
+      <button class="vsdb-link-btn" id="vsdbToggleCountries" type="button">Which 29 countries count as "Schengen"? ▾</button>
+      <div id="vsdbCountriesList" style="display:none;margin-top:10px;font-size:13px;color:var(--ink-300);line-height:1.7;"></div>
+    </div>
+
+    <button class="vsdb-btn vsdb-btn-primary vsdb-btn-block" id="vsdbStep1Next" type="button" style="margin-top:6px;">Start Tracking My Days →</button>
+  </section>
+  <section class="vsdb-step" id="vsdbStep2" data-step="2">
+    <div class="vsdb-profile-bar" id="vsdbProfileBar2"></div>
+    <div class="vsdb-info-box ib-warn" id="vsdbStillThereBanner" style="display:none;margin-bottom:16px;"></div>
+
+    <div class="vsdb-card">
+      <div class="vsdb-flex-between">
+        <div role="heading" aria-level="3" class="vsdb-h" style="font-size:18px;">Your past &amp; current Schengen trips</div>
+      </div>
+      <p class="vsdb-sub" style="font-size:13px;margin:4px 0 14px;">Add every Schengen-area stay from the last ~12 months. Both your entry and exit day count as full days.</p>
+      <div id="vsdbTripsPast"></div>
+      <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-block" id="vsdbAddPast" type="button">+ Add a past or current trip</button>
+    </div>
+
+    <div class="vsdb-card" style="border-color:rgba(127,199,255,.25);">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:18px;color:#cfe8ff;">Planned future trip(s)</div>
+      <p class="vsdb-sub" style="font-size:13px;margin:4px 0 14px;">Test a trip before you book it — Day Bank recalculates every future date for you, including this one.</p>
+      <div id="vsdbTripsFuture"></div>
+      <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-block" id="vsdbAddFuture" type="button">+ Add a planned future trip</button>
+    </div>
+
+    <div class="vsdb-card" id="vsdbStep2Error" style="display:none;border-color:rgba(239,93,93,.4);background:rgba(239,93,93,.08);font-size:13px;"></div>
+
+    <div class="vsdb-row2" style="margin-top:6px;">
+      <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-block" id="vsdbStep2Back" type="button">← Back</button>
+      <button class="vsdb-btn vsdb-btn-primary vsdb-btn-block" id="vsdbStep2Next" type="button">Calculate My Balance →</button>
+    </div>
+  </section>
+  <section class="vsdb-step" id="vsdbStep3" data-step="3">
+    <div class="vsdb-profile-bar" id="vsdbProfileBar3"></div>
+    <button class="vsdb-link-btn" id="vsdbCompareToggle" type="button" style="display:none;margin-bottom:14px;">⇄ Compare two travelers</button>
+
+    <div class="vsdb-card" id="vsdbCompareCard" style="display:none;">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:6px;">Compare two travelers</div>
+      <p class="vsdb-sub" style="font-size:13px;margin:0 0 12px;">See two people's Day Bank balances side by side — useful for families or travel partners moving together.</p>
+      <div class="vsdb-row2">
+        <div>
+          <div class="vsdb-label">Traveler A</div>
+          <select class="vsdb-select" id="vsdbCompareA"></select>
+        </div>
+        <div>
+          <div class="vsdb-label">Traveler B</div>
+          <select class="vsdb-select" id="vsdbCompareB"></select>
+        </div>
+      </div>
+      <div class="vsdb-row2" id="vsdbCompareResults" style="margin-top:14px;"></div>
+    </div>
+
+    <div class="vsdb-banner" id="vsdbBanner">
+      <span id="vsdbBannerIcon">⚠️</span>
+      <span id="vsdbBannerText"></span>
+      <button class="vsdb-link-btn" id="vsdbBannerNotify" type="button" style="margin-left:auto;white-space:nowrap;font-size:12px;">🔔 Notify me here</button>
+      <button class="vsdb-banner-x" id="vsdbBannerClose" type="button" aria-label="Dismiss">✕</button>
+    </div>
+
+    <div class="vsdb-card vsdb-glow">
+      <div class="vsdb-gauge-wrap">
+        <svg width="190" height="190" viewBox="0 0 190 190" id="vsdbGaugeSvg">
+          <circle cx="95" cy="95" r="82" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="14"></circle>
+          <circle cx="95" cy="95" r="82" fill="none" stroke-width="14" stroke-linecap="round"
+            id="vsdbGaugeArc" transform="rotate(-90 95 95)" stroke-dasharray="515.22" stroke-dashoffset="515.22"></circle>
+          <text x="95" y="88" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="700" font-size="46" fill="#f5f3ec" id="vsdbGaugeNum">90</text>
+          <text x="95" y="113" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#8d96ac">days available</text>
+        </svg>
+        <div class="vsdb-gauge-status vsdb-status-ok" id="vsdbGaugeStatus">Fully compliant</div>
+        <p class="vsdb-sub" id="vsdbGaugeLimitNote" style="display:none;text-align:center;margin-top:8px;font-size:12px;color:var(--gold-300);"></p>
+        <div class="vsdb-stat-pills" id="vsdbStatPills" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-top:14px;"></div>
+        <div style="width:100%;margin-top:10px;">
+          <div style="height:8px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;">
+            <div id="vsdbUsageFill" style="height:100%;width:0%;border-radius:5px;transition:width .9s cubic-bezier(.4,0,.2,1),background .35s ease;"></div>
+          </div>
+        </div>
+        <p class="vsdb-help" id="vsdbWindowDates" style="text-align:center;margin-top:8px;"></p>
+        <p class="vsdb-sub" id="vsdbReentryLine" style="text-align:center;margin-top:12px;font-size:14px;"></p>
+        <p class="vsdb-help" id="vsdbYearStat" style="text-align:center;margin-top:6px;"></p>
+      </div>
+      <button class="vsdb-link-btn" id="vsdbEditTrips" type="button" style="display:block;margin:8px auto 0;">✎ Edit my trips</button>
+    </div>
+
+    <div class="vsdb-card">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:8px;">Your 180-day rolling calendar</div>
+      <div class="vsdb-cal-legend">
+        <span><i class="vsdb-swatch" style="background:rgba(54,211,153,.5)"></i>Safe</span>
+        <span><i class="vsdb-swatch" style="background:rgba(240,171,61,.6)"></i>Approaching limit</span>
+        <span><i class="vsdb-swatch" style="background:rgba(239,93,93,.65)"></i>Over limit</span>
+        <span><i class="vsdb-swatch" style="box-shadow:0 0 0 2px var(--gold-300) inset;background:rgba(255,255,255,.08)"></i>Today</span>
+        <span class="vsdb-muted">Tap any day for its full calculation →</span>
+      </div>
+      <div class="vsdb-cal-range" id="vsdbCalRange"></div>
+      <div class="vsdb-cal-weekdays">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div class="vsdb-cal-grid" id="vsdbCalGrid"></div>
+    </div>
+
+    <div class="vsdb-card">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:6px;">Days coming back to your balance</div>
+      <p class="vsdb-sub" style="font-size:13px;margin:0 0 6px;">As old trip-days fall out of the 180-day window, your allowance refreshes automatically — here's when. Planned future trips are included too, since they affect your balance from the day they start.</p>
+      <div id="vsdbRollOff"></div>
+    </div>
+
+    <div class="vsdb-card" id="vsdbWhatIfCard">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:6px;">Test before you book — compare two plans</div>
+      <p class="vsdb-sub" style="font-size:13px;margin:0 0 12px;">See the maximum stay each entry date allows, side by side — without adding anything to your trip list.</p>
+      <div class="vsdb-whatif-grid">
+        <div>
+          <div class="vsdb-label">Plan A — entry date</div>
+          <input type="date" class="vsdb-input" id="vsdbWhatIfA">
+        </div>
+        <div>
+          <div class="vsdb-label">Plan B — entry date</div>
+          <input type="date" class="vsdb-input" id="vsdbWhatIfB">
+        </div>
+      </div>
+      <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-block" id="vsdbWhatIfRun" type="button" style="margin-top:10px;">Compare Plans</button>
+      <div class="vsdb-whatif-grid" id="vsdbWhatIfResults" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="vsdb-card">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:6px;">Smart re-entry planner</div>
+      <p class="vsdb-sub" style="font-size:13px;margin:0 0 12px;">Tell us how long you want to stay — we'll find the earliest date you could enter.</p>
+      <div class="vsdb-row2">
+        <div>
+          <div class="vsdb-label">I want to stay (days)</div>
+          <input type="number" class="vsdb-input" id="vsdbPlannerDays" min="1" max="90" placeholder="e.g. 14">
+        </div>
+        <div>
+          <div class="vsdb-label">Earliest to consider</div>
+          <input type="date" class="vsdb-input" id="vsdbPlannerFrom">
+        </div>
+      </div>
+      <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-block" id="vsdbPlannerRun" type="button" style="margin-top:10px;">Find Earliest Entry Date</button>
+      <div id="vsdbPlannerResult" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="vsdb-card">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:8px;">Save, export &amp; share</div>
+      <div class="vsdb-export-row">
+        <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-sm" id="vsdbExportPdf" type="button">📄 PDF summary</button>
+        <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-sm" id="vsdbExportIcs" type="button">📅 Add to calendar</button>
+        <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-sm" id="vsdbExportJson" type="button">⬇ Backup data</button>
+        <label class="vsdb-btn vsdb-btn-ghost vsdb-btn-sm" for="vsdbImportJson" style="cursor:pointer;">⬆ Restore<input type="file" accept=".json" id="vsdbImportJson" aria-label="Restore Schengen Day Bank backup file" style="display:none;"></label>
+        <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-sm" id="vsdbExportShare" type="button">🔗 Share link</button>
+      </div>
+      <p class="vsdb-help" style="margin-top:10px;">Everything is generated on your own device — nothing is uploaded anywhere.</p>
+    </div>
+
+    <div class="vsdb-info-box" style="margin-bottom:16px;">
+      <b style="color:var(--ink-100);">2026 context:</b> the EU's Entry/Exit System (EES) became fully operational on 10 April 2026, digitally recording every Schengen border crossing — there's no grace period for overstays. ETIAS pre-travel authorisation is targeting a Q4 2026 launch (€20, valid 3 years) and won't change the 90/180 limit itself.
+    </div>
+    <div class="vsdb-info-box" id="vsdbPassportWarning" style="display:none;margin-bottom:16px;"></div>
+    <div class="vsdb-info-box ib-bad" id="vsdbOverstayInfo" style="display:none;margin-bottom:16px;"></div>
+
+    <div class="vsdb-card">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:16px;margin-bottom:10px;">Plan the rest of your trip</div>
+      <div class="vsdb-aff-grid" id="vsdbAffGrid"></div>
+    </div>
+
+    <div class="vsdb-card" id="vsdbCrossLinks">
+      <div role="heading" aria-level="3" class="vsdb-h" style="font-size:16px;margin-bottom:10px;">More from Voyasee</div>
+      <div class="vsdb-aff-grid" id="vsdbCrossLinksGrid"></div>
+    </div>
+
+    <div class="vsdb-disclaimer">This tool is an independent planning aid, not an official EU product, and is not a substitute for legal or immigration advice. Only the competent authorities of EU Member States — in particular border guards — can authoritatively decide the length of a permitted stay or whether an overstay has occurred. Verify any critical decision against the official EU short-stay calculator. Reference data last verified: <span id="vsdbVerifiedDate"></span>.</div>
+
+    <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-block" id="vsdbStartOver" type="button" style="margin-top:6px;">↺ Start over</button>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="vsdb-modal-backdrop" id="vsdbModalBackdrop">
+  <div class="vsdb-modal" role="dialog" aria-modal="true" id="vsdbModal"></div>
+</div>
+
+<!-- STICKY MINI BAR (always visible, all steps) -->
+<div class="vsdb-stickybar" id="vsdbStickybar">
+  <span class="vsdb-stickybar-txt" id="vsdbStickyTxt"><b>Schengen Day Bank</b> · free &amp; private · no login</span>
+  <button class="vsdb-btn vsdb-btn-ghost vsdb-btn-sm" id="vsdbStickyAction" type="button">Start</button>
+</div>
+
+<footer class="vsdb-footer" id="vsdbFooter">
+  <div class="vsdb-footer-cols">
+    <div class="vsdb-footer-col">
+      <h4>Visa &amp; Entry</h4>
+      <a href="https://voyasee.com/transit-visa-layover-risk-checker/">Transit Visa &amp; Layover Risk Checker</a>
+      <a href="https://voyasee.com/medicine-restricted-item-checker/">Medicine &amp; Restricted Item Checker</a>
+      <a href="https://voyasee.com/carry-on-size-checker/">Carry-On Size Checker</a>
+    </div>
+    <div class="vsdb-footer-col">
+      <h4>Plan Your Trip</h4>
+      <a href="https://voyasee.com/trip-budget-calculator/">Trip Budget Calculator</a>
+      <a href="https://voyasee.com/packing-list-generator/">Smart Packing List Generator</a>
+      <a href="https://voyasee.com/best-time-to-visit-travel-planner/">Travel Month Planner</a>
+    </div>
+    <div class="vsdb-footer-col">
+      <h4>Before You Fly</h4>
+      <a href="https://voyasee.com/travel-scam-checker/">Travel Scam Shield</a>
+      <a href="https://voyasee.com/jet-lag-recovery-planner/">Jet Lag Recovery Planner</a>
+      <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a>
+    </div>
+    <div class="vsdb-footer-col">
+      <h4>Voyasee</h4>
+      <a href="https://voyasee.com/about-2/">About Voyasee</a>
+      <a href="https://voyasee.com/privacy-policy/">Privacy Policy</a>
+      <a href="https://voyasee.com/affiliate-disclosure/">Affiliate Disclosure</a>
+    </div>
+  </div>
+  <div class="vsdb-footer-legal">
+    <span>© <span id="vsdbYear"></span> Voyasee · Independent tool, not affiliated with the EU</span>
+    <span>Some links above are affiliate links — Voyasee may earn a commission at no cost to you.</span>
+  </div>
+</footer>
+
+</div>
+<script>
+(function(){
+"use strict";
+/* ===================== ENGINE (tested separately, see test-engine.js) ===================== */
+var DAY_MS = 86400000, WINDOW = 180, LIMIT = 90;
+function toDayNum(iso){ var p=iso.split('-').map(Number); return Math.floor(Date.UTC(p[0],p[1]-1,p[2])/DAY_MS); }
+function fromDayNum(n){ return new Date(n*DAY_MS).toISOString().slice(0,10); }
+function addDays(iso,n){ return fromDayNum(toDayNum(iso)+n); }
+function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function mergeIntervals(list){
+  if(!list.length) return [];
+  var s=list.slice().sort(function(a,b){return a.start-b.start;});
+  var out=[{start:s[0].start,end:s[0].end}];
+  for(var i=1;i<s.length;i++){
+    var cur=s[i], last=out[out.length-1];
+    if(cur.start<=last.end+1){ last.end=Math.max(last.end,cur.end); }
+    else { out.push({start:cur.start,end:cur.end}); }
+  }
+  return out;
+}
+function buildIntervals(trips, asOfISO){
+  var asOf=toDayNum(asOfISO||todayISO()), raw=[];
+  for(var i=0;i<trips.length;i++){
+    var t=trips[i];
+    if(t.excluded || !t.start) continue;
+    var start=toDayNum(t.start), end;
+    if(t.ongoing && !t.end) end=asOf;
+    else if(t.end) end=toDayNum(t.end);
+    else end=start;
+    if(end<start) continue;
+    raw.push({start:start,end:end});
+  }
+  return mergeIntervals(raw);
+}
+function sumOverlap(intervals,winStart,winEnd){
+  var total=0;
+  for(var i=0;i<intervals.length;i++){
+    var s=Math.max(intervals[i].start,winStart), e=Math.min(intervals[i].end,winEnd);
+    if(e>=s) total += e-s+1;
+  }
+  return total;
+}
+function daysUsedOn(trips, dateISO, excludeId){
+  var d=toDayNum(dateISO), winStart=d-(WINDOW-1);
+  var filtered = excludeId ? trips.filter(function(t){return t.id!==excludeId;}) : trips;
+  var intervals = buildIntervals(filtered, todayISO());
+  var capped = intervals.map(function(iv){ return {start:iv.start, end:Math.min(iv.end,d)}; }).filter(function(iv){return iv.end>=iv.start;});
+  return sumOverlap(capped, winStart, d);
+}
+function statusOn(trips, dateISO, excludeId, limit){
+  limit = limit || LIMIT;
+  var used = daysUsedOn(trips, dateISO, excludeId);
+  return { date:dateISO, used:used, remaining:Math.max(0,limit-used), overstayBy:Math.max(0,used-limit), overLimit: used>limit, limit:limit };
+}
+function earliestCompliantDate(trips, fromISO, excludeId, limit){
+  limit = limit || LIMIT;
+  var d=fromISO;
+  for(var i=0;i<365;i++){ if(daysUsedOn(trips,d,excludeId)<=limit) return d; d=addDays(d,1); }
+  return null;
+}
+/* Like daysUsedOn, but subtracts any overlap with [rangeStart,rangeEnd] before summing.
+   Used by maxStayFrom so a hypothetical "what if I stay from date X" simulation never
+   double-counts days that also belong to a REAL trip already in the list (e.g. testing
+   an entry date that falls inside/near an existing planned trip). */
+function daysUsedExcludingRange(trips, dateISO, excludeId, rangeStartISO, rangeEndISO){
+  var d=toDayNum(dateISO), winStart=d-(WINDOW-1);
+  var filtered = excludeId ? trips.filter(function(t){return t.id!==excludeId;}) : trips;
+  var intervals = buildIntervals(filtered, todayISO());
+  var capped = intervals.map(function(iv){ return {start:iv.start, end:Math.min(iv.end,d)}; }).filter(function(iv){return iv.end>=iv.start;});
+  var rs=toDayNum(rangeStartISO), re=toDayNum(rangeEndISO);
+  var adjusted=[];
+  capped.forEach(function(iv){
+    if(iv.end<rs || iv.start>re){ adjusted.push(iv); return; }
+    if(iv.start<rs) adjusted.push({start:iv.start, end:rs-1});
+    if(iv.end>re) adjusted.push({start:re+1, end:iv.end});
+  });
+  return sumOverlap(adjusted, winStart, d);
+}
+function maxStayFrom(trips, entryISO, excludeId, cap, limit){
+  cap = cap||90;
+  limit = limit||LIMIT;
+  var day=entryISO, selfDays=0;
+  for(var i=0;i<cap;i++){
+    selfDays++;
+    var existing=daysUsedExcludingRange(trips, day, excludeId, entryISO, day);
+    if(existing+selfDays>limit) return { maxDays:selfDays-1, blockedOn:day };
+    day=addDays(day,1);
+  }
+  return { maxDays:cap, blockedOn:null };
+}
+function buildSeries(trips, fromISO, toISO, limit){
+  var out=[], d=fromISO, end=toDayNum(toISO), guard=0;
+  while(toDayNum(d)<=end && guard<4000){ out.push(statusOn(trips,d,null,limit)); d=addDays(d,1); guard++; }
+  return out;
+}
+function auditTrail(trips, dateISO, excludeId){
+  var d=toDayNum(dateISO), winStart=d-(WINDOW-1);
+  var filtered = excludeId ? trips.filter(function(t){return t.id!==excludeId;}) : trips;
+  var rows=[];
+  for(var i=0;i<filtered.length;i++){
+    var t=filtered[i];
+    if(t.excluded || !t.start) continue;
+    var s=toDayNum(t.start), e;
+    if(t.ongoing && !t.end) e=Math.min(d, toDayNum(todayISO()));
+    else if(t.end) e=toDayNum(t.end);
+    else e=s;
+    var os=Math.max(s,winStart), oe=Math.min(e,d);
+    if(oe>=os) rows.push({ id:t.id, label:t.label||'Trip', from:fromDayNum(os), to:fromDayNum(oe), days:oe-os+1 });
+  }
+  rows.sort(function(a,b){ return a.from<b.from?-1:1; });
+  var total=rows.reduce(function(s,r){return s+r.days;},0);
+  return { windowStart:fromDayNum(winStart), windowEnd:dateISO, rows:rows, total:total };
+}
+/* Simple calendar-year total — separate from the 90/180 rolling window. Includes
+   planned future trips within the same year, capped appropriately for ongoing trips. */
+function daysUsedInYear(trips, year){
+  var yStart=toDayNum(year+'-01-01'), yEnd=toDayNum(year+'-12-31');
+  var intervals=buildIntervals(trips, todayISO());
+  return sumOverlap(intervals, yStart, yEnd);
+}
+/* Smart re-entry planner: "I want to stay N days — what's the earliest I can enter?"
+   Tests each candidate day forward from fromISO, asking maxStayFrom whether that day
+   allows at least desiredDays of consecutive stay. Returns the first day that works. */
+function earliestEntryForDesiredStay(trips, desiredDays, fromISO, excludeId, searchCap, limit){
+  searchCap = searchCap || 365;
+  limit = limit || LIMIT;
+  var day = fromISO;
+  for(var i=0;i<searchCap;i++){
+    var r = maxStayFrom(trips, day, excludeId, Math.max(desiredDays, limit)+1, limit);
+    if(r.maxDays >= desiredDays) return day;
+    day = addDays(day, 1);
+  }
+  return null;
+}
+function checkPassportExpiry(trips, passportExpiry){
+  if(!passportExpiry) return null;
+  var latest=null;
+  trips.forEach(function(t){
+    var end = t.ongoing ? null : t.end;
+    if(end && (!latest || end>latest)) latest=end;
+  });
+  if(!latest) return null;
+  if(passportExpiry < addDays(latest,90)){
+    return { level:'bad', message:'Your passport expires '+fmtDate(passportExpiry)+' — many Schengen countries require at least 3 months of validity beyond your last planned exit ('+fmtDate(latest)+'). This could cause boarding or entry problems.' };
+  }
+  if(passportExpiry < addDays(latest,180)){
+    return { level:'warn', message:'Your passport expires '+fmtDate(passportExpiry)+'. Some airlines and border officials prefer at least 6 months of validity beyond travel ('+fmtDate(latest)+') — worth double-checking before you fly.' };
+  }
+  return null;
+}
+function rollOffEvents(trips, fromISO, toISO, excludeId, limit){
+  var filtered = excludeId ? trips.filter(function(t){return t.id!==excludeId;}) : trips;
+  var series=buildSeries(filtered, fromISO, toISO, limit), events=[];
+  for(var i=1;i<series.length;i++){
+    var drop = series[i-1].used - series[i].used;
+    if(drop>0) events.push({ date:series[i].date, daysFreed:drop });
+  }
+  return events;
+}
+
+/* ===================== HELPERS ===================== */
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(iso){ if(!iso) return ''; var p=iso.split('-'); return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0]; }
+function esc(s){ s=String(s==null?'':s); return s.replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+/* jsPDF's base-14 fonts (Helvetica/Times) only render the WinAnsi character range reliably.
+   A single character outside that range (arrows, emoji, exotic Unicode — including from
+   free-typed trip labels) corrupts the ENTIRE string it appears in, not just that character.
+   Every string handed to doc.text()/splitTextToSize() in the PDF export goes through this. */
+function pdfSafe(s){
+  s = String(s==null?'':s);
+  s = s.replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,'-').replace(/\u2026/g,'...').replace(/\u2192/g,' to ');
+  return s.replace(/[^\x20-\x7E\u00C0-\u00FF]/g, '');
+}
+function uid(){ return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function $(id){ return document.getElementById(id); }
+function on(el, ev, fn){ if(el) el.addEventListener(ev, fn); }
+
+var SCHENGEN_COUNTRIES = ['Austria','Belgium','Bulgaria','Croatia','Czechia','Denmark','Estonia','Finland','France','Germany','Greece','Hungary','Iceland*','Italy','Latvia','Liechtenstein*','Lithuania','Luxembourg','Malta','Netherlands','Norway*','Poland','Portugal','Romania','Slovakia','Slovenia','Spain','Sweden','Switzerland*','Gibraltar†'];
+function schengenCountryCount(){ return todayISO() >= '2026-07-15' ? 30 : 29; }
+var LAST_VERIFIED = '25 Jun 2026';
+
+var AFFILIATES = [
+  { name:'Booking.com', desc:'Find your Schengen-trip accommodation', ico:'🏨', url:'https://www.dpbolvw.net/click-101719993-11891539', badge:'Stays' },
+  { name:'SafetyWing', desc:'Travel medical insurance — often required for Schengen visa applications', ico:'🛡️', url:'https://safetywing.com/?referenceID=26504574&utm_source=26504574&utm_medium=Ambassador', badge:'Insurance' },
+  { name:'VisaHQ', desc:'Need an actual Schengen visa, not just visa-free days? Get application help', ico:'🛂', url:'https://www.visahq.co.uk/?a_aid=vaff18435', badge:'Visa help' },
+  { name:'Airalo', desc:'Instant eSIM data the moment you land in Europe', ico:'📱', url:'https://airalo.tpm.li/SYrMCqBw', badge:'eSIM' },
+  { name:'Aviasales', desc:'Compare flights for your next Schengen trip', ico:'✈️', url:'https://aviasales.tpm.li/jergleAu', badge:'Flights' }
+];
+var CROSSLINKS = [
+  { name:'Travel Passport — Trip Readiness Checklist', desc:'See your whole trip\'s readiness, not just your day count', ico:'🧳', url:'https://voyasee.com/trip-readiness-checklist/', badge:'Tool' },
+  { name:'Transit Visa & Layover Risk Checker', desc:'Checking a connecting flight, not a full stay?', ico:'🔁', url:'https://voyasee.com/transit-visa-layover-risk-checker/', badge:'Tool' },
+  { name:'Trip Budget Calculator', desc:'Cost out the trip you just planned here', ico:'💶', url:'https://voyasee.com/trip-budget-calculator/', badge:'Tool' },
+  { name:'Travel Scam Shield', desc:'City-by-city safety awareness for Europe', ico:'🛟', url:'https://voyasee.com/travel-scam-checker/', badge:'Tool' }
+];
+
+/* ===================== STORAGE ===================== */
+var LS_PROFILES='vsdb_profiles', LS_ACTIVE='vsdb_active_profile', LS_NOTIFY='vsdb_notify_enabled';
+function lsGet(key, fallback){ try{ var v=localStorage.getItem(key); return v?JSON.parse(v):fallback; }catch(e){ return fallback; } }
+function lsSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); return true; }catch(e){ return false; } }
+function getProfiles(){ return lsGet(LS_PROFILES, []); }
+function saveProfiles(p){ lsSet(LS_PROFILES, p); }
+function getActiveId(){ return lsGet(LS_ACTIVE, null); }
+function setActiveId(id){ lsSet(LS_ACTIVE, id); }
+function tripsKey(id){ return 'vsdb_trips_'+id; }
+function getTrips(id){ return lsGet(tripsKey(id), []); }
+function saveTrips(id, trips){ lsSet(tripsKey(id), trips); }
+function createProfile(name, doc){
+  var profiles=getProfiles();
+  var p={ id: uid(), name: name || ('Traveler '+(profiles.length+1)), doc: doc||'visa-free' };
+  profiles.push(p); saveProfiles(profiles); setActiveId(p.id); saveTrips(p.id, []);
+  return p;
+}
+function getActiveProfile(){
+  var profiles=getProfiles(), id=getActiveId();
+  var found = profiles.filter(function(p){return p.id===id;})[0];
+  return found || null;
+}
+
+/* ===================== APP STATE ===================== */
+var state = { step:1, pastTrips:[], futureTrips:[], bannerDismissed:false, lastComputed:null };
+
+/* ===================== STEP NAV ===================== */
+function setProgress(n){
+  document.querySelectorAll('#vsdbProgress .vsdb-dot').forEach(function(d){
+    var s=parseInt(d.getAttribute('data-step'),10);
+    d.classList.toggle('is-active', s===n);
+    d.classList.toggle('is-done', s<n);
+  });
+  $('vsdbStepLabel').textContent='Step '+n+' of 3';
+  var sticky=$('vsdbStickyAction'), txt=$('vsdbStickyTxt');
+  if(n===1){ sticky.textContent='Start'; txt.innerHTML='<b>Schengen Day Bank</b> · free &amp; private · no login'; }
+  else if(n===2){ sticky.textContent='Calculate'; txt.innerHTML='<b>Step 2</b> · add your trips'; }
+  else {
+    sticky.textContent='Edit trips';
+    var s = state.lastComputed && state.lastComputed.status;
+    if(s && s.overLimit) txt.innerHTML='<b>⛔ Overstay by '+s.overstayBy+' day'+(s.overstayBy===1?'':'s')+'</b> · scroll for details';
+    else if(s) txt.innerHTML='<b>'+s.remaining+' day'+(s.remaining===1?'':'s')+' remaining</b> · scroll for details';
+    else txt.innerHTML='<b>Your balance is ready</b> · scroll for details';
+  }
+}
+function goToStep(n){
+  state.step=n;
+  document.querySelectorAll('.vsdb-step').forEach(function(s){ s.classList.toggle('is-active', parseInt(s.getAttribute('data-step'),10)===n); });
+  setProgress(n);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+on($('vsdbStickyAction'),'click',function(){
+  if(state.step===1) $('vsdbStep1Next').click();
+  else if(state.step===2) $('vsdbStep2Next').click();
+  else $('vsdbEditTrips').click();
+});
+
+/* ===================== STEP 1 ===================== */
+document.querySelectorAll('#vsdbDocStatus .vsdb-choice').forEach(function(card){
+  on(card,'click',function(){
+    document.querySelectorAll('#vsdbDocStatus .vsdb-choice').forEach(function(c){c.classList.remove('is-selected');});
+    card.classList.add('is-selected');
+    card.querySelector('input').checked=true;
+    var val = card.getAttribute('data-val');
+    $('vsdbExemptNote').style.display = val==='exempt' ? 'block' : 'none';
+    $('vsdbVisaDaysField').style.display = val==='visa' ? 'block' : 'none';
+  });
+});
+on($('vsdbToggleCountries'),'click',function(){
+  var box=$('vsdbCountriesList');
+  var open = box.style.display==='block';
+  box.style.display = open ? 'none' : 'block';
+  this.textContent = 'Which '+schengenCountryCount()+' countries count as "Schengen"? '+(open?'▾':'▴');
+  if(!open && !box.innerHTML){
+    box.innerHTML = SCHENGEN_COUNTRIES.join(' · ') +
+      '<br><br><span class="vsdb-muted">*Iceland, Liechtenstein, Norway and Switzerland are Schengen members but not EU members. The UK, Ireland and Cyprus are EU/nearby but are <b>not</b> part of Schengen — time there does not count toward your 90 days. †Gibraltar begins applying Schengen border rules from 15 Jul 2026 — not counted before that date.</span>';
+  }
+});
+function getProfileLimit(profile){
+  if(profile && profile.doc==='visa' && profile.visaDays){
+    var v=parseInt(profile.visaDays,10);
+    if(!isNaN(v) && v>0) return Math.min(LIMIT, v);
+  }
+  return LIMIT;
+}
+on($('vsdbStep1Next'),'click',function(){
+  var name = $('vsdbTravelerName').value.trim();
+  var doc = (document.querySelector('#vsdbDocStatus input:checked')||{}).value || 'visa-free';
+  var visaDaysRaw = $('vsdbVisaDays').value;
+  var visaDays = (doc==='visa' && visaDaysRaw) ? Math.max(1, Math.min(90, parseInt(visaDaysRaw,10)||90)) : null;
+  var warnThreshold = Math.max(1, Math.min(89, parseInt($('vsdbWarnThreshold').value,10)||15));
+  var passportExpiry = $('vsdbPassportExpiry').value || null;
+  var active = getActiveProfile();
+  if(!active){
+    active = createProfile(name, doc);
+    active.visaDays = visaDays;
+    active.warnThreshold = warnThreshold;
+    active.passportExpiry = passportExpiry;
+    var profiles0=getProfiles().map(function(p){ return p.id===active.id?active:p; });
+    saveProfiles(profiles0);
+  } else {
+    if(name) active.name=name;
+    active.doc=doc;
+    active.visaDays=visaDays;
+    active.warnThreshold=warnThreshold;
+    active.passportExpiry=passportExpiry;
+    var profiles=getProfiles().map(function(p){ return p.id===active.id?active:p; });
+    saveProfiles(profiles);
+  }
+  loadTripsIntoState(active.id);
+  renderProfileBar('vsdbProfileBar2');
+  renderTripRows();
+  goToStep(2);
+});
+
+function loadTripsIntoState(profileId){
+  var all = getTrips(profileId);
+  state.pastTrips = all.filter(function(t){return !t.future;});
+  state.futureTrips = all.filter(function(t){return t.future;});
+  if(state.pastTrips.length===0) state.pastTrips.push(blankTrip(false));
+}
+function blankTrip(future){ return { id:uid(), label:'', start:'', end:'', ongoing:false, excluded:false, future:!!future }; }
+
+/* ===================== STEP 2 — TRIP ROWS ===================== */
+function renderTripRows(){
+  renderTripGroup('vsdbTripsPast', state.pastTrips, false);
+  renderTripGroup('vsdbTripsFuture', state.futureTrips, true);
+  refreshStillThereBanner();
+}
+function refreshStillThereBanner(){
+  var stillBanner=$('vsdbStillThereBanner');
+  var hasOngoing = state.pastTrips.some(function(t){ return t.ongoing; });
+  if(hasOngoing){
+    stillBanner.style.display='block';
+    stillBanner.innerHTML = '<b style="color:var(--ink-100);">You\'re currently in the Schengen area.</b> Any calculation below assumes you left today unless you also add a planned future trip for the rest of your stay.';
+  } else {
+    stillBanner.style.display='none';
+  }
+}
+function renderTripGroup(containerId, list, isFuture){
+  var c=$(containerId); c.innerHTML='';
+  list.forEach(function(trip){ c.appendChild(tripRowEl(trip, isFuture)); });
+}
+function tripRowEl(trip, isFuture){
+  var wrap=document.createElement('div');
+  wrap.className='vsdb-trip'+(isFuture?' vsdb-trip-future':'');
+  wrap.setAttribute('data-id', trip.id);
+  wrap.innerHTML =
+    '<div class="vsdb-trip-head"><span class="vsdb-trip-tag">'+(isFuture?'Planned trip':'Past / current trip')+'</span>'+
+    '<button class="vsdb-btn-danger-text" type="button" data-act="remove">Remove</button></div>'+
+    '<div class="vsdb-field"><label class="vsdb-label">Label (optional)</label>'+
+    '<input type="text" class="vsdb-input" data-f="label" aria-label="Trip label" maxlength="40" placeholder="e.g. Paris &amp; Rome" value="'+esc(trip.label)+'"></div>'+
+    '<div class="vsdb-row2">'+
+    '<div class="vsdb-field"><label class="vsdb-label">Entry date</label><input type="date" class="vsdb-input" data-f="start" aria-label="Entry date" value="'+esc(trip.start)+'"></div>'+
+    '<div class="vsdb-field"><label class="vsdb-label">Exit date</label><input type="date" class="vsdb-input" data-f="end" aria-label="Exit date" value="'+esc(trip.end)+'" '+(trip.ongoing?'disabled':'')+'></div>'+
+    '</div>'+
+    (isFuture ? '' :
+      '<div class="vsdb-toggle-row"><div class="vsdb-toggle-label-txt"><b>Still there (ongoing)</b><span>No exit date yet — we\'ll use today</span></div>'+
+      '<label class="vsdb-toggle"><input type="checkbox" data-f="ongoing" aria-label="This trip is still ongoing, no exit date yet" '+(trip.ongoing?'checked':'')+'><span class="vsdb-toggle-track"><span class="vsdb-toggle-thumb"></span></span></label></div>'+
+      '<p class="vsdb-help" data-role="ongoing-note" style="display:'+(trip.ongoing?'block':'none')+';margin-top:-4px;margin-bottom:10px;">Future dates assume you left today — if you know you\'ll stay longer, add a planned future trip below for the rest of your stay so it\'s included.</p>')+
+    '<div class="vsdb-toggle-row"><div class="vsdb-toggle-label-txt"><b>Long-stay visa / residence permit</b><span>Excludes these days from the 90/180 count</span></div>'+
+    '<label class="vsdb-toggle"><input type="checkbox" data-f="excluded" aria-label="Exclude this trip — long-stay visa or residence permit" '+(trip.excluded?'checked':'')+'><span class="vsdb-toggle-track"><span class="vsdb-toggle-thumb"></span></span></label></div>';
+
+  on(wrap,'click', function(e){
+    if(e.target && e.target.getAttribute && e.target.getAttribute('data-act')==='remove'){
+      removeTrip(trip.id, isFuture);
+    }
+  });
+  wrap.querySelectorAll('[data-f]').forEach(function(input){
+    var field=input.getAttribute('data-f');
+    var evt = (input.type==='checkbox') ? 'change' : 'input';
+    on(input, evt, function(){
+      var val = input.type==='checkbox' ? input.checked : input.value;
+      trip[field]=val;
+      if(field==='ongoing'){
+        var endInput = wrap.querySelector('[data-f="end"]');
+        endInput.disabled = !!val;
+        if(val){ trip.end=''; endInput.value=''; }
+        var note = wrap.querySelector('[data-role="ongoing-note"]');
+        if(note) note.style.display = val ? 'block' : 'none';
+        refreshStillThereBanner();
+      }
+    });
+  });
+  return wrap;
+}
+function removeTrip(id, isFuture){
+  var list = isFuture ? state.futureTrips : state.pastTrips;
+  var idx = list.findIndex(function(t){return t.id===id;});
+  if(idx>-1) list.splice(idx,1);
+  renderTripRows();
+}
+on($('vsdbAddPast'),'click',function(){ state.pastTrips.push(blankTrip(false)); renderTripRows(); });
+on($('vsdbAddFuture'),'click',function(){ state.futureTrips.push(blankTrip(true)); renderTripRows(); });
+on($('vsdbStep2Back'),'click',function(){ goToStep(1); });
+
+function validateTrips(){
+  var errs=[];
+  state.pastTrips.concat(state.futureTrips).forEach(function(t, i){
+    if(!t.start && !t.end) return; // fully blank row — ignore silently rather than error
+    if(!t.start){ errs.push('A trip is missing an entry date.'); return; }
+    if(!t.ongoing && !t.end){ errs.push('"'+ (t.label||'A trip') +'" is missing an exit date (or mark it as ongoing).'); return; }
+    if(t.end && t.end < t.start){ errs.push('"'+ (t.label||'A trip') +'" has an exit date before its entry date.'); }
+    if(t.future && t.start && t.start < todayISO()){ errs.push('"'+ (t.label||'A planned trip') +'" has an entry date already in the past — move it to "past or current trips" above.'); }
+  });
+  return errs;
+}
+on($('vsdbStep2Next'),'click',function(){
+  var errs = validateTrips();
+  var errBox=$('vsdbStep2Error');
+  if(errs.length){
+    errBox.style.display='block';
+    errBox.innerHTML = '<b style="color:var(--red-500);">Please fix the following:</b><ul style="margin:8px 0 0;padding-left:18px;">'+errs.map(function(e){return '<li>'+esc(e)+'</li>';}).join('')+'</ul>';
+    return;
+  }
+  errBox.style.display='none';
+  var active=getActiveProfile();
+  var usable = state.pastTrips.concat(state.futureTrips).filter(function(t){return t.start && (t.end || t.ongoing);});
+  if(active) saveTrips(active.id, usable.map(function(t){ return {id:t.id,label:t.label,start:t.start,end:t.end,ongoing:t.ongoing,excluded:t.excluded,future:t.future}; }));
+  renderResults();
+  goToStep(3);
+});
+
+/* ===================== STEP 3 — RESULTS ===================== */
+function getAllTrips(){
+  var active=getActiveProfile();
+  return active ? getTrips(active.id) : [];
+}
+function statusLevel(used, limit){
+  limit = limit||LIMIT;
+  if(used>limit) return 'bad';
+  if(used>=limit*(2/3)) return 'warn';
+  return 'ok';
+}
+function animateCountUp(el, to, duration){
+  to = parseInt(to,10) || 0;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion || typeof requestAnimationFrame==='undefined'){ el.textContent=String(to); return; }
+  var from = parseInt(el.textContent,10); if(isNaN(from)) from=0;
+  var start=null;
+  function step(ts){
+    if(start===null) start=ts;
+    var p=Math.min((ts-start)/duration,1);
+    var eased=1-Math.pow(1-p,3);
+    el.textContent=String(Math.round(from+(to-from)*eased));
+    if(p<1) requestAnimationFrame(step);
+    else el.textContent=String(to);
+  }
+  requestAnimationFrame(step);
+  setTimeout(function(){ el.textContent=String(to); }, duration+250); // safety net — guarantees the correct final value regardless of rAF timing
+}
+function buildReentryHtml(trips, status, today, limit){
+  limit = limit || LIMIT;
+  if(status.overLimit){
+    var safe = earliestCompliantDate(trips, today, null, limit);
+    if(!safe) return 'This trip pattern stays over the limit for the next 12 months — please review your dates carefully.';
+    return 'You\'ll be back in compliance from <b>'+fmtDate(safe)+'</b>.';
+  }
+  var tomorrow = addDays(today,1);
+  var r2 = maxStayFrom(trips, tomorrow, null, limit, limit);
+  if(r2.maxDays>0){
+    var through = addDays(tomorrow, r2.maxDays-1);
+    return 'Continuing from tomorrow, you can stay through <b>'+fmtDate(through)+'</b> ('+r2.maxDays+' more day'+(r2.maxDays===1?'':'s')+').';
+  }
+  return 'You are at your limit as of today — one more day would be an overstay.';
+}
+function profileSummary(profileId){
+  var profiles=getProfiles();
+  var profile=profiles.filter(function(p){return p.id===profileId;})[0];
+  if(!profile) return null;
+  var trips=getTrips(profileId);
+  var today=todayISO();
+  var limit=getProfileLimit(profile);
+  var status=statusOn(trips, today, null, limit);
+  return { profile:profile, trips:trips, status:status, limit:limit, reentryHtml: buildReentryHtml(trips, status, today, limit) };
+}
+function renderResults(){
+  renderProfileBar('vsdbProfileBar3');
+  refreshCompareToggleVisibility();
+  var trips = getAllTrips();
+  var today = todayISO();
+  var profile = getActiveProfile();
+  var limit = getProfileLimit(profile);
+  var status = statusOn(trips, today, null, limit);
+  state.lastComputed = { trips:trips, today:today, status:status, limit:limit };
+  $('vsdbVerifiedDate').textContent = LAST_VERIFIED;
+  if(limit < LIMIT){
+    $('vsdbGaugeLimitNote').textContent = 'Using your visa\'s '+limit+'-day authorised stay instead of the standard 90.';
+    $('vsdbGaugeLimitNote').style.display = 'block';
+  } else {
+    $('vsdbGaugeLimitNote').style.display = 'none';
+  }
+
+  // Gauge
+  var r=82, circ=2*Math.PI*r;
+  var arc=$('vsdbGaugeArc');
+  var pct = Math.max(0, Math.min(1, status.remaining/limit));
+  arc.setAttribute('stroke-dasharray', circ.toFixed(2));
+  arc.setAttribute('stroke-dashoffset', (circ*(1-pct)).toFixed(2));
+  var lvl = statusLevel(status.used, limit);
+  var color = lvl==='bad' ? 'var(--red-500)' : lvl==='warn' ? 'var(--amber-500)' : 'var(--green-500)';
+  arc.style.stroke = color;
+  animateCountUp($('vsdbGaugeNum'), status.overLimit ? 0 : status.remaining, 700);
+  var statusEl=$('vsdbGaugeStatus');
+  statusEl.className='vsdb-gauge-status vsdb-status-'+lvl+(status.overLimit?' vsdb-pulse':'');
+  statusEl.textContent = status.overLimit ? ('Overstay by '+status.overstayBy+' day'+(status.overstayBy===1?'':'s')) : (lvl==='warn' ? 'Compliant — getting close' : 'Fully compliant');
+
+  // Stat pills + usage bar (Improvement A)
+  $('vsdbStatPills').innerHTML =
+    '<div class="vsdb-stat-pill"><b>'+status.used+'</b><span>Used</span></div>'+
+    '<div class="vsdb-stat-pill"><b>'+(status.overLimit?0:status.remaining)+'</b><span>Remaining</span></div>'+
+    '<div class="vsdb-stat-pill"><b>'+limit+'</b><span>Limit</span></div>';
+  var usageFill=$('vsdbUsageFill');
+  usageFill.style.width = Math.min(100, Math.round((status.used/limit)*100))+'%';
+  usageFill.style.background = color;
+
+  // 180-day window start/end dates (Improvement B)
+  var winStart = addDays(today, -(WINDOW-1));
+  $('vsdbWindowDates').textContent = 'Window: '+fmtDate(winStart)+' – '+fmtDate(today);
+
+  // Re-entry / continuation line
+  $('vsdbReentryLine').innerHTML = buildReentryHtml(trips, status, today, limit);
+  var yearNow = today.slice(0,4);
+  var yearDays = daysUsedInYear(trips, yearNow);
+  $('vsdbYearStat').textContent = yearDays+' day'+(yearDays===1?'':'s')+' total in Schengen during '+yearNow+' (separate from the 90/180 rule above)';
+
+  var passportIssue = checkPassportExpiry(trips, profile && profile.passportExpiry);
+  var passBox = $('vsdbPassportWarning');
+  if(passportIssue){
+    passBox.style.display='block';
+    passBox.className = 'vsdb-info-box '+(passportIssue.level==='bad'?'ib-bad':'ib-warn');
+    passBox.innerHTML = '<b style="color:var(--ink-100);">Passport check:</b> '+esc(passportIssue.message);
+  } else {
+    passBox.style.display='none';
+  }
+  var overstayBox=$('vsdbOverstayInfo');
+  if(status.overLimit){
+    overstayBox.style.display='block';
+    overstayBox.innerHTML = '<b style="color:var(--ink-100);">If you\'ve overstayed:</b> the EU\'s Entry/Exit System (EES) now records overstays automatically with no grace period. Reported consequences can include a temporary entry ban (commonly cited in the 1–5 year range), refusal of future Schengen visa or ETIAS applications, and fines that vary by country. This is general information, not legal advice — contact the relevant consulate or a qualified immigration professional for your specific situation.';
+  } else {
+    overstayBox.style.display='none';
+  }
+
+  renderBanner(status, profile && profile.warnThreshold);
+  renderCalendar(trips, today, limit);
+  renderRollOff(trips, today, limit);
+  renderAffiliates();
+  $('vsdbWhatIfResults').innerHTML='';
+}
+on($('vsdbEditTrips'),'click',function(){ goToStep(2); });
+on($('vsdbStartOver'),'click',function(){ goToStep(1); });
+
+function refreshCompareToggleVisibility(){
+  var btn=$('vsdbCompareToggle');
+  var visible = getProfiles().length >= 2;
+  btn.style.display = visible ? 'inline-block' : 'none';
+  if(!visible){ $('vsdbCompareCard').style.display='none'; }
+}
+on($('vsdbCompareToggle'),'click',function(){
+  var card=$('vsdbCompareCard');
+  var opening = card.style.display==='none';
+  card.style.display = opening ? 'block' : 'none';
+  this.textContent = opening ? '⇄ Hide comparison' : '⇄ Compare two travelers';
+  if(opening){ populateCompareSelectors(); renderCompareResults(); }
+});
+function populateCompareSelectors(){
+  var profiles=getProfiles();
+  var activeId=getActiveId();
+  var other = profiles.filter(function(p){return p.id!==activeId;})[0];
+  [['vsdbCompareA', activeId], ['vsdbCompareB', other?other.id:(profiles[0]&&profiles[0].id)]].forEach(function(pair){
+    var sel=$(pair[0]);
+    sel.innerHTML = profiles.map(function(p){ return '<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>'; }).join('');
+    if(pair[1]) sel.value = pair[1];
+  });
+}
+function compareCardHtml(profileId){
+  var s = profileSummary(profileId);
+  if(!s) return '<div class="vsdb-whatif-result vsdb-muted">No data</div>';
+  var lvl = statusLevel(s.status.used, s.limit);
+  return '<div class="vsdb-whatif-result"><b>'+esc(s.profile.name)+'</b><br>'+
+    '<span class="vsdb-gauge-status vsdb-status-'+lvl+'" style="display:inline-block;margin:6px 0;font-size:12px;padding:4px 10px;">'+s.status.used+' / '+s.limit+' used</span><br>'+
+    '<b style="font-size:20px;font-family:var(--serif);">'+s.status.remaining+'</b> day'+(s.status.remaining===1?'':'s')+' remaining<br>'+
+    '<span class="vsdb-muted" style="font-size:12px;">'+s.reentryHtml+'</span></div>';
+}
+function renderCompareResults(){
+  var a=$('vsdbCompareA').value, b=$('vsdbCompareB').value;
+  if(!a || !b){ $('vsdbCompareResults').innerHTML=''; return; }
+  $('vsdbCompareResults').innerHTML = compareCardHtml(a) + compareCardHtml(b);
+}
+on($('vsdbCompareA'),'change', renderCompareResults);
+on($('vsdbCompareB'),'change', renderCompareResults);
+
+function renderBanner(status, warnThreshold){
+  warnThreshold = warnThreshold || 15;
+  var b=$('vsdbBanner');
+  var notifyBtn=$('vsdbBannerNotify');
+  if(state.bannerDismissed){ b.classList.remove('is-visible'); return; }
+  var notifySupported = typeof Notification !== 'undefined';
+  function refreshNotifyBtn(){
+    if(!notifySupported){ notifyBtn.style.display='none'; return; }
+    notifyBtn.style.display='inline-block';
+    if(Notification.permission==='granted' && lsGet(LS_NOTIFY,false)){ notifyBtn.textContent='🔔 Notifications on'; notifyBtn.disabled=true; }
+    else if(Notification.permission==='denied'){ notifyBtn.textContent='🔔 Blocked in browser settings'; notifyBtn.disabled=true; }
+    else { notifyBtn.textContent='🔔 Notify me here'; notifyBtn.disabled=false; }
+  }
+  if(status.overLimit){
+    b.className='vsdb-banner bn-bad is-visible';
+    $('vsdbBannerIcon').textContent='⛔';
+    $('vsdbBannerText').textContent='You are currently over the '+status.limit+'-day limit by '+status.overstayBy+' day(s). This needs attention.';
+    refreshNotifyBtn();
+    maybeNotify('overstay', $('vsdbBannerText').textContent);
+  } else if(status.remaining<=warnThreshold){
+    b.className='vsdb-banner bn-warn is-visible';
+    $('vsdbBannerIcon').textContent='⚠️';
+    $('vsdbBannerText').textContent='Heads up — you\'ve used '+status.used+' of your '+status.limit+' days. Only '+status.remaining+' remain right now.';
+    refreshNotifyBtn();
+    maybeNotify('warn', $('vsdbBannerText').textContent);
+  } else {
+    b.classList.remove('is-visible');
+  }
+}
+on($('vsdbBannerNotify'),'click',function(){
+  if(typeof Notification==='undefined'){ window.alert('Browser notifications are not supported here — the banner above will still keep you informed while you have this tab open.'); return; }
+  if(Notification.permission==='granted'){ lsSet(LS_NOTIFY,true); this.textContent='🔔 Notifications on'; this.disabled=true; return; }
+  if(Notification.permission==='denied'){ window.alert('Notifications are blocked for this site in your browser settings. The on-page banner will still warn you while this tab is open.'); return; }
+  try{
+    Notification.requestPermission().then(function(perm){
+      if(perm==='granted'){
+        lsSet(LS_NOTIFY,true);
+        new Notification('Schengen Day Bank', { body:'Reminders are on — we\'ll alert you here if your balance gets close to the limit while this tab is open.' });
+      } else {
+        lsSet(LS_NOTIFY,false);
+      }
+      if(state.lastComputed) renderBanner(state.lastComputed.status, getActiveProfile() && getActiveProfile().warnThreshold);
+    });
+  }catch(e){ window.alert('Could not enable notifications in this browser.'); }
+});
+on($('vsdbBannerClose'),'click',function(){ state.bannerDismissed=true; $('vsdbBanner').classList.remove('is-visible'); });
+function maybeNotify(level, text){
+  if(!lsGet(LS_NOTIFY,false)) return;
+  if(typeof Notification==='undefined' || Notification.permission!=='granted') return;
+  var firedKey='vsdb_notified_'+level;
+  try{
+    if(sessionStorage.getItem(firedKey)) return;
+    sessionStorage.setItem(firedKey,'1');
+    new Notification('Schengen Day Bank', { body:text });
+  }catch(e){ /* notifications unsupported in this context — fail silently, banner already shows the same info */ }
+}
+
+function dayOfWeekMon0(iso){
+  var p=iso.split('-').map(Number);
+  var d=new Date(Date.UTC(p[0],p[1]-1,p[2]));
+  return (d.getUTCDay()+6)%7; // 0=Mon .. 6=Sun
+}
+function renderCalendar(trips, today, limit){
+  var grid=$('vsdbCalGrid'); grid.innerHTML='';
+  var from = addDays(today,-14), to = addDays(today,105);
+  var series = buildSeries(trips, from, to, limit);
+  $('vsdbCalRange').textContent = fmtDate(from)+' – '+fmtDate(to);
+  var offset = dayOfWeekMon0(from);
+  for(var i=0;i<offset;i++){
+    var blank=document.createElement('div');
+    blank.className='vsdb-cal-cell vsdb-cal-empty';
+    blank.setAttribute('aria-hidden','true');
+    grid.appendChild(blank);
+  }
+  series.forEach(function(day,idx){
+    var p=day.date.split('-');
+    var cell=document.createElement('div');
+    var lvl=statusLevel(day.used, day.limit);
+    cell.className='vsdb-cal-cell lvl-'+lvl+(day.date===today?' is-today':'');
+    var dayNum = parseInt(p[2],10);
+    if(dayNum===1 || idx===0){
+      var monthLbl=document.createElement('span');
+      monthLbl.className='vsdb-cal-month';
+      monthLbl.textContent = MONTHS[parseInt(p[1],10)-1];
+      cell.appendChild(monthLbl);
+    }
+    var dayLbl=document.createElement('span');
+    dayLbl.textContent = dayNum;
+    cell.appendChild(dayLbl);
+    cell.title = fmtDate(day.date)+' — '+day.used+'/'+day.limit+' used, '+day.remaining+' remaining'+(day.overLimit?' (OVER LIMIT)':'');
+    cell.setAttribute('aria-label', cell.title);
+    cell.setAttribute('role','button');
+    cell.setAttribute('tabindex','0');
+    cell.setAttribute('data-date', day.date);
+    on(cell,'click', function(){ openAudit(day.date); });
+    on(cell,'keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openAudit(day.date); } });
+    grid.appendChild(cell);
+  });
+}
+
+function renderRollOff(trips, today, limit){
+  var box=$('vsdbRollOff');
+  var all = rollOffEvents(trips, today, addDays(today,180), null, limit);
+  if(!all.length){
+    box.innerHTML = '<p class="vsdb-sub" style="font-size:13px;">No upcoming changes in your balance over the next 180 days — it\'s currently stable.</p>';
+    return;
+  }
+  var maxFreed = all.reduce(function(m,ev){ return Math.max(m, ev.daysFreed); }, 1);
+  var totalFreed = all.reduce(function(s,ev){ return s+ev.daysFreed; }, 0);
+  function rowHtml(ev){
+    var barPct = Math.max(6, Math.round((ev.daysFreed/maxFreed)*100));
+    return '<div class="vsdb-timeline-item" style="flex-wrap:wrap;">'+
+      '<span class="vsdb-timeline-date">'+fmtDate(ev.date)+'</span>'+
+      '<span>'+ev.daysFreed+' day'+(ev.daysFreed===1?'':'s')+' free'+(ev.daysFreed===1?'s':'')+' up</span>'+
+      '<span style="flex-basis:100%;height:6px;background:rgba(255,255,255,.06);border-radius:4px;margin-top:4px;overflow:hidden;"><span style="display:block;height:100%;width:'+barPct+'%;background:linear-gradient(90deg,var(--gold-400),var(--gold-300));border-radius:4px;"></span></span>'+
+      '</div>';
+  }
+  var shown = all.slice(0,8);
+  var rest = all.slice(8);
+  var html = '<p class="vsdb-sub" style="font-size:12.5px;margin:0 0 8px;">Total: <b style="color:var(--ink-100);">'+totalFreed+' day'+(totalFreed===1?'':'s')+'</b> returning to your balance over the next 180 days.</p>' + shown.map(rowHtml).join('');
+  if(rest.length){
+    html += '<button class="vsdb-link-btn" id="vsdbRollOffMore" type="button" style="margin-top:8px;">+ '+rest.length+' more — show all</button>';
+  }
+  box.innerHTML = html;
+  if(rest.length){
+    on($('vsdbRollOffMore'),'click',function(){
+      box.innerHTML = all.map(rowHtml).join('');
+    });
+  }
+}
+
+/* ----- Audit modal ----- */
+function buildGanttHtml(trail){
+  if(!trail.rows.length) return '';
+  var winStart = toDayNum(trail.windowStart);
+  var rows = trail.rows.map(function(r, idx){
+    var leftPct = ((toDayNum(r.from) - winStart) / WINDOW) * 100;
+    var widthPct = Math.max((r.days / WINDOW) * 100, 1.2);
+    var hue = (idx*47 + 40) % 360;
+    return '<div class="vsdb-gantt-row">'+
+      '<span class="vsdb-gantt-label">'+esc(r.label)+' · '+r.days+' day'+(r.days===1?'':'s')+'</span>'+
+      '<div class="vsdb-gantt-track" title="'+esc(r.label)+': '+fmtDate(r.from)+' – '+fmtDate(r.to)+'">'+
+        '<div class="vsdb-gantt-bar" style="left:'+leftPct.toFixed(2)+'%;width:'+widthPct.toFixed(2)+'%;background:hsl('+hue+',58%,58%);"></div>'+
+      '</div></div>';
+  }).join('');
+  return '<div class="vsdb-gantt" aria-hidden="true"><div class="vsdb-gantt-axis"><span>'+fmtDate(trail.windowStart)+'</span><span>'+fmtDate(trail.windowEnd)+'</span></div>'+rows+'</div><div class="vsdb-gantt-divider"></div>';
+}
+function openAudit(dateISO){
+  var trips=getAllTrips();
+  var limit=getProfileLimit(getActiveProfile());
+  var trail=auditTrail(trips, dateISO);
+  var status=statusOn(trips, dateISO, null, limit);
+  var rowsHtml = trail.rows.length ? trail.rows.map(function(r){
+    return '<div class="vsdb-timeline-item"><span class="vsdb-timeline-date">'+fmtDate(r.from)+'–'+fmtDate(r.to)+'</span><span>'+esc(r.label)+' · '+r.days+' day'+(r.days===1?'':'s')+'</span></div>';
+  }).join('') : '<p class="vsdb-sub" style="font-size:13px;">No trip days fall inside this window.</p>';
+  $('vsdbModal').innerHTML =
+    '<button class="vsdb-modal-close" id="vsdbModalCloseBtn" type="button" aria-label="Close">✕</button>'+
+    '<div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:4px;">'+fmtDate(dateISO)+'</div>'+
+    '<p class="vsdb-sub" style="font-size:12.5px;margin:0 0 12px;">180-day look-back window: '+fmtDate(trail.windowStart)+' → '+fmtDate(trail.windowEnd)+'</p>'+
+    '<div class="vsdb-flex-between" style="margin-bottom:14px;"><span class="vsdb-pill vsdb-status-'+statusLevel(status.used,limit)+'" style="background:transparent;padding:0;">'+status.used+' / '+limit+' days used</span><b>'+status.remaining+' remaining</b></div>'+
+    buildGanttHtml(trail)+
+    rowsHtml;
+  $('vsdbModalBackdrop').classList.add('is-open');
+  on($('vsdbModalCloseBtn'),'click', closeAudit);
+}
+function closeAudit(){ $('vsdbModalBackdrop').classList.remove('is-open'); }
+on($('vsdbModalBackdrop'),'click', function(e){ if(e.target.id==='vsdbModalBackdrop') closeAudit(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAudit(); });
+
+/* ----- What-if comparison ----- */
+on($('vsdbWhatIfRun'),'click',function(){
+  var a=$('vsdbWhatIfA').value, b=$('vsdbWhatIfB').value;
+  var out=$('vsdbWhatIfResults');
+  if(!a && !b){ out.innerHTML='<p class="vsdb-sub" style="font-size:13px;">Pick at least one entry date to compare.</p>'; return; }
+  var trips=getAllTrips();
+  var limit=getProfileLimit(getActiveProfile());
+  function cardFor(label, dateISO){
+    if(!dateISO) return '<div class="vsdb-whatif-result vsdb-muted">No date selected</div>';
+    var r=maxStayFrom(trips, dateISO, null, limit, limit);
+    if(r.maxDays<=0) return '<div class="vsdb-whatif-result"><b>'+label+' — '+fmtDate(dateISO)+'</b><br><span class="vsdb-gauge-status vsdb-status-bad" style="display:inline-block;font-size:11.5px;padding:4px 10px;margin:6px 0;">⛔ Immediate overstay</span><br>Already at your limit on this date.</div>';
+    var through=addDays(dateISO, r.maxDays-1);
+    return '<div class="vsdb-whatif-result"><b>'+label+' — '+fmtDate(dateISO)+'</b><br><span class="vsdb-gauge-status vsdb-status-ok" style="display:inline-block;font-size:11.5px;padding:4px 10px;margin:6px 0;">✅ Compliant</span><br><b style="font-family:var(--serif);font-size:24px;color:var(--gold-300);">'+r.maxDays+'</b> consecutive day'+(r.maxDays===1?'':'s')+'<br><span class="vsdb-muted" style="font-size:12px;">through '+fmtDate(through)+'</span></div>';
+  }
+  out.innerHTML = cardFor('Plan A', a) + cardFor('Plan B', b);
+});
+
+on($('vsdbPlannerRun'),'click',function(){
+  var out=$('vsdbPlannerResult');
+  var days=parseInt($('vsdbPlannerDays').value,10);
+  var from=$('vsdbPlannerFrom').value || todayISO();
+  if(!days || days<1){ out.innerHTML='<p class="vsdb-sub" style="font-size:13px;">Enter how many days you\'d like to stay.</p>'; return; }
+  var trips=getAllTrips();
+  var limit=getProfileLimit(getActiveProfile());
+  if(days>limit){
+    out.innerHTML='<div class="vsdb-whatif-result">⛔ '+days+' consecutive days is more than your '+limit+'-day limit allows in any single stay — it can never fit, no matter the date.</div>';
+    return;
+  }
+  var entry=earliestEntryForDesiredStay(trips, days, from, null, 365, limit);
+  if(!entry){
+    out.innerHTML='<div class="vsdb-whatif-result">No date in the next 12 months allows a '+days+'-day stay with your current trips. Try a shorter stay or check back after some trips roll off your balance.</div>';
+    return;
+  }
+  var through=addDays(entry, days-1);
+  out.innerHTML='<div class="vsdb-whatif-result">✅ Earliest you could enter for a <b>'+days+'-day</b> stay: <b>'+fmtDate(entry)+'</b> (through '+fmtDate(through)+').</div>';
+});
+
+/* ----- Affiliates / cross-links ----- */
+function affCard(a){
+  return '<a class="vsdb-aff-card" href="'+esc(a.url)+'" target="_blank" rel="noopener nofollow sponsored"><span class="vsdb-aff-ico">'+a.ico+'</span><span><span class="vsdb-aff-name">'+esc(a.name)+'</span><br><span class="vsdb-aff-desc">'+esc(a.desc)+'</span></span><span class="vsdb-aff-badge">'+esc(a.badge)+'</span></a>';
+}
+function crossCard(a){
+  return '<a class="vsdb-aff-card" href="'+esc(a.url)+'" rel="noopener"><span class="vsdb-aff-ico">'+a.ico+'</span><span><span class="vsdb-aff-name">'+esc(a.name)+'</span><br><span class="vsdb-aff-desc">'+esc(a.desc)+'</span></span><span class="vsdb-aff-badge">'+esc(a.badge)+'</span></a>';
+}
+function renderAffiliates(){
+  $('vsdbAffGrid').innerHTML = AFFILIATES.map(affCard).join('');
+  $('vsdbCrossLinksGrid').innerHTML = CROSSLINKS.map(crossCard).join('');
+}
+
+/* ===================== PROFILE BAR ===================== */
+function renderProfileBar(containerId){
+  var c=$(containerId); if(!c) return;
+  var profiles=getProfiles(), activeId=getActiveId();
+  var canDelete = profiles.length>1;
+  var html = profiles.map(function(p){
+    var del = canDelete ? '<button type="button" class="vsdb-chip-del" data-del-id="'+esc(p.id)+'" aria-label="Remove '+esc(p.name)+'" title="Remove this traveler">✕</button>' : '';
+    return '<span class="vsdb-profile-group"><button type="button" class="vsdb-profile-chip'+(p.id===activeId?' is-active':'')+'" data-id="'+esc(p.id)+'">'+esc(p.name)+'</button>'+del+'</span>';
+  }).join('');
+  html += '<button type="button" class="vsdb-profile-chip" id="vsdbAddProfileBtn_'+containerId+'">+ Add traveler</button>';
+  c.innerHTML = html;
+  c.querySelectorAll('.vsdb-profile-chip[data-id]').forEach(function(chip){
+    on(chip,'click',function(){
+      setActiveId(chip.getAttribute('data-id'));
+      var prof=getActiveProfile();
+      loadTripsIntoState(prof.id);
+      renderProfileBar('vsdbProfileBar2'); renderProfileBar('vsdbProfileBar3');
+      if(state.step===2) renderTripRows();
+      if(state.step===3) renderResults();
+    });
+  });
+  c.querySelectorAll('.vsdb-chip-del').forEach(function(btn){
+    on(btn,'click',function(e){
+      e.stopPropagation();
+      deleteProfile(btn.getAttribute('data-del-id'));
+    });
+  });
+  on($('vsdbAddProfileBtn_'+containerId),'click', openAddTravelerModal);
+}
+function deleteProfile(id){
+  var profiles=getProfiles();
+  if(profiles.length<=1) return; // always keep at least one profile
+  var target = profiles.filter(function(p){return p.id===id;})[0];
+  if(!target) return;
+  if(!window.confirm('Remove "'+target.name+'" and all of their saved trips from this device? This cannot be undone.')) return;
+  var remaining = profiles.filter(function(p){return p.id!==id;});
+  saveProfiles(remaining);
+  try{ localStorage.removeItem(tripsKey(id)); }catch(e){}
+  if(getActiveId()===id){
+    setActiveId(remaining[0].id);
+    loadTripsIntoState(remaining[0].id);
+    restoreProfileToStep1(remaining[0]);
+  }
+  renderProfileBar('vsdbProfileBar2'); renderProfileBar('vsdbProfileBar3');
+  refreshCompareToggleVisibility();
+  if(state.step===2) renderTripRows();
+  if(state.step===3) renderResults();
+}
+function openAddTravelerModal(){
+  $('vsdbModal').innerHTML =
+    '<button class="vsdb-modal-close" id="vsdbModalCloseBtn" type="button" aria-label="Close">✕</button>'+
+    '<div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:12px;">Add a traveler</div>'+
+    '<div class="vsdb-field"><label class="vsdb-label" for="vsdbNewTravelerName">Name (e.g. "Mum", "Partner")</label>'+
+    '<input type="text" class="vsdb-input" id="vsdbNewTravelerName" maxlength="40" placeholder="Traveler name"></div>'+
+    '<div class="vsdb-field"><label class="vsdb-label" for="vsdbNewTravelerDoc">Travel document status</label>'+
+    '<select class="vsdb-select" id="vsdbNewTravelerDoc">'+
+      '<option value="visa-free">Visa-free traveler (90/180 rule)</option>'+
+      '<option value="visa">Schengen short-stay (Type C) visa holder</option>'+
+      '<option value="exempt">EU/Schengen passport or residence permit</option>'+
+      '<option value="unsure">Not sure</option>'+
+    '</select></div>'+
+    '<div class="vsdb-field" id="vsdbNewTravelerVisaDaysField" style="display:none;"><label class="vsdb-label" for="vsdbNewTravelerVisaDays">Visa\'s authorised stay (days)</label>'+
+    '<input type="number" class="vsdb-input" id="vsdbNewTravelerVisaDays" min="1" max="90" placeholder="e.g. 30"></div>'+
+    '<button class="vsdb-btn vsdb-btn-primary vsdb-btn-block" id="vsdbNewTravelerAdd" type="button">Add Traveler</button>';
+  $('vsdbModalBackdrop').classList.add('is-open');
+  on($('vsdbModalCloseBtn'),'click', closeAudit);
+  var input=$('vsdbNewTravelerName');
+  var docSel=$('vsdbNewTravelerDoc');
+  var visaDaysField=$('vsdbNewTravelerVisaDaysField');
+  on(docSel,'change',function(){ visaDaysField.style.display = docSel.value==='visa' ? 'block' : 'none'; });
+  setTimeout(function(){ if(input) input.focus(); }, 30);
+  function submit(){
+    var name=input.value.trim();
+    var doc=docSel.value||'visa-free';
+    var visaDaysRaw=$('vsdbNewTravelerVisaDays').value;
+    var visaDays=(doc==='visa' && visaDaysRaw) ? Math.max(1, Math.min(90, parseInt(visaDaysRaw,10)||90)) : null;
+    var p=createProfile(name, doc);
+    p.visaDays=visaDays;
+    var profiles=getProfiles().map(function(pr){ return pr.id===p.id?p:pr; });
+    saveProfiles(profiles);
+    loadTripsIntoState(p.id);
+    renderProfileBar('vsdbProfileBar2'); renderProfileBar('vsdbProfileBar3');
+    refreshCompareToggleVisibility();
+    if(state.step===2) renderTripRows();
+    closeAudit();
+  }
+  on($('vsdbNewTravelerAdd'),'click', submit);
+  on(input,'keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
+}
+
+/* ===================== EXPORTS: PDF / ICS / JSON ===================== */
+on($('vsdbExportPdf'),'click',function(){
+  try{
+    if(!window.jspdf || !window.jspdf.jsPDF){ window.print(); return; }
+    var doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+    var pageW=doc.internal.pageSize.getWidth(), pageH=doc.internal.pageSize.getHeight();
+    var mx=44;
+    var trips=getAllTrips(), today=todayISO();
+    var profile=getActiveProfile();
+    var limit=getProfileLimit(profile);
+    var status=statusOn(trips, today, null, limit);
+    var GOLD=[196,164,84], INK=[25,30,45], MUTE=[120,120,120];
+    function levelColor(lvl){ return lvl==='bad' ? [196,58,58] : lvl==='warn' ? [196,140,40] : [40,140,95]; }
+    var lvl=statusLevel(status.used, limit);
+    var COL = levelColor(lvl);
+
+    function frame(){
+      doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(1.3);
+      doc.rect(24,24,pageW-48,pageH-48);
+      doc.setDrawColor(225,225,225); doc.setLineWidth(0.5);
+      doc.rect(30,30,pageW-60,pageH-60);
+    }
+    function footer(){
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('voyasee.com/schengen-90-180-day-calculator', mx, pageH-36);
+      doc.text('Page '+doc.internal.getNumberOfPages(), pageW-mx-40, pageH-36);
+    }
+    function ensureSpace(yPos, needed){
+      if(yPos > pageH-58-needed){ footer(); doc.addPage(); frame(); return 64; }
+      return yPos;
+    }
+    var plainReentry = pdfSafe(buildReentryHtml(trips, status, today, limit).replace(/<[^>]+>/g,''));
+
+    // ===== PAGE 1: identity, balance, usage bar, trip log =====
+    frame();
+    var y=64;
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
+    doc.text('V O Y A S E E', mx, y); y+=18;
+    doc.setFont('times','bold'); doc.setFontSize(20); doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text(pdfSafe('Schengen Day Bank — Compliance Summary'), mx, y); y+=8;
+    doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(mx,y,pageW-mx,y); y+=22;
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(MUTE[0],MUTE[1],MUTE[2]);
+    doc.text(pdfSafe('Generated '+fmtDate(today)+' for '+(profile?profile.name:'Traveler')), mx, y); y+=24;
+
+    // Balance box
+    var boxH=66;
+    doc.setFillColor(247,245,238); doc.setDrawColor(225,220,205); doc.setLineWidth(0.6);
+    if(doc.roundedRect) doc.roundedRect(mx,y,pageW-mx*2,boxH,6,6,'FD'); else doc.rect(mx,y,pageW-mx*2,boxH,'FD');
+    doc.setFont('times','bold'); doc.setFontSize(28); doc.setTextColor(COL[0],COL[1],COL[2]);
+    doc.text(String(status.overLimit?0:status.remaining), mx+18, y+40);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(100,100,100);
+    doc.text('days remaining', mx+18, y+54);
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(40,40,40);
+    doc.text(status.used+' / '+limit+' used in the rolling 180-day window', mx+115, y+24);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(90,90,90);
+    var statusLine = status.overLimit ? ('Overstay by '+status.overstayBy+' day'+(status.overstayBy===1?'':'s')) : (lvl==='warn'?'Compliant — getting close to the limit':'Fully compliant');
+    doc.text(pdfSafe(statusLine), mx+115, y+40);
+    doc.text(doc.splitTextToSize(plainReentry, pageW-mx*2-130), mx+115, y+54);
+    y+=boxH+24;
+    if(limit<LIMIT){
+      doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]);
+      doc.text('Using this traveler\'s '+limit+'-day visa-authorised stay instead of the standard 90.', mx, y); y+=14;
+    }
+
+    // Horizontal usage bar
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(40,40,40);
+    doc.text('Usage toward the '+limit+'-day limit', mx, y); y+=10;
+    var barW=pageW-mx*2, barH=10, frac=Math.min(status.used/limit,1);
+    doc.setDrawColor(190,190,190); doc.setFillColor(235,235,235); doc.rect(mx,y,barW,barH,'FD');
+    doc.setFillColor(COL[0],COL[1],COL[2]); if(frac>0) doc.rect(mx,y,barW*frac,barH,'F');
+    y+=barH+10;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(140,140,140);
+    doc.text('0', mx, y); doc.text(limit+' (limit)', pageW-mx-44, y);
+    y+=26;
+
+    // Trip log table
+    doc.setFont('times','bold'); doc.setFontSize(13); doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text('Trip log', mx, y); y+=6;
+    doc.setDrawColor(225,220,205); doc.setLineWidth(0.6); doc.line(mx,y,pageW-mx,y); y+=16;
+    var c1=mx, c2=mx+165, c3=mx+335, c4=mx+385;
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(MUTE[0],MUTE[1],MUTE[2]);
+    doc.text('LABEL',c1,y); doc.text('DATES',c2,y); doc.text('DAYS',c3,y); doc.text('TYPE',c4,y); y+=8;
+    doc.setDrawColor(235,235,235); doc.line(mx,y,pageW-mx,y); y+=14;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(40,40,40);
+    if(!trips.length){
+      doc.setTextColor(140,140,140); doc.text('No trips recorded.', c1, y); y+=16;
+    }
+    trips.forEach(function(t){
+      y = ensureSpace(y, 16);
+      var endLbl = t.ongoing ? 'ongoing' : fmtDate(t.end);
+      var dayCount = !t.start ? 0 : (t.ongoing ? (toDayNum(today)-toDayNum(t.start)+1) : (t.end ? (toDayNum(t.end)-toDayNum(t.start)+1) : 1));
+      var type = t.excluded ? 'Excluded' : (t.future ? 'Planned' : (t.ongoing ? 'Ongoing' : 'Past'));
+      doc.text(pdfSafe(String(t.label||'Trip').substring(0,22)), c1, y);
+      doc.text(fmtDate(t.start)+' to '+endLbl, c2, y); // plain "to" — an arrow glyph here corrupts the whole line in jsPDF's standard fonts
+      doc.text(String(dayCount), c3, y);
+      doc.text(type, c4, y);
+      y+=15;
+    });
+    y+=10;
+
+    // ===== PAGE 2: rolling-calendar heatmap + days-coming-back =====
+    footer(); doc.addPage(); frame(); y=64;
+    doc.setFont('times','bold'); doc.setFontSize(16); doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text('Your 180-Day Rolling Calendar', mx, y); y+=8;
+    doc.setDrawColor(GOLD[0],GOLD[1],GOLD[2]); doc.setLineWidth(0.8); doc.line(mx,y,pageW-mx,y); y+=20;
+
+    // legend
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+    var legend=[['Safe',levelColor('ok')],['60+ days used',levelColor('warn')],['Over limit',levelColor('bad')]];
+    var lx=mx;
+    legend.forEach(function(item){
+      doc.setFillColor(item[1][0],item[1][1],item[1][2]); doc.rect(lx,y-7,8,8,'F');
+      doc.setTextColor(90,90,90); doc.text(item[0], lx+12, y);
+      lx += 12 + doc.getTextWidth(item[0]) + 22;
+    });
+    y+=18;
+
+    var calFrom=addDays(today,-14), calTo=addDays(today,105);
+    var series=buildSeries(trips, calFrom, calTo, limit);
+    doc.setFontSize(8); doc.setTextColor(140,140,140);
+    doc.text(fmtDate(calFrom), mx, y);
+    doc.text(fmtDate(calTo), pageW-mx-doc.getTextWidth(fmtDate(calTo)), y);
+    y+=10;
+
+    var cellW=12, cellH=10, gap=2, perRow=Math.max(1, Math.floor((pageW-2*mx+gap)/(cellW+gap)));
+    var gy=y;
+    series.forEach(function(day,i){
+      var col=i%perRow, row=Math.floor(i/perRow);
+      var cx=mx+col*(cellW+gap), cy=gy+row*(cellH+gap);
+      var c=levelColor(statusLevel(day.used, day.limit));
+      doc.setFillColor(c[0],c[1],c[2]); doc.rect(cx,cy,cellW,cellH,'F');
+    });
+    var totalRows=Math.ceil(series.length/perRow);
+    y = gy + totalRows*(cellH+gap) + 22;
+
+    // Days coming back to your balance
+    y = ensureSpace(y, 90);
+    doc.setFont('times','bold'); doc.setFontSize(13); doc.setTextColor(INK[0],INK[1],INK[2]);
+    doc.text('Days coming back to your balance', mx, y); y+=6;
+    doc.setDrawColor(225,220,205); doc.setLineWidth(0.6); doc.line(mx,y,pageW-mx,y); y+=16;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+    var rollEvents = rollOffEvents(trips, today, addDays(today,180), null, limit).slice(0,8);
+    if(!rollEvents.length){
+      doc.setTextColor(140,140,140); doc.text('No upcoming changes in your balance over the next 180 days.', mx, y); y+=15;
+    } else {
+      rollEvents.forEach(function(ev){
+        y = ensureSpace(y, 15);
+        doc.setTextColor(GOLD[0],GOLD[1],GOLD[2]); doc.text(fmtDate(ev.date), mx, y);
+        doc.setTextColor(40,40,40); doc.text(ev.daysFreed+' day'+(ev.daysFreed===1?'':'s')+' freed up', mx+95, y);
+        y+=15;
+      });
+    }
+    y+=14;
+
+    // Disclaimer box
+    var discText='Independent planning aid, not an official EU document. Only competent EU authorities — in particular border guards — can authoritatively decide the length of a permitted stay or whether an overstay has occurred. Verify any critical decision against the official EU short-stay calculator. Reference data last verified '+LAST_VERIFIED+'.';
+    var discLines = doc.splitTextToSize(pdfSafe(discText), pageW-mx*2-20);
+    var discH = discLines.length*10.5+16;
+    y = ensureSpace(y, discH);
+    doc.setFillColor(250,248,242); doc.setDrawColor(230,225,210); doc.setLineWidth(0.6);
+    doc.rect(mx,y,pageW-mx*2,discH,'FD');
+    doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(120,114,96);
+    doc.text(discLines, mx+10, y+14);
+    footer();
+    doc.save('schengen-day-bank-summary.pdf');
+  }catch(err){ window.print(); }
+});
+
+on($('vsdbExportIcs'),'click',function(){
+  var trips=getAllTrips();
+  function icsDate(iso){ return iso.replace(/-/g,''); }
+  function icsEscape(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;').replace(/\n/g,'\\n'); }
+  var lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Voyasee//Schengen Day Bank//EN'];
+  trips.forEach(function(t,i){
+    if(!t.start) return;
+    var endExclusive = addDays(t.ongoing? todayISO() : (t.end||t.start), 1); // ICS all-day DTEND is exclusive
+    var summary = 'Schengen trip'+(t.label?(' — '+t.label):'') +
+      (t.ongoing ? ' (ongoing as of '+fmtDate(todayISO())+' — update this if your return date changes)' : '');
+    lines.push('BEGIN:VEVENT');
+    lines.push('UID:'+uid()+i+'@voyasee.com');
+    lines.push('DTSTART;VALUE=DATE:'+icsDate(t.start));
+    lines.push('DTEND;VALUE=DATE:'+icsDate(endExclusive));
+    lines.push('SUMMARY:'+icsEscape(summary));
+    lines.push('END:VEVENT');
+  });
+  if(statusOn(trips, todayISO()).overLimit){
+    var safe=earliestCompliantDate(trips, todayISO());
+    if(safe){
+      lines.push('BEGIN:VEVENT');
+      lines.push('UID:'+uid()+'-safe@voyasee.com');
+      lines.push('DTSTART;VALUE=DATE:'+icsDate(safe));
+      lines.push('SUMMARY:'+icsEscape('Schengen Day Bank — you are back in compliance from '+fmtDate(safe)));
+      lines.push('END:VEVENT');
+    }
+  }
+  lines.push('END:VCALENDAR');
+  downloadBlob(lines.join('\r\n'), 'schengen-day-bank.ics', 'text/calendar');
+});
+
+on($('vsdbExportJson'),'click',function(){
+  var profiles=getProfiles();
+  var data={ version:1, exportedAt:new Date().toISOString(), profiles:profiles, trips:{} };
+  profiles.forEach(function(p){ data.trips[p.id]=getTrips(p.id); });
+  downloadBlob(JSON.stringify(data,null,2), 'schengen-day-bank-backup.json', 'application/json');
+});
+function buildShareUrl(){
+  var profile=getActiveProfile();
+  var payload={ v:1, name:(profile?profile.name:'Shared trip'), doc:(profile?profile.doc:'visa-free'), visaDays:(profile?profile.visaDays:null), trips:getAllTrips() };
+  var encoded;
+  try{ encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload)))); }catch(e){ return null; }
+  return window.location.origin+window.location.pathname+'#share='+encoded;
+}
+on($('vsdbExportShare'),'click',function(){
+  var url=buildShareUrl();
+  if(!url){ window.alert('Could not build a share link for this data.'); return; }
+  var tooLong = url.length > 1800;
+  function showShareModal(){
+    $('vsdbModal').innerHTML =
+      '<button class="vsdb-modal-close" id="vsdbModalCloseBtn" type="button" aria-label="Close">✕</button>'+
+      '<div role="heading" aria-level="3" class="vsdb-h" style="font-size:17px;margin-bottom:10px;">Share link</div>'+
+      (tooLong ? '<div class="vsdb-info-box ib-warn" style="margin-bottom:10px;">This traveler has a lot of trips, so this link is long ('+url.length+' characters). Some browsers or messaging apps may truncate very long links — the "Backup data" JSON export is a more reliable way to share this much trip data.</div>' : '')+
+      '<p class="vsdb-sub" style="font-size:13px;margin-bottom:10px;">Copy this link — anyone who opens it can load a copy of these trips into their own browser (it never touches a server).</p>'+
+      '<input type="text" class="vsdb-input" id="vsdbShareUrlBox" readonly>';
+    $('vsdbModalBackdrop').classList.add('is-open');
+    on($('vsdbModalCloseBtn'),'click', closeAudit);
+    var box=$('vsdbShareUrlBox'); box.value=url;
+    setTimeout(function(){ box.focus(); box.select(); }, 30);
+  }
+  if(!tooLong && navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(function(){ window.alert('Share link copied to your clipboard!'); }).catch(showShareModal);
+  } else {
+    showShareModal();
+  }
+});
+function checkSharedLink(){
+  var hash=window.location.hash;
+  if(!hash || hash.indexOf('#share=')!==0) return;
+  try{
+    var encoded=hash.slice(7);
+    var payload=JSON.parse(decodeURIComponent(escape(atob(encoded))));
+    if(payload && Array.isArray(payload.trips)){
+      if(window.confirm('Load shared trip data ('+payload.trips.length+' trip(s)) as a new traveler? This will not affect your existing data.')){
+        var p=createProfile(payload.name||'Shared trip', payload.doc||'visa-free');
+        p.visaDays=payload.visaDays||null;
+        var profiles=getProfiles().map(function(pr){ return pr.id===p.id?p:pr; });
+        saveProfiles(profiles);
+        saveTrips(p.id, payload.trips);
+        loadTripsIntoState(p.id);
+        restoreProfileToStep1(p);
+      }
+    }
+  }catch(e){ /* malformed/unsupported share link — ignore silently rather than error */ }
+  if(window.history && window.history.replaceState){
+    window.history.replaceState(null,'',window.location.pathname+window.location.search);
+  }
+}
+on($('vsdbImportJson'),'change',function(e){
+  var file=e.target.files && e.target.files[0];
+  if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var data=JSON.parse(reader.result);
+      if(!data || !Array.isArray(data.profiles)) throw new Error('bad shape');
+      if(!window.confirm('This will replace your current Schengen Day Bank data on this device with the backup file. Continue?')) return;
+      saveProfiles(data.profiles);
+      (data.profiles||[]).forEach(function(p){ saveTrips(p.id, (data.trips && data.trips[p.id]) || []); });
+      if(data.profiles[0]) setActiveId(data.profiles[0].id);
+      window.alert('Backup restored. Reloading your data…');
+      goToStep(1);
+      restoreProfileToStep1(getActiveProfile());
+    }catch(err){
+      window.alert('That file doesn\'t look like a valid Schengen Day Bank backup.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+});
+function downloadBlob(content, filename, mime){
+  try{
+    var blob=new Blob([content], {type:mime});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }catch(err){
+    try{
+      // Fallback for environments without URL.createObjectURL (rare embedded webviews) —
+      // our exports are always small text files, so a data: URI works fine.
+      var a2=document.createElement('a');
+      a2.href='data:'+mime+';charset=utf-8,'+encodeURIComponent(content);
+      a2.download=filename;
+      document.body.appendChild(a2); a2.click(); document.body.removeChild(a2);
+    }catch(err2){
+      window.alert('Could not start the download in this browser. Try opening this tool in Chrome, Safari, or Firefox.');
+    }
+  }
+}
+
+/* ===================== INIT ===================== */
+function restoreProfileToStep1(profile){
+  updateStep1ButtonText();
+  if(!profile) return;
+  $('vsdbTravelerName').value = profile.name || '';
+  var radio=document.querySelector('#vsdbDocStatus input[value="'+profile.doc+'"]');
+  if(radio){ radio.checked=true; radio.closest('.vsdb-choice').click(); }
+  $('vsdbVisaDays').value = profile.visaDays || '';
+  $('vsdbWarnThreshold').value = profile.warnThreshold || 15;
+  $('vsdbPassportExpiry').value = profile.passportExpiry || '';
+}
+function updateStep1ButtonText(){
+  var btn=$('vsdbStep1Next');
+  btn.textContent = getActiveProfile() ? 'Continue to My Trips →' : 'Start Tracking My Days →';
+}
+function init(){
+  $('vsdbYear').textContent = new Date().getFullYear();
+  $('vsdbToggleCountries').textContent = 'Which '+schengenCountryCount()+' countries count as "Schengen"? ▾';
+  checkSharedLink();
+  restoreProfileToStep1(getActiveProfile());
+  renderProfileBar('vsdbProfileBar2');
+  goToStep(1);
+}
+init();
+})();
+</script>
+</body>
+</html>
