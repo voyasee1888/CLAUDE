@@ -148,12 +148,12 @@
 #vmap .vmap-badge.aurora{border-color:rgba(169,149,255,.38);background:rgba(169,149,255,.1);color:var(--violet);}
 #vmap .vmap-badge.dist{border-color:rgba(52,224,209,.32);background:rgba(52,224,209,.08);color:var(--teal);}
 /* country cluster bubbles (de-congestion) */
-#vmap .vmap-cluster{position:absolute;transform:translate(-50%,-50%);border:0;cursor:pointer;pointer-events:auto;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-weight:900;font-size:12px;line-height:1;color:#03121f;background:radial-gradient(circle at 34% 30%,#eafffb,var(--cl,#34e0d1));box-shadow:0 0 0 3px rgba(3,7,15,.55),0 0 16px 2px var(--clg,rgba(52,224,209,.5));transition:transform .14s ease,box-shadow .14s ease;z-index:6}
-#vmap .vmap-cluster:hover{transform:translate(-50%,-50%) scale(1.14);box-shadow:0 0 0 3px rgba(3,7,15,.55),0 0 22px 4px var(--clg,rgba(52,224,209,.7))}
+#vmap .vmap-cluster{position:absolute;transform:translate(-50%,-50%);border:1.5px solid rgba(255,255,255,.85);cursor:pointer;pointer-events:auto;display:grid;place-items:center;width:19px;height:19px;border-radius:50%;font-weight:900;font-size:10px;line-height:1;color:#03121f;background:var(--cl,#34e0d1);box-shadow:0 0 0 1.5px rgba(3,7,15,.55),0 0 7px 1px var(--clg,rgba(52,224,209,.5));transition:transform .14s ease,box-shadow .14s ease;z-index:6}
+#vmap .vmap-cluster:hover{transform:translate(-50%,-50%) scale(1.22);box-shadow:0 0 0 1.5px rgba(3,7,15,.55),0 0 12px 3px var(--clg,rgba(52,224,209,.75))}
 #vmap .vmap-cluster:after{content:attr(data-cname);position:absolute;left:50%;bottom:calc(100% + 5px);transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:900;letter-spacing:.03em;color:var(--ink);background:rgba(3,7,15,.82);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:2px 7px;opacity:0;transition:opacity .14s ease;pointer-events:none;text-transform:none}
 #vmap .vmap-cluster:hover:after{opacity:1}
 #vmap .vmap-cluster.is-behind{opacity:0!important;pointer-events:none}
-#vmap .vmap-cluster.lg{width:40px;height:40px;font-size:13px}
+#vmap .vmap-cluster.lg{width:23px;height:23px;font-size:11px}
 #vmap .vmap-cluster-hint{position:absolute;z-index:6;left:16px;bottom:150px;pointer-events:none;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(3,7,15,.7);backdrop-filter:blur(10px);color:var(--muted);padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.03em;max-width:calc(100% - 32px)}
 @media(max-width:780px){#vmap .vmap-cluster-hint{display:none}}
 /* result-panel affiliate card (region-aware) */
@@ -1462,7 +1462,11 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
   }
   function resetClusters(){clusterExpanded={};}
 
-  function invPt(X,Y){return [X/1000*360-180, 80-(Y-29.5)/442.6*160];}
+  /* Inverse of the SVG atlas' TRUE land projection (derived by least-squares
+     fitting drawn coastlines to real coordinates): svgY = 308.344 - 4.1493*lat,
+     svgX = (lon+180)/360*1000. The atlas graticule lines were drawn on a
+     different (inconsistent) ramp, which is why earlier grid-based math was off. */
+  function invPt(X,Y){return [X/1000*360-180, (308.344-Y)/4.1493];}
   function parsePathToRings(d){
     var rings=[],cur=[];var segs=d.match(/[MLZ][^MLZ]*/gi)||[];
     for(var s=0;s<segs.length;s++){var seg=segs[s];var c=seg.charAt(0).toUpperCase();
@@ -1486,21 +1490,25 @@ var COUNTRY_ISO={"Portugal":"PT","Spain":"ES","Italy":"IT","Greece":"GR","Croati
     for(var lat=-60;lat<=60;lat+=30){var par=[];for(var lo=-180;lo<=180;lo+=4)par.push([lo,lat]);GLOBE.graticule.push(par);}
   }
 
-  /* ---- FLAT map projection: match the SVG atlas exactly ----
-     The SVG uses plate-carrée with lon∈[-180,180]→x[0,1000] and a latitude
-     ramp of 80°N→y29.5 … 80°S→y472.1 inside a 1000×520 viewBox, drawn with
-     preserveAspectRatio="xMidYMid meet". The old pin projection used a
-     different latitude range and ignored the meet letterbox, so pins sat
-     ~9% too far south. This reprojects pins onto the identical geometry. */
+  /* ---- FLAT map projection: match the SVG atlas' TRUE land geometry ----
+     The drawn coastlines follow svgX=(lon+180)/360*1000 and
+     svgY=308.344-4.1493*lat inside a 1000×520 viewBox rendered with
+     preserveAspectRatio="xMidYMid meet". (These coefficients were fitted by
+     least-squares against ~11 identifiable coastlines — NYC, Mumbai, Kanyakumari,
+     Singapore, Cape Verde, etc. — to <5px. The atlas graticule was on a
+     different ramp, so earlier grid-based projections placed pins on the wrong
+     coast.) This maps a pin's true lat/lon onto that exact geometry, including
+     the meet letterbox, so every dot lands on its real place. */
   var FLATBOX=null;
   function refreshFlatBox(){var st=root.querySelector('.vmap-map-stage');if(st&&st.offsetWidth){FLATBOX={W:st.offsetWidth,H:st.offsetHeight};}return FLATBOX;}
+  function svgXY(lat,lon){return {x:(lon+180)/360*1000, y:308.344-4.1493*lat};}
   function flatProject(lat,lon){
     var box=FLATBOX||refreshFlatBox();
-    if(!box||!box.W){var x0=(lon+180)/360*100,y0=(83-lat)/141*100;return {x:Math.max(1.5,Math.min(98.5,x0)),y:Math.max(2,Math.min(98,y0))};}
+    var g=svgXY(lat,lon);
+    if(!box||!box.W){return {x:Math.max(1.5,Math.min(98.5,g.x/1000*100)),y:Math.max(1,Math.min(99,g.y/520*100))};}
     var W=box.W,H=box.H;
-    var sx=(lon+180)/360*1000, sy=29.5+(80-lat)/160*442.6;
     var s=Math.min(W/1000,H/520), ox=(W-1000*s)/2, oy=(H-520*s)/2;
-    return {x:(ox+sx*s)/W*100, y:(oy+sy*s)/H*100};
+    return {x:(ox+g.x*s)/W*100, y:(oy+g.y*s)/H*100};
   }
   function globeProject(lat,lon){
     var R=GLOBE.R,cx=GLOBE.cx,cy=GLOBE.cy;
