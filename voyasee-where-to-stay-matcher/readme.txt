@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 5.0.0
+Stable tag: 5.1.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -36,7 +36,7 @@ Or pre-fill a destination on a landing page:
 
 == Setup ==
 
-1. Activate the plugin. A starter dataset of 156 destinations and 463
+1. Activate the plugin. A starter dataset of 156 destinations and 489
    neighborhoods loads automatically the first time it activates --
    there is no manual CSV import step. (Import CSV still exists in the
    admin menu, but only as an optional way to add more destinations
@@ -176,6 +176,30 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 5.1.0 =
+Focused data expansion -- more real, genuinely-existing neighborhoods, plus a
+first cleanup of generic placeholder profiles.
+
+* Added 29 real neighborhoods across 13 major cities, bringing each of the top
+  ten cities (Tokyo, Paris, London, New York, Bangkok, Barcelona, Rome,
+  Istanbul, Dubai, Singapore) up to six real areas, and expanding Athens,
+  Marrakech and Hanoi. Every added area is an actual, named neighborhood with
+  realistic coordinates, price band, safety tier and genuine editorial copy --
+  no invented profiles.
+* Deliberately filled the thinnest archetypes so those quiz answers now have
+  somewhere real to land: family_suburban went from 1 to 8 areas, and
+  budget_backpacker from 9 to 16 (e.g. Kichijoji, Batignolles, Greenwich, Upper
+  West Side, Khao San Road, Latin Quarter, Little India, Exarchia).
+* Replaced Hanoi's three generic placeholder rows ("Hanoi City Center",
+  "Hanoi Business District", "Hanoi Quiet Residential Area") with four real
+  neighborhoods (Old Quarter, Hoan Kiem, Tay Ho/West Lake, Ba Dinh). The
+  starter dataset is now 156 destinations / 489 neighborhoods.
+
+Note: a large share of the remaining starter neighborhoods across smaller
+cities are still generic placeholder profiles of this same "<City> City
+Center / Business District / Quiet Residential Area" form. Converting those to
+real named areas is planned as a follow-up.
 
 = 5.0.0 =
 Major accuracy, intelligence, and design upgrade. No breaking changes to the
