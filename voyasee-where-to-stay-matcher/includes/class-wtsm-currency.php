@@ -70,12 +70,16 @@ class WTSM_Currency {
 	/**
 	 * Rough per-night price estimate in a destination's local currency,
 	 * derived from the 1-5 price_band scale using simple, clearly
-	 * approximate USD anchors per band -- explicitly presented to the
-	 * traveler as a ballpark, not a real listing price.
+	 * approximate USD anchors per band, adjusted by the destination's
+	 * cost_index so "$$$" in Tokyo reads differently from "$$$" in Hanoi.
 	 *
+	 * @param int    $price_band      1-5 neighborhood price band.
+	 * @param string $currency_code   ISO currency code.
+	 * @param string $currency_symbol Display symbol.
+	 * @param int    $cost_index      1-5 destination cost level (3 = global median).
 	 * @return array{low:int,high:int,currency:string,symbol:string}|null
 	 */
-	public static function estimate_nightly_range( $price_band, $currency_code, $currency_symbol ) {
+	public static function estimate_nightly_range( $price_band, $currency_code, $currency_symbol, $cost_index = 3 ) {
 		$bands = array(
 			1 => array( 20, 45 ),
 			2 => array( 40, 80 ),
@@ -85,14 +89,17 @@ class WTSM_Currency {
 		);
 		$band = $bands[ (int) $price_band ] ?? $bands[3];
 
+		$cost_index = max( 1, min( 5, (int) $cost_index ) );
+		$multiplier = 1.0 + ( ( $cost_index - 3 ) * 0.25 );
+
 		$rate = self::usd_to( $currency_code );
 		if ( null === $rate ) {
 			return null;
 		}
 
 		return array(
-			'low'      => (int) round( $band[0] * $rate ),
-			'high'     => (int) round( $band[1] * $rate ),
+			'low'      => (int) round( $band[0] * $multiplier * $rate ),
+			'high'     => (int) round( $band[1] * $multiplier * $rate ),
 			'currency' => strtoupper( $currency_code ),
 			'symbol'   => $currency_symbol ?: strtoupper( $currency_code ),
 		);

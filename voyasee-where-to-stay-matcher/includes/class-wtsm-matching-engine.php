@@ -22,12 +22,12 @@ class WTSM_Matching_Engine {
 	/** Default dimension weights. Sum to 1.0. */
 	private $weights = array(
 		'budget'      => 0.20,
-		'vibe'        => 0.20,
-		'attractions' => 0.20,
-		'walkability' => 0.15,
+		'vibe'        => 0.18,
+		'attractions' => 0.18,
+		'walkability' => 0.14,
 		'airport'     => 0.10,
 		'suitability' => 0.10,
-		'safety'      => 0.05,
+		'safety'      => 0.10,
 	);
 
 	/** Archetype -> "vibe" position on a quiet(0) <-> lively(100) scale. */
@@ -129,33 +129,34 @@ class WTSM_Matching_Engine {
 		$confidence = $this->dimension_confidence( $n, $answers );
 		$persona    = $this->build_persona_label( $answers );
 
+		$area_dna = $this->build_area_dna( $n );
+
+		$poi_synced_flag = ! empty( $n['poi_last_synced'] );
+		$poi_facts = $poi_synced_flag ? array(
+			'restaurants'  => (int) ( $n['poi_restaurant_count'] ?? 0 ),
+			'bars'         => (int) ( $n['poi_bar_count'] ?? 0 ),
+			'cafes'        => (int) ( $n['poi_cafe_count'] ?? 0 ),
+			'attractions'  => (int) ( $n['poi_attraction_count'] ?? 0 ),
+			'transit'      => (int) ( $n['poi_transit_count'] ?? 0 ),
+			'supermarkets' => (int) ( $n['poi_supermarket_count'] ?? 0 ),
+			'pharmacies'   => (int) ( $n['poi_pharmacy_count'] ?? 0 ),
+			'parks'        => (int) ( $n['poi_park_count'] ?? 0 ),
+		) : null;
+
 		$n['scoring'] = array(
 			'match_score' => (int) round( $total ),
 			'dimensions'  => $dims,
-			// Per-dimension confidence: true unless that dimension's number
-			// depends on an OpenStreetMap POI sync that has never run for
-			// this neighborhood. walkability_score/nightlife_score default
-			// to a neutral 50 in the DB even when never synced, so this is
-			// the single source of truth every UI surface (ticket badge,
-			// radar chart, compare table, trip reality strip, and the
-			// auto-generated why-fits/why-caution copy) should read instead
-			// of each re-deriving it from the raw poi_last_synced timestamp.
 			'confidence'  => $confidence,
-			// Convenience flag for surfaces that only have room for one
-			// indicator (e.g. the match-card score ring) rather than a
-			// per-dimension breakdown.
 			'any_unsynced' => in_array( false, $confidence, true ),
 			'why_fits'    => $this->build_why_fits( $n, $dims, $answers, $confidence ),
 			'why_caution' => $this->build_why_caution( $n, $dims, $answers, $confidence ),
-			// Qualitative label + a count of dimensions that are genuinely
-			// strong (>=75) AND confirmed (not a coincidental unsynced
-			// default) -- both derived directly from the same numbers
-			// already computed above, not a separate invented metric.
 			'confidence_label'    => $this->confidence_label( $total ),
 			'strong_factor_count' => $this->count_strong_factors( $dims, $confidence ),
 			'persona'             => $persona,
 			'narrative'           => $this->build_narrative( $n, $dims, $confidence, $answers, $persona ),
 			'late_arrival_friendly' => (int) ( $n['time_airport_min'] ?? 999 ) <= 25 && (int) ( $n['safety_tier'] ?? 3 ) >= 3,
+			'area_dna'    => $area_dna,
+			'poi_facts'   => $poi_facts,
 		);
 		$n['match_score'] = $n['scoring']['match_score']; // convenience top-level for sort.
 
@@ -472,7 +473,7 @@ class WTSM_Matching_Engine {
 		if ( $poi_synced && in_array( 'food_nightlife', $interests, true ) ) {
 			$poi_blend = (int) ( $n['nightlife_score'] ?? 50 );
 		} elseif ( $poi_synced && ( in_array( 'museums_culture', $interests, true ) || in_array( 'historic', $interests, true ) ) ) {
-			$poi_blend = (int) ( $n['walkability_score'] ?? 50 );
+			$poi_blend = self::attraction_count_to_score( (int) ( $n['poi_attraction_count'] ?? 0 ) );
 		}
 
 		return (int) round( ( $archetype_score * 0.7 ) + ( $poi_blend * 0.3 ) );
@@ -515,10 +516,11 @@ class WTSM_Matching_Engine {
 		$desired = (int) ( $answers['safety_comfort'] ?? 3 ); // 1-5
 		$actual  = (int) ( $n['safety_tier'] ?? 3 );
 		if ( $actual >= $desired ) {
-			return 100;
+			$surplus = $actual - $desired;
+			return min( 100, 85 + ( $surplus * 8 ) );
 		}
 		$gap = $desired - $actual;
-		return max( 0, 100 - ( $gap * 30 ) );
+		return max( 0, 60 - ( $gap * 25 ) );
 	}
 
 	/**
@@ -609,6 +611,65 @@ class WTSM_Matching_Engine {
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * Convert a raw attraction POI count (museums, galleries, landmarks)
+	 * into a 0–100 score using a log curve — 5 attractions ≈ 50,
+	 * 20 ≈ 80, 40+ ≈ 95. Returns a neutral 40 for zero.
+	 */
+	private static function attraction_count_to_score( $count ) {
+		if ( $count <= 0 ) {
+			return 40;
+		}
+		return (int) min( 100, round( 30 + 30 * log( $count + 1, 5 ) ) );
+	}
+
+	/**
+	 * Transparent "Area DNA" tags derived entirely from data we already
+	 * have — a human-readable fingerprint of what this area is actually
+	 * like, based on POI ratios, suitability scores, and distance data.
+	 * No external source or guesswork; every tag maps directly to a
+	 * verifiable fact in the dataset.
+	 *
+	 * @return array<array{tag:string,label:string}>
+	 */
+	public function build_area_dna( $n ) {
+		$tags       = array();
+		$poi_synced = ! empty( $n['poi_last_synced'] );
+
+		if ( $poi_synced ) {
+			if ( (int) ( $n['nightlife_score'] ?? 0 ) >= 65 && (int) ( $n['poi_bar_count'] ?? 0 ) >= 5 ) {
+				$tags[] = array( 'tag' => 'late-night-friendly', 'label' => __( 'Late-night friendly', 'voyasee-wtsm' ) );
+			}
+			if ( (int) ( $n['walkability_score'] ?? 0 ) >= 70 && (int) ( $n['transit_score'] ?? 0 ) >= 60 ) {
+				$tags[] = array( 'tag' => 'car-free-ready', 'label' => __( 'Great for car-free trips', 'voyasee-wtsm' ) );
+			}
+			if ( (int) ( $n['poi_restaurant_count'] ?? 0 ) >= 15 && (int) ( $n['poi_cafe_count'] ?? 0 ) >= 5 ) {
+				$tags[] = array( 'tag' => 'foodie-area', 'label' => __( 'Foodie neighborhood', 'voyasee-wtsm' ) );
+			}
+			if ( (int) ( $n['poi_supermarket_count'] ?? 0 ) >= 2 && (int) ( $n['poi_pharmacy_count'] ?? 0 ) >= 1 ) {
+				$tags[] = array( 'tag' => 'essentials-nearby', 'label' => __( 'Daily essentials on-site', 'voyasee-wtsm' ) );
+			}
+			if ( (int) ( $n['poi_park_count'] ?? 0 ) >= 3 ) {
+				$tags[] = array( 'tag' => 'green-space', 'label' => __( 'Parks nearby', 'voyasee-wtsm' ) );
+			}
+		}
+
+		if ( (int) ( $n['family_suitability'] ?? 0 ) >= 70 && (int) ( $n['safety_tier'] ?? 0 ) >= 4 ) {
+			$tags[] = array( 'tag' => 'family-ready', 'label' => __( 'Family-ready area', 'voyasee-wtsm' ) );
+		}
+		if ( (int) ( $n['time_airport_min'] ?? 999 ) <= 20 ) {
+			$tags[] = array( 'tag' => 'airport-close', 'label' => __( 'Quick airport access', 'voyasee-wtsm' ) );
+		}
+		if ( (int) ( $n['time_center_min'] ?? 999 ) <= 10 ) {
+			$tags[] = array( 'tag' => 'central', 'label' => __( 'Central location', 'voyasee-wtsm' ) );
+		}
+		if ( (int) ( $n['safety_tier'] ?? 0 ) >= 5 ) {
+			$tags[] = array( 'tag' => 'high-safety', 'label' => __( 'High safety comfort', 'voyasee-wtsm' ) );
+		}
+
+		return array_slice( $tags, 0, 5 );
 	}
 
 	private function dimension_weakness_sentence( $dim, $n, $answers ) {

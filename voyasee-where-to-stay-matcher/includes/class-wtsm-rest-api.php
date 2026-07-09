@@ -109,7 +109,7 @@ class WTSM_REST_API {
 			}
 		}
 		if ( $cur_code ) {
-			$currency = WTSM_Currency::estimate_nightly_range( $top['price_band'] ?? 3, $cur_code, $cur_symbol );
+			$currency = WTSM_Currency::estimate_nightly_range( $top['price_band'] ?? 3, $cur_code, $cur_symbol, (int) ( $destination['cost_index'] ?? 3 ) );
 			if ( $currency ) {
 				$currency['code'] = $cur_code;
 			}

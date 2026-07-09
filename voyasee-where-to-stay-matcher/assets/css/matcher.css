@@ -916,15 +916,7 @@
 .vwtsm-list-fits li::before { content: '✓'; color: var(--vwtsm-success); flex-shrink: 0; font-weight: 700; }
 .vwtsm-list-caution li::before { content: '!'; color: var(--vwtsm-warning); font-weight: 700; flex-shrink: 0; }
 
-.vwtsm-caution-box {
-	border: 1px solid rgba(220, 154, 77, 0.5);
-	background: rgba(220, 154, 77, 0.08);
-	border-radius: var(--vwtsm-radius-sm);
-	padding: 1rem 1.1rem;
-}
 .vwtsm-root .vwtsm-subheading.vwtsm-subheading-success { color: var(--vwtsm-success) !important; }
-
-.vwtsm-root .vwtsm-caution-box .vwtsm-subheading { color: var(--vwtsm-warning) !important; margin-bottom: 0.5rem; font-size: 1.15rem; }
 
 /* Compass diagram */
 .vwtsm-compass { position: relative; width: 100%; aspect-ratio: 1; max-width: 250px; margin: 1.25rem auto 0; }
@@ -1360,17 +1352,8 @@
 
 .vwtsm-optional-tag { font-weight: 400; color: var(--vwtsm-cream-dim); font-size: 0.82em; text-transform: none; letter-spacing: 0; }
 
-.vwtsm-fact-strip { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
-.vwtsm-fact-chip {
-	display: flex; align-items: flex-start; gap: 0.5rem;
-	background: rgba(10, 15, 28, 0.4); border: 1px solid var(--vwtsm-navy-700);
-	border-radius: var(--vwtsm-radius-sm); padding: 0.6rem 0.9rem;
-	font-size: 0.82rem; color: var(--vwtsm-cream-dim); flex: 1 1 220px;
-}
-.vwtsm-fact-chip a { color: var(--vwtsm-gold-soft); }
-.vwtsm-fact-chip em { font-style: italic; opacity: 0.75; }
+/* .vwtsm-fact-strip is redefined as an infographic tile grid further down (v5.0). */
 .vwtsm-fact-chip-icon { flex-shrink: 0; font-size: 1rem; line-height: 1.3; }
-.vwtsm-fact-chip-warning { border-color: rgba(220, 154, 77, 0.5); background: rgba(220, 154, 77, 0.08); color: var(--vwtsm-cream); }
 
 /* -------------------------------------------------------------------------
    v4.0: Practical Facts panel (Country Intelligence)
@@ -1437,3 +1420,96 @@
 	border-radius: 999px; padding: 0.2rem 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;
 }
 .vwtsm-convenience-row { margin: 0.9rem 0; }
+
+/* -------------------------------------------------------------------------
+   v5.0: Area DNA chips + Top-reason chips (match card)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-dna-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+.vwtsm-dna-chip {
+	font-size: 0.7rem; color: var(--vwtsm-gold-soft); background: rgba(201,162,75,0.12);
+	border: 1px solid rgba(201,162,75,0.25); border-radius: 999px;
+	padding: 0.18rem 0.6rem; white-space: nowrap;
+}
+
+.vwtsm-reason-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+.vwtsm-reason-chip {
+	font-size: 0.68rem; color: var(--vwtsm-cream-dim); background: rgba(255,255,255,0.06);
+	border-radius: 999px; padding: 0.2rem 0.6rem; display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.vwtsm-reason-chip .vwtsm-metric-icon { font-size: 0.75rem; }
+
+/* -------------------------------------------------------------------------
+   v5.0: POI Facts panel (detail panel, within 800m)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-poi-facts {
+	background: rgba(10, 15, 28, 0.5); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm); padding: 0.8rem 1rem; margin: 0.8rem 0;
+}
+.vwtsm-poi-facts-title {
+	font-family: var(--vwtsm-font-body); font-size: 0.78rem; font-weight: 600;
+	color: var(--vwtsm-gold-soft); text-transform: uppercase; letter-spacing: 0.04em;
+	margin: 0 0 0.5rem;
+}
+.vwtsm-poi-facts-grid {
+	display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.4rem;
+}
+.vwtsm-poi-fact {
+	display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem;
+	color: var(--vwtsm-cream-dim);
+}
+.vwtsm-poi-fact-icon { flex-shrink: 0; font-size: 0.9rem; line-height: 1; }
+
+/* -------------------------------------------------------------------------
+   v5.0: Infographic Trip Facts tiles (replaces flat chips)
+   ------------------------------------------------------------------------- */
+
+.vwtsm-fact-strip { margin-bottom: 1.5rem; }
+.vwtsm-fact-strip-title {
+	font-family: var(--vwtsm-font-body); font-size: 0.82rem; font-weight: 600;
+	color: var(--vwtsm-gold-soft); text-transform: uppercase; letter-spacing: 0.04em;
+	margin: 0 0 0.6rem;
+}
+.vwtsm-fact-tiles {
+	display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.6rem;
+}
+.vwtsm-fact-tile {
+	background: rgba(10, 15, 28, 0.5); border: 1px solid var(--vwtsm-navy-700);
+	border-radius: var(--vwtsm-radius-sm); padding: 0.75rem 0.9rem;
+	display: flex; flex-direction: column; gap: 0.2rem;
+}
+.vwtsm-fact-tile-icon { font-size: 1.3rem; line-height: 1; margin-bottom: 0.15rem; }
+.vwtsm-fact-tile-label {
+	font-size: 0.68rem; font-weight: 600; color: var(--vwtsm-cream-dim);
+	text-transform: uppercase; letter-spacing: 0.04em;
+}
+.vwtsm-fact-tile-value { font-size: 0.82rem; color: var(--vwtsm-cream); line-height: 1.35; }
+.vwtsm-fact-tile-value a { color: var(--vwtsm-gold-soft); }
+.vwtsm-fact-tile-note { font-size: 0.7rem; color: var(--vwtsm-cream-dim); font-style: italic; opacity: 0.75; }
+.vwtsm-fact-tile-warning {
+	border-color: rgba(220, 154, 77, 0.5); background: rgba(220, 154, 77, 0.1);
+}
+
+/* -------------------------------------------------------------------------
+   v5.0: Bolder Wrong Area Warning
+   ------------------------------------------------------------------------- */
+
+.vwtsm-root .vwtsm-subheading.vwtsm-subheading-warning {
+	color: var(--vwtsm-warning) !important; font-size: 1.15rem;
+	display: flex; align-items: center; gap: 0.5rem;
+}
+.vwtsm-root .vwtsm-subheading.vwtsm-subheading-warning::before {
+	content: '⚠'; font-size: 1.1rem;
+}
+.vwtsm-caution-box {
+	border: 1.5px solid rgba(220, 154, 77, 0.6);
+	background: linear-gradient(135deg, rgba(220, 154, 77, 0.1) 0%, rgba(220, 154, 77, 0.04) 100%);
+	border-radius: var(--vwtsm-radius-sm);
+	padding: 1rem 1.1rem;
+	position: relative;
+}
+.vwtsm-caution-box::before {
+	content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+	background: var(--vwtsm-warning); border-radius: var(--vwtsm-radius-sm) 0 0 var(--vwtsm-radius-sm);
+}

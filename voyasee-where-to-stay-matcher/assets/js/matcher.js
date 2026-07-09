@@ -805,6 +805,9 @@
 			? '<span class="vwtsm-ticket-estimate" title="' + escapeHtml( VWTSM.i18n.estimateTooltip ) + '">est.</span>'
 			: '';
 
+		var dnaChips = this.buildAreaDnaChips( n.scoring && n.scoring.area_dna );
+		var topReasonChips = this.buildTopReasonChips( n );
+
 		return (
 			'<div class="vwtsm-match-card" data-idx="' + idx + '">' +
 				'<div class="vwtsm-card-archetype-bar" style="background:' + color + '"></div>' +
@@ -815,6 +818,8 @@
 					'<h3 class="vwtsm-card-name">' + escapeHtml( n.name ) + '</h3>' +
 					'<div class="vwtsm-card-archetype-label">' + escapeHtml( archetypeLabel( n.archetype ) ) + '</div>' +
 					this.buildLandmarkChips( n.nearby_landmarks ) +
+					dnaChips +
+					topReasonChips +
 				'</div>' +
 				'<div class="vwtsm-ticket-seam">' +
 					'<span class="vwtsm-ticket-notch vwtsm-notch-left"></span>' +
@@ -829,6 +834,25 @@
 				'</div>' +
 			'</div>'
 		);
+	};
+
+	VoyaseeMatcher.prototype.buildAreaDnaChips = function ( dna ) {
+		if ( ! dna || ! dna.length ) { return ''; }
+		return '<div class="vwtsm-dna-chips">' + dna.map( function ( t ) {
+			return '<span class="vwtsm-dna-chip" data-tag="' + escapeHtml( t.tag ) + '">' + escapeHtml( t.label ) + '</span>';
+		} ).join( '' ) + '</div>';
+	};
+
+	VoyaseeMatcher.prototype.buildTopReasonChips = function ( n ) {
+		var dims = ( n.scoring && n.scoring.dimensions ) || {};
+		var confidence = ( n.scoring && n.scoring.confidence ) || {};
+		var labels = { budget: 'Budget fit', vibe: 'Vibe match', attractions: 'Attraction fit', walkability: 'Walkable', airport: 'Near airport', suitability: 'Suits your trip', safety: 'Safe zone' };
+		var sorted = Object.keys( dims ).filter( function ( k ) { return confidence[ k ] !== false && dims[ k ] >= 75; } )
+			.sort( function ( a, b ) { return dims[ b ] - dims[ a ]; } ).slice( 0, 3 );
+		if ( ! sorted.length ) { return ''; }
+		return '<div class="vwtsm-reason-chips">' + sorted.map( function ( k ) {
+			return '<span class="vwtsm-reason-chip">' + metricIcon( k ) + ' ' + escapeHtml( labels[ k ] || k ) + ' ' + dims[ k ] + '</span>';
+		} ).join( '' ) + '</div>';
 	};
 
 	VoyaseeMatcher.prototype.toggleCardExpansion = function ( grid, matches, idx ) {
@@ -914,14 +938,45 @@
 				'<div>' +
 					'<h4 class="vwtsm-subheading vwtsm-subheading-success">' + escapeHtml( VWTSM.i18n.whyFits ) + '</h4>' +
 					'<ul class="vwtsm-list-fits">' + whyFits.map( function ( l ) { return '<li>' + escapeHtml( l ) + '</li>'; } ).join( '' ) + '</ul>' +
+					this.buildPoiFactsPanel( n ) +
 					'<div class="vwtsm-caution-box">' +
-						'<h4 class="vwtsm-subheading">' + escapeHtml( VWTSM.i18n.whyCaution ) + '</h4>' +
+						'<h4 class="vwtsm-subheading vwtsm-subheading-warning">' + escapeHtml( VWTSM.i18n.whyCaution ) + '</h4>' +
 						'<ul class="vwtsm-list-caution">' + whyCaution.map( function ( l ) { return '<li>' + escapeHtml( l ) + '</li>'; } ).join( '' ) + '</ul>' +
 					'</div>' +
 					this.buildCompass( n ) +
 				'</div>' +
 			'</div>' +
 			this.buildReportIssueBlock( n )
+		);
+	};
+
+	VoyaseeMatcher.prototype.buildPoiFactsPanel = function ( n ) {
+		var facts = n.scoring && n.scoring.poi_facts;
+		if ( ! facts ) {
+			return '';
+		}
+		var items = [];
+		if ( facts.restaurants ) { items.push( { icon: '&#127869;', text: facts.restaurants + ' restaurant' + ( facts.restaurants !== 1 ? 's' : '' ) } ); }
+		if ( facts.cafes ) { items.push( { icon: '&#9749;', text: facts.cafes + ' café' + ( facts.cafes !== 1 ? 's' : '' ) } ); }
+		if ( facts.bars ) { items.push( { icon: '&#127863;', text: facts.bars + ' bar' + ( facts.bars !== 1 ? 's' : '' ) } ); }
+		if ( facts.attractions ) { items.push( { icon: '&#127963;', text: facts.attractions + ' attraction' + ( facts.attractions !== 1 ? 's' : '' ) } ); }
+		if ( facts.transit ) { items.push( { icon: '&#128652;', text: facts.transit + ' transit stop' + ( facts.transit !== 1 ? 's' : '' ) } ); }
+		if ( facts.supermarkets ) { items.push( { icon: '&#128722;', text: facts.supermarkets + ' supermarket' + ( facts.supermarkets !== 1 ? 's' : '' ) } ); }
+		if ( facts.pharmacies ) { items.push( { icon: '&#128138;', text: facts.pharmacies + ' pharmac' + ( facts.pharmacies !== 1 ? 'ies' : 'y' ) } ); }
+		if ( facts.parks ) { items.push( { icon: '&#127795;', text: facts.parks + ' park' + ( facts.parks !== 1 ? 's' : '' ) } ); }
+
+		if ( ! items.length ) { return ''; }
+
+		return (
+			'<div class="vwtsm-poi-facts">' +
+				'<h4 class="vwtsm-poi-facts-title">Within ~800m</h4>' +
+				'<div class="vwtsm-poi-facts-grid">' +
+				items.map( function ( f ) {
+					return '<div class="vwtsm-poi-fact"><span class="vwtsm-poi-fact-icon" aria-hidden="true">' + f.icon + '</span><span>' + escapeHtml( f.text ) + '</span></div>';
+				} ).join( '' ) +
+				'</div>' +
+				'<p class="vwtsm-field-hint">Based on OpenStreetMap data. Counts are approximate; actual availability may vary.</p>' +
+			'</div>'
 		);
 	};
 
@@ -1119,26 +1174,31 @@
 	 * ------------------------------------------------------------------- */
 
 	VoyaseeMatcher.prototype.buildTripFactsStrip = function ( data ) {
-		var chips = [];
+		var tiles = [];
 
 		var jetLag = this.buildJetLagFact( data.destination && data.destination.timezone );
-		if ( jetLag ) { chips.push( jetLag ); }
+		if ( jetLag ) { tiles.push( jetLag ); }
 
 		var weather = this.buildWeatherFact( data.weather );
-		if ( weather ) { chips.push( weather ); }
+		if ( weather ) { tiles.push( weather ); }
 
 		var airQuality = this.buildAirQualityFact( data.air_quality );
-		if ( airQuality ) { chips.push( airQuality ); }
+		if ( airQuality ) { tiles.push( airQuality ); }
 
 		var seasonal = this.buildSeasonalFact( data.destination && data.destination.seasonal_note );
-		if ( seasonal ) { chips.push( seasonal ); }
+		if ( seasonal ) { tiles.push( seasonal ); }
 
 		var holiday = this.buildHolidayFact( data.holiday_overlap );
-		if ( holiday ) { chips.push( holiday ); }
+		if ( holiday ) { tiles.push( holiday ); }
 
-		if ( ! chips.length ) { return ''; }
+		if ( ! tiles.length ) { return ''; }
 
-		return '<div class="vwtsm-fact-strip">' + chips.join( '' ) + '</div>';
+		return (
+			'<div class="vwtsm-fact-strip">' +
+				'<h3 class="vwtsm-fact-strip-title">Trip intelligence</h3>' +
+				'<div class="vwtsm-fact-tiles">' + tiles.join( '' ) + '</div>' +
+			'</div>'
+		);
 	};
 
 	VoyaseeMatcher.prototype.buildJetLagFact = function ( destinationTimezone ) {
@@ -1162,7 +1222,7 @@
 			}
 		}
 
-		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#128337;</span><span>' + text + '</span></div>';
+		return '<div class="vwtsm-fact-tile"><div class="vwtsm-fact-tile-icon" aria-hidden="true">&#128337;</div><div class="vwtsm-fact-tile-label">Time zone</div><div class="vwtsm-fact-tile-value">' + text + '</div></div>';
 	};
 
 	VoyaseeMatcher.prototype.buildWeatherFact = function ( weather ) {
@@ -1175,7 +1235,7 @@
 			if ( null === lo && null === hi ) { return ''; }
 			var range = ( null !== lo && null !== hi && lo !== hi ) ? ( lo + '–' + hi + '°C' ) : ( ( hi !== null ? hi : lo ) + '°C' );
 			var cond = ( d.condition && d.condition.text ) ? ' · ' + escapeHtml( d.condition.text ) : '';
-			return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127780;</span><span>Forecast for your dates: ' + range + cond + '</span></div>';
+			return '<div class="vwtsm-fact-tile"><div class="vwtsm-fact-tile-icon" aria-hidden="true">&#127780;</div><div class="vwtsm-fact-tile-label">Forecast</div><div class="vwtsm-fact-tile-value">' + range + cond + '</div></div>';
 		}
 
 		if ( 'climate_normals' === weather.type && weather.month && null !== weather.month.temp_mean_c ) {
@@ -1190,9 +1250,7 @@
 				var qualifier = rounded >= 15 ? ' (a notably rainy month)' : ( rounded <= 3 ? ' (typically dry)' : '' );
 				rainText = ', ~' + rounded + ' rainy days' + qualifier;
 			}
-			return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127780;</span><span>' +
-				'Typical for ' + escapeHtml( weather.month.label || 'this month' ) + ': avg ' + mean + '°C' + rainText +
-				' <em>(long-term average, not a forecast)</em></span></div>';
+			return '<div class="vwtsm-fact-tile"><div class="vwtsm-fact-tile-icon" aria-hidden="true">&#127780;</div><div class="vwtsm-fact-tile-label">' + escapeHtml( weather.month.label || 'Climate' ) + '</div><div class="vwtsm-fact-tile-value">Avg ' + mean + '°C' + rainText + '</div><div class="vwtsm-fact-tile-note">Long-term average</div></div>';
 		}
 
 		return '';
@@ -1206,23 +1264,22 @@
 		// just relays that already-computed label, it doesn't invent one.
 		// The two scales read very differently (0-500 vs. 1-5), so the
 		// label always says which scale the number is on.
-		var categoryText = airQuality.category ? ' &middot; ' + escapeHtml( airQuality.category ) : '';
-		var label = 'owm_1_5' === airQuality.scale
-			? 'Air quality index: ' + escapeHtml( String( airQuality.value ) ) + '/5' + categoryText
-			: 'Air quality (US AQI): ' + escapeHtml( String( airQuality.value ) ) + categoryText;
+		var numLabel = 'owm_1_5' === airQuality.scale
+			? escapeHtml( String( airQuality.value ) ) + '/5'
+			: 'AQI ' + escapeHtml( String( airQuality.value ) );
+		var catLabel = airQuality.category ? escapeHtml( airQuality.category ) : '';
 
-		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127786;</span><span>' + label + '</span></div>';
+		return '<div class="vwtsm-fact-tile"><div class="vwtsm-fact-tile-icon" aria-hidden="true">&#127786;</div><div class="vwtsm-fact-tile-label">Air quality</div><div class="vwtsm-fact-tile-value">' + numLabel + ( catLabel ? ' · ' + catLabel : '' ) + '</div></div>';
 	};
 
 	VoyaseeMatcher.prototype.buildSeasonalFact = function ( seasonalNote ) {
 		if ( ! seasonalNote ) { return ''; }
-		return '<div class="vwtsm-fact-chip"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127800;</span><span>' + escapeHtml( seasonalNote ) + '</span></div>';
+		return '<div class="vwtsm-fact-tile"><div class="vwtsm-fact-tile-icon" aria-hidden="true">&#127800;</div><div class="vwtsm-fact-tile-label">Season note</div><div class="vwtsm-fact-tile-value">' + escapeHtml( seasonalNote ) + '</div></div>';
 	};
 
 	VoyaseeMatcher.prototype.buildHolidayFact = function ( holiday ) {
 		if ( ! holiday || ! holiday.name ) { return ''; }
-		return '<div class="vwtsm-fact-chip vwtsm-fact-chip-warning"><span class="vwtsm-fact-chip-icon" aria-hidden="true">&#127881;</span>' +
-			'<span>Your trip overlaps <strong>' + escapeHtml( holiday.name ) + '</strong> (' + escapeHtml( holiday.date ) + ') -- expect higher prices and crowds.</span></div>';
+		return '<div class="vwtsm-fact-tile vwtsm-fact-tile-warning"><div class="vwtsm-fact-tile-icon" aria-hidden="true">&#127881;</div><div class="vwtsm-fact-tile-label">Holiday overlap</div><div class="vwtsm-fact-tile-value"><strong>' + escapeHtml( holiday.name ) + '</strong> · ' + escapeHtml( holiday.date ) + '</div><div class="vwtsm-fact-tile-note">Expect higher prices and crowds</div></div>';
 	};
 
 	/* ---------------------------------------------------------------------

@@ -4,7 +4,7 @@ Tags: travel, hotels, neighborhoods, quiz
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.2.3
+Stable tag: 5.0.0
 License: GPLv2 or later
 
 A single all-in-one plugin: the destination/neighborhood dataset, the
@@ -176,6 +176,58 @@ Not built yet, in rough order of likely value:
   reliable score on yet).
 
 == Changelog ==
+
+= 5.0.0 =
+Major accuracy, intelligence, and design upgrade. No breaking changes to the
+shortcode or data schema -- existing installs keep working, and the new
+starter neighborhoods can be pulled in from Import CSV > "Add any new starter
+destinations" without a reinstall.
+
+Correctness fixes (the results are now genuinely more accurate):
+* Fixed: nightly price estimates ignored how expensive the destination itself
+  is, so a "$$" area in Tokyo and a "$$" area in Hanoi showed the same range.
+  The estimate now scales by the destination's cost index, so a mid-range area
+  in an expensive city reads higher than the same band in a cheap one.
+* Fixed: for travelers who picked "museums & culture" or "history", the
+  attractions score was blended against the wrong signal (a walkability proxy)
+  instead of the actual count of nearby attractions already in the database. It
+  now uses a real attraction-density curve, so culture-focused trips rank
+  culture-rich areas correctly.
+* Fixed: the safety dimension returned a flat perfect score whenever an area
+  merely met the traveler's comfort floor, which -- combined with a very small
+  weight -- made it cosmetic. Safety is now scored on a graduated curve and
+  carries a meaningfully larger share of the match, so a genuinely safer area
+  can pull ahead of a marginally-riskier one.
+
+New intelligence layers (all derived from data already collected -- no new
+external services, no paid APIs):
+* Added "Area DNA" tags: short, transparent, plain-language badges (e.g.
+  late-night-friendly, car-free-ready, foodie-area, essentials-nearby,
+  green-space, family-ready, airport-close, central, high-safety) derived
+  entirely from the POI and scoring data already on file, so every tag is
+  explainable rather than a black box.
+* Added a "Within ~800m" POI facts panel on each area detail view, surfacing
+  the concrete counts behind the scores -- restaurants, cafes, bars,
+  attractions, transit stops, supermarkets, pharmacies and parks -- attributed
+  to OpenStreetMap.
+* Added top-reason chips on each match card, showing at a glance the two or
+  three strongest, high-confidence reasons an area fits.
+
+Data depth:
+* Expanded the bundled starter dataset with real, well-known neighborhoods
+  across Los Angeles, San Francisco, Chicago, Miami, Las Vegas, Rio de Janeiro,
+  Buenos Aires, Cape Town, Bali, Cancun, Delhi, Kyoto, Shanghai, Beijing and
+  Kuala Lumpur, deliberately filling previously thin archetypes (backpacker,
+  beach, nightlife, quiet-residential). Every added area is a genuine, existing
+  neighborhood -- no invented profiles.
+
+Design / presentation:
+* Reworked the flat "trip facts" text chips into an infographic-style tile
+  grid (jet lag, weather, air quality, seasonal note, holiday overlap), each
+  with an icon, label, value and supporting note.
+* Made the signature "Wrong Area Warning" bolder and easier to notice, with a
+  gold accent bar and a clearer warning heading.
+* Cleaned up now-unused legacy CSS left over from the old fact-chip layout.
 
 = 4.2.3 =
 * Fixed: a visible gap sat between the tool card and the footer, making the
