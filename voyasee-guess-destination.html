@@ -1,0 +1,361 @@
+<!-- =========================================================================
+     VOYASEE — "GUESS THE DESTINATION" DAILY GAME
+     A NEW, separate Elementor HTML widget. Place this widget AFTER your
+     existing Posts block and BEFORE your existing World Story Atlas block.
+     Self-contained (own styles/script) — does not depend on the earlier
+     home-page file. Same brand colors/fonts for visual consistency.
+
+     No external images are used on purpose: the "mystery" visual is built
+     entirely from CSS (gradient + pattern + icon) so nothing can load
+     broken or show the wrong place. If you want real photos later, add an
+     <img> inside the element marked "OPTIONAL PHOTO SLOT" below per
+     destination in GUESS_POOL and the game will use it automatically.
+     ========================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+  rel="stylesheet"
+>
+
+<section class="voy-guess" aria-labelledby="voy-guess-title">
+  <div class="vg-aura" aria-hidden="true"></div>
+
+  <div class="vg-head">
+    <span class="vg-eyebrow"><span class="vg-eyebrow-dot"></span>Daily travel game</span>
+    <h2 id="voy-guess-title">Guess the <em>Destination</em></h2>
+    <p class="vg-intro">A new mystery place every day. Reveal a clue at a time — how fast can you guess it?</p>
+  </div>
+
+  <div class="vg-card" data-voy-guess>
+    <div class="vg-visual" data-vg-visual data-level="1">
+      <div class="vg-visual-pattern" aria-hidden="true"></div>
+      <!-- OPTIONAL PHOTO SLOT: if a destination in GUESS_POOL has a photo
+           URL, the script inserts an <img> here automatically. -->
+      <div class="vg-visual-icon" data-vg-icon aria-hidden="true">&#8982;</div>
+      <div class="vg-fog" aria-hidden="true"></div>
+      <div class="vg-reveal-name" data-vg-reveal-name aria-hidden="true"></div>
+      <div class="vg-confetti" data-vg-confetti aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div class="vg-panel">
+      <div class="vg-panel-top">
+        <div class="vg-progress" role="img" aria-label="Clues revealed">
+          <span class="vg-dot" data-vg-dot></span>
+          <span class="vg-dot" data-vg-dot></span>
+          <span class="vg-dot" data-vg-dot></span>
+        </div>
+        <span class="vg-streak" data-vg-streak hidden>
+          <i class="vg-streak-dot" aria-hidden="true"></i><span data-vg-streak-n>0</span>-day streak
+        </span>
+      </div>
+
+      <ul class="vg-clues" data-vg-clues>
+        <li data-vg-clue="1"></li>
+        <li data-vg-clue="2"></li>
+        <li data-vg-clue="3"></li>
+      </ul>
+
+      <div class="vg-answer" data-vg-answer hidden>
+        <h3 data-vg-name></h3>
+        <p data-vg-country></p>
+      </div>
+
+      <div class="vg-actions" data-vg-actions>
+        <button type="button" class="vg-btn vg-btn-primary" data-vg-next-clue>Reveal a clue (1/3)</button>
+        <button type="button" class="vg-btn vg-btn-ghost" data-vg-reveal>I know it — reveal</button>
+      </div>
+
+      <div class="vg-actions" data-vg-after hidden>
+        <a class="vg-btn vg-btn-primary" href="https://voyasee.com/categories-voyasee/destination-travel-guides/">Explore destination guides <i aria-hidden="true">&#8594;</i></a>
+        <button type="button" class="vg-btn vg-btn-ghost" data-vg-again>Play another</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.voy-guess, .voy-guess *, .voy-guess *::before, .voy-guess *::after { box-sizing: border-box; }
+
+.voy-guess {
+  --ink:#16262e; --ink-soft:#4a5b63; --muted:#728189; --line:rgba(18,40,48,.10);
+  --teal:#0ea394; --teal-deep:#0b7d72; --coral:#ff6a4d; --coral-deep:#e8502f; --gold:#f4a72b;
+  --grad: linear-gradient(120deg, var(--teal), var(--coral));
+  --shadow: 0 18px 44px rgba(20,60,70,.10);
+  --shadow-lg: 0 30px 70px rgba(20,60,70,.16);
+
+  position: relative; isolation: isolate; overflow: hidden;
+  width: 100%; margin: 0 auto; padding: 44px 20px 50px;
+  border-radius: 22px; color: var(--ink); font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  background: linear-gradient(180deg, #f9fdfd 0%, #ffffff 45%, #f6fbfc 100%);
+}
+.vg-aura{ position:absolute; z-index:-1; inset:0; pointer-events:none;
+  background: radial-gradient(460px 300px at 88% 8%, rgba(14,163,148,.10), transparent 70%),
+              radial-gradient(420px 280px at 6% 96%, rgba(255,106,77,.08), transparent 70%);
+}
+
+.vg-head{ width:min(720px, calc(100% - 24px)); margin:0 auto 30px; text-align:center; }
+.vg-eyebrow{ display:inline-flex; align-items:center; gap:8px; padding:7px 15px 7px 12px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.85); color:var(--teal-deep); font:800 11px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.05em; text-transform:uppercase; box-shadow:var(--shadow); }
+.vg-eyebrow-dot{ width:8px;height:8px;border-radius:50%; background:var(--grad); }
+.vg-head h2{ margin:14px 0 0; font:700 clamp(26px,3.4vw,38px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; }
+.vg-head em{ font-style:italic; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--coral-deep); }
+.vg-intro{ max-width:520px; margin:10px auto 0; color:var(--ink-soft); font-size:14px; line-height:1.55; }
+
+.vg-card{ display:flex; flex-wrap:wrap; width:min(880px, calc(100% - 16px)); margin:0 auto; border:1px solid var(--line); border-radius:24px; overflow:hidden; background:#fff; box-shadow:var(--shadow-lg); }
+
+.vg-visual{ position:relative; overflow:hidden; flex:1 1 320px; min-height:260px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, color-mix(in srgb, var(--accent, var(--teal)) 78%, #000) 0%, var(--accent, var(--teal)) 100%); transition:background .4s ease; }
+.vg-visual img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.vg-visual-pattern{ position:absolute; inset:-30%; opacity:.55; background-image:repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.18) 0 2px, transparent 2px 46px); }
+.vg-visual-icon{ position:relative; z-index:2; font-size:60px; line-height:1; color:#fff; opacity:.92; filter:drop-shadow(0 10px 22px rgba(0,0,0,.25)); transition:transform .5s ease; }
+.vg-fog{ position:absolute; inset:0; z-index:3; background:rgba(255,255,255,.92); transition:opacity .5s ease; }
+.vg-visual[data-level="1"] .vg-fog{ opacity:.62; }
+.vg-visual[data-level="2"] .vg-fog{ opacity:.38; }
+.vg-visual[data-level="3"] .vg-fog{ opacity:.16; }
+.vg-visual[data-level="done"] .vg-fog{ opacity:0; pointer-events:none; }
+.vg-visual[data-level="done"] .vg-visual-icon{ transform:scale(1.14); }
+.vg-reveal-name{ position:absolute; z-index:4; left:16px; right:16px; bottom:16px; text-align:center; color:#fff; font:800 21px/1.15 "Sora","Plus Jakarta Sans",sans-serif; text-shadow:0 8px 20px rgba(0,0,0,.35); opacity:0; transform:translateY(8px); transition:opacity .4s ease .1s, transform .4s ease .1s; }
+.vg-visual[data-level="done"] .vg-reveal-name{ opacity:1; transform:none; }
+
+.vg-confetti{ position:absolute; inset:0; z-index:5; pointer-events:none; }
+.vg-confetti span{ position:absolute; top:50%; left:50%; width:8px; height:8px; border-radius:2px; background:#fff; opacity:0; }
+.vg-confetti.is-on span{ animation:vgBurst .8s ease-out forwards; }
+.vg-confetti span:nth-child(1){ background:var(--teal); animation-delay:0s; --a:-70deg; }
+.vg-confetti span:nth-child(2){ background:var(--coral); animation-delay:.02s; --a:-30deg; }
+.vg-confetti span:nth-child(3){ background:var(--gold); animation-delay:.04s; --a:10deg; }
+.vg-confetti span:nth-child(4){ background:#fff; animation-delay:.06s; --a:50deg; }
+.vg-confetti span:nth-child(5){ background:var(--teal); animation-delay:.03s; --a:-110deg; }
+.vg-confetti span:nth-child(6){ background:var(--coral); animation-delay:.05s; --a:130deg; }
+@keyframes vgBurst{
+  0%{ opacity:1; transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) scale(1); }
+  100%{ opacity:0; transform:translate(-50%,-50%) rotate(var(--a)) translateY(-90px) scale(.4); }
+}
+
+.vg-panel{ flex:1 1 320px; display:flex; flex-direction:column; padding:26px 26px 24px; min-width:280px; }
+.vg-panel-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px; }
+.vg-progress{ display:flex; gap:6px; }
+.vg-dot{ width:9px;height:9px;border-radius:50%; background:var(--line); transition:background-color .25s ease, transform .25s ease; }
+.vg-dot.is-on{ background:var(--grad); transform:scale(1.15); }
+.vg-streak{ display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; background:color-mix(in srgb, var(--gold) 16%, #fff); border:1px solid color-mix(in srgb, var(--gold) 35%, transparent); color:#8a5a06; font:800 11px/1 "Plus Jakarta Sans",sans-serif; }
+.vg-streak-dot{ width:6px;height:6px;border-radius:50%; background:var(--gold); display:inline-block; }
+
+.vg-clues{ list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:10px; }
+.vg-clues li{ display:none; padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:#f8fbfb; color:var(--ink-soft); font-size:13.5px; line-height:1.5; opacity:0; transform:translateY(6px); transition:opacity .35s ease, transform .35s ease; }
+.vg-clues li.is-active{ display:block; opacity:1; transform:none; }
+.vg-clues li::before{ content:"Clue " attr(data-vg-clue) " — "; font-weight:800; color:var(--teal-deep); }
+
+.vg-answer{ margin:0 0 18px; padding:16px; border-radius:16px; background:color-mix(in srgb, var(--teal) 8%, #fff); border:1px solid color-mix(in srgb, var(--teal) 24%, transparent); }
+.vg-answer h3{ margin:0; font:800 22px/1.2 "Sora","Plus Jakarta Sans",sans-serif; color:var(--ink); }
+.vg-answer p{ margin:4px 0 0; color:var(--ink-soft); font-size:13px; }
+
+.vg-actions{ margin-top:auto; display:flex; flex-wrap:wrap; gap:10px; }
+.vg-btn{ display:inline-flex; align-items:center; gap:7px; padding:12px 18px; border-radius:999px; border:1px solid transparent; font:700 13.5px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; text-decoration:none !important; transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease; }
+.vg-btn-primary{ background:var(--grad); color:#fff !important; box-shadow:0 12px 26px rgba(255,106,77,.28); }
+.vg-btn-primary:hover{ transform:translateY(-2px); }
+.vg-btn-primary:disabled{ opacity:.45; cursor:default; transform:none; box-shadow:none; }
+.vg-btn-ghost{ background:#fff; color:var(--ink) !important; border-color:var(--line); box-shadow:var(--shadow); }
+.vg-btn-ghost:hover{ transform:translateY(-2px); border-color:var(--teal); color:var(--teal-deep) !important; }
+
+@media (max-width:640px){
+  .voy-guess{ padding:34px 14px 40px; border-radius:16px; }
+  .vg-card{ border-radius:18px; }
+  .vg-visual{ min-height:200px; flex-basis:100%; }
+  .vg-panel{ padding:22px 18px 20px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .vg-clues li, .vg-fog, .vg-visual-icon, .vg-reveal-name, .vg-dot{ transition:none; }
+  .vg-confetti.is-on span{ animation:none; }
+}
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Each entry: name, country, an accent color, a simple icon glyph, and
+     3 progressively-specific clues. "photo" is optional — leave it out
+     to use the CSS mystery visual, or set a verified image URL to show
+     a real photo instead (it will be inserted automatically). */
+  var GUESS_POOL = [
+    { name:"Kyoto", country:"Japan", accent:"#0ea394", icon:"&#9670;",
+      clues:["Wooden gates lead to quiet gardens raked into perfect lines.","Thousands of vermillion torii gates climb a sacred mountain here.","Japan's former imperial capital, famous for geisha districts and temple mornings."] },
+    { name:"Santorini", country:"Greece", accent:"#2f8fd1", icon:"&#9679;",
+      clues:["Whitewashed houses cling to a cliff above a deep blue sea.","This island was shaped by one of history's largest volcanic eruptions.","Famous for blue-domed churches and Aegean sunsets in Greece."] },
+    { name:"Bali", country:"Indonesia", accent:"#5aa130", icon:"&#127807;",
+      clues:["Rice terraces cascade down hillsides like green staircases.","Hindu temples rise from misty volcanoes on this Indonesian island.","Known worldwide as the 'Island of the Gods.'"] },
+    { name:"Marrakech", country:"Morocco", accent:"#e0673f", icon:"&#9733;",
+      clues:["A maze of alleys hides spice stalls and hidden courtyards.","Snake charmers and storytellers fill a famous square at dusk.","Morocco's 'Red City,' named for its rose-colored walls."] },
+    { name:"Reykjavik", country:"Iceland", accent:"#1f97c9", icon:"&#10052;",
+      clues:["Glaciers, geysers and the northern lights share this land.","It's one of the world's northernmost capital cities.","Iceland's capital, gateway to waterfalls and volcanoes."] },
+    { name:"Paris", country:"France", accent:"#9a5cd0", icon:"&#9738;",
+      clues:["Cafes spill onto cobblestone streets beside a slow-moving river.","An iron tower built for a World's Fair now defines its skyline.","Called the 'City of Light,' capital of France."] },
+    { name:"Rome", country:"Italy", accent:"#d69324", icon:"&#9821;",
+      clues:["Every road here seems to lead back to a 2,000-year-old ruin.","Gladiators once fought inside its most famous amphitheater.","The 'Eternal City,' capital of Italy."] },
+    { name:"Cusco", country:"Peru", accent:"#3a9e57", icon:"&#9968;",
+      clues:["Stone walls fit together perfectly without any mortar at all.","A lost citadel high in the mountains waits at the end of a famous trail.","Former capital of the Inca Empire, gateway to Machu Picchu."] },
+    { name:"Cairo", country:"Egypt", accent:"#d69a2b", icon:"&#9651;",
+      clues:["A river that shaped an entire civilization flows through this city.","The last of the ancient world's Seven Wonders still stands nearby.","Egypt's capital, beside the Great Pyramids of Giza."] },
+    { name:"Bangkok", country:"Thailand", accent:"#e05e7d", icon:"&#9748;",
+      clues:["Golden temple spires rise above chaotic, delicious street food stalls.","Long-tail boats cruise canals behind a glittering royal palace.","Thailand's capital, one of the most visited cities on Earth."] },
+    { name:"Cape Town", country:"South Africa", accent:"#4a80c9", icon:"&#9968;",
+      clues:["A flat-topped mountain watches over two meeting oceans.","Penguins waddle on a beach just outside this city.","South Africa's coastal capital, beneath Table Mountain."] },
+    { name:"Sydney", country:"Australia", accent:"#2a9bc4", icon:"&#9973;",
+      clues:["Sail-shaped roofs sit beside a famous steel-arched bridge.","Surfers ride waves just minutes from a world-famous opera house.","Australia's largest city, on a stunning natural harbour."] },
+    { name:"New York City", country:"USA", accent:"#7c5cd6", icon:"&#127961;",
+      clues:["A green statue holding a torch welcomes ships into its harbour.","Yellow cabs stream through a grid beneath impossibly tall towers.","The 'Big Apple,' one of the world's most iconic skylines."] },
+    { name:"Dubai", country:"UAE", accent:"#1f9e8c", icon:"&#9650;",
+      clues:["The world's tallest building rises from a desert coastline.","Indoor ski slopes sit inside malls surrounded by sand dunes.","A futuristic city on the Arabian Gulf, in the UAE."] },
+    { name:"Rio de Janeiro", country:"Brazil", accent:"#3f83d6", icon:"&#9968;",
+      clues:["A giant stone statue stretches its arms over a beach-lined bay.","Samba drums and carnival costumes fill the streets every February.","Brazil's beach capital, beneath Christ the Redeemer."] },
+    { name:"Istanbul", country:"Turkey", accent:"#0e9f8f", icon:"&#9770;",
+      clues:["One city, two continents, split by a narrow strait.","Domes and minarets rise above a centuries-old spice bazaar.","Turkey's largest city, bridging Europe and Asia."] },
+    { name:"Queenstown", country:"New Zealand", accent:"#1f97c9", icon:"&#9968;",
+      clues:["Snow-capped peaks reflect in a lake built for adventure sports.","The world's first commercial bungee jump happened near here.","New Zealand's adventure capital, on the South Island."] },
+    { name:"Havana", country:"Cuba", accent:"#d69a2b", icon:"&#128663;",
+      clues:["Vintage cars in candy colors cruise past crumbling pastel buildings.","Live salsa music drifts from bars along a famous seaside promenade.","Cuba's capital, frozen in a mid-century time warp."] },
+    { name:"Jaipur", country:"India", accent:"#e05e7d", icon:"&#9962;",
+      clues:["An entire old town is painted the same warm terracotta shade.","A palace with hundreds of windows was built to catch the breeze.","India's 'Pink City,' part of the Golden Triangle."] },
+    { name:"Petra", country:"Jordan", accent:"#9a5cd0", icon:"&#9962;",
+      clues:["A narrow canyon opens onto a facade carved directly into rock.","This ancient city was carved by the Nabataeans over 2,000 years ago.","Jordan's rose-red city, hidden in the desert."] }
+  ];
+
+  function dayOfYearIndex(len) {
+    var d = new Date();
+    var start = new Date(d.getFullYear(), 0, 0);
+    var diff = d - start;
+    var day = Math.floor(diff / 86400000);
+    return ((day % len) + len) % len;
+  }
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+
+  function readStreak() {
+    var n; try { n = parseInt(localStorage.getItem("voy_guess_streak"), 10); } catch (e) {}
+    return isNaN(n) ? 0 : n;
+  }
+
+  function bumpStreakIfNeeded() {
+    var LAST = "voy_guess_last_day", STREAK = "voy_guess_streak";
+    var today = todayStr();
+    var last; try { last = localStorage.getItem(LAST); } catch (e) {}
+    if (last === today) return readStreak();
+    var y = new Date(); y.setDate(y.getDate() - 1);
+    var yesterday = y.getFullYear() + "-" + (y.getMonth() + 1) + "-" + y.getDate();
+    var streak = (last === yesterday) ? readStreak() + 1 : 1;
+    try { localStorage.setItem(LAST, today); localStorage.setItem(STREAK, String(streak)); } catch (e) {}
+    return streak;
+  }
+
+  function initGuessGame(root) {
+    var card = root.querySelector("[data-voy-guess]");
+    if (!card || card.dataset.voyGuessReady === "true") return;
+    card.dataset.voyGuessReady = "true";
+
+    var visual = card.querySelector("[data-vg-visual]");
+    var icon = card.querySelector("[data-vg-icon]");
+    var revealNameEl = card.querySelector("[data-vg-reveal-name]");
+    var confetti = card.querySelector("[data-vg-confetti]");
+    var clueEls = card.querySelectorAll("[data-vg-clue]");
+    var dots = card.querySelectorAll("[data-vg-dot]");
+    var nameEl = card.querySelector("[data-vg-name]");
+    var countryEl = card.querySelector("[data-vg-country]");
+    var answerBox = card.querySelector("[data-vg-answer]");
+    var actions = card.querySelector("[data-vg-actions]");
+    var afterActions = card.querySelector("[data-vg-after]");
+    var nextClueBtn = card.querySelector("[data-vg-next-clue]");
+    var revealBtn = card.querySelector("[data-vg-reveal]");
+    var againBtn = card.querySelector("[data-vg-again]");
+    var streakBadge = card.querySelector("[data-vg-streak]");
+    var streakN = card.querySelector("[data-vg-streak-n]");
+
+    var idx = dayOfYearIndex(GUESS_POOL.length);
+    var cluesShown = 1;
+    var done = false;
+
+    function showStreak() {
+      var s = readStreak();
+      if (s > 0) {
+        streakN.textContent = s;
+        streakBadge.hidden = false;
+      } else {
+        streakBadge.hidden = true;
+      }
+    }
+
+    function render() {
+      var place = GUESS_POOL[idx];
+      card.style.setProperty("--accent", place.accent);
+      visual.setAttribute("data-level", done ? "done" : String(cluesShown));
+      icon.innerHTML = place.icon;
+
+      clueEls.forEach(function (li) {
+        var n = parseInt(li.getAttribute("data-vg-clue"), 10);
+        li.textContent = place.clues[n - 1];
+        li.classList.toggle("is-active", n <= cluesShown);
+      });
+
+      dots.forEach(function (dot, i) { dot.classList.toggle("is-on", i < cluesShown); });
+
+      nextClueBtn.disabled = cluesShown >= 3;
+      nextClueBtn.textContent = cluesShown >= 3 ? "All clues revealed" : "Reveal a clue (" + cluesShown + "/3)";
+
+      if (done) {
+        nameEl.textContent = place.name;
+        countryEl.textContent = place.country;
+        revealNameEl.textContent = place.name + ", " + place.country;
+        answerBox.hidden = false;
+        actions.hidden = true;
+        afterActions.hidden = false;
+      } else {
+        answerBox.hidden = true;
+        actions.hidden = false;
+        afterActions.hidden = true;
+        revealNameEl.textContent = "";
+      }
+    }
+
+    function celebrate() {
+      confetti.classList.remove("is-on");
+      void confetti.offsetWidth;
+      confetti.classList.add("is-on");
+      window.setTimeout(function () { confetti.classList.remove("is-on"); }, 900);
+    }
+
+    nextClueBtn.addEventListener("click", function () {
+      if (cluesShown < 3) { cluesShown++; render(); }
+    });
+
+    revealBtn.addEventListener("click", function () {
+      done = true;
+      bumpStreakIfNeeded();
+      showStreak();
+      render();
+      celebrate();
+    });
+
+    againBtn.addEventListener("click", function () {
+      var next = idx;
+      if (GUESS_POOL.length > 1) {
+        do { next = Math.floor(Math.random() * GUESS_POOL.length); } while (next === idx);
+      }
+      idx = next; cluesShown = 1; done = false;
+      render();
+    });
+
+    showStreak();
+    render();
+  }
+
+  function boot() {
+    document.querySelectorAll(".voy-guess").forEach(initGuessGame);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  window.addEventListener("elementor/frontend/init", boot);
+})();
+</script>
