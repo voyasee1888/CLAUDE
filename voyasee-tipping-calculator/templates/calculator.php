@@ -75,15 +75,16 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
         <div class="vtc-app">
             <form class="vtc-form" data-vtc-form autocomplete="off">
                 <div class="vtc-field">
-                    <label class="vtc-label"><?php echo esc_html__('Where are you?', 'voyasee-tipping-calculator'); ?></label>
+                    <label class="vtc-label" style="color:#f3f7fd!important;"><?php echo esc_html__('Where are you?', 'voyasee-tipping-calculator'); ?></label>
                     <div class="vtc-combo" data-vtc-combo>
-                        <button type="button" class="vtc-combo-btn" data-vtc-combo-btn aria-haspopup="listbox" aria-expanded="false">
+                        <button type="button" class="vtc-combo-btn" data-vtc-combo-btn aria-haspopup="listbox" aria-expanded="false" style="background:#14294a!important;color:#f3f7fd!important;">
                             <span class="vtc-combo-flag" data-vtc-combo-flag><?php echo $flag($default_country); ?></span>
-                            <span class="vtc-combo-name" data-vtc-combo-name><?php echo esc_html($overview['country']['name'] ?? $default_country); ?></span>
+                            <span class="vtc-combo-name" data-vtc-combo-name style="color:#f3f7fd!important;"><?php echo esc_html($overview['country']['name'] ?? $default_country); ?></span>
                             <span class="vtc-combo-caret" aria-hidden="true">▾</span>
                         </button>
                         <div class="vtc-combo-pop" data-vtc-combo-pop hidden>
-                            <input type="search" class="vtc-combo-search" data-vtc-combo-search autocomplete="off" placeholder="<?php echo esc_attr__('Search 200+ countries…', 'voyasee-tipping-calculator'); ?>" aria-label="<?php echo esc_attr__('Search countries', 'voyasee-tipping-calculator'); ?>">
+                            <input type="search" class="vtc-combo-search" data-vtc-combo-search autocomplete="off" placeholder="<?php echo esc_attr__('Search 200+ countries…', 'voyasee-tipping-calculator'); ?>" aria-label="<?php echo esc_attr__('Search countries', 'voyasee-tipping-calculator'); ?>"
+                                style="background:rgba(3,12,28,.6)!important;color:#f3f7fd!important;-webkit-text-fill-color:#f3f7fd!important;caret-color:#f3f7fd!important;border:none!important;box-shadow:none!important;">
                             <ul class="vtc-combo-list" data-vtc-combo-list role="listbox"></ul>
                         </div>
                     </div>
@@ -91,29 +92,30 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
                 </div>
 
                 <div class="vtc-field">
-                    <label class="vtc-label"><?php echo esc_html__('What are you paying for?', 'voyasee-tipping-calculator'); ?></label>
+                    <label class="vtc-label" style="color:#f3f7fd!important;"><?php echo esc_html__('What are you paying for?', 'voyasee-tipping-calculator'); ?></label>
                     <div class="vtc-services" data-vtc-services role="tablist"></div>
                 </div>
 
                 <div class="vtc-field" data-vtc-amount-field>
-                    <label class="vtc-label" data-vtc-amount-label><?php echo esc_html__('Bill amount', 'voyasee-tipping-calculator'); ?></label>
-                    <div class="vtc-amount">
-                        <span class="vtc-amount-sym" data-vtc-amount-sym>$</span>
-                        <input type="text" inputmode="decimal" class="vtc-amount-input" data-vtc-amount autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="0.00" aria-label="<?php echo esc_attr__('Bill amount', 'voyasee-tipping-calculator'); ?>">
+                    <label class="vtc-label" data-vtc-amount-label style="color:#f3f7fd!important;"><?php echo esc_html__('Bill amount', 'voyasee-tipping-calculator'); ?></label>
+                    <div class="vtc-amount" style="background:#14294a!important;">
+                        <span class="vtc-amount-sym" data-vtc-amount-sym style="color:#ffdd9b!important;">$</span>
+                        <input type="text" inputmode="decimal" class="vtc-amount-input" data-vtc-amount autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="0.00" aria-label="<?php echo esc_attr__('Bill amount', 'voyasee-tipping-calculator'); ?>"
+                            style="background:transparent!important;background-color:transparent!important;color:#f3f7fd!important;-webkit-text-fill-color:#f3f7fd!important;caret-color:#f3f7fd!important;border:none!important;box-shadow:none!important;">
                     </div>
                 </div>
 
                 <div class="vtc-field" data-vtc-units-field hidden>
-                    <label class="vtc-label" data-vtc-units-label><?php echo esc_html__('How many nights?', 'voyasee-tipping-calculator'); ?></label>
+                    <label class="vtc-label" data-vtc-units-label style="color:#f3f7fd!important;"><?php echo esc_html__('How many nights?', 'voyasee-tipping-calculator'); ?></label>
                     <div class="vtc-stepper" data-vtc-units>
                         <button type="button" class="vtc-step-btn" data-vtc-units-dec aria-label="<?php echo esc_attr__('Decrease', 'voyasee-tipping-calculator'); ?>">−</button>
-                        <span class="vtc-step-val" data-vtc-units-val>1</span>
+                        <span class="vtc-step-val" data-vtc-units-val style="color:#f3f7fd!important;">1</span>
                         <button type="button" class="vtc-step-btn" data-vtc-units-inc aria-label="<?php echo esc_attr__('Increase', 'voyasee-tipping-calculator'); ?>">+</button>
                     </div>
                 </div>
 
                 <div class="vtc-field">
-                    <label class="vtc-label"><?php echo esc_html__('How was the service?', 'voyasee-tipping-calculator'); ?></label>
+                    <label class="vtc-label" style="color:#f3f7fd!important;"><?php echo esc_html__('How was the service?', 'voyasee-tipping-calculator'); ?></label>
                     <div class="vtc-seg" data-vtc-quality role="group">
                         <button type="button" data-q="poor"><?php echo esc_html__('Below par', 'voyasee-tipping-calculator'); ?></button>
                         <button type="button" data-q="standard" class="is-active"><?php echo esc_html__('As expected', 'voyasee-tipping-calculator'); ?></button>
@@ -122,22 +124,22 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
                 </div>
 
                 <div class="vtc-field vtc-field-split">
-                    <label class="vtc-label"><?php echo esc_html__('Split between', 'voyasee-tipping-calculator'); ?></label>
+                    <label class="vtc-label" style="color:#f3f7fd!important;"><?php echo esc_html__('Split between', 'voyasee-tipping-calculator'); ?></label>
                     <div class="vtc-stepper" data-vtc-party>
                         <button type="button" class="vtc-step-btn" data-vtc-party-dec aria-label="<?php echo esc_attr__('Fewer people', 'voyasee-tipping-calculator'); ?>">−</button>
-                        <span class="vtc-step-val"><span data-vtc-party-val>1</span> <?php echo esc_html__('people', 'voyasee-tipping-calculator'); ?></span>
+                        <span class="vtc-step-val" style="color:#f3f7fd!important;"><span data-vtc-party-val>1</span> <?php echo esc_html__('people', 'voyasee-tipping-calculator'); ?></span>
                         <button type="button" class="vtc-step-btn" data-vtc-party-inc aria-label="<?php echo esc_attr__('More people', 'voyasee-tipping-calculator'); ?>">+</button>
                     </div>
                 </div>
 
                 <div class="vtc-field vtc-options">
-                    <label class="vtc-check">
+                    <label class="vtc-check" style="color:#f3f7fd!important;">
                         <input type="checkbox" data-vtc-roundup>
-                        <span><?php echo esc_html__('Round up the total', 'voyasee-tipping-calculator'); ?></span>
+                        <span style="color:#f3f7fd!important;"><?php echo esc_html__('Round up the total', 'voyasee-tipping-calculator'); ?></span>
                     </label>
-                    <label class="vtc-home">
-                        <span class="vtc-home-label"><?php echo esc_html__('Also show in', 'voyasee-tipping-calculator'); ?></span>
-                        <select data-vtc-home>
+                    <label class="vtc-home" style="color:#f3f7fd!important;">
+                        <span class="vtc-home-label" style="color:#f3f7fd!important;"><?php echo esc_html__('Also show in', 'voyasee-tipping-calculator'); ?></span>
+                        <select data-vtc-home style="background:#14294a!important;color:#f3f7fd!important;border:1px solid rgba(150,190,240,.34)!important;">
                             <option value=""><?php echo esc_html__('— none —', 'voyasee-tipping-calculator'); ?></option>
                             <?php foreach ($currencies as $ccode => $cmeta): ?>
                                 <option value="<?php echo esc_attr($ccode); ?>" <?php selected($home_currency, $ccode); ?>><?php echo esc_html($ccode . ' — ' . $cmeta['name']); ?></option>

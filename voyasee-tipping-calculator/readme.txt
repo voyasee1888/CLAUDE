@@ -4,7 +4,7 @@ Tags: tipping, tip calculator, travel, gratuity, currency
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.1
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,33 @@ older-browser-safe style, and the dataset is embedded inline rather than
 fetched, so it runs reliably across desktop, tablet, mobile and in-app browsers.
 
 == Changelog ==
+
+= 1.2.3 =
+* The 1.2.2 CSS-based fix for the white bill-amount box was reported as still
+  not visible live. Rather than add another external stylesheet rule that
+  depends on cache-busting and load order, the fix has been moved directly
+  into the page's own HTML: the bill-amount field, its label, the country
+  selector and search field, the "Round up the total" / "Also show in" text,
+  and every other field label now carry their colours as inline styles with
+  `!important`. Inline `!important` styles take precedence over essentially
+  any theme or cached stylesheet, and take effect immediately because they are
+  part of the freshly-rendered page markup, not a separate cached CSS file.
+* Verified by loading the page with a simulated hostile theme stylesheet that
+  forces every input, select, button, label and span to a white background
+  with black text (`!important`) -- the bill-amount box, its text, and every
+  affected label still render correctly in the intended colours.
+* If you still don't see this change: the active plugin version shown in the
+  tool's own footer ("v1.2.3") and in Plugins → Installed Plugins must say
+  1.2.3. If it still shows an older number, the upload did not actually
+  replace the plugin files -- see the note below.
+
+**Important if updates keep appearing not to apply:** WordPress's Plugins ->
+Add New -> Upload Plugin screen can silently fail to replace an already-active
+plugin folder of the same name. Before uploading a new zip, first go to
+Plugins, Deactivate "Voyasee Tipping Calculator", Delete it, and only then
+upload the new zip and Activate it. Also do a hard refresh (Ctrl/Cmd+Shift+R)
+or test in a private/incognito window afterwards, in case your browser or a
+page-caching plugin cached the old version.
 
 = 1.2.2 =
 * Fixed the bill-amount field turning invisible (white box, unreadable text)
