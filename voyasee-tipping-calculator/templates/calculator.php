@@ -83,7 +83,7 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
                             <span class="vtc-combo-caret" aria-hidden="true">▾</span>
                         </button>
                         <div class="vtc-combo-pop" data-vtc-combo-pop hidden>
-                            <input type="search" class="vtc-combo-search" data-vtc-combo-search placeholder="<?php echo esc_attr__('Search 200+ countries…', 'voyasee-tipping-calculator'); ?>" aria-label="<?php echo esc_attr__('Search countries', 'voyasee-tipping-calculator'); ?>">
+                            <input type="search" class="vtc-combo-search" data-vtc-combo-search autocomplete="off" placeholder="<?php echo esc_attr__('Search 200+ countries…', 'voyasee-tipping-calculator'); ?>" aria-label="<?php echo esc_attr__('Search countries', 'voyasee-tipping-calculator'); ?>">
                             <ul class="vtc-combo-list" data-vtc-combo-list role="listbox"></ul>
                         </div>
                     </div>
@@ -99,7 +99,7 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
                     <label class="vtc-label" data-vtc-amount-label><?php echo esc_html__('Bill amount', 'voyasee-tipping-calculator'); ?></label>
                     <div class="vtc-amount">
                         <span class="vtc-amount-sym" data-vtc-amount-sym>$</span>
-                        <input type="text" inputmode="decimal" class="vtc-amount-input" data-vtc-amount placeholder="0.00" aria-label="<?php echo esc_attr__('Bill amount', 'voyasee-tipping-calculator'); ?>">
+                        <input type="text" inputmode="decimal" class="vtc-amount-input" data-vtc-amount autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="0.00" aria-label="<?php echo esc_attr__('Bill amount', 'voyasee-tipping-calculator'); ?>">
                     </div>
                 </div>
 

@@ -145,7 +145,7 @@
     gap: 18px;
 }
 .vtc-field { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
-.vtc-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--vtc-faint); }
+.vtc-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--vtc-text); }
 
 /* Combo (country selector) */
 .vtc-combo { position: relative; }
@@ -188,6 +188,7 @@
     background: rgba(3, 12, 28, 0.45) !important;
     color: var(--vtc-text) !important;
     -webkit-text-fill-color: var(--vtc-text);
+    caret-color: var(--vtc-text);
     font-size: 0.98rem;
     outline: none;
 }
@@ -265,8 +266,28 @@
     box-shadow: none !important;
     font-variant-numeric: tabular-nums;
     -webkit-text-fill-color: var(--vtc-text);
+    caret-color: var(--vtc-text);
 }
 .vtc-amount-input::placeholder { color: var(--vtc-faint); }
+/* Chrome/Safari autofill paints its own white highlight using an internal
+   box-shadow (not background-color), which silently defeats the override
+   above the moment the browser thinks a field is fillable -- the box stayed
+   white and the text (still our light color) became invisible on it. This
+   forces our own colour back in with the same technique the browser uses. */
+.vtc .vtc-amount-input:-webkit-autofill,
+.vtc .vtc-amount-input:-webkit-autofill:hover,
+.vtc .vtc-amount-input:-webkit-autofill:focus,
+.vtc .vtc-amount-input:-webkit-autofill:active,
+.vtc .vtc-combo-search:-webkit-autofill,
+.vtc .vtc-combo-search:-webkit-autofill:hover,
+.vtc .vtc-combo-search:-webkit-autofill:focus,
+.vtc .vtc-combo-search:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--vtc-text) !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--vtc-panel-solid) inset !important;
+    box-shadow: 0 0 0 1000px var(--vtc-panel-solid) inset !important;
+    caret-color: var(--vtc-text) !important;
+    transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s;
+}
 
 /* Stepper */
 .vtc-stepper {

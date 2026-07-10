@@ -4,7 +4,7 @@ Tags: tipping, tip calculator, travel, gratuity, currency
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,23 @@ older-browser-safe style, and the dataset is embedded inline rather than
 fetched, so it runs reliably across desktop, tablet, mobile and in-app browsers.
 
 == Changelog ==
+
+= 1.2.2 =
+* Fixed the bill-amount field turning invisible (white box, unreadable text)
+  while actively typing. Root cause: Chrome/Safari paint their autofill
+  highlight using an internal box-shadow rather than background-color, which
+  silently defeated the earlier background override the moment the browser
+  treated the field as fillable. Added the standard autofill override (forcing
+  our own background and text colour back in with the same box-shadow
+  technique) plus `autocomplete="off"` on both the bill-amount and country-
+  search fields, and an explicit caret colour so the blinking cursor itself is
+  always visible.
+* Brightened the form section labels -- "Where are you?", "What are you paying
+  for?", "Bill amount", "How was the service?", "Split between" -- from a dim
+  blue-grey to full bright white/near-white for clear legibility against the
+  blue background.
+* Re-verified by typing into the bill-amount field and confirming the text and
+  caret stay visible throughout, on both desktop and mobile.
 
 = 1.2.1 =
 * Fixed the Egyptian Pound (EGP) symbol rendering as the literal text
