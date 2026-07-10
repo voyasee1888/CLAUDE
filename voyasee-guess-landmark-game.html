@@ -1,0 +1,614 @@
+<!-- =========================================================================
+     VOYASEE — "GUESS THE LANDMARK & SCENE" — FULL TRAVEL TRIVIA GAME
+     A NEW standalone page's main content (its own <h1>). Publish at a URL
+     like /travel-games/guess-the-landmark/ and link it from the Travel
+     Games hub page.
+
+     36 destinations across 3 categories (Landmarks / Food & Culture /
+     Nature & Wildlife) x 3 difficulty levels, 10-round sessions, a
+     clues-used scoring system, Daily Challenge (same 10 for everyone that
+     day, with a streak) and unlimited Quick Play (random, filterable by
+     category/difficulty). Shareable score at the end.
+
+     Same no-external-images approach as the homepage game and for the
+     same reason: this session's network policy blocks fetching from
+     image hosts, so guessing unverified photo URLs risks showing the
+     wrong place under a destination's name. The "mystery" visual is 100%
+     CSS (gradient + pattern + icon), zero load risk, zero maintenance.
+     ========================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+  rel="stylesheet"
+>
+
+<section class="voy-lg" aria-labelledby="lg-title">
+  <div class="lg-aura" aria-hidden="true"></div>
+
+  <header class="lg-hero">
+    <span class="lg-eyebrow"><span class="lg-eyebrow-dot"></span>Voyasee Play · Travel Trivia</span>
+    <h1 id="lg-title">Guess the Landmark &amp; Scene</h1>
+    <p class="lg-sub">Landmarks, food &amp; culture, and natural wonders from around the world. Reveal clues, rack up points, and see how well you really know the planet.</p>
+
+    <div class="lg-modes" role="tablist" aria-label="Game mode">
+      <button type="button" class="lg-mode-btn is-active" data-mode="daily" role="tab" aria-selected="true">Daily Challenge</button>
+      <button type="button" class="lg-mode-btn" data-mode="quick" role="tab" aria-selected="false">Quick Play</button>
+    </div>
+  </header>
+
+  <div class="lg-filters" data-lg-filters hidden>
+    <div class="lg-filter-group">
+      <span class="lg-filter-label">Category</span>
+      <div class="lg-chips" data-lg-cat-group>
+        <button type="button" class="lg-chip is-active" data-cat="all" aria-pressed="true">All</button>
+        <button type="button" class="lg-chip" data-cat="landmarks" aria-pressed="false">Landmarks</button>
+        <button type="button" class="lg-chip" data-cat="food" aria-pressed="false">Food &amp; Culture</button>
+        <button type="button" class="lg-chip" data-cat="nature" aria-pressed="false">Nature &amp; Wildlife</button>
+      </div>
+    </div>
+    <div class="lg-filter-group">
+      <span class="lg-filter-label">Difficulty</span>
+      <div class="lg-chips" data-lg-diff-group>
+        <button type="button" class="lg-chip is-active" data-diff="all" aria-pressed="true">All</button>
+        <button type="button" class="lg-chip" data-diff="easy" aria-pressed="false">Easy</button>
+        <button type="button" class="lg-chip" data-diff="medium" aria-pressed="false">Medium</button>
+        <button type="button" class="lg-chip" data-diff="hard" aria-pressed="false">Hard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg-board" data-lg-board>
+    <div class="lg-board-top">
+      <div class="lg-pips" data-lg-pips role="img" aria-label="Round progress"></div>
+      <div class="lg-score">Score <strong data-lg-score>0</strong><span class="lg-score-max">/ <span data-lg-max>1000</span></span></div>
+    </div>
+
+    <div class="lg-card">
+      <div class="lg-visual" data-lg-visual data-level="1">
+        <div class="lg-visual-pattern" aria-hidden="true"></div>
+        <span class="lg-tag lg-tag-cat" data-lg-cat-tag></span>
+        <span class="lg-tag lg-tag-diff" data-lg-diff-tag></span>
+        <div class="lg-visual-icon" data-lg-icon aria-hidden="true"></div>
+        <div class="lg-fog" aria-hidden="true"></div>
+        <div class="lg-reveal-name" data-lg-reveal-name aria-hidden="true"></div>
+      </div>
+
+      <div class="lg-panel">
+        <ul class="lg-clues" data-lg-clues>
+          <li data-clue="1"></li>
+          <li data-clue="2"></li>
+          <li data-clue="3"></li>
+        </ul>
+
+        <div class="lg-answer" data-lg-answer hidden>
+          <h3 data-lg-name></h3>
+          <p data-lg-country></p>
+          <span class="lg-points" data-lg-points></span>
+        </div>
+
+        <div class="lg-actions" data-lg-actions>
+          <button type="button" class="lg-btn lg-btn-primary" data-lg-next-clue>Reveal a clue (1/3)</button>
+          <button type="button" class="lg-btn lg-btn-ghost" data-lg-reveal>I know it — reveal</button>
+        </div>
+
+        <div class="lg-actions" data-lg-after hidden>
+          <button type="button" class="lg-btn lg-btn-primary" data-lg-next-round>Next round <i aria-hidden="true">&#8594;</i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg-end" data-lg-end hidden>
+    <div class="lg-end-card">
+      <span class="lg-end-eyebrow">Session complete</span>
+      <div class="lg-end-score" data-lg-end-score>0 / 1000</div>
+      <p class="lg-end-msg" data-lg-end-msg>&nbsp;</p>
+      <div class="lg-streak" data-lg-streak hidden><i class="lg-streak-dot" aria-hidden="true"></i><span data-lg-streak-n>0</span>-day streak</div>
+      <div class="lg-end-actions">
+        <button type="button" class="lg-btn lg-btn-primary" data-lg-share>Share my score</button>
+        <button type="button" class="lg-btn lg-btn-ghost" data-lg-again>Play again</button>
+      </div>
+      <p class="lg-end-note" data-lg-end-note>&nbsp;</p>
+    </div>
+  </div>
+
+  <div class="lg-foot">
+    <p>Want to plan a real trip instead of a mystery one? Try the <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a> or explore the <a href="https://voyasee.com/interactive-world-map/">Interactive World Map</a>.</p>
+  </div>
+</section>
+
+<style>
+.voy-lg, .voy-lg *, .voy-lg *::before, .voy-lg *::after { box-sizing: border-box; }
+
+.voy-lg {
+  --ink:#16262e; --ink-soft:#4a5b63; --muted:#728189; --line:rgba(18,40,48,.10);
+  --teal:#0ea394; --teal-deep:#0b7d72; --coral:#ff6a4d; --coral-deep:#e8502f; --gold:#f4a72b;
+  --grad: linear-gradient(120deg, var(--teal), var(--coral));
+  --shadow: 0 18px 44px rgba(20,60,70,.10); --shadow-lg: 0 30px 70px rgba(20,60,70,.16);
+
+  position: relative; isolation: isolate; overflow: hidden;
+  width: 100%; margin: 0 auto; padding: 48px 20px 56px;
+  border-radius: 22px; color: var(--ink); font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  background: linear-gradient(180deg, #f9fdfd 0%, #ffffff 45%, #f6fbfc 100%);
+}
+.lg-aura{ position:absolute; z-index:-1; inset:0; pointer-events:none;
+  background: radial-gradient(460px 320px at 88% 4%, rgba(14,163,148,.10), transparent 70%),
+              radial-gradient(420px 300px at 6% 96%, rgba(255,106,77,.08), transparent 70%); }
+
+/* Hero */
+.lg-hero{ width:min(720px, calc(100% - 24px)); margin:0 auto 26px; text-align:center; }
+.lg-eyebrow{ display:inline-flex; align-items:center; gap:8px; padding:7px 15px 7px 12px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.85); color:var(--teal-deep); font:800 11px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.05em; text-transform:uppercase; box-shadow:var(--shadow); }
+.lg-eyebrow-dot{ width:8px;height:8px;border-radius:50%; background:var(--grad); }
+.lg-hero h1{ margin:15px 0 0; font:700 clamp(28px,4vw,44px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; }
+.lg-sub{ max-width:560px; margin:10px auto 0; color:var(--ink-soft); font-size:14.5px; line-height:1.6; }
+
+.lg-modes{ display:inline-flex; gap:6px; margin-top:20px; padding:5px; border-radius:999px; background:#eef4f5; border:1px solid var(--line); }
+.lg-mode-btn{ padding:10px 20px; border-radius:999px; border:none; background:transparent; color:var(--ink-soft); font:700 13px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; transition:all .2s ease; }
+.lg-mode-btn.is-active{ background:var(--grad); color:#fff; box-shadow:0 8px 18px rgba(255,106,77,.25); }
+
+/* Filters (Quick Play only) */
+.lg-filters{ display:flex; flex-wrap:wrap; justify-content:center; gap:22px; width:min(760px, calc(100% - 16px)); margin:0 auto 24px; padding:18px 20px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.75); box-shadow:var(--shadow); }
+.lg-filter-group{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+.lg-filter-label{ font:800 10.5px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.lg-chips{ display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+.lg-chip{ padding:7px 14px; border-radius:999px; border:1px solid var(--line); background:#fff; color:var(--ink-soft); font:700 12px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; transition:all .2s ease; }
+.lg-chip.is-active{ background:var(--grad); border-color:transparent; color:#fff; }
+.lg-chip:hover{ transform:translateY(-1px); }
+
+/* Board */
+.lg-board{ width:min(880px, calc(100% - 16px)); margin:0 auto; }
+.lg-board-top{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; padding:0 4px; }
+.lg-pips{ display:flex; gap:6px; flex-wrap:wrap; }
+.lg-pips span{ width:20px; height:8px; border-radius:5px; background:var(--line); transition:background-color .25s ease, transform .2s ease; }
+.lg-pips span.is-current{ background:var(--grad); transform:scaleX(1.15); }
+.lg-pips span.is-done{ background:var(--teal); }
+.lg-score{ font:700 13.5px/1 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); white-space:nowrap; }
+.lg-score strong{ font:800 18px/1 "Sora","Plus Jakarta Sans",sans-serif; color:var(--ink); margin:0 3px; }
+.lg-score-max{ color:var(--muted); }
+
+.lg-card{ display:flex; flex-wrap:wrap; border:1px solid var(--line); border-radius:24px; overflow:hidden; background:#fff; box-shadow:var(--shadow-lg); }
+
+.lg-visual{ position:relative; overflow:hidden; flex:1 1 320px; min-height:260px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, color-mix(in srgb, var(--accent, var(--teal)) 78%, #000) 0%, var(--accent, var(--teal)) 100%); transition:background .4s ease; }
+.lg-visual-pattern{ position:absolute; inset:-30%; opacity:.55; background-image:repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.18) 0 2px, transparent 2px 46px); }
+.lg-visual-icon{ position:relative; z-index:2; font-size:58px; line-height:1; color:#fff; opacity:.92; filter:drop-shadow(0 10px 22px rgba(0,0,0,.25)); transition:transform .5s ease; }
+.lg-fog{ position:absolute; inset:0; z-index:3; background:rgba(255,255,255,.92); transition:opacity .5s ease; }
+.lg-visual[data-level="1"] .lg-fog{ opacity:.62; }
+.lg-visual[data-level="2"] .lg-fog{ opacity:.38; }
+.lg-visual[data-level="3"] .lg-fog{ opacity:.16; }
+.lg-visual[data-level="done"] .lg-fog{ opacity:0; pointer-events:none; }
+.lg-visual[data-level="done"] .lg-visual-icon{ transform:scale(1.14); }
+.lg-reveal-name{ position:absolute; z-index:4; left:16px; right:16px; bottom:16px; text-align:center; color:#fff; font:800 20px/1.15 "Sora","Plus Jakarta Sans",sans-serif; text-shadow:0 8px 20px rgba(0,0,0,.35); opacity:0; transform:translateY(8px); transition:opacity .4s ease .1s, transform .4s ease .1s; }
+.lg-visual[data-level="done"] .lg-reveal-name{ opacity:1; transform:none; }
+.lg-tag{ position:absolute; z-index:4; top:14px; padding:5px 11px; border-radius:999px; font:800 9.5px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase; background:rgba(0,0,0,.28); color:#fff; border:1px solid rgba(255,255,255,.25); }
+.lg-tag-cat{ left:14px; }
+.lg-tag-diff{ right:14px; }
+
+.lg-panel{ flex:1 1 320px; display:flex; flex-direction:column; padding:24px 24px 22px; min-width:280px; }
+.lg-clues{ list-style:none; margin:0 0 16px; padding:0; display:flex; flex-direction:column; gap:10px; }
+.lg-clues li{ display:none; padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:#f8fbfb; color:var(--ink-soft); font-size:13.5px; line-height:1.5; opacity:0; transform:translateY(6px); transition:opacity .35s ease, transform .35s ease; }
+.lg-clues li.is-active{ display:block; opacity:1; transform:none; }
+.lg-clues li::before{ content:"Clue " attr(data-clue) " — "; font-weight:800; color:var(--teal-deep); }
+
+.lg-answer{ margin:0 0 16px; padding:16px; border-radius:16px; background:color-mix(in srgb, var(--teal) 8%, #fff); border:1px solid color-mix(in srgb, var(--teal) 24%, transparent); }
+.lg-answer h3{ margin:0; font:800 21px/1.2 "Sora","Plus Jakarta Sans",sans-serif; color:var(--ink); }
+.lg-answer p{ margin:3px 0 8px; color:var(--ink-soft); font-size:12.5px; }
+.lg-points{ display:inline-flex; padding:4px 10px; border-radius:999px; background:var(--grad); color:#fff; font:800 11px/1 "Plus Jakarta Sans",sans-serif; }
+
+.lg-actions{ margin-top:auto; display:flex; flex-wrap:wrap; gap:10px; }
+.lg-btn{ display:inline-flex; align-items:center; gap:7px; padding:12px 18px; border-radius:999px; border:1px solid transparent; font:700 13.5px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; text-decoration:none !important; transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease; }
+.lg-btn-primary{ background:var(--grad); color:#fff !important; box-shadow:0 12px 26px rgba(255,106,77,.28); }
+.lg-btn-primary:hover{ transform:translateY(-2px); }
+.lg-btn-primary:disabled{ opacity:.45; cursor:default; transform:none; box-shadow:none; }
+.lg-btn-ghost{ background:#fff; color:var(--ink) !important; border-color:var(--line); box-shadow:var(--shadow); }
+.lg-btn-ghost:hover{ transform:translateY(-2px); border-color:var(--teal); color:var(--teal-deep) !important; }
+
+/* End screen */
+.lg-end{ width:min(600px, calc(100% - 16px)); margin:0 auto; }
+.lg-end-card{ text-align:center; padding:38px 30px; border:1px solid var(--line); border-radius:24px; background:#fff; box-shadow:var(--shadow-lg); }
+.lg-end-eyebrow{ display:inline-flex; padding:6px 14px; border-radius:999px; background:#eef4f5; color:var(--teal-deep); font:800 11px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+.lg-end-score{ margin:16px 0 6px; font:800 clamp(36px,7vw,54px)/1 "Sora","Plus Jakarta Sans",sans-serif; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--teal-deep); }
+.lg-end-msg{ margin:0; color:var(--ink-soft); font-size:14px; }
+.lg-streak{ display:inline-flex; align-items:center; gap:6px; margin-top:14px; padding:6px 13px; border-radius:999px; background:color-mix(in srgb, var(--gold) 16%, #fff); border:1px solid color-mix(in srgb, var(--gold) 35%, transparent); color:#8a5a06; font:800 12px/1 "Plus Jakarta Sans",sans-serif; }
+.lg-streak-dot{ width:6px;height:6px;border-radius:50%; background:var(--gold); display:inline-block; }
+.lg-end-actions{ margin-top:22px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.lg-end-note{ margin:16px 0 0; color:var(--muted); font-size:12px; }
+
+/* Footer */
+.lg-foot{ width:min(720px, calc(100% - 16px)); margin:26px auto 0; text-align:center; }
+.lg-foot p{ margin:0; color:var(--ink-soft); font-size:13.5px; }
+.lg-foot a{ color:var(--teal-deep); font-weight:700; text-decoration:none; }
+.lg-foot a:hover{ text-decoration:underline; }
+
+@media (max-width:640px){
+  .voy-lg{ padding:36px 14px 44px; border-radius:16px; }
+  .lg-card{ border-radius:18px; }
+  .lg-visual{ min-height:200px; flex-basis:100%; }
+  .lg-panel{ padding:20px 18px 18px; }
+  .lg-filters{ gap:16px; padding:16px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .lg-clues li, .lg-fog, .lg-visual-icon, .lg-reveal-name, .lg-pips span{ transition:none; }
+}
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------------
+     36 destinations: 3 categories x 3 difficulties x 4 entries each.
+     "photo" is intentionally omitted — see file header for why. Add a
+     verified image URL per entry later if you want real photography;
+     the CSS mystery visual works great without one.
+  --------------------------------------------------------------------- */
+  var POOL = [
+    // LANDMARKS — easy
+    { name:"Eiffel Tower", country:"Paris, France", cat:"landmarks", diff:"easy", accent:"#9a5cd0", icon:"&#9738;",
+      clues:["An iron lattice structure once meant to be temporary.","Built for a World's Fair in 1889.","Paris's most recognizable tower, lit up every night."] },
+    { name:"Great Wall of China", country:"China", cat:"landmarks", diff:"easy", accent:"#0e9f8f", icon:"&#9968;",
+      clues:["A fortification stretches across mountains for thousands of kilometers.","Built and rebuilt over centuries by several dynasties.","China's most famous defensive wall, visible from nearby hills."] },
+    { name:"Taj Mahal", country:"Agra, India", cat:"landmarks", diff:"easy", accent:"#e05e7d", icon:"&#127961;",
+      clues:["A white marble mausoleum reflects perfectly in a long pool.","Built by an emperor in memory of his wife.","India's most iconic monument to love."] },
+    { name:"Pyramids of Giza", country:"Cairo, Egypt", cat:"landmarks", diff:"easy", accent:"#d69a2b", icon:"&#9651;",
+      clues:["Ancient stone structures rise from the desert beside a sphinx.","Built as tombs for pharaohs thousands of years ago.","The last surviving wonder of the ancient world."] },
+    // LANDMARKS — medium
+    { name:"Colosseum", country:"Rome, Italy", cat:"landmarks", diff:"medium", accent:"#d69324", icon:"&#9821;",
+      clues:["A massive stone amphitheater once held tens of thousands of spectators.","Gladiators fought here nearly 2,000 years ago.","Rome's most visited ancient ruin."] },
+    { name:"Sydney Opera House", country:"Sydney, Australia", cat:"landmarks", diff:"medium", accent:"#2a9bc4", icon:"&#9973;",
+      clues:["A building with sail-shaped shells sits beside a harbour.","Its design was chosen from an international competition in the 1950s.","Australia's most famous performing-arts venue."] },
+    { name:"Christ the Redeemer", country:"Rio de Janeiro, Brazil", cat:"landmarks", diff:"medium", accent:"#3f83d6", icon:"&#9968;",
+      clues:["A giant statue stretches its arms wide atop a mountain.","It overlooks a beach-lined bay and a famous carnival city.","One of the New Seven Wonders of the World."] },
+    { name:"Burj Khalifa", country:"Dubai, UAE", cat:"landmarks", diff:"medium", accent:"#1f9e8c", icon:"&#9650;",
+      clues:["A needle-like tower pierces the desert skyline.","It held the title of world's tallest building on completion.","Part of a futuristic downtown built on the Arabian Gulf."] },
+    // LANDMARKS — hard
+    { name:"Machu Picchu", country:"Cusco, Peru", cat:"landmarks", diff:"hard", accent:"#3a9e57", icon:"&#9968;",
+      clues:["Stone terraces cling to a ridge between two mountain peaks.","This citadel sits at the end of a famous multi-day trail.","A 15th-century Inca site rediscovered by the outside world in 1911."] },
+    { name:"Petra", country:"Jordan", cat:"landmarks", diff:"hard", accent:"#9a5cd0", icon:"&#9962;",
+      clues:["A narrow canyon opens onto a facade carved directly into rose-colored rock.","Camel caravans once traded here on ancient desert routes.","Carved by the Nabataeans over 2,000 years ago."] },
+    { name:"Angkor Wat", country:"Siem Reap, Cambodia", cat:"landmarks", diff:"hard", accent:"#5aa130", icon:"&#9962;",
+      clues:["Stone towers rise from a jungle beside a wide moat.","It began as a Hindu temple before becoming Buddhist.","The largest religious monument in the world."] },
+    { name:"Neuschwanstein Castle", country:"Bavaria, Germany", cat:"landmarks", diff:"hard", accent:"#4a80c9", icon:"&#127984;",
+      clues:["A fairy-tale castle perches on a rugged hill above a gorge.","Its 19th-century king never saw it fully completed.","Said to have inspired a famous animated-film castle."] },
+
+    // FOOD & CULTURE — easy
+    { name:"Italy", country:"Southern Europe", cat:"food", diff:"easy", accent:"#e0673f", icon:"&#127829;",
+      clues:["Wood-fired dough with tomato and cheese is a national obsession here.","Long, thin noodles come in dozens of regional shapes.","Home of pizza, pasta and espresso culture."] },
+    { name:"Japan", country:"East Asia", cat:"food", diff:"easy", accent:"#0ea394", icon:"&#127843;",
+      clues:["Raw fish is sliced and served over vinegared rice.","A slow, ritual ceremony centers around whisked green tea.","Land of sushi, sumo and cherry blossoms."] },
+    { name:"Mexico", country:"North America", cat:"food", diff:"easy", accent:"#3a9e57", icon:"&#127790;",
+      clues:["Corn tortillas are folded around endless fillings here.","Families build colorful altars to remember loved ones each November.","Home of tacos and the Day of the Dead."] },
+    { name:"India", country:"South Asia", cat:"food", diff:"easy", accent:"#d69a2b", icon:"&#127831;",
+      clues:["Spice blends simmer into rich, fragrant sauces here.","A spring festival ends with crowds throwing colored powder.","Home of curry culture and the festival of Holi."] },
+    // FOOD & CULTURE — medium
+    { name:"Thailand", country:"Southeast Asia", cat:"food", diff:"medium", accent:"#e05e7d", icon:"&#127837;",
+      clues:["Stir-fried rice noodles balance sweet, sour and spicy flavors.","A national new year festival turns city streets into water fights.","Home of pad thai and the Songkran festival."] },
+    { name:"France", country:"Western Europe", cat:"food", diff:"medium", accent:"#9a5cd0", icon:"&#127837;",
+      clues:["Flaky, buttery pastry is a breakfast staple here.","Vineyards across its countryside produce world-famous wine.","Home of croissants and countless Michelin-starred kitchens."] },
+    { name:"Spain", country:"Southern Europe", cat:"food", diff:"medium", accent:"#d69324", icon:"&#127831;",
+      clues:["A saffron rice dish is cooked in a wide, shallow pan.","Dancers stamp sharp, rhythmic footwork to guitar and clapping.","Home of paella and flamenco."] },
+    { name:"South Korea", country:"East Asia", cat:"food", diff:"medium", accent:"#2f8fd1", icon:"&#127850;",
+      clues:["Fermented spicy cabbage appears at almost every meal here.","A global pop-music wave carried this country's culture worldwide.","Home of kimchi and K-pop."] },
+    // FOOD & CULTURE — hard
+    { name:"Morocco", country:"North Africa", cat:"food", diff:"hard", accent:"#e0673f", icon:"&#127838;",
+      clues:["A cone-shaped clay pot slow-cooks meat and vegetables together.","Maze-like marketplaces sell spices, leather and lanterns.","Home of tagine and the souks of Marrakech."] },
+    { name:"Greece", country:"Southern Europe", cat:"food", diff:"hard", accent:"#2f8fd1", icon:"&#127816;",
+      clues:["Layers of eggplant, spiced meat and béchamel bake into one dish.","Groves across its islands have produced oil for millennia.","Home of moussaka and endless olive groves."] },
+    { name:"Türkiye", country:"Straddling Europe & Asia", cat:"food", diff:"hard", accent:"#d69a2b", icon:"&#127831;",
+      clues:["Skewered, spiced meat is grilled over open flame here.","Tiny tulip-shaped glasses of tea are offered to every guest.","Home of kebabs and a deep-rooted tea culture."] },
+    { name:"Vietnam", country:"Southeast Asia", cat:"food", diff:"hard", accent:"#5aa130", icon:"&#127858;",
+      clues:["A fragrant beef-and-noodle soup is a breakfast staple here.","Paper lanterns light up an old riverside town each full moon.","Home of pho and the lantern town of Hoi An."] },
+
+    // NATURE & WILDLIFE — easy
+    { name:"Iceland", country:"North Atlantic", cat:"nature", diff:"easy", accent:"#1f97c9", icon:"&#10052;",
+      clues:["Boiling water shoots skyward from cracks in the earth here.","Green and purple ribbons of light dance across winter skies.","Land of geysers, glaciers and the northern lights."] },
+    { name:"Australia", country:"Oceania", cat:"nature", diff:"easy", accent:"#2a9bc4", icon:"&#128031;",
+      clues:["A living structure stretches over 2,000 kilometers along a coastline.","It's the largest structure on Earth built by living organisms.","Home of the Great Barrier Reef."] },
+    { name:"Brazil", country:"South America", cat:"nature", diff:"easy", accent:"#3a9e57", icon:"&#127796;",
+      clues:["A single river basin holds a huge share of the planet's species.","Dense green canopy stretches further than the eye can see.","Home of most of the Amazon Rainforest."] },
+    { name:"Namibia", country:"Southern Africa", cat:"nature", diff:"easy", accent:"#c98a3d", icon:"&#127964;",
+      clues:["Some of the world's tallest sand dunes glow deep red at sunrise here.","A ghost forest of dead camel-thorn trees stands in a cracked white clay pan nearby.","Home of the Namib Desert and the towering dunes of Sossusvlei."] },
+    // NATURE & WILDLIFE — medium
+    { name:"Ecuador", country:"South America", cat:"nature", diff:"medium", accent:"#0e9f8f", icon:"&#128034;",
+      clues:["A remote volcanic island chain shaped a famous theory of evolution.","Giant tortoises and marine iguanas live nowhere else quite like this.","Home of the Galápagos Islands."] },
+    { name:"Tanzania", country:"East Africa", cat:"nature", diff:"medium", accent:"#d69a2b", icon:"&#128007;",
+      clues:["Millions of animals move across open grassland each year.","Lions and wildebeest follow the rains across this plain.","Home of the Serengeti's Great Migration."] },
+    { name:"Zambia & Zimbabwe", country:"Southern Africa", cat:"nature", diff:"medium", accent:"#4a80c9", icon:"&#127754;",
+      clues:["A curtain of mist rises from a river plunging into a gorge.","Locals call it 'the smoke that thunders.'","Shared home of Victoria Falls."] },
+    { name:"United States", country:"North America", cat:"nature", diff:"medium", accent:"#e05e7d", icon:"&#9819;",
+      clues:["A geyser here erupts on a fairly predictable schedule.","Bison roam a volcanic caldera beneath colorful hot springs.","Home of Yellowstone, the world's first national park."] },
+    // NATURE & WILDLIFE — hard
+    { name:"Canada", country:"North America", cat:"nature", diff:"hard", accent:"#2f8fd1", icon:"&#127956;",
+      clues:["Glacier-fed water turns a striking turquoise in this mountain town.","Elk sometimes wander through the streets of this resort town.","Home of Banff's famous turquoise lakes."] },
+    { name:"New Zealand", country:"South Pacific", cat:"nature", diff:"hard", accent:"#0e9f8f", icon:"&#9968;",
+      clues:["Waterfalls pour straight from cliffs into a narrow fjord here.","A famous author once called it the eighth wonder of the world.","Home of Milford Sound, on the South Island."] },
+    { name:"Antarctica", country:"The Southern Ocean", cat:"nature", diff:"hard", accent:"#4a80c9", icon:"&#10052;",
+      clues:["No country owns this frozen continent at the bottom of the world.","Colonies of flightless birds huddle together against the wind.","The only continent with no permanent human residents."] },
+    { name:"Bolivia", country:"South America", cat:"nature", diff:"hard", accent:"#9a5cd0", icon:"&#128167;",
+      clues:["A thin layer of rainwater turns this flat plain into a giant mirror.","It's the largest salt flat on the planet.","Home of the Salar de Uyuni."] }
+  ];
+
+  var CAT_LABEL = { landmarks:"Landmarks", food:"Food & Culture", nature:"Nature & Wildlife" };
+  var DIFF_LABEL = { easy:"Easy", medium:"Medium", hard:"Hard" };
+  var POINTS_BY_CLUES = { 1:100, 2:70, 3:40 };
+  var ROUNDS_PER_SESSION = 10;
+
+  /* ---- seeded RNG so "Daily Challenge" is identical for every visitor on a given day ---- */
+  function mulberry32(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function seededShuffle(arr, seed) {
+    var a = arr.slice();
+    var rng = mulberry32(seed);
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rng() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+  function trueShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+  function daySeed() {
+    var d = new Date();
+    var start = new Date(d.getFullYear(), 0, 0);
+    var dayOfYear = Math.floor((d - start) / 86400000);
+    return d.getFullYear() * 1000 + dayOfYear;
+  }
+  function todayStr() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+
+  function initGame(root) {
+    if (root.dataset.voyLgReady === "true") return;
+    root.dataset.voyLgReady = "true";
+
+    var modeBtns = root.querySelectorAll(".lg-mode-btn");
+    var filtersBox = root.querySelector("[data-lg-filters]");
+    var catBtns = root.querySelectorAll("[data-cat]");
+    var diffBtns = root.querySelectorAll("[data-diff]");
+
+    var board = root.querySelector("[data-lg-board]");
+    var endBox = root.querySelector("[data-lg-end]");
+    var pips = root.querySelector("[data-lg-pips]");
+    var scoreEl = root.querySelector("[data-lg-score]");
+    var maxEl = root.querySelector("[data-lg-max]");
+
+    var visual = root.querySelector("[data-lg-visual]");
+    var icon = root.querySelector("[data-lg-icon]");
+    var revealNameEl = root.querySelector("[data-lg-reveal-name]");
+    var catTag = root.querySelector("[data-lg-cat-tag]");
+    var diffTag = root.querySelector("[data-lg-diff-tag]");
+    var clueEls = root.querySelectorAll("[data-lg-clues] li");
+    var answerBox = root.querySelector("[data-lg-answer]");
+    var nameEl = root.querySelector("[data-lg-name]");
+    var countryEl = root.querySelector("[data-lg-country]");
+    var pointsEl = root.querySelector("[data-lg-points]");
+    var actions = root.querySelector("[data-lg-actions]");
+    var afterActions = root.querySelector("[data-lg-after]");
+    var nextClueBtn = root.querySelector("[data-lg-next-clue]");
+    var revealBtn = root.querySelector("[data-lg-reveal]");
+    var nextRoundBtn = root.querySelector("[data-lg-next-round]");
+
+    var endScoreEl = root.querySelector("[data-lg-end-score]");
+    var endMsgEl = root.querySelector("[data-lg-end-msg]");
+    var endNoteEl = root.querySelector("[data-lg-end-note]");
+    var streakBox = root.querySelector("[data-lg-streak]");
+    var streakN = root.querySelector("[data-lg-streak-n]");
+    var shareBtn = root.querySelector("[data-lg-share]");
+    var againBtn = root.querySelector("[data-lg-again]");
+
+    var mode = "daily";
+    var catFilter = "all", diffFilter = "all";
+    var rounds = [], roundIndex = 0, cluesShown = 1, roundScores = [];
+
+    function filteredPool() {
+      return POOL.filter(function (p) {
+        return (catFilter === "all" || p.cat === catFilter) && (diffFilter === "all" || p.diff === diffFilter);
+      });
+    }
+
+    function buildRounds() {
+      var source, n;
+      if (mode === "daily") {
+        source = seededShuffle(POOL, daySeed());
+        n = Math.min(ROUNDS_PER_SESSION, source.length);
+      } else {
+        var pool = filteredPool();
+        if (!pool.length) pool = POOL.slice();
+        source = trueShuffle(pool);
+        n = Math.min(ROUNDS_PER_SESSION, source.length);
+      }
+      rounds = source.slice(0, n);
+      roundIndex = 0; cluesShown = 1; roundScores = [];
+      maxEl.textContent = String(rounds.length * 100);
+      buildPips();
+      board.hidden = false; endBox.hidden = true;
+      renderRound();
+    }
+
+    function buildPips() {
+      pips.innerHTML = "";
+      rounds.forEach(function () { var s = document.createElement("span"); pips.appendChild(s); });
+      updatePips();
+    }
+    function updatePips() {
+      var spans = pips.querySelectorAll("span");
+      spans.forEach(function (s, i) {
+        s.classList.toggle("is-done", i < roundIndex);
+        s.classList.toggle("is-current", i === roundIndex);
+      });
+    }
+    function updateScore() {
+      var total = roundScores.reduce(function (a, b) { return a + b; }, 0);
+      scoreEl.textContent = String(total);
+    }
+
+    function renderRound() {
+      var place = rounds[roundIndex];
+      var card = root.querySelector(".lg-card");
+      card.style.setProperty("--accent", place.accent);
+      visual.setAttribute("data-level", String(cluesShown));
+      icon.innerHTML = place.icon;
+      catTag.textContent = CAT_LABEL[place.cat];
+      diffTag.textContent = DIFF_LABEL[place.diff];
+      revealNameEl.textContent = "";
+
+      clueEls.forEach(function (li) {
+        var n = parseInt(li.getAttribute("data-clue"), 10);
+        li.textContent = place.clues[n - 1];
+        li.classList.toggle("is-active", n <= cluesShown);
+      });
+
+      nextClueBtn.disabled = cluesShown >= 3;
+      nextClueBtn.textContent = cluesShown >= 3 ? "All clues revealed" : "Reveal a clue (" + cluesShown + "/3)";
+
+      answerBox.hidden = true;
+      actions.hidden = false;
+      afterActions.hidden = true;
+      updatePips();
+      updateScore();
+    }
+
+    nextClueBtn.addEventListener("click", function () {
+      if (cluesShown < 3) { cluesShown++; renderRound(); }
+    });
+
+    revealBtn.addEventListener("click", function () {
+      var place = rounds[roundIndex];
+      var points = POINTS_BY_CLUES[cluesShown] || 40;
+      roundScores[roundIndex] = points;
+
+      visual.setAttribute("data-level", "done");
+      revealNameEl.textContent = place.name + ", " + place.country;
+      nameEl.textContent = place.name;
+      countryEl.textContent = place.country;
+      pointsEl.textContent = "+" + points + " points";
+
+      answerBox.hidden = false;
+      actions.hidden = true;
+      afterActions.hidden = false;
+      updateScore();
+    });
+
+    nextRoundBtn.addEventListener("click", function () {
+      if (roundIndex < rounds.length - 1) {
+        roundIndex++; cluesShown = 1;
+        renderRound();
+      } else {
+        endSession();
+      }
+    });
+
+    function readStreak() {
+      var n; try { n = parseInt(localStorage.getItem("voy_landmark_streak"), 10); } catch (e) {}
+      return isNaN(n) ? 0 : n;
+    }
+    function bumpStreak() {
+      var LAST = "voy_landmark_last_day", STREAK = "voy_landmark_streak";
+      var today = todayStr();
+      var last; try { last = localStorage.getItem(LAST); } catch (e) {}
+      if (last === today) return readStreak();
+      var y = new Date(); y.setDate(y.getDate() - 1);
+      var yesterday = y.getFullYear() + "-" + (y.getMonth() + 1) + "-" + y.getDate();
+      var streak = (last === yesterday) ? readStreak() + 1 : 1;
+      try { localStorage.setItem(LAST, today); localStorage.setItem(STREAK, String(streak)); } catch (e) {}
+      return streak;
+    }
+
+    function endSession() {
+      var total = roundScores.reduce(function (a, b) { return a + b; }, 0);
+      var max = rounds.length * 100;
+      var pct = max ? total / max : 0;
+
+      board.hidden = true;
+      endBox.hidden = false;
+      endScoreEl.textContent = total + " / " + max;
+
+      var msg = pct >= 0.9 ? "World-class. You could run the geography desk." :
+                pct >= 0.7 ? "Excellent — you clearly know your way around a map." :
+                pct >= 0.45 ? "Solid effort — a few clues away from expert level." :
+                "A fun warm-up. Play again and beat this score.";
+      endMsgEl.textContent = msg;
+
+      if (mode === "daily") {
+        var s = bumpStreak();
+        streakN.textContent = s;
+        streakBox.hidden = false;
+        endNoteEl.textContent = "Come back tomorrow for a brand-new Daily Challenge, or play unlimited rounds in Quick Play right now.";
+      } else {
+        streakBox.hidden = true;
+        endNoteEl.textContent = "Quick Play is unlimited — shuffle the filters above and go again anytime.";
+      }
+    }
+
+    shareBtn.addEventListener("click", function () {
+      var total = roundScores.reduce(function (a, b) { return a + b; }, 0);
+      var max = rounds.length * 100;
+      var text = "I scored " + total + "/" + max + " on Voyasee's Guess the Landmark & Scene travel challenge. Can you beat me? " + window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: "Guess the Landmark & Scene", text: text }).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function () {
+          shareBtn.textContent = "Copied!";
+          window.setTimeout(function () { shareBtn.textContent = "Share my score"; }, 1800);
+        }).catch(function () {});
+      }
+    });
+
+    againBtn.addEventListener("click", function () {
+      if (mode === "daily") {
+        setMode("quick");
+      } else {
+        buildRounds();
+      }
+    });
+
+    function setMode(next) {
+      mode = next;
+      modeBtns.forEach(function (b) {
+        var active = b.getAttribute("data-mode") === mode;
+        b.classList.toggle("is-active", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      filtersBox.hidden = mode !== "quick";
+      buildRounds();
+    }
+
+    modeBtns.forEach(function (b) {
+      b.addEventListener("click", function () { setMode(b.getAttribute("data-mode")); });
+    });
+    catBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        catBtns.forEach(function (c) { c.classList.remove("is-active"); c.setAttribute("aria-pressed", "false"); });
+        b.classList.add("is-active"); b.setAttribute("aria-pressed", "true");
+        catFilter = b.getAttribute("data-cat");
+        buildRounds();
+      });
+    });
+    diffBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        diffBtns.forEach(function (c) { c.classList.remove("is-active"); c.setAttribute("aria-pressed", "false"); });
+        b.classList.add("is-active"); b.setAttribute("aria-pressed", "true");
+        diffFilter = b.getAttribute("data-diff");
+        buildRounds();
+      });
+    });
+
+    buildRounds();
+  }
+
+  function boot() { document.querySelectorAll(".voy-lg").forEach(initGame); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  window.addEventListener("elementor/frontend/init", boot);
+})();
+</script>
