@@ -4,7 +4,7 @@ Tags: carry-on, baggage, airline, luggage, travel
 Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 7.8.2
+Stable tag: 7.9.3
 License: GPLv2 or later
 
 A database-first airline baggage planning tool with Quick Check, Full Trip, reverse airline search and shared bag-size planning.
