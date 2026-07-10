@@ -1,0 +1,623 @@
+<!-- =========================================================================
+     VOYASEE — "TRAVEL DNA" PERSONALITY QUIZ
+     A NEW standalone page's main content (its own <h1>). Publish at a URL
+     like /travel-games/travel-personality-quiz/ and mark it "Live now" on
+     the Travel Games hub page (update that card's badge + href).
+
+     What makes this different from typical "which destination are you"
+     quizzes on the market: instead of simple point-tallying (count A's vs
+     B's), every answer nudges a 6-axis "Travel DNA" vector (Pace, Comfort,
+     Social, Structure, Terrain, Novelty). That vector is matched against 8
+     travel archetypes using distance-based similarity scoring, and a live
+     radar chart animates and re-forms after every single answer — so the
+     engagement hook is watching your own profile take shape in real time,
+     not just a single result at the end. The "why you matched" explanation
+     is computed dynamically from the data, not hand-written per archetype.
+
+     No external images, same reasoning as the other two games this
+     session: this environment's network policy blocks verifying image
+     URLs, so the visuals are built entirely from CSS/SVG.
+     ========================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+  rel="stylesheet"
+>
+
+<section class="voy-tp" aria-labelledby="tp-title">
+  <div class="tp-bg" aria-hidden="true">
+    <span class="tp-orb tp-orb-1"></span>
+    <span class="tp-orb tp-orb-2"></span>
+    <span class="tp-orb tp-orb-3"></span>
+    <span class="tp-orb tp-orb-4"></span>
+  </div>
+  <div class="tp-grain" aria-hidden="true"></div>
+
+  <!-- ===================== INTRO ===================== -->
+  <div class="tp-screen tp-intro" data-tp-screen="intro">
+    <span class="tp-eyebrow"><span class="tp-eyebrow-dot"></span>Voyasee Play · Travel DNA</span>
+    <h1 id="tp-title">What's Your <em>Travel DNA?</em></h1>
+    <p class="tp-intro-copy">10 quick questions. Watch your travel personality build itself in real time, then get matched against 8 traveler archetypes — with the real reasons behind your match, not just a label.</p>
+    <div class="tp-intro-meta">
+      <span>&#9201; ~2 minutes</span>
+      <span>&#127942; 8 archetypes</span>
+      <span>&#128200; Live-building profile</span>
+    </div>
+    <button type="button" class="tp-btn tp-btn-primary tp-btn-lg" data-tp-start>Start the Quiz <i aria-hidden="true">&#8594;</i></button>
+  </div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div class="tp-screen tp-quiz" data-tp-screen="quiz" hidden>
+    <div class="tp-progress">
+      <div class="tp-progress-track"><div class="tp-progress-fill" data-tp-progress></div></div>
+      <span class="tp-progress-label" data-tp-progress-label>Question 1 of 10</span>
+    </div>
+
+    <div class="tp-layout">
+      <div class="tp-question-panel">
+        <button type="button" class="tp-back" data-tp-back hidden>&#8592; Previous question</button>
+        <h2 class="tp-question" data-tp-question>&nbsp;</h2>
+        <div class="tp-options" data-tp-options></div>
+      </div>
+
+      <div class="tp-radar-panel">
+        <span class="tp-radar-title">Your Travel DNA — forming live</span>
+        <svg class="tp-radar" viewBox="0 0 220 220" aria-hidden="true">
+          <polygon class="tp-radar-grid" points="110,20 180,65 180,155 110,200 40,155 40,65"></polygon>
+          <polygon class="tp-radar-grid tp-radar-grid-2" points="110,50 155,80 155,140 110,170 65,140 65,80"></polygon>
+          <polygon class="tp-radar-grid tp-radar-grid-3" points="110,80 130,95 130,125 110,140 90,125 90,95"></polygon>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="110" y2="20"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="180" y2="65"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="180" y2="155"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="110" y2="200"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="155"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="65"></line>
+          <polygon class="tp-radar-fill" data-tp-radar-fill points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
+        </svg>
+        <div class="tp-radar-labels" data-tp-radar-labels></div>
+        <p class="tp-leaning" data-tp-leaning>Answer a question to begin…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== RESULT ===================== -->
+  <div class="tp-screen tp-result" data-tp-screen="result" hidden>
+    <div class="tp-result-top">
+      <span class="tp-eyebrow"><span class="tp-eyebrow-dot"></span>Your result</span>
+      <div class="tp-result-icon" data-tp-result-icon aria-hidden="true"></div>
+      <h2 class="tp-result-name" data-tp-result-name></h2>
+      <p class="tp-result-tagline" data-tp-result-tagline></p>
+      <p class="tp-result-desc" data-tp-result-desc></p>
+    </div>
+
+    <div class="tp-result-body">
+      <div class="tp-result-radar-box">
+        <span class="tp-radar-title">Your final Travel DNA</span>
+        <svg class="tp-radar" viewBox="0 0 220 220" aria-hidden="true">
+          <polygon class="tp-radar-grid" points="110,20 180,65 180,155 110,200 40,155 40,65"></polygon>
+          <polygon class="tp-radar-grid tp-radar-grid-2" points="110,50 155,80 155,140 110,170 65,140 65,80"></polygon>
+          <polygon class="tp-radar-grid tp-radar-grid-3" points="110,80 130,95 130,125 110,140 90,125 90,95"></polygon>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="110" y2="20"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="180" y2="65"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="180" y2="155"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="110" y2="200"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="155"></line>
+          <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="65"></line>
+          <polygon class="tp-radar-fill" data-tp-result-radar-fill points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
+        </svg>
+        <div class="tp-radar-labels" data-tp-result-radar-labels></div>
+      </div>
+
+      <div class="tp-matches">
+        <span class="tp-radar-title">Your top 3 traveler matches</span>
+        <div class="tp-match-list" data-tp-match-list></div>
+      </div>
+    </div>
+
+    <div class="tp-result-actions">
+      <button type="button" class="tp-btn tp-btn-primary" data-tp-share>Share my result</button>
+      <button type="button" class="tp-btn tp-btn-ghost" data-tp-retake>Retake the quiz</button>
+    </div>
+
+    <p class="tp-foot">Ready to plan for real? Try the <a href="https://voyasee.com/destination-quiz/">Destination Quiz</a>, explore the <a href="https://voyasee.com/interactive-travel-map/">Interactive Travel Map</a>, or open the <a href="https://voyasee.com/free-smart-travel-hub/">Smart Travel Hub</a>.</p>
+  </div>
+</section>
+
+<style>
+.voy-tp, .voy-tp *, .voy-tp *::before, .voy-tp *::after { box-sizing: border-box; }
+
+.voy-tp {
+  --teal:#2be3ca; --coral:#ff8a6b; --gold:#ffce6b; --violet:#a78bfa;
+  --ink:#f3f6f6; --ink-soft:#c7d3d3; --muted:#8fa1a1;
+  --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.09); --glass-brd:rgba(255,255,255,.14);
+  --grad: linear-gradient(120deg, var(--teal), var(--coral));
+  --grad2: linear-gradient(120deg, var(--violet), var(--coral));
+
+  position: relative; isolation: isolate; overflow: hidden;
+  width: 100%; margin: 0 auto; padding: 50px 20px 56px; min-height: 640px;
+  border-radius: 24px; color: var(--ink); font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  background: linear-gradient(180deg, #0a0e17 0%, #0d1220 55%, #0a0e17 100%);
+  box-shadow: 0 34px 90px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* Aurora background */
+.tp-bg{ position:absolute; z-index:-2; inset:0; overflow:hidden; pointer-events:none; }
+.tp-orb{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.42; }
+.tp-orb-1{ width:420px; height:420px; top:-14%; left:-8%; background:var(--teal); animation:tpDrift1 22s ease-in-out infinite; }
+.tp-orb-2{ width:380px; height:380px; top:6%; right:-10%; background:var(--coral); animation:tpDrift2 26s ease-in-out infinite; }
+.tp-orb-3{ width:340px; height:340px; bottom:-16%; left:12%; background:var(--violet); animation:tpDrift3 24s ease-in-out infinite; }
+.tp-orb-4{ width:300px; height:300px; bottom:-10%; right:8%; background:var(--gold); opacity:.28; animation:tpDrift1 30s ease-in-out infinite reverse; }
+@keyframes tpDrift1{ 0%,100%{ transform:translate(0,0);} 50%{ transform:translate(40px,30px);} }
+@keyframes tpDrift2{ 0%,100%{ transform:translate(0,0);} 50%{ transform:translate(-35px,25px);} }
+@keyframes tpDrift3{ 0%,100%{ transform:translate(0,0);} 50%{ transform:translate(25px,-30px);} }
+.tp-grain{ position:absolute; z-index:-1; inset:0; pointer-events:none; opacity:.5;
+  background-image: radial-gradient(1.2px 1.2px at 20% 30%, rgba(255,255,255,.5), transparent),
+                     radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,.4), transparent),
+                     radial-gradient(1.3px 1.3px at 40% 80%, rgba(255,255,255,.4), transparent),
+                     radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,.35), transparent); }
+
+.tp-eyebrow{ display:inline-flex; align-items:center; gap:8px; padding:7px 15px 7px 12px; border:1px solid var(--glass-brd); border-radius:999px; background:var(--glass); color:var(--teal); font:800 11px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.tp-eyebrow-dot{ width:8px; height:8px; border-radius:50%; background:var(--grad); }
+
+/* Screens */
+.tp-screen{ position:relative; z-index:2; }
+
+/* Intro */
+.tp-intro{ max-width:640px; margin:20px auto; text-align:center; }
+.tp-intro h1{ margin:18px 0 0; font:700 clamp(30px,5vw,50px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; color:#fff; }
+.tp-intro em{ font-style:italic; background:var(--grad2); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--violet); }
+.tp-intro-copy{ max-width:520px; margin:16px auto 0; color:var(--ink-soft); font-size:15px; line-height:1.65; }
+.tp-intro-meta{ display:flex; flex-wrap:wrap; gap:10px 18px; justify-content:center; margin:22px 0 0; font:700 12.5px/1 "Plus Jakarta Sans",sans-serif; color:var(--muted); }
+.tp-btn-lg{ margin-top:30px; padding:15px 30px; font-size:15px; }
+
+.tp-btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:999px; border:1px solid transparent; font:700 13.5px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; text-decoration:none !important; transition:transform .2s ease, box-shadow .2s ease; }
+.tp-btn-primary{ background:var(--grad); color:#08110f !important; box-shadow:0 14px 30px rgba(43,227,202,.25); }
+.tp-btn-primary:hover{ transform:translateY(-2px); }
+.tp-btn-ghost{ background:var(--glass); color:#fff !important; border-color:var(--glass-brd); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.tp-btn-ghost:hover{ transform:translateY(-2px); border-color:var(--teal); }
+
+/* Quiz progress */
+.tp-quiz{ width:min(980px, calc(100% - 8px)); margin:0 auto; }
+.tp-progress{ display:flex; align-items:center; gap:14px; margin-bottom:26px; }
+.tp-progress-track{ flex:1; height:6px; border-radius:999px; background:var(--glass); overflow:hidden; }
+.tp-progress-fill{ height:100%; width:10%; border-radius:999px; background:var(--grad); transition:width .4s ease; }
+.tp-progress-label{ flex:0 0 auto; font:700 12px/1 "Plus Jakarta Sans",sans-serif; color:var(--muted); white-space:nowrap; }
+
+.tp-layout{ display:grid; grid-template-columns:1.15fr .85fr; gap:26px; align-items:start; }
+
+.tp-question-panel{ padding:30px 30px 26px; border:1px solid var(--glass-brd); border-radius:22px; background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 20px 50px rgba(0,0,0,.3); }
+.tp-back{ background:none; border:none; padding:0 0 14px; color:var(--muted); font:700 12px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; }
+.tp-back:hover{ color:var(--teal); }
+.tp-question{ margin:0 0 22px; font:700 clamp(19px,2.4vw,26px)/1.3 "Sora","Plus Jakarta Sans",sans-serif; color:#fff; letter-spacing:-.01em; }
+.tp-options{ display:flex; flex-direction:column; gap:12px; }
+.tp-opt{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:15px 18px; border:1px solid var(--glass-brd); border-radius:16px; background:rgba(255,255,255,.03); color:var(--ink); font:600 14px/1.4 "Plus Jakarta Sans",sans-serif; cursor:pointer; transition:transform .18s ease, background-color .18s ease, border-color .18s ease; }
+.tp-opt:hover{ background:var(--glass-2); border-color:color-mix(in srgb, var(--teal) 40%, var(--glass-brd)); transform:translateX(3px); }
+.tp-opt.is-picked{ background:linear-gradient(120deg, rgba(43,227,202,.16), rgba(255,138,107,.12)); border-color:var(--teal); }
+.tp-opt-letter{ flex:0 0 auto; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); color:var(--ink-soft); font:800 12px/1 "Plus Jakarta Sans",sans-serif; }
+.tp-opt.is-picked .tp-opt-letter{ background:var(--grad); color:#08110f; }
+
+/* Radar panel */
+.tp-radar-panel{ padding:26px 22px 22px; border:1px solid var(--glass-brd); border-radius:22px; background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.3); }
+.tp-radar-title{ display:block; font:800 10.5px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.tp-radar{ width:100%; max-width:230px; height:auto; margin:0 auto; overflow:visible; }
+.tp-radar-grid{ fill:rgba(255,255,255,.02); stroke:rgba(255,255,255,.14); stroke-width:1; }
+.tp-radar-grid-2{ fill:none; }
+.tp-radar-grid-3{ fill:none; }
+.tp-radar-axis{ stroke:rgba(255,255,255,.10); stroke-width:1; }
+.tp-radar-fill{ fill:color-mix(in srgb, var(--teal) 28%, transparent); stroke:var(--teal); stroke-width:2; stroke-linejoin:round; filter:drop-shadow(0 0 10px color-mix(in srgb, var(--teal) 50%, transparent)); }
+.tp-radar-labels{ position:relative; margin-top:6px; }
+.tp-radar-labels .tp-rl{ font:700 9.5px/1.2 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); }
+.tp-leaning{ margin:14px 0 0; font:700 12.5px/1.4 "Plus Jakarta Sans",sans-serif; color:var(--teal); min-height:34px; }
+
+/* Result */
+.tp-result{ width:min(980px, calc(100% - 8px)); margin:0 auto; }
+.tp-result-top{ text-align:center; max-width:640px; margin:0 auto 34px; }
+.tp-result-icon{ font-size:56px; line-height:1; margin:20px 0 8px; filter:drop-shadow(0 10px 24px rgba(0,0,0,.35)); }
+.tp-result-name{ margin:0; font:700 clamp(28px,4.2vw,42px)/1.1 "Playfair Display",Georgia,serif; color:#fff; }
+.tp-result-tagline{ margin:10px 0 0; font:700 15px/1.4 "Plus Jakarta Sans",sans-serif; color:var(--teal); font-style:italic; }
+.tp-result-desc{ margin:12px auto 0; max-width:520px; color:var(--ink-soft); font-size:14px; line-height:1.65; }
+
+.tp-result-body{ display:grid; grid-template-columns:.85fr 1.15fr; gap:26px; align-items:start; margin-bottom:30px; }
+.tp-result-radar-box{ padding:26px 22px; border:1px solid var(--glass-brd); border-radius:22px; background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); text-align:center; }
+.tp-matches{ padding:26px 24px; border:1px solid var(--glass-brd); border-radius:22px; background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.tp-match-list{ display:flex; flex-direction:column; gap:14px; margin-top:6px; }
+.tp-match{ padding:16px 18px; border:1px solid var(--glass-brd); border-radius:16px; background:rgba(255,255,255,.03); }
+.tp-match-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.tp-match-name{ display:flex; align-items:center; gap:8px; font:800 14.5px/1.2 "Sora","Plus Jakarta Sans",sans-serif; color:#fff; }
+.tp-match-rank{ display:inline-flex; width:20px; height:20px; align-items:center; justify-content:center; border-radius:50%; background:var(--glass-2); color:var(--muted); font:800 10px/1 "Plus Jakarta Sans",sans-serif; }
+.tp-match-pct{ font:800 15px/1 "Sora","Plus Jakarta Sans",sans-serif; color:var(--teal); }
+.tp-match-bar{ height:6px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; margin-bottom:10px; }
+.tp-match-bar-fill{ height:100%; border-radius:999px; background:var(--grad); }
+.tp-match-why{ margin:0 0 8px; color:var(--ink-soft); font-size:12.5px; line-height:1.5; }
+.tp-match-dest{ display:flex; flex-wrap:wrap; gap:6px; }
+.tp-match-dest span{ padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid var(--glass-brd); color:var(--muted); font:700 10.5px/1 "Plus Jakarta Sans",sans-serif; }
+
+.tp-result-actions{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:0 0 22px; }
+.tp-foot{ text-align:center; color:var(--muted); font-size:12.5px; margin:0; }
+.tp-foot a{ color:var(--teal); font-weight:700; text-decoration:none; }
+.tp-foot a:hover{ text-decoration:underline; }
+
+/* Responsive */
+@media (max-width:900px){
+  .tp-layout{ grid-template-columns:1fr; }
+  .tp-result-body{ grid-template-columns:1fr; }
+}
+@media (max-width:640px){
+  .voy-tp{ padding:36px 14px 40px; border-radius:16px; min-height:auto; }
+  .tp-question-panel, .tp-radar-panel, .tp-result-radar-box, .tp-matches{ padding:20px 18px; }
+  .tp-radar{ max-width:200px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .tp-orb{ animation:none; }
+  .tp-progress-fill, .tp-opt, .tp-radar-fill{ transition:none; }
+}
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  var TRAIT_KEYS = ["PACE","COMFORT","SOCIAL","STRUCTURE","TERRAIN","NOVELTY"];
+  var TRAIT_LABELS = {
+    PACE:      { short:"Pace",      low:"Slow & Immersive", high:"Fast & Packed" },
+    COMFORT:   { short:"Comfort",   low:"Rustic",           high:"Luxury" },
+    SOCIAL:    { short:"Social",    low:"Solo",              high:"Social" },
+    STRUCTURE: { short:"Structure", low:"Spontaneous",      high:"Structured" },
+    TERRAIN:   { short:"Terrain",   low:"Nature",            high:"Urban" },
+    NOVELTY:   { short:"Novelty",   low:"Familiar",          high:"Novel" }
+  };
+
+  var QUESTIONS = [
+    { q:"How do you actually plan a trip?", options:[
+      { t:"Spreadsheet, hour-by-hour itinerary, backup plans for the backups.", fx:{STRUCTURE:2, TERRAIN:1} },
+      { t:"I book the flight and figure out the rest when I land.", fx:{STRUCTURE:-2, TERRAIN:-1} },
+      { t:"A loose list of 'must-sees' and lots of empty days.", fx:{STRUCTURE:-1} },
+      { t:"I let a local friend or guide plan it for me.", fx:{SOCIAL:1, STRUCTURE:1} }
+    ]},
+    { q:"Pick your ideal travel companion count.", options:[
+      { t:"Just me, myself and I.", fx:{SOCIAL:-2} },
+      { t:"One other person I already know well.", fx:{SOCIAL:-1} },
+      { t:"A small group of friends.", fx:{SOCIAL:1} },
+      { t:"However many people want to join — the more the merrier.", fx:{SOCIAL:2} }
+    ]},
+    { q:"It's your first morning in a new destination. Where do you wake up?", options:[
+      { t:"A boutique hotel with a view I paid extra for.", fx:{COMFORT:2} },
+      { t:"A cozy guesthouse run by a local family.", fx:{SOCIAL:1} },
+      { t:"A hostel dorm, already chatting with roommates.", fx:{COMFORT:-2, SOCIAL:1} },
+      { t:"A tent, somewhere with more stars than Wi-Fi bars.", fx:{COMFORT:-2, TERRAIN:-2} }
+    ]},
+    { q:"Which sounds like your perfect afternoon abroad?", options:[
+      { t:"Wandering a museum until my feet hurt.", fx:{TERRAIN:2} },
+      { t:"Hiking to a viewpoint no map really explains.", fx:{TERRAIN:-2, NOVELTY:1} },
+      { t:"A long lazy lunch that turns into three hours.", fx:{PACE:-2} },
+      { t:"Bouncing between five neighborhoods before dinner.", fx:{PACE:2, TERRAIN:1} }
+    ]},
+    { q:"Your phone battery just died mid-trip. Your reaction?", options:[
+      { t:"Mild panic — my whole itinerary was on there.", fx:{STRUCTURE:1} },
+      { t:"Honestly, kind of a relief.", fx:{NOVELTY:1, STRUCTURE:-1} },
+      { t:"I ask a stranger for directions and it becomes the best story of the trip.", fx:{SOCIAL:1, NOVELTY:1} },
+      { t:"I find a cafe, charge it, and don't move for an hour.", fx:{PACE:-1, COMFORT:1} }
+    ]},
+    { q:"Pick a souvenir you'd actually bring home.", options:[
+      { t:"A hand-woven textile I watched someone make.", fx:{NOVELTY:1, TERRAIN:-1} },
+      { t:"A fridge magnet from every single city.", fx:{PACE:1, STRUCTURE:1} },
+      { t:"Nothing — just photos and a full memory card.", fx:{SOCIAL:-1} },
+      { t:"Whatever the friends I made on the trip are also buying.", fx:{SOCIAL:2} }
+    ]},
+    { q:"A local recommends a place that's 2 hours out of your way. Do you go?", options:[
+      { t:"Absolutely, reroute everything.", fx:{NOVELTY:2, STRUCTURE:-1} },
+      { t:"Only if it doesn't wreck the schedule I already made.", fx:{STRUCTURE:2} },
+      { t:"Depends — is there a pool or a beach involved?", fx:{COMFORT:1} },
+      { t:"I'd rather ask a couple more locals first, just to be sure.", fx:{SOCIAL:1, STRUCTURE:1} }
+    ]},
+    { q:"Pick your travel budget mindset.", options:[
+      { t:"I splurge on the stay, save on everything else.", fx:{COMFORT:1} },
+      { t:"I track every dollar in a spreadsheet.", fx:{STRUCTURE:2, COMFORT:-1} },
+      { t:"I'll sleep anywhere if it means one more country.", fx:{COMFORT:-2, PACE:1, TERRAIN:-1} },
+      { t:"Money's for experiences, not things — festivals, tours, food.", fx:{NOVELTY:1, TERRAIN:1} }
+    ]},
+    { q:"Which of these trips sounds most like torture?", options:[
+      { t:"Five cities in five days.", fx:{PACE:-2} },
+      { t:"One town for two whole weeks, nothing else.", fx:{PACE:2} },
+      { t:"A week with zero plans and no idea what's next.", fx:{STRUCTURE:2} },
+      { t:"A week where every single hour is scheduled.", fx:{STRUCTURE:-2} }
+    ]},
+    { q:"Last one — deep down, what makes a trip 'good' for you?", options:[
+      { t:"I came back with a completely new perspective.", fx:{NOVELTY:2} },
+      { t:"I actually rested for once.", fx:{PACE:-1, COMFORT:1} },
+      { t:"I made real connections with people I met.", fx:{SOCIAL:2} },
+      { t:"I checked off everything on my list.", fx:{STRUCTURE:1, PACE:1} }
+    ]}
+  ];
+
+  var ARCHETYPES = [
+    { key:"slow", name:"The Slow Wanderer", icon:"&#127754;", tagline:"You don't collect cities. You collect mornings.",
+      desc:"You'd rather understand one neighborhood deeply than skim ten of them. Empty afternoons aren't wasted time — they're the whole point.",
+      vec:{PACE:15, COMFORT:45, SOCIAL:25, STRUCTURE:20, TERRAIN:35, NOVELTY:55},
+      dest:["Kyoto, Japan","Tuscany, Italy","The Azores, Portugal"] },
+    { key:"adrenaline", name:"The Adrenaline Chaser", icon:"&#9968;", tagline:"Your itinerary has a heart rate.",
+      desc:"Comfort is negotiable, but the view from the top isn't. You measure a trip by how alive it made you feel, not how well it went.",
+      vec:{PACE:75, COMFORT:20, SOCIAL:60, STRUCTURE:25, TERRAIN:10, NOVELTY:85},
+      dest:["Queenstown, New Zealand","Patagonia, Chile & Argentina","The Nepal Himalayas"] },
+    { key:"culture", name:"The Cultural Deep-Diver", icon:"&#127963;", tagline:"You travel to understand, not just to see.",
+      desc:"Museums, old streets, half-understood languages — you want the history behind the postcard. A good trip teaches you something you can't unlearn.",
+      vec:{PACE:40, COMFORT:40, SOCIAL:45, STRUCTURE:55, TERRAIN:80, NOVELTY:65},
+      dest:["Rome, Italy","Istanbul, Türkiye","Cairo, Egypt"] },
+    { key:"comfort", name:"The Comfort Explorer", icon:"&#127973;", tagline:"You'll try the adventure — from a very nice hotel.",
+      desc:"You're genuinely curious, but you've also earned this. A great trip means good food, a real bed, and just enough spontaneity to feel brave.",
+      vec:{PACE:45, COMFORT:85, SOCIAL:40, STRUCTURE:70, TERRAIN:55, NOVELTY:25},
+      dest:["Dubai, UAE","Santorini, Greece","Singapore"] },
+    { key:"social", name:"The Social Butterfly", icon:"&#127881;", tagline:"For you, the trip is the people you meet on it.",
+      desc:"The destination is basically the backdrop. What you actually remember are the strangers who became friends by the second night.",
+      vec:{PACE:60, COMFORT:35, SOCIAL:90, STRUCTURE:30, TERRAIN:65, NOVELTY:60},
+      dest:["Bali, Indonesia","Barcelona, Spain","Bangkok, Thailand"] },
+    { key:"wild", name:"The Wild Nomad", icon:"&#9968;", tagline:"You measure a trip by how far off-grid you got.",
+      desc:"Crowds and itineraries are the enemy. You want silence, real wilderness, and a signal bar that reads zero.",
+      vec:{PACE:35, COMFORT:10, SOCIAL:20, STRUCTURE:10, TERRAIN:5, NOVELTY:75},
+      dest:["Iceland's Highlands","Namibia","The Faroe Islands"] },
+    { key:"planner", name:"The Meticulous Planner", icon:"&#128203;", tagline:"Your trip has a spreadsheet, and the spreadsheet has tabs.",
+      desc:"You research obsessively so nothing surprises you badly. A smooth, optimized trip isn't boring to you — it's the actual goal.",
+      vec:{PACE:55, COMFORT:60, SOCIAL:35, STRUCTURE:95, TERRAIN:60, NOVELTY:35},
+      dest:["Switzerland","Japan (Tokyo–Kyoto rail loop)","Vienna, Austria"] },
+    { key:"free", name:"The Free Spirit", icon:"&#127801;", tagline:"Your best travel days were never on the itinerary.",
+      desc:"Plans are a starting point, not a promise. You say yes to the detour, the stranger's tip, the bus you weren't supposed to take.",
+      vec:{PACE:30, COMFORT:30, SOCIAL:55, STRUCTURE:5, TERRAIN:40, NOVELTY:80},
+      dest:["Marrakech, Morocco","Havana, Cuba","Northern Vietnam"] }
+  ];
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function computeVector(answers) {
+    var sums = {}, counts = {};
+    TRAIT_KEYS.forEach(function (k) { sums[k] = 0; counts[k] = 0; });
+    answers.forEach(function (opt) {
+      if (!opt) return;
+      Object.keys(opt.fx).forEach(function (k) { sums[k] += opt.fx[k]; counts[k] += 1; });
+    });
+    var vec = {};
+    TRAIT_KEYS.forEach(function (k) {
+      var avg = counts[k] ? sums[k] / counts[k] : 0;
+      vec[k] = clamp(50 + avg * 25, 0, 100);
+    });
+    return vec;
+  }
+
+  function matchPercent(userVec, archVec) {
+    var sumSq = 0;
+    TRAIT_KEYS.forEach(function (k) { var d = userVec[k] - archVec[k]; sumSq += d * d; });
+    var dist = Math.sqrt(sumSq);
+    var maxDist = Math.sqrt(TRAIT_KEYS.length * 100 * 100);
+    return Math.round(clamp(100 - (dist / maxDist) * 100, 0, 100));
+  }
+
+  function explainMatch(userVec, archVec) {
+    var scored = TRAIT_KEYS.map(function (k) {
+      return { key:k, gap: Math.abs(userVec[k] - archVec[k]), decisive: Math.abs(archVec[k] - 50) };
+    });
+    scored.sort(function (a, b) {
+      if (Math.abs(a.gap - b.gap) > 8) return a.gap - b.gap;
+      return b.decisive - a.decisive;
+    });
+    return scored.slice(0, 2).map(function (s) {
+      var val = userVec[s.key];
+      var label = val >= 50 ? TRAIT_LABELS[s.key].high : TRAIT_LABELS[s.key].low;
+      return label.toLowerCase();
+    });
+  }
+
+  function radarPoints(vec, cx, cy, maxR) {
+    return TRAIT_KEYS.map(function (k, i) {
+      var angle = (-90 + i * 60) * Math.PI / 180;
+      var r = (vec[k] / 100) * maxR;
+      var x = cx + r * Math.cos(angle);
+      var y = cy + r * Math.sin(angle);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    }).join(" ");
+  }
+
+  function initQuiz(root) {
+    if (root.dataset.voyTpReady === "true") return;
+    root.dataset.voyTpReady = "true";
+
+    var screens = {
+      intro: root.querySelector('[data-tp-screen="intro"]'),
+      quiz: root.querySelector('[data-tp-screen="quiz"]'),
+      result: root.querySelector('[data-tp-screen="result"]')
+    };
+    var startBtn = root.querySelector("[data-tp-start]");
+    var progressFill = root.querySelector("[data-tp-progress]");
+    var progressLabel = root.querySelector("[data-tp-progress-label]");
+    var backBtn = root.querySelector("[data-tp-back]");
+    var questionEl = root.querySelector("[data-tp-question]");
+    var optionsEl = root.querySelector("[data-tp-options]");
+    var leaningEl = root.querySelector("[data-tp-leaning]");
+    var quizRadarFill = root.querySelector("[data-tp-radar-fill]");
+    var quizRadarLabels = root.querySelector("[data-tp-radar-labels]");
+
+    var resultRadarFill = root.querySelector("[data-tp-result-radar-fill]");
+    var resultRadarLabels = root.querySelector("[data-tp-result-radar-labels]");
+    var resultIcon = root.querySelector("[data-tp-result-icon]");
+    var resultName = root.querySelector("[data-tp-result-name]");
+    var resultTagline = root.querySelector("[data-tp-result-tagline]");
+    var resultDesc = root.querySelector("[data-tp-result-desc]");
+    var matchList = root.querySelector("[data-tp-match-list]");
+    var shareBtn = root.querySelector("[data-tp-share]");
+    var retakeBtn = root.querySelector("[data-tp-retake]");
+
+    var answers = new Array(QUESTIONS.length).fill(null);
+    var currentQ = 0;
+    var currentVec = { PACE:50, COMFORT:50, SOCIAL:50, STRUCTURE:50, TERRAIN:50, NOVELTY:50 };
+    var animId = null;
+
+    function show(name) {
+      Object.keys(screens).forEach(function (k) { screens[k].hidden = k !== name; });
+    }
+
+    function animateRadar(fillEl, fromVec, toVec) {
+      if (animId) cancelAnimationFrame(animId);
+      var start = performance.now(), dur = 450;
+      function frame(now) {
+        var p = Math.min(1, (now - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var interp = {};
+        TRAIT_KEYS.forEach(function (k) { interp[k] = fromVec[k] + (toVec[k] - fromVec[k]) * eased; });
+        fillEl.setAttribute("points", radarPoints(interp, 110, 110, 90));
+        if (p < 1) animId = requestAnimationFrame(frame); else animId = null;
+      }
+      animId = requestAnimationFrame(frame);
+    }
+
+    function renderLabels(container, vec) {
+      var positions = [
+        {top:"-6%", left:"50%", tf:"translate(-50%,-100%)"},
+        {top:"27%", left:"96%", tf:"translate(-10%,-50%)"},
+        {top:"73%", left:"96%", tf:"translate(-10%,-50%)"},
+        {top:"106%", left:"50%", tf:"translate(-50%,0%)"},
+        {top:"73%", left:"4%", tf:"translate(-90%,-50%)"},
+        {top:"27%", left:"4%", tf:"translate(-90%,-50%)"}
+      ];
+      container.innerHTML = "";
+      container.style.position = "relative";
+      container.style.height = "34px";
+      TRAIT_KEYS.forEach(function (k, i) {
+        var d = document.createElement("span");
+        d.className = "tp-rl";
+        d.style.position = "absolute";
+        d.style.top = positions[i].top;
+        d.style.left = positions[i].left;
+        d.style.transform = positions[i].tf;
+        d.style.whiteSpace = "nowrap";
+        d.textContent = TRAIT_LABELS[k].short;
+        container.appendChild(d);
+      });
+    }
+
+    function updateLeaning(vec) {
+      var scored = TRAIT_KEYS.map(function (k) { return { k:k, dec: Math.abs(vec[k] - 50) }; });
+      scored.sort(function (a, b) { return b.dec - a.dec; });
+      var top = scored.filter(function (s) { return s.dec > 4; }).slice(0, 2);
+      if (!top.length) { leaningEl.textContent = "Answer a question to begin…"; return; }
+      var parts = top.map(function (s) {
+        var label = vec[s.k] >= 50 ? TRAIT_LABELS[s.k].high : TRAIT_LABELS[s.k].low;
+        return label;
+      });
+      leaningEl.textContent = "Leaning: " + parts.join(" · ");
+    }
+
+    function renderQuestion() {
+      var qd = QUESTIONS[currentQ];
+      questionEl.textContent = qd.q;
+      progressFill.style.width = (((currentQ) / QUESTIONS.length) * 100 + 5) + "%";
+      progressLabel.textContent = "Question " + (currentQ + 1) + " of " + QUESTIONS.length;
+      backBtn.hidden = currentQ === 0;
+
+      optionsEl.innerHTML = "";
+      var letters = ["A","B","C","D"];
+      qd.options.forEach(function (opt, i) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tp-opt";
+        if (answers[currentQ] === opt) btn.classList.add("is-picked");
+        btn.innerHTML = '<span class="tp-opt-letter">' + letters[i] + '</span><span>' + opt.t + '</span>';
+        btn.addEventListener("click", function () { chooseOption(opt); });
+        optionsEl.appendChild(btn);
+      });
+
+      var vecUpTo = computeVector(answers.slice(0, currentQ));
+      quizRadarFill.setAttribute("points", radarPoints(vecUpTo, 110, 110, 90));
+      renderLabels(quizRadarLabels, vecUpTo);
+      updateLeaning(vecUpTo);
+    }
+
+    function chooseOption(opt) {
+      var prevVec = computeVector(answers);
+      answers[currentQ] = opt;
+      var newVec = computeVector(answers);
+      animateRadar(quizRadarFill, prevVec, newVec);
+      updateLeaning(newVec);
+
+      window.setTimeout(function () {
+        if (currentQ < QUESTIONS.length - 1) {
+          currentQ++;
+          renderQuestion();
+          quizRadarFill.setAttribute("points", radarPoints(newVec, 110, 110, 90));
+        } else {
+          finishQuiz(newVec);
+        }
+      }, 320);
+    }
+
+    backBtn.addEventListener("click", function () {
+      if (currentQ > 0) { currentQ--; renderQuestion(); }
+    });
+
+    function finishQuiz(finalVec) {
+      currentVec = finalVec;
+      var ranked = ARCHETYPES.map(function (a) {
+        return { arch:a, pct: matchPercent(finalVec, a.vec) };
+      }).sort(function (a, b) { return b.pct - a.pct; });
+
+      var top = ranked[0].arch;
+      resultIcon.innerHTML = top.icon;
+      resultName.textContent = top.name;
+      resultTagline.textContent = top.tagline;
+      resultDesc.textContent = top.desc;
+
+      resultRadarFill.setAttribute("points", radarPoints(finalVec, 110, 110, 90));
+      renderLabels(resultRadarLabels, finalVec);
+
+      matchList.innerHTML = "";
+      ranked.slice(0, 3).forEach(function (r, i) {
+        var reasons = explainMatch(finalVec, r.arch.vec);
+        var row = document.createElement("div");
+        row.className = "tp-match";
+        row.innerHTML =
+          '<div class="tp-match-top">' +
+            '<span class="tp-match-name"><span class="tp-match-rank">' + (i + 1) + '</span>' + r.arch.icon + ' ' + r.arch.name + '</span>' +
+            '<span class="tp-match-pct">' + r.pct + '%</span>' +
+          '</div>' +
+          '<div class="tp-match-bar"><div class="tp-match-bar-fill" style="width:' + r.pct + '%"></div></div>' +
+          '<p class="tp-match-why">You especially share their ' + reasons[0] + (reasons[1] ? " and " + reasons[1] : "") + ' style of travel.</p>' +
+          '<div class="tp-match-dest">' + r.arch.dest.map(function (d) { return "<span>" + d + "</span>"; }).join("") + '</div>';
+        matchList.appendChild(row);
+      });
+
+      show("result");
+    }
+
+    shareBtn.addEventListener("click", function () {
+      var name = resultName.textContent;
+      var text = "My Travel DNA on Voyasee is \"" + name + "\". Find out yours: " + window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: "What's Your Travel DNA?", text: text }).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function () {
+          shareBtn.textContent = "Copied!";
+          window.setTimeout(function () { shareBtn.textContent = "Share my result"; }, 1800);
+        }).catch(function () {});
+      }
+    });
+
+    retakeBtn.addEventListener("click", function () {
+      answers = new Array(QUESTIONS.length).fill(null);
+      currentQ = 0;
+      currentVec = { PACE:50, COMFORT:50, SOCIAL:50, STRUCTURE:50, TERRAIN:50, NOVELTY:50 };
+      renderQuestion();
+      show("quiz");
+    });
+
+    startBtn.addEventListener("click", function () {
+      renderQuestion();
+      show("quiz");
+    });
+
+    renderLabels(quizRadarLabels, currentVec);
+  }
+
+  function boot() { document.querySelectorAll(".voy-tp").forEach(initQuiz); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  window.addEventListener("elementor/frontend/init", boot);
+})();
+</script>
