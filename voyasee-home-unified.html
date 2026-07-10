@@ -989,12 +989,34 @@
     if (prev) prev.addEventListener("click", function () { nudge(-1); });
     win.addEventListener("mouseenter", function () { hovering = true; });
     win.addEventListener("mouseleave", function () { hovering = false; });
-    win.addEventListener("pointerdown", function (e) { dragging = true; lastX = e.clientX; moved = 0; target = null; win.classList.add("is-drag"); try { win.setPointerCapture(e.pointerId); } catch (_) {} });
-    win.addEventListener("pointermove", function (e) { if (!dragging) return; var dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx); pos = Math.max(0, Math.min(maxScroll, pos - dx)); });
-    function endDrag(e) { if (!dragging) return; dragging = false; pauseUntil = performance.now() + 3500; win.classList.remove("is-drag"); try { win.releasePointerCapture(e.pointerId); } catch (_) {} }
-    win.addEventListener("pointerup", endDrag);
-    win.addEventListener("pointercancel", endDrag);
-    track.addEventListener("click", function (e) { if (moved > 6) { e.preventDefault(); e.stopPropagation(); } }, true);
+    /* Drag-to-scroll WITHOUT setPointerCapture: capturing the pointer on a
+       container that holds real <a> links can make some mobile browsers
+       redirect the resulting "click" event's target away from the link,
+       silently breaking navigation. Instead we track the drag with plain
+       document-level listeners that are only attached while a drag is
+       actually in progress. */
+    function onDocMove(e) {
+      if (!dragging) return;
+      var dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx);
+      pos = Math.max(0, Math.min(maxScroll, pos - dx));
+    }
+    function onDocUp() {
+      if (!dragging) return;
+      dragging = false; pauseUntil = performance.now() + 3500;
+      win.classList.remove("is-drag");
+      document.removeEventListener("pointermove", onDocMove);
+      document.removeEventListener("pointerup", onDocUp);
+      document.removeEventListener("pointercancel", onDocUp);
+    }
+    win.addEventListener("pointerdown", function (e) {
+      if (typeof e.button === "number" && e.button !== 0) return;
+      dragging = true; lastX = e.clientX; moved = 0; target = null;
+      win.classList.add("is-drag");
+      document.addEventListener("pointermove", onDocMove);
+      document.addEventListener("pointerup", onDocUp);
+      document.addEventListener("pointercancel", onDocUp);
+    });
+    track.addEventListener("click", function (e) { if (moved > 8) { e.preventDefault(); e.stopPropagation(); } }, true);
 
     if ("ResizeObserver" in window) new ResizeObserver(measure).observe(win); else window.addEventListener("resize", measure, { passive: true });
     measure();
