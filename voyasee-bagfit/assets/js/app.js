@@ -790,6 +790,7 @@
         confidenceBadge(strictLeg.airline && strictLeg.airline.coverage_tier) +
         '</dd></div><div><dt>Route leg</dt><dd>Flight ' + esc(result.strictest_leg_number || 1) + '</dd></div></dl>' +
         '</div>' +
+        renderJourneyStrip(result.flight_matrix || []) +
         '<div class="vsb7-focus-grid">' +
         '<div class="vsb7-bag-compare"><div class="vsb7-bag-outline"><i></i><b>' + esc(bagDims) + '</b><small>' + num(
           (bag.weight_g || 0) / 1000) + ' kg</small></div><div><span>YOUR BAG VS STRICTEST RULE</span><h5>' + esc(
@@ -911,6 +912,27 @@
         esc(item.strictest_reason || '—') + '</span></div>' + orientHtml + '<div><b>Next step</b><span>' + esc((item.recommendations ||
           [])[0] || 'Confirm the official airline page.') + '</span></div><div><b>Selected rule</b><span>' + esc(
           strict.allowance_label || '—') + '</span></div></div></details>';
+    }
+
+    function renderJourneyStrip(matrix) {
+      if (!matrix.length || matrix.length < 2) return '';
+      const toneOf = (label) => ({
+        'Fits': 'pass',
+        'Conditional': 'warn',
+        'Not included': 'warn',
+        'Confirm': 'check',
+        'Over limit': 'fail'
+      })[label] || 'check';
+      const glyph = {pass: '✓', warn: '!', check: '?', fail: '×'};
+      const nodes = matrix.map((row) => {
+        const label = worstCode((row.bags || []).map((b) => b.verdict_code));
+        const tone = toneOf(label);
+        const airline = String(row.airline || 'Flight');
+        const short = airline.length > 18 ? airline.slice(0, 17) + '…' : airline;
+        return '<li class="is-' + tone + '"><i>' + glyph[tone] + '</i><b>Flight ' + esc(row.leg_number) +
+          '</b><small>' + esc(short) + '</small><em>' + esc(label) + '</em></li>';
+      }).join('');
+      return '<ol class="vsb7-journey-strip" aria-label="Flight-by-flight summary">' + nodes + '</ol>';
     }
 
     function renderFlightMatrix(matrix) {

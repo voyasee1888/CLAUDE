@@ -17,7 +17,6 @@ final class VSB_Shortcode {
         ], $atts, 'voyasee_bag_checker');
 
         wp_enqueue_style('vsb-frontend');
-        wp_enqueue_style('vsb-font-inter', 'https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap', [], null);
         wp_enqueue_script('vsb-app');
 
         $settings = get_option('vsb_settings', []);

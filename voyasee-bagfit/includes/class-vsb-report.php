@@ -9,6 +9,7 @@ final class VSB_Report {
 
     public static function render(): void {
         global $wpdb;
+        nocache_headers();
         $token = isset($_GET['token']) ? sanitize_text_field(wp_unslash($_GET['token'])) : '';
         if (!preg_match('/^[A-Za-z0-9_-]{30,100}$/', $token)) {
             wp_die(esc_html__('Invalid report link.', 'voyasee-bagfit'), esc_html__('BagFit report', 'voyasee-bagfit'), ['response' => 400]);
@@ -21,7 +22,6 @@ final class VSB_Report {
         if (!is_array($result)) {
             wp_die(esc_html__('This report could not be read.', 'voyasee-bagfit'), esc_html__('BagFit report', 'voyasee-bagfit'), ['response' => 500]);
         }
-        nocache_headers();
         header('Content-Type: text/html; charset=' . get_bloginfo('charset'));
         echo self::document($result); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         exit;

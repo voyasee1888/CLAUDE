@@ -1200,6 +1200,130 @@
     color: #ffd6d6
 }
 
+.vsb7-journey-strip {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.vsb7-journey-strip li {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 12px 14px;
+    border-radius: 15px;
+    background: #fff;
+    border: 1px solid #dce8f5;
+}
+
+.vsb7-journey-strip li::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -8px;
+    width: 8px;
+    height: 2px;
+    background: #cdd9e8;
+}
+
+.vsb7-journey-strip li:last-child::after {
+    display: none;
+}
+
+.vsb7-journey-strip li i {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 900;
+    font-style: normal;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.vsb7-journey-strip li b {
+    font-size: 12px;
+    color: #10213d;
+}
+
+.vsb7-journey-strip li small {
+    font-size: 11px;
+    color: #63758e;
+    line-height: 1.3;
+}
+
+.vsb7-journey-strip li em {
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+
+.vsb7-journey-strip li.is-pass {
+    border-color: #b6e6d2;
+    background: #f2fbf7;
+}
+
+.vsb7-journey-strip li.is-pass i {
+    background: #0ea870;
+}
+
+.vsb7-journey-strip li.is-pass em {
+    color: #0a8a5c;
+}
+
+.vsb7-journey-strip li.is-warn {
+    border-color: #f2dcb0;
+    background: #fdf8ef;
+}
+
+.vsb7-journey-strip li.is-warn i {
+    background: #d4820d;
+}
+
+.vsb7-journey-strip li.is-warn em {
+    color: #b06a08;
+}
+
+.vsb7-journey-strip li.is-check {
+    border-color: #bcd9f4;
+    background: #f1f8fe;
+}
+
+.vsb7-journey-strip li.is-check i {
+    background: #1775cc;
+}
+
+.vsb7-journey-strip li.is-check em {
+    color: #1461ac;
+}
+
+.vsb7-journey-strip li.is-fail {
+    border-color: #f4c3d3;
+    background: #fdf1f5;
+}
+
+.vsb7-journey-strip li.is-fail i {
+    background: #d62f5e;
+}
+
+.vsb7-journey-strip li.is-fail em {
+    color: #b52550;
+}
+
 .vsb7-focus-grid {
     display: grid;
     grid-template-columns: 1.7fr repeat(3, 1fr);

@@ -211,6 +211,7 @@ final class VSB_Admin {
         $json['directory_only'] = 'directory_only_official_site' === $verification;
         $json['admin_customised'] = true;
         $wpdb->update(VSB_DB::airlines_table(), ['name' => $json['name'], 'iata' => $json['iata'], 'country' => $json['country'], 'source_url' => $json['source_url'], 'last_verified' => $json['last_verified'], 'status' => $json['status'], 'confidence' => 'reviewed_against_official_page' === $verification ? 'high' : ('directory_only_official_site' === $verification ? 'low' : 'medium'), 'rule_json' => wp_json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 'updated_at' => current_time('mysql')], ['id' => $id]);
+        wp_cache_delete('vsb_public_airlines', 'vsb');
         wp_safe_redirect(admin_url('admin.php?page=voyasee-bagfit&tab=airlines&edit=' . $id . '&updated=1')); exit;
     }
 }

@@ -270,8 +270,10 @@ final class VSB_DB {
             elseif ('core_source_linked' === $tier) $health['source_linked']++;
             else $health['directory']++;
             if (empty($airline['source_url'])) $health['missing_source']++;
-            if (empty($airline['personal']['dimensions_mm'])) $health['missing_personal_dimensions']++;
-            if (empty($airline['cabin']['dimensions_mm'])) $health['missing_cabin_dimensions']++;
+            $personal_opts = is_array($airline['allowance_options']['personal'] ?? null) ? $airline['allowance_options']['personal'] : [];
+            $health['missing_personal_dimensions'] += empty(array_filter($personal_opts, fn($o) => !empty($o['dimensions_mm']))) ? 1 : 0;
+            $cabin_opts = is_array($airline['allowance_options']['cabin'] ?? null) ? $airline['allowance_options']['cabin'] : [];
+            $health['missing_cabin_dimensions'] += empty(array_filter($cabin_opts, fn($o) => !empty($o['dimensions_mm']))) ? 1 : 0;
             if ('ticket_specific' === ($airline['checked']['included'] ?? '')) $health['ticket_specific_checked']++;
             $date = (string) ($airline['last_verified'] ?? '');
             $days = max(30, (int) ($airline['data_quality']['recommended_review_days'] ?? 90));
