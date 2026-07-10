@@ -1,72 +1,69 @@
 <!-- =========================================================================
-     VOYASEE — UNIFIED HOME PAGE  (single Elementor HTML widget)
-     Combines 3 former blocks into ONE:
-       1) Hero strip  (keeps the page's single <h1> + animated flight path)
-       2) Free Travel Tools rail (all 17 tools)
-       3) Explore Stories by Category rail (8 categories)
-     One design system · one slider engine (auto-scroll + arrows + swipe/drag).
-     Paste the whole thing into ONE HTML widget.
+     VOYASEE — UNIFIED HOME PAGE  ·  "Light & Airy Premium" edition
+     One self-contained Elementor HTML widget. Paste the whole thing in ONE
+     HTML widget (replaces the old hero + tools + categories blocks).
+
+     Sections: Hero (single <h1>) → Stat strip → Free Travel Tools (17)
+               → Explore by Category (8) → Closing CTA band.
+     One design system · one slider engine (auto + arrows + swipe/drag)
+     · animated flight-path plane · scroll-reveal · live WP category counts.
      ========================================================================= -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.pexels.com" crossorigin>
 <link
-  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=DM+Sans:wght@500;600;700;800&family=Unbounded:wght@800;900&family=Barlow+Condensed:wght@600;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Unbounded:wght@700;800&family=Sora:wght@600;700;800&display=swap"
   rel="stylesheet"
 >
 
 <section class="voyasee-home" aria-labelledby="voy-front-heading">
 
-  <!-- Shared atmosphere so all three sections read as ONE page -->
+  <!-- soft atmosphere -->
   <div class="vh-aura" aria-hidden="true"></div>
-  <div class="vh-grid" aria-hidden="true"></div>
+  <div class="vh-dots" aria-hidden="true"></div>
 
   <!-- ===================================================================
-       1 · HERO  (single H1 + animated flight route + topic marquee)
+       1 · HERO
        =================================================================== -->
   <header class="vh-hero">
-
-    <svg
-      class="vh-route"
-      viewBox="0 0 1200 170"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      focusable="false"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-    >
-      <path
-        id="vh-route-path"
-        class="vh-route-path"
-        d="M-40 118 C 160 38, 310 138, 480 78 S 790 28, 960 88 S 1160 148, 1240 54"
-      ></path>
-
-      <circle class="vh-route-dot vh-dot-1" cx="180" cy="64" r="4"></circle>
-      <circle class="vh-route-dot vh-dot-2" cx="520" cy="66" r="4"></circle>
-      <circle class="vh-route-dot vh-dot-3" cx="915" cy="83" r="4"></circle>
-
-      <!-- Signature: a plane that flies along the dashed route -->
+    <svg class="vh-route" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true" focusable="false"
+         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <path id="vh-route-path" class="vh-route-path"
+            d="M-40 150 C 180 60, 340 176, 520 104 S 830 34, 1010 112 S 1180 182, 1250 78"></path>
+      <circle class="vh-route-dot vh-dot-1" cx="210" cy="86" r="4.5"></circle>
+      <circle class="vh-route-dot vh-dot-2" cx="560" cy="92" r="4.5"></circle>
+      <circle class="vh-route-dot vh-dot-3" cx="965" cy="104" r="4.5"></circle>
       <g class="vh-plane">
-        <path d="M9,0 L-8,-5 L-3.5,0 L-8,5 Z"></path>
-        <animateMotion dur="18s" repeatCount="indefinite" rotate="auto">
+        <path d="M10,0 L-9,-6 L-4,0 L-9,6 Z"></path>
+        <animateMotion dur="19s" repeatCount="indefinite" rotate="auto">
           <mpath href="#vh-route-path" xlink:href="#vh-route-path"></mpath>
         </animateMotion>
       </g>
     </svg>
 
-    <div class="vh-compass" aria-hidden="true"><span>N</span></div>
+    <div class="vh-hero-inner vh-reveal">
+      <span class="vh-kicker"><span class="vh-kicker-dot"></span>Free travel-planning toolkit</span>
 
-    <div class="vh-hero-content">
       <h1 id="voy-front-heading" class="vh-hero-heading">
         <span class="vh-hero-hook">Plan Smarter Trips With</span>
         <span class="vh-hero-focus">Free Travel Tools &amp; Destination Guides</span>
       </h1>
 
+      <p class="vh-hero-sub">
+        17 free, private, no-sign-up tools and honest destination guides —
+        everything to decide where to go, what it costs and how to arrive ready.
+      </p>
+
+      <div class="vh-hero-cta">
+        <a class="vh-btn vh-btn-primary" href="#vh-tools" data-scroll>Explore the tools <i aria-hidden="true">→</i></a>
+        <a class="vh-btn vh-btn-ghost" href="#vh-cats" data-scroll>Browse guides</a>
+      </div>
+
       <div class="vh-brand-row" aria-hidden="true">
-        <span class="vh-brand-line vh-brand-line-left"></span>
+        <span class="vh-brand-line"></span>
         <strong>VOYASEE</strong>
-        <span class="vh-brand-line vh-brand-line-right"></span>
+        <span class="vh-brand-line"></span>
       </div>
     </div>
 
@@ -87,14 +84,24 @@
   </header>
 
   <!-- ===================================================================
-       2 · FREE TRAVEL TOOLS  (17 tools · unified rail)
+       2 · STAT STRIP
        =================================================================== -->
-  <section class="vh-block vh-tools" aria-labelledby="vh-tools-title">
-    <div class="vh-head">
-      <span class="vh-eyebrow">Free planning tools by Voyasee</span>
-      <h2 id="vh-tools-title">Plan Smarter With <em>Free Travel Tools</em></h2>
-      <p class="vh-intro">Compare, prepare and check the details that matter before you travel — 17 free tools, no sign-up.</p>
+  <div class="vh-stats vh-reveal" role="list">
+    <div class="vh-stat" role="listitem"><span class="vh-stat-n">17</span><span class="vh-stat-l">Free tools</span></div>
+    <div class="vh-stat" role="listitem"><span class="vh-stat-n">0</span><span class="vh-stat-l">Sign-ups</span></div>
+    <div class="vh-stat" role="listitem"><span class="vh-stat-n">100%</span><span class="vh-stat-l">Private</span></div>
+    <div class="vh-stat" role="listitem"><span class="vh-stat-n">8</span><span class="vh-stat-l">Categories</span></div>
+    <div class="vh-stat" role="listitem"><span class="vh-stat-n">2026</span><span class="vh-stat-l">EES ready</span></div>
+  </div>
 
+  <!-- ===================================================================
+       3 · FREE TRAVEL TOOLS  (17)
+       =================================================================== -->
+  <section id="vh-tools" class="vh-block vh-reveal" aria-labelledby="vh-tools-title">
+    <div class="vh-head">
+      <span class="vh-eyebrow"><b>01</b> Free planning tools</span>
+      <h2 id="vh-tools-title">Plan Smarter With <em>Free Travel Tools</em></h2>
+      <p class="vh-intro">Compare, prepare and check the details that matter before you travel — 17 tools, no sign-up.</p>
       <div class="vh-nav" role="group" aria-label="Scroll travel tools">
         <button type="button" class="vh-arrow" data-dir="prev" aria-label="Previous tools">‹</button>
         <button type="button" class="vh-arrow" data-dir="next" aria-label="More tools">›</button>
@@ -105,126 +112,92 @@
       <div class="vh-window">
         <ul class="vh-track">
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/trip-readiness-checklist/" style="--accent:#ffd27f;--accent-dark:#7b5420;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-PASSPORT.png" alt="Travel Passport trip readiness checklist" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">◆</span><span class="vh-card-badge">Readiness</span></span>
-            <span class="vh-card-copy"><strong>Travel Passport</strong><small>Check whether your trip is truly ready before departure.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/trip-readiness-checklist/" style="--accent:#0e9f8f;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-PASSPORT.png" alt="Travel Passport trip readiness checklist" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">◆</span></span>
+            <span class="vh-body"><span class="vh-badge">Readiness</span><strong>Travel Passport</strong><small>Check whether your trip is truly ready before departure.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/interactive-travel-map/" style="--accent:#9ee58f;--accent-dark:#3d6e37;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/05/INTERACTIVE-TRAVEL-MAP.jpg" alt="Interactive Travel Map" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">⌖</span><span class="vh-card-badge">Discovery</span></span>
-            <span class="vh-card-copy"><strong>Interactive Travel Map</strong><small>Find destinations by budget, month, style and match score.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/interactive-travel-map/" style="--accent:#3a9e57;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/05/INTERACTIVE-TRAVEL-MAP.jpg" alt="Interactive Travel Map" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">⌖</span></span>
+            <span class="vh-body"><span class="vh-badge">Discovery</span><strong>Interactive Travel Map</strong><small>Find destinations by budget, month, style and match score.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/interactive-world-map/" style="--accent:#73b9ff;--accent-dark:#254f80;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/07/INTERACTIVE-WORLD-MAP.jpg" alt="Interactive World Map rotating globe" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">◉</span><span class="vh-card-badge">World map</span></span>
-            <span class="vh-card-copy"><strong>Interactive World Map</strong><small>Spin a rotating globe of 167 destinations with live data.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/interactive-world-map/" style="--accent:#2f7fd1;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/07/INTERACTIVE-WORLD-MAP.jpg" alt="Interactive World Map rotating globe" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">◉</span></span>
+            <span class="vh-body"><span class="vh-badge">World map</span><strong>Interactive World Map</strong><small>Spin a rotating globe of 167 destinations with live data.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/free-smart-travel-hub/" style="--accent:#ffac73;--accent-dark:#7a4224;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/04/SMART-TRAVEL-HUB.jpg" alt="Smart Travel Hub" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">✦</span><span class="vh-card-badge">Live intel</span></span>
-            <span class="vh-card-copy"><strong>Smart Travel Hub</strong><small>Live weather, currency, safety and local basics in one place.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/free-smart-travel-hub/" style="--accent:#e07a3f;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/04/SMART-TRAVEL-HUB.jpg" alt="Smart Travel Hub" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">✦</span></span>
+            <span class="vh-body"><span class="vh-badge">Live intel</span><strong>Smart Travel Hub</strong><small>Live weather, currency, safety and local basics in one place.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/trip-budget-calculator/" style="--accent:#68e6d0;--accent-dark:#125b55;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/04/TRIP-BUDGET-CALCULATOR.jpg" alt="Trip Budget Calculator" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">$</span><span class="vh-card-badge">Budget</span></span>
-            <span class="vh-card-copy"><strong>Trip Budget Calculator</strong><small>Estimate accommodation, food, transport and daily costs.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/trip-budget-calculator/" style="--accent:#0ea394;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/04/TRIP-BUDGET-CALCULATOR.jpg" alt="Trip Budget Calculator" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">$</span></span>
+            <span class="vh-body"><span class="vh-badge">Budget</span><strong>Trip Budget Calculator</strong><small>Estimate accommodation, food, transport and daily costs.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/tip-calculator/" style="--accent:#ffcf8a;--accent-dark:#7b5420;">
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/tip-calculator/" style="--accent:#d69a2b;">
             <span class="vh-new" aria-hidden="true">New</span>
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/07/TIP-CALCULATOR-2.png" alt="Tip Calculator" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">%</span><span class="vh-card-badge">Tipping</span></span>
-            <span class="vh-card-copy"><strong>Tip Calculator</strong><small>Get the right tip for 200+ countries and daily situations.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/07/TIP-CALCULATOR-2.png" alt="Tip Calculator" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">%</span></span>
+            <span class="vh-body"><span class="vh-badge">Tipping</span><strong>Tip Calculator</strong><small>Get the right tip for 200+ countries and daily situations.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/packing-list-generator/" style="--accent:#b9ef8a;--accent-dark:#4c6d2d;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/04/SMART-PACKING-LIST-GENERATOR.jpg" alt="Packing List Generator" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">✓</span><span class="vh-card-badge">Packing</span></span>
-            <span class="vh-card-copy"><strong>Packing List Generator</strong><small>Create a climate-aware checklist matched to your journey.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/packing-list-generator/" style="--accent:#5aa130;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/04/SMART-PACKING-LIST-GENERATOR.jpg" alt="Packing List Generator" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">✓</span></span>
+            <span class="vh-body"><span class="vh-badge">Packing</span><strong>Packing List Generator</strong><small>Create a climate-aware checklist matched to your journey.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/carry-on-size-checker/" style="--accent:#4fc3f7;--accent-dark:#1a3b4e;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/06/Carry-On-Size-Checker.png" alt="Carry-On Size Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">✈</span><span class="vh-card-badge">Baggage</span></span>
-            <span class="vh-card-copy"><strong>Carry-On Size Checker</strong><small>Check your bag against airline rules before you fly.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/carry-on-size-checker/" style="--accent:#1f97c9;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/06/Carry-On-Size-Checker.png" alt="Carry-On Size Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">✈</span></span>
+            <span class="vh-body"><span class="vh-badge">Baggage</span><strong>Carry-On Size Checker</strong><small>Check your bag against airline rules before you fly.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/travel-scam-checker/" style="--accent:#70d6ff;--accent-dark:#245a72;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-22-2026-06_52_57-PM.png" alt="Travel Scam Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">!</span><span class="vh-card-badge">Safety</span></span>
-            <span class="vh-card-copy"><strong>Travel Scam Shield</strong><small>Recognize common travel risks before they cost you.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/travel-scam-checker/" style="--accent:#2a9bc4;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-22-2026-06_52_57-PM.png" alt="Travel Scam Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">!</span></span>
+            <span class="vh-body"><span class="vh-badge">Safety</span><strong>Travel Scam Shield</strong><small>Recognize common travel risks before they cost you.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/destination-quiz/" style="--accent:#84bfff;--accent-dark:#254f80;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/04/DESTINATION-QUIZ.jpg" alt="Destination Quiz" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">?</span><span class="vh-card-badge">Inspiration</span></span>
-            <span class="vh-card-copy"><strong>Destination Quiz</strong><small>Discover destinations that fit your style and budget.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/destination-quiz/" style="--accent:#3f83d6;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/04/DESTINATION-QUIZ.jpg" alt="Destination Quiz" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">?</span></span>
+            <span class="vh-body"><span class="vh-badge">Inspiration</span><strong>Destination Quiz</strong><small>Discover destinations that fit your style and budget.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/travel-destination-comparison-tool/" style="--accent:#d5a7ff;--accent-dark:#654184;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-DESTINATION-TOOL.png" alt="Travel Destination Comparison Tool" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">⇄</span><span class="vh-card-badge">Compare</span></span>
-            <span class="vh-card-copy"><strong>Destination Comparison</strong><small>Compare two destinations side by side before you book.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/travel-destination-comparison-tool/" style="--accent:#9a5cd0;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/06/TRAVEL-DESTINATION-TOOL.png" alt="Travel Destination Comparison Tool" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">⇄</span></span>
+            <span class="vh-body"><span class="vh-badge">Compare</span><strong>Destination Comparison</strong><small>Compare two destinations side by side before you book.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/best-time-to-visit-travel-planner/" style="--accent:#ffc985;--accent-dark:#765021;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-29-2026-07_07_57-PM.jpg" alt="Travel Month Planner" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon vh-card-icon--date" aria-hidden="true">30</span><span class="vh-card-badge">Best month</span></span>
-            <span class="vh-card-copy"><strong>Travel Month Planner</strong><small>Compare weather, crowds and prices to pick the best month.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/best-time-to-visit-travel-planner/" style="--accent:#d69324;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/04/ChatGPT-Image-Apr-29-2026-07_07_57-PM.jpg" alt="Travel Month Planner" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon vh-tool-icon--date" aria-hidden="true">30</span></span>
+            <span class="vh-body"><span class="vh-badge">Best month</span><strong>Travel Month Planner</strong><small>Compare weather, crowds and prices to pick the best month.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/medicine-restricted-item-checker/" style="--accent:#8fd5c7;--accent-dark:#346a61;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/05/ChatGPT-Image-May-5-2026-09_06_04-PM.jpg" alt="Medicine and Restricted Items Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">+</span><span class="vh-card-badge">Item rules</span></span>
-            <span class="vh-card-copy"><strong>Medicine Item Checker</strong><small>Check medicines and restricted items before you travel.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/medicine-restricted-item-checker/" style="--accent:#1f9e8c;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/05/ChatGPT-Image-May-5-2026-09_06_04-PM.jpg" alt="Medicine and Restricted Items Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">+</span></span>
+            <span class="vh-body"><span class="vh-badge">Item rules</span><strong>Medicine Item Checker</strong><small>Check medicines and restricted items before you travel.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/jet-lag-recovery-planner/" style="--accent:#c5b3ff;--accent-dark:#574786;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/05/gpt-image-2_Create_an_ultra-premium_8K_landscape_featured_image_for_a_travel_website_tool_ti-0.jpg" alt="Jet Lag Recovery Planner" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">◷</span><span class="vh-card-badge">Recovery</span></span>
-            <span class="vh-card-copy"><strong>Jet Lag Recovery Planner</strong><small>Build a sleep and light plan across time zones.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/jet-lag-recovery-planner/" style="--accent:#7c5cd6;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/05/gpt-image-2_Create_an_ultra-premium_8K_landscape_featured_image_for_a_travel_website_tool_ti-0.jpg" alt="Jet Lag Recovery Planner" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">◷</span></span>
+            <span class="vh-body"><span class="vh-badge">Recovery</span><strong>Jet Lag Recovery Planner</strong><small>Build a sleep and light plan across time zones.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/transit-visa-layover-risk-checker/" style="--accent:#a8c9ff;--accent-dark:#385b8b;">
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/05/TRANSIT-VISA.jpg" alt="Transit Visa and Layover Risk Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">✈</span><span class="vh-card-badge">Layover</span></span>
-            <span class="vh-card-copy"><strong>Transit Visa Checker</strong><small>Review layover and airport-transit visa risks.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/transit-visa-layover-risk-checker/" style="--accent:#4a80c9;">
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/05/TRANSIT-VISA.jpg" alt="Transit Visa and Layover Risk Checker" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">✈</span></span>
+            <span class="vh-body"><span class="vh-badge">Layover</span><strong>Transit Visa Checker</strong><small>Review layover and airport-transit visa risks.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/schengen-90-180-day-calculator/" style="--accent:#94f0dc;--accent-dark:#125b55;">
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/schengen-90-180-day-calculator/" style="--accent:#0e9f8f;">
             <span class="vh-new" aria-hidden="true">New</span>
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/06/Schengen-Calculator.jpg" alt="Schengen 90/180-day calculator" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon vh-card-icon--date" aria-hidden="true">90</span><span class="vh-card-badge">Visa days</span></span>
-            <span class="vh-card-copy"><strong>Schengen Day Bank</strong><small>Track your 90/180-day balance with a calendar heatmap.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/06/Schengen-Calculator.jpg" alt="Schengen 90/180-day calculator" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon vh-tool-icon--date" aria-hidden="true">90</span></span>
+            <span class="vh-body"><span class="vh-badge">Visa days</span><strong>Schengen Day Bank</strong><small>Track your 90/180-day balance with a calendar heatmap.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--tool" href="https://voyasee.com/best-area-to-stay/" style="--accent:#f6a5c8;--accent-dark:#7a3450;">
+          <li><a class="vh-card vh-tool" href="https://voyasee.com/best-area-to-stay/" style="--accent:#e05e7d;">
             <span class="vh-new" aria-hidden="true">New</span>
-            <img class="vh-card-img" src="https://voyasee.com/wp-content/uploads/2026/07/Find-the-Best-Area-to-Stay-for-Your-Trip.png" alt="Best Area to Stay Finder" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-top"><span class="vh-card-icon" aria-hidden="true">⌂</span><span class="vh-card-badge">Where to stay</span></span>
-            <span class="vh-card-copy"><strong>Best Area to Stay Finder</strong><small>Match your budget and style to the right neighborhood.</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+            <span class="vh-thumb"><img src="https://voyasee.com/wp-content/uploads/2026/07/Find-the-Best-Area-to-Stay-for-Your-Trip.png" alt="Best Area to Stay Finder" width="900" height="540" loading="lazy" decoding="async" draggable="false"><span class="vh-tool-icon" aria-hidden="true">⌂</span></span>
+            <span class="vh-body"><span class="vh-badge">Where to stay</span><strong>Best Area to Stay Finder</strong><small>Match your budget and style to the right neighborhood.</small><span class="vh-open">Open tool <i aria-hidden="true">→</i></span></span>
           </a></li>
 
         </ul>
@@ -233,14 +206,13 @@
   </section>
 
   <!-- ===================================================================
-       3 · EXPLORE STORIES BY CATEGORY  (8 categories · unified rail)
+       4 · EXPLORE STORIES BY CATEGORY  (8)
        =================================================================== -->
-  <section class="vh-block vh-cats" aria-labelledby="vh-cats-title">
+  <section id="vh-cats" class="vh-block vh-reveal" aria-labelledby="vh-cats-title">
     <div class="vh-head">
-      <span class="vh-eyebrow">Browse by travel mood</span>
+      <span class="vh-eyebrow"><b>02</b> Browse by travel mood</span>
       <h2 id="vh-cats-title">Explore Stories by <em>Category</em></h2>
       <p class="vh-intro">Guides, tips and destination stories — grouped the way you actually travel.</p>
-
       <div class="vh-nav" role="group" aria-label="Scroll categories">
         <button type="button" class="vh-arrow" data-dir="prev" aria-label="Previous categories">‹</button>
         <button type="button" class="vh-arrow" data-dir="next" aria-label="More categories">›</button>
@@ -251,52 +223,52 @@
       <div class="vh-window">
         <ul class="vh-track">
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="travel-visa-requirements" href="https://voyasee.com/categories-voyasee/travel-visa-requirements/" style="--accent:#94f0dc;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/8193761/pexels-photo-8193761.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Visa and Travel Requirements" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Visa &amp; Travel Requirements</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="travel-visa-requirements" href="https://voyasee.com/categories-voyasee/travel-visa-requirements/" style="--accent:#0e9f8f;">
+            <img src="https://images.pexels.com/photos/8193761/pexels-photo-8193761.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Visa and Travel Requirements" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Visa &amp; Travel Requirements</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="travel-tips" href="https://voyasee.com/categories-voyasee/travel-tips/" style="--accent:#ffd49a;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Travel Tips" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Travel Tips</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="travel-tips" href="https://voyasee.com/categories-voyasee/travel-tips/" style="--accent:#d69a2b;">
+            <img src="https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Travel Tips" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Travel Tips</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="tourism-information" href="https://voyasee.com/categories-voyasee/tourism-information/" style="--accent:#82d9ff;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Tourism Information" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Tourism Info</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="tourism-information" href="https://voyasee.com/categories-voyasee/tourism-information/" style="--accent:#2f8fd1;">
+            <img src="https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Tourism Information" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Tourism Info</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="local-food-and-cuisine" href="https://voyasee.com/categories-voyasee/local-food-and-cuisine/" style="--accent:#ff9d78;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Food and Cuisine" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Food &amp; Cuisine</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="local-food-and-cuisine" href="https://voyasee.com/categories-voyasee/local-food-and-cuisine/" style="--accent:#e0673f;">
+            <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Food and Cuisine" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Food &amp; Cuisine</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="destination-travel-guides" href="https://voyasee.com/categories-voyasee/destination-travel-guides/" style="--accent:#b7f69f;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Destination Guides" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Destination Guides</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="destination-travel-guides" href="https://voyasee.com/categories-voyasee/destination-travel-guides/" style="--accent:#5aa130;">
+            <img src="https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Destination Guides" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Destination Guides</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="best-places-to-stay" href="https://voyasee.com/categories-voyasee/best-places-to-stay/" style="--accent:#e8b5ff;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/30722813/pexels-photo-30722813.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Accommodation" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Accommodation</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="best-places-to-stay" href="https://voyasee.com/categories-voyasee/best-places-to-stay/" style="--accent:#a05cd0;">
+            <img src="https://images.pexels.com/photos/30722813/pexels-photo-30722813.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Accommodation" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Accommodation</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="geography-travel-facts" href="https://voyasee.com/categories-voyasee/geography-travel-facts/" style="--accent:#73b9ff;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/8828360/pexels-photo-8828360.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Geography and Travel Facts" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Geography &amp; Travel Facts</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="geography-travel-facts" href="https://voyasee.com/categories-voyasee/geography-travel-facts/" style="--accent:#3f83d6;">
+            <img src="https://images.pexels.com/photos/8828360/pexels-photo-8828360.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Geography and Travel Facts" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Geography &amp; Travel Facts</strong><small data-category-count>View articles</small></span>
           </a></li>
 
-          <li><a class="vh-card vh-card--cat" data-cat-slug="travel-experiences-local-culture" href="https://voyasee.com/categories-voyasee/travel-experiences-local-culture/" style="--accent:#ffca72;">
-            <img class="vh-card-img" src="https://images.pexels.com/photos/13329048/pexels-photo-13329048.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Travel Experiences and Local Culture" width="900" height="540" loading="lazy" decoding="async" draggable="false">
-            <span class="vh-card-copy"><span class="vh-card-rule"></span><strong>Travel Experiences &amp; Local Culture</strong><small data-category-count>View articles</small></span>
-            <span class="vh-card-go" aria-hidden="true">↗</span>
+          <li><a class="vh-card vh-cat" data-cat-slug="travel-experiences-local-culture" href="https://voyasee.com/categories-voyasee/travel-experiences-local-culture/" style="--accent:#d69324;">
+            <img src="https://images.pexels.com/photos/13329048/pexels-photo-13329048.jpeg?auto=compress&cs=tinysrgb&w=900&h=540&fit=crop" alt="Travel Experiences and Local Culture" width="900" height="540" loading="lazy" decoding="async" draggable="false">
+            <span class="vh-cat-go" aria-hidden="true">↗</span>
+            <span class="vh-cat-label"><strong>Travel Experiences &amp; Local Culture</strong><small data-category-count>View articles</small></span>
           </a></li>
 
         </ul>
@@ -304,326 +276,292 @@
     </div>
   </section>
 
+  <!-- ===================================================================
+       5 · CLOSING CTA BAND
+       =================================================================== -->
+  <div class="vh-cta vh-reveal">
+    <div class="vh-cta-inner">
+      <h2 class="vh-cta-title">Start planning your next trip — <em>free</em></h2>
+      <p>Pick a tool, get a clear answer in minutes. No account, no tracking, no cost.</p>
+      <div class="vh-hero-cta">
+        <a class="vh-btn vh-btn-primary" href="#vh-tools" data-scroll>Open the toolkit <i aria-hidden="true">→</i></a>
+        <a class="vh-btn vh-btn-ghost vh-btn-ghost-dark" href="https://voyasee.com/free-smart-travel-hub/">Try the Smart Hub</a>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <style>
 /* =========================================================================
-   VOYASEE UNIFIED HOME — DESIGN SYSTEM
+   VOYASEE — LIGHT & AIRY PREMIUM DESIGN SYSTEM
    ========================================================================= */
-
-.voyasee-home,
-.voyasee-home *,
-.voyasee-home *::before,
-.voyasee-home *::after { box-sizing: border-box; }
+.voyasee-home, .voyasee-home *, .voyasee-home *::before, .voyasee-home *::after { box-sizing: border-box; }
 
 .voyasee-home {
-  /* ---- design tokens ---- */
-  --bg-deep: #05090d;
-  --bg-1:    #08252b;
-  --bg-2:    #0d323a;
-  --teal:    #94f0dc;
-  --teal-soft: #aef5e8;
-  --gold:    #ffd5a1;
-  --coral:   #ff8f70;
-  --ink:     #ffffff;
-  --line:    rgba(255,255,255,.14);
-  --card-w:  clamp(300px, 31vw, 384px);
-  --card-h:  182px;
-  --gap:     18px;
-  --maxw:    1160px;
+  --ink:      #16262e;
+  --ink-soft: #4a5b63;
+  --muted:    #728189;
+  --surface:  #ffffff;
+  --paper:    #f5f9fb;
+  --line:     rgba(18,40,48,.10);
+  --teal:     #0ea394;
+  --teal-deep:#0b7d72;
+  --coral:    #ff6a4d;
+  --coral-deep:#e8502f;
+  --gold:     #f4a72b;
+  --grad:     linear-gradient(120deg, var(--teal), var(--coral));
+  --card-w:   clamp(260px, 27vw, 300px);
+  --gap:      20px;
+  --maxw:     1180px;
+  --shadow:   0 18px 44px rgba(20,60,70,.10);
+  --shadow-lg:0 30px 70px rgba(20,60,70,.16);
 
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 0 8px;
-  border-radius: 18px;
+  position: relative; isolation: isolate; overflow: hidden;
+  width: 100%; margin: 0 auto; padding: 0 0 4px;
+  border-radius: 22px;
   color: var(--ink);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   background:
-    linear-gradient(180deg, #061015 0%, #072026 22%, #0a2e35 55%, #08222a 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.05),
-    0 26px 70px rgba(0,0,0,.30);
+    radial-gradient(1100px 520px at 78% -8%, #eafaf6 0%, transparent 60%),
+    radial-gradient(900px 480px at 8% 4%, #fff2ec 0%, transparent 55%),
+    linear-gradient(180deg, #f9fdfd 0%, #ffffff 42%, #f6fbfc 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 30px 80px rgba(20,60,70,.12);
   contain: layout paint;
 }
 
-/* Shared atmosphere (glow blobs) */
-.vh-aura {
-  position: absolute; z-index: -3; inset: 0; pointer-events: none;
+.vh-aura { position: absolute; z-index: -3; inset: 0; pointer-events: none;
   background:
-    radial-gradient(circle at 14% 8%,  rgba(130,236,217,.24), transparent 24%),
-    radial-gradient(circle at 88% 6%,  rgba(255,194,125,.16), transparent 24%),
-    radial-gradient(circle at 78% 62%, rgba(148,240,220,.12), transparent 30%),
-    radial-gradient(circle at 20% 92%, rgba(255,143,112,.10), transparent 28%);
+    radial-gradient(460px 320px at 84% 120%, rgba(14,163,148,.12), transparent 70%),
+    radial-gradient(420px 300px at 12% 90%, rgba(255,106,77,.10), transparent 70%);
+}
+.vh-dots { position: absolute; z-index: -2; inset: 0 0 auto 0; height: 460px; pointer-events: none;
+  opacity: .5;
+  background-image: radial-gradient(rgba(14,163,148,.16) 1.4px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(680px 380px at 50% 12%, #000, transparent 78%);
+          mask-image: radial-gradient(680px 380px at 50% 12%, #000, transparent 78%);
 }
 
-/* Shared perspective grid floor */
-.vh-grid {
-  position: absolute; z-index: -2; inset: 40% -12% -20%;
-  opacity: .30; pointer-events: none;
-  background:
-    linear-gradient(rgba(148,240,220,.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148,240,220,.10) 1px, transparent 1px);
-  background-size: 60px 60px;
-  transform: perspective(620px) rotateX(70deg);
-  transform-origin: bottom;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 40%);
-          mask-image: linear-gradient(180deg, transparent, #000 40%);
-}
+/* reveal-on-scroll */
+.vh-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+.vh-reveal.vh-in { opacity: 1; transform: none; }
 
 /* =========================================================================
-   1 · HERO
+   HERO
    ========================================================================= */
-.vh-hero {
-  position: relative;
-  overflow: hidden;
-  min-height: 188px;
-  padding: 26px 18px 18px;
-}
+.vh-hero { position: relative; overflow: hidden; padding: 46px 22px 20px; text-align: center; }
+.vh-route { position: absolute; z-index: -1; inset: -6% 0 auto 0; width: 100%; height: 260px; opacity: .85; pointer-events: none; }
+.vh-route-path { fill: none; stroke: rgba(14,163,148,.42); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 7 13; animation: vhRouteMove 30s linear infinite; }
+.vh-route-dot { fill: var(--coral); filter: drop-shadow(0 0 7px rgba(255,106,77,.55)); }
+.vh-dot-2 { fill: var(--teal); } .vh-dot-3 { fill: var(--gold); }
+.vh-plane path { fill: var(--coral); } .vh-plane { filter: drop-shadow(0 2px 5px rgba(255,106,77,.5)); }
 
-.vh-route { position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; opacity: .9; pointer-events: none; }
-.vh-route-path {
-  fill: none; stroke: rgba(143,245,225,.48); stroke-width: 2; stroke-linecap: round;
-  stroke-dasharray: 8 14; animation: vhRouteMove 28s linear infinite;
+.vh-hero-inner { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+.vh-kicker {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px 7px 12px;
+  border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.75);
+  color: var(--teal-deep); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  box-shadow: var(--shadow); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
-.vh-route-dot { fill: var(--gold); filter: drop-shadow(0 0 8px rgba(255,212,154,.8)); }
-.vh-dot-2 { fill: var(--teal); }
-.vh-dot-3 { fill: var(--coral); }
-.vh-plane path { fill: var(--gold); }
-.vh-plane { filter: drop-shadow(0 0 6px rgba(255,213,161,.85)); }
+.vh-kicker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 0 4px rgba(14,163,148,.14); }
 
-.vh-compass {
-  position: absolute; left: 16px; bottom: 14px; width: 34px; height: 34px;
-  display: grid; place-items: center;
-  border: 1px solid rgba(148,240,220,.55); border-radius: 50%;
-  color: var(--teal); font: 700 12px/1 "Barlow Condensed", sans-serif;
-  box-shadow: 0 0 18px rgba(148,240,220,.16); pointer-events: none;
+.vh-hero-heading { margin: 18px auto 0; max-width: 880px; }
+.vh-hero-hook {
+  display: block; color: var(--muted); font: 700 clamp(13px,1.5vw,16px)/1.2 "Plus Jakarta Sans", sans-serif;
+  letter-spacing: .16em; text-transform: uppercase; margin-bottom: 6px;
 }
-.vh-compass::before, .vh-compass::after { content: ""; position: absolute; background: rgba(148,240,220,.45); }
-.vh-compass::before { width: 1px; height: 22px; }
-.vh-compass::after  { width: 22px; height: 1px; }
-.vh-compass span { position: absolute; top: -10px; }
-
-.vh-hero-content { position: relative; z-index: 2; max-width: 980px; margin: 0 auto; text-align: center; }
-.vh-hero-heading {
-  max-width: 940px; margin: 0 auto; padding: 0; color: #fff;
-  font: 700 clamp(14px, 1.35vw, 17px)/1.15 "Barlow Condensed", sans-serif;
-  letter-spacing: .035em; text-transform: uppercase; text-wrap: balance;
-  text-shadow: 0 4px 16px rgba(0,0,0,.38);
+.vh-hero-focus {
+  display: block; font: 800 clamp(30px,5.4vw,60px)/1.04 "Sora", "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -.02em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: var(--teal-deep); text-wrap: balance;
 }
-.vh-hero-hook  { color: #fff; }
-.vh-hero-focus { color: var(--teal-soft); }
-.vh-hero-focus::before { content: " "; }
+.vh-hero-sub { max-width: 620px; margin: 18px auto 0; color: var(--ink-soft); font-size: clamp(14px,1.5vw,16px); line-height: 1.6; }
 
-.vh-brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 0; }
-.vh-brand-line { width: 46px; height: 1px; flex: 0 0 auto; }
-.vh-brand-line-left  { background: linear-gradient(90deg, transparent, var(--teal)); }
-.vh-brand-line-right { background: linear-gradient(90deg, var(--gold), transparent); }
+.vh-hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 24px 0 6px; }
+.vh-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; border-radius: 999px;
+  font: 700 15px/1 "Plus Jakarta Sans", sans-serif; text-decoration: none !important; cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease; border: 1px solid transparent;
+}
+.vh-btn i { transition: transform .2s ease; }
+.vh-btn:hover i { transform: translateX(4px); }
+.vh-btn-primary { background: var(--grad); color: #fff !important; box-shadow: 0 14px 30px rgba(255,106,77,.30); }
+.vh-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(255,106,77,.40); }
+.vh-btn-ghost { background: rgba(255,255,255,.7); color: var(--ink) !important; border-color: var(--line); box-shadow: var(--shadow); }
+.vh-btn-ghost:hover { transform: translateY(-2px); border-color: var(--teal); color: var(--teal-deep) !important; }
+
+.vh-brand-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 26px 0 0; }
+.vh-brand-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, rgba(18,40,48,.28)); }
+.vh-brand-line:last-child { background: linear-gradient(90deg, rgba(18,40,48,.28), transparent); }
 .vh-brand-row strong {
-  margin: 0; color: #fff; font: 900 clamp(30px,4.6vw,44px)/1 "Unbounded", sans-serif;
-  letter-spacing: -.035em; text-transform: uppercase; text-shadow: 0 12px 30px rgba(0,0,0,.5);
+  font: 800 clamp(24px,3.4vw,34px)/1 "Unbounded", sans-serif; letter-spacing: -.04em;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--teal-deep);
 }
 
-/* Hero topic marquee */
-.vh-topics-wrap {
-  --topic-speed: 42s;
-  position: relative; z-index: 2; overflow: hidden;
-  width: 100%; max-width: 980px; min-height: 37px; margin: 16px auto 4px;
-}
-.vh-topics-wrap::before, .vh-topics-wrap::after {
-  content: ""; position: absolute; z-index: 5; top: 0; bottom: 0; width: 62px; pointer-events: none;
-}
-.vh-topics-wrap::before { left: 0;  background: linear-gradient(90deg,  #071a20, transparent); }
-.vh-topics-wrap::after  { right: 0; background: linear-gradient(270deg, #071a20, transparent); }
-.vh-topics { position: relative; overflow: hidden; width: 100%; min-height: 37px; }
-.vh-topic-list {
-  display: flex; align-items: center; gap: 10px; width: max-content; min-width: max-content;
-  margin: 0; padding: 0 0 0 100%; list-style: none;
-  animation: vhTopicMarquee var(--topic-speed) linear infinite; will-change: transform;
-}
+/* hero topic marquee */
+.vh-topics-wrap { --topic-speed: 44s; position: relative; z-index: 2; overflow: hidden; width: 100%; max-width: 1000px; margin: 26px auto 0; }
+.vh-topics-wrap::before, .vh-topics-wrap::after { content: ""; position: absolute; z-index: 5; top: 0; bottom: 0; width: 70px; pointer-events: none; }
+.vh-topics-wrap::before { left: 0; background: linear-gradient(90deg, #f9fdfd, transparent); }
+.vh-topics-wrap::after  { right: 0; background: linear-gradient(270deg, #f6fbfc, transparent); }
+.vh-topics { overflow: hidden; width: 100%; }
+.vh-topic-list { display: flex; align-items: center; gap: 10px; width: max-content; margin: 0; padding: 0 0 0 100%; list-style: none; animation: vhTopicMarquee var(--topic-speed) linear infinite; will-change: transform; }
 .vh-topics-wrap:hover .vh-topic-list { animation-play-state: paused; }
 .vh-topic-list li { flex: 0 0 auto; }
 .vh-topic-list span {
-  display: flex; align-items: center; min-height: 34px; padding: 0 14px;
-  border: 1px solid rgba(255,255,255,.20); border-radius: 999px;
-  background: rgba(255,255,255,.08); color: #fff;
-  font: 700 14px/1 "Barlow Condensed", sans-serif; letter-spacing: .01em;
-  text-transform: uppercase; white-space: nowrap;
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: center; min-height: 34px; padding: 0 15px; border: 1px solid var(--line);
+  border-radius: 999px; background: rgba(255,255,255,.8); color: var(--ink-soft);
+  font: 700 13px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .01em; white-space: nowrap; box-shadow: 0 4px 12px rgba(20,60,70,.05);
 }
-.vh-topic-list li:nth-child(2n) span { color: var(--teal); }
-.vh-topic-list li:nth-child(3n) span { color: var(--gold); }
+.vh-topic-list li:nth-child(2n) span { color: var(--teal-deep); }
+.vh-topic-list li:nth-child(3n) span { color: var(--coral-deep); }
 
 /* =========================================================================
-   SHARED BLOCK + HEADINGS
+   STAT STRIP
    ========================================================================= */
-.vh-block { position: relative; padding: 30px 0 26px; }
-.vh-block::before {
-  content: ""; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
-  width: min(var(--maxw), calc(100% - 40px)); height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(148,240,220,.28), transparent);
+.vh-stats {
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  width: min(var(--maxw), calc(100% - 40px)); margin: 8px auto 6px;
 }
-.vh-head { position: relative; width: min(var(--maxw), calc(100% - 32px)); margin: 0 auto 20px; text-align: center; }
-.vh-eyebrow {
-  display: inline-flex; align-items: center; justify-content: center; min-height: 28px; padding: 0 14px;
-  border: 1px solid rgba(255,255,255,.24); border-radius: 999px;
-  background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-  color: var(--teal-soft); font: 800 11px/1 "DM Sans", Arial, sans-serif;
-  letter-spacing: .06em; text-transform: uppercase;
+.vh-stat {
+  flex: 1 1 140px; max-width: 210px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 16px 12px; border: 1px solid var(--line); border-radius: 18px;
+  background: rgba(255,255,255,.78); box-shadow: var(--shadow); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
-.vh-head h2 {
-  margin: 12px 0 0; color: #fff;
-  font: 700 clamp(28px,3.4vw,38px)/1.08 "Playfair Display", Georgia, serif;
-  letter-spacing: -.025em; text-wrap: balance; text-shadow: 0 14px 34px rgba(0,0,0,.35);
-}
-.vh-head em { color: var(--gold); font-style: italic; }
-.vh-intro {
-  max-width: 620px; margin: 8px auto 0; color: rgba(255,255,255,.74);
-  font: 600 12.5px/1.5 "DM Sans", Arial, sans-serif;
-}
+.vh-stat-n { font: 800 clamp(24px,3vw,32px)/1 "Sora", sans-serif; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--teal-deep); }
+.vh-stat-l { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 
-/* Arrow controls */
-.vh-nav { display: inline-flex; gap: 10px; margin-top: 16px; }
-.vh-arrow {
-  width: 42px; height: 42px; display: grid; place-items: center; cursor: pointer;
-  border: 1px solid rgba(255,255,255,.24); border-radius: 50%;
-  background: rgba(255,255,255,.06); color: #fff; font: 700 20px/1 Arial, sans-serif;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  transition: background-color .2s, border-color .2s, transform .2s, opacity .2s;
+/* =========================================================================
+   BLOCK + HEADINGS
+   ========================================================================= */
+.vh-block { position: relative; padding: 40px 0 30px; }
+.vh-head { position: relative; width: min(var(--maxw), calc(100% - 32px)); margin: 0 auto 26px; text-align: center; }
+.vh-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px; padding: 7px 15px 7px 8px; border: 1px solid var(--line);
+  border-radius: 999px; background: rgba(255,255,255,.8); color: var(--teal-deep);
+  font: 800 11px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .07em; text-transform: uppercase; box-shadow: var(--shadow);
 }
-.vh-arrow:hover { background: var(--teal); border-color: var(--teal); color: #061115; transform: translateY(-2px); }
-.vh-arrow:disabled { opacity: .34; cursor: default; transform: none; background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.24); color: #fff; }
+.vh-eyebrow b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--grad); color: #fff; font-size: 10px; }
+.vh-head h2 {
+  margin: 14px 0 0; color: var(--ink);
+  font: 700 clamp(28px,3.6vw,42px)/1.08 "Playfair Display", Georgia, serif; letter-spacing: -.01em; text-wrap: balance;
+}
+.vh-head em { font-style: italic; background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--coral-deep); }
+.vh-intro { max-width: 600px; margin: 10px auto 0; color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; }
+
+.vh-nav { display: inline-flex; gap: 10px; margin-top: 18px; }
+.vh-arrow {
+  width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; border: 1px solid var(--line);
+  border-radius: 50%; background: #fff; color: var(--ink); font: 700 20px/1 Arial, sans-serif; box-shadow: var(--shadow);
+  transition: background-color .2s, border-color .2s, transform .2s, color .2s, opacity .2s;
+}
+.vh-arrow:hover { background: var(--grad); border-color: transparent; color: #fff; transform: translateY(-2px); }
+.vh-arrow:disabled { opacity: .38; cursor: default; transform: none; background: #fff; color: var(--ink); }
 .vh-arrow:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
 
 /* =========================================================================
-   RAIL (slider window + track)
+   RAIL
    ========================================================================= */
 .vh-rail { position: relative; width: min(var(--maxw), 100%); margin: 0 auto; }
 .vh-window { position: relative; overflow: hidden; width: 100%; cursor: grab; }
 .vh-window.is-drag { cursor: grabbing; }
-.vh-window::before, .vh-window::after {
-  content: ""; position: absolute; z-index: 6; top: 0; bottom: 0; width: 64px; pointer-events: none;
-}
-.vh-window::before { left: 0;  background: linear-gradient(90deg,  rgba(7,26,32,.96), transparent); }
-.vh-window::after  { right: 0; background: linear-gradient(270deg, rgba(7,26,32,.96), transparent); }
-.vh-track {
-  display: flex; align-items: stretch; gap: var(--gap); width: max-content;
-  margin: 0; padding: 6px 20px 12px; list-style: none;
-  transform: translate3d(0,0,0); will-change: transform;
-}
-.vh-track > li { flex: 0 0 auto; }
+.vh-window::before, .vh-window::after { content: ""; position: absolute; z-index: 6; top: 0; bottom: 0; width: 56px; pointer-events: none; }
+.vh-window::before { left: 0;  background: linear-gradient(90deg,  #f9fdfd, transparent); }
+.vh-window::after  { right: 0; background: linear-gradient(270deg, #f6fbfc, transparent); }
+.vh-track { display: flex; align-items: stretch; gap: var(--gap); width: max-content; margin: 0; padding: 12px 24px 20px; list-style: none; transform: translate3d(0,0,0); will-change: transform; }
+.vh-track > li { flex: 0 0 auto; display: flex; }
 
 /* =========================================================================
-   UNIFIED CARD
+   TOOL CARD (light product card)
    ========================================================================= */
-.vh-card {
-  position: relative; display: block; width: var(--card-w); height: var(--card-h);
-  overflow: hidden; border: 1px solid rgba(255,255,255,.16); border-radius: 14px;
-  background: linear-gradient(135deg, var(--accent-dark, #174e56), #10242b);
-  color: #fff !important; text-decoration: none !important;
-  box-shadow: 0 16px 40px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.06);
-  -webkit-user-select: none; user-select: none;
-  transform: translateZ(0);
-  transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
-}
-.vh-card:hover, .vh-card:focus-visible {
-  z-index: 3; border-color: var(--accent, var(--teal)); outline: none; transform: translateY(-5px);
-  box-shadow: 0 24px 56px rgba(0,0,0,.42), 0 0 30px color-mix(in srgb, var(--accent, #94f0dc) 26%, transparent);
-}
-.vh-card:focus-visible { outline: 3px solid var(--accent, var(--teal)); outline-offset: 3px; }
+.vh-card { position: relative; text-decoration: none !important; -webkit-user-select: none; user-select: none; }
 
-.vh-card-img {
-  position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: center; -webkit-user-drag: none;
-  filter: saturate(.98) contrast(1.03); transform: scale(1.02);
-  transition: transform .6s ease, filter .35s ease;
+.vh-tool {
+  display: flex; flex-direction: column; width: var(--card-w); overflow: hidden;
+  border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--ink) !important;
+  box-shadow: var(--shadow); transform: translateZ(0);
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
 }
-.vh-card:hover .vh-card-img, .vh-card:focus-visible .vh-card-img {
-  filter: saturate(1.12) contrast(1.06); transform: scale(1.07);
-}
+.vh-tool:hover, .vh-tool:focus-visible { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: var(--shadow-lg); outline: none; }
+.vh-tool:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-/* readability overlays */
-.vh-card::before {
-  content: ""; position: absolute; z-index: 1; inset: 0;
-  background:
-    linear-gradient(180deg, rgba(2,12,16,.10) 0%, rgba(2,12,16,.18) 34%, rgba(2,12,16,.62) 70%, rgba(2,12,16,.93) 100%),
-    linear-gradient(115deg, color-mix(in srgb, var(--accent-dark, #174e56) 60%, transparent), transparent 55%);
+.vh-thumb { position: relative; display: block; aspect-ratio: 16/10; overflow: hidden; background: #eef4f5; }
+.vh-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; transition: transform .6s ease; }
+.vh-tool:hover .vh-thumb img { transform: scale(1.07); }
+.vh-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(255,255,255,.14)); }
+.vh-tool-icon {
+  position: absolute; z-index: 2; left: 14px; bottom: -18px; display: grid; place-items: center;
+  width: 42px; height: 42px; border-radius: 13px; background: #fff; color: var(--accent);
+  font: 800 18px/1 "Plus Jakarta Sans", sans-serif; box-shadow: 0 10px 22px rgba(20,60,70,.20); border: 1px solid var(--line);
 }
-/* inner hairline frame */
-.vh-card::after {
-  content: ""; position: absolute; z-index: 2; inset: 10px;
-  border: 1px solid rgba(255,255,255,.20); border-radius: 9px; pointer-events: none;
-  transition: border-color .28s ease;
-}
-.vh-card:hover::after, .vh-card:focus-visible::after { border-color: var(--accent, var(--teal)); }
+.vh-tool-icon--date { font-size: 13px; }
 
-/* top badge row (tools) */
-.vh-card-top {
-  position: absolute; z-index: 4; top: 15px; right: 16px; left: 16px;
-  display: flex; align-items: center; justify-content: space-between; pointer-events: none;
+.vh-body { display: flex; flex-direction: column; flex: 1; padding: 26px 18px 18px; }
+.vh-badge {
+  align-self: flex-start; display: inline-flex; align-items: center; padding: 5px 11px; margin-bottom: 10px;
+  border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, #fff); color: color-mix(in srgb, var(--accent) 78%, #000);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  font: 800 10px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .06em; text-transform: uppercase;
 }
-.vh-card-icon {
-  display: grid; place-items: center; width: 35px; height: 35px;
-  border: 1px solid rgba(255,255,255,.34); border-radius: 11px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--accent, #94f0dc) 82%, #fff), var(--accent, #94f0dc));
-  color: #061115; font: 800 16px/1 "DM Sans", Arial, sans-serif;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25);
-}
-.vh-card-icon--date { font-size: 12px; }
-.vh-card-badge {
-  display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px;
-  border: 1px solid rgba(255,255,255,.28); border-radius: 999px; background: rgba(5,19,24,.62);
-  color: rgba(255,255,255,.94); font: 800 9px/1 "DM Sans", Arial, sans-serif;
-  letter-spacing: .055em; text-transform: uppercase;
-  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
-}
-
-/* copy block */
-.vh-card-copy {
-  position: absolute; z-index: 4; right: 60px; bottom: 14px; left: 18px;
-  display: flex; min-width: 0; flex-direction: column; gap: 5px;
-}
-.vh-card-copy strong {
-  display: block; color: #fff; font: 800 21px/1.06 "DM Sans", Arial, sans-serif;
-  letter-spacing: -.025em; text-shadow: 0 8px 24px rgba(0,0,0,.70);
-}
-.vh-card--tool .vh-card-copy small {
-  display: -webkit-box; overflow: hidden; color: rgba(255,255,255,.82);
-  font: 700 10px/1.28 "DM Sans", Arial, sans-serif; letter-spacing: .025em; text-transform: uppercase;
-  text-shadow: 0 5px 16px rgba(0,0,0,.72); -webkit-box-orient: vertical; -webkit-line-clamp: 2;
-}
-/* category variant: accent rule + count */
-.vh-card--cat .vh-card-copy { justify-content: flex-end; }
-.vh-card-rule {
-  width: 34px; height: 3px; margin-bottom: 3px; border-radius: 999px;
-  background: var(--accent, #94f0dc); box-shadow: 0 0 14px var(--accent, #94f0dc);
-}
-.vh-card--cat .vh-card-copy small {
-  color: rgba(255,255,255,.84); font: 800 11px/1 "DM Sans", Arial, sans-serif;
-  letter-spacing: .055em; text-transform: uppercase;
-}
-
-/* go arrow */
-.vh-card-go {
-  position: absolute; z-index: 4; right: 17px; bottom: 15px; display: grid; place-items: center;
-  width: 35px; height: 35px; border: 1px solid rgba(255,255,255,.31); border-radius: 50%;
-  background: rgba(7,23,28,.62); color: #fff; font: 800 17px/1 Arial, sans-serif;
-  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
-  transition: color .26s, background-color .26s, border-color .26s, transform .26s;
-}
-.vh-card:hover .vh-card-go, .vh-card:focus-visible .vh-card-go {
-  border-color: var(--accent, var(--teal)); background: var(--accent, var(--teal)); color: #061115; transform: translate(2px,-2px);
-}
+.vh-body strong { color: var(--ink); font: 800 18px/1.18 "Sora", "Plus Jakarta Sans", sans-serif; letter-spacing: -.01em; }
+.vh-body small { margin-top: 7px; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.vh-open { margin-top: auto; padding-top: 14px; display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font: 800 12.5px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .02em; text-transform: uppercase; }
+.vh-open i { transition: transform .2s ease; }
+.vh-tool:hover .vh-open i { transform: translateX(4px); }
 
 /* NEW ribbon */
 .vh-new {
-  position: absolute; z-index: 5; top: 13px; left: -30px; transform: rotate(-45deg);
-  width: 120px; text-align: center; padding: 4px 0;
-  background: linear-gradient(135deg, var(--gold), #ff9e5a); color: #3a1e00;
-  font: 800 9px/1 "DM Sans", Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase;
-  box-shadow: 0 6px 16px rgba(0,0,0,.35); pointer-events: none;
+  position: absolute; z-index: 4; top: 14px; right: 14px; padding: 5px 11px; border-radius: 999px;
+  background: var(--grad); color: #fff; font: 800 10px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .08em;
+  text-transform: uppercase; box-shadow: 0 8px 18px rgba(255,106,77,.35);
 }
+
+/* =========================================================================
+   CATEGORY CARD (photo-forward)
+   ========================================================================= */
+.vh-cat {
+  display: block; position: relative; width: var(--card-w); height: 300px; overflow: hidden;
+  border-radius: 20px; border: 1px solid var(--line); background: #eef4f5; box-shadow: var(--shadow); transform: translateZ(0);
+  transition: transform .28s ease, box-shadow .28s ease;
+}
+.vh-cat:hover, .vh-cat:focus-visible { transform: translateY(-6px); box-shadow: var(--shadow-lg); outline: none; }
+.vh-cat:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.vh-cat img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; transition: transform .6s ease; }
+.vh-cat:hover img { transform: scale(1.08); }
+.vh-cat::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 38%, rgba(10,25,30,.66) 100%); }
+.vh-cat-label {
+  position: absolute; z-index: 2; left: 14px; right: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 3px;
+  padding: 13px 15px; border-radius: 15px; background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.vh-cat-label strong { color: #fff; font: 800 17px/1.15 "Sora", "Plus Jakarta Sans", sans-serif; letter-spacing: -.01em; text-shadow: 0 4px 14px rgba(0,0,0,.4); }
+.vh-cat-label small { color: rgba(255,255,255,.9); font: 800 10.5px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.vh-cat-go {
+  position: absolute; z-index: 2; top: 14px; right: 14px; display: grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 50%; background: rgba(255,255,255,.9); color: var(--accent); font: 800 17px/1 Arial, sans-serif;
+  box-shadow: 0 8px 20px rgba(0,0,0,.2); transition: transform .25s ease, background-color .25s ease, color .25s ease;
+}
+.vh-cat:hover .vh-cat-go { background: var(--accent); color: #fff; transform: translate(2px,-2px); }
+
+/* =========================================================================
+   CLOSING CTA BAND
+   ========================================================================= */
+.vh-cta { width: min(var(--maxw), calc(100% - 32px)); margin: 20px auto 26px; }
+.vh-cta-inner {
+  position: relative; overflow: hidden; text-align: center; padding: 44px 26px; border-radius: 26px;
+  background: linear-gradient(125deg, #0b7d72 0%, #0ea394 45%, #ff6a4d 130%); color: #fff;
+  box-shadow: 0 30px 70px rgba(14,120,110,.30);
+}
+.vh-cta-inner::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(420px 220px at 82% -20%, rgba(255,255,255,.22), transparent 70%),
+             radial-gradient(360px 200px at 10% 120%, rgba(255,255,255,.14), transparent 70%); }
+.vh-cta-title { position: relative; margin: 0; font: 700 clamp(24px,3.4vw,38px)/1.1 "Playfair Display", Georgia, serif; }
+.vh-cta-title em { font-style: italic; color: #ffe6b0; }
+.vh-cta p { position: relative; margin: 12px auto 0; max-width: 520px; color: rgba(255,255,255,.9); font-size: 15px; }
+.vh-cta .vh-hero-cta { position: relative; margin-top: 22px; }
+.vh-btn-ghost-dark { background: rgba(255,255,255,.14); color: #fff !important; border-color: rgba(255,255,255,.4); box-shadow: none; }
+.vh-btn-ghost-dark:hover { background: rgba(255,255,255,.24); color: #fff !important; border-color: #fff; }
 
 /* =========================================================================
    ANIMATIONS
@@ -635,27 +573,21 @@
    MOBILE
    ========================================================================= */
 @media (max-width: 767px) {
-  .voyasee-home { --card-w: min(86vw, 340px); --card-h: 164px; --gap: 14px; border-radius: 12px; }
-  .vh-hero { padding: 24px 12px 14px; }
-  .vh-brand-row strong { font-size: 30px; }
-  .vh-hero-hook, .vh-hero-focus { display: block; }
-  .vh-hero-focus::before { content: ""; }
-  .vh-block { padding: 26px 0 22px; }
-  .vh-window::before, .vh-window::after { width: 36px; }
-  .vh-card-copy { right: 55px; }
-  .vh-card-copy strong { font-size: 19px; }
-  .vh-compass { left: 10px; bottom: 10px; width: 28px; height: 28px; }
+  .voyasee-home { --card-w: min(78vw, 300px); --gap: 15px; border-radius: 14px; }
+  .vh-hero { padding: 34px 14px 16px; }
+  .vh-block { padding: 32px 0 24px; }
+  .vh-window::before, .vh-window::after { width: 30px; }
+  .vh-stat { flex-basis: 44%; }
+  .vh-cta-inner { padding: 34px 18px; }
 }
-@media (max-width: 380px) {
-  .voyasee-home { --card-w: 86vw; }
-  .vh-compass { display: none; }
-}
+@media (max-width: 380px) { .voyasee-home { --card-w: 80vw; } }
 
 /* =========================================================================
-   REDUCED MOTION  (native scroll fallback; JS auto-scroll disabled)
+   REDUCED MOTION (native scroll; JS auto-scroll off)
    ========================================================================= */
 @media (prefers-reduced-motion: reduce) {
   .vh-route-path, .vh-topic-list, .vh-plane * { animation: none !important; }
+  .vh-reveal { opacity: 1; transform: none; transition: none; }
   .vh-topics { overflow-x: auto; scrollbar-width: none; }
   .vh-topics::-webkit-scrollbar { display: none; }
   .vh-topic-list { padding-left: 18px; }
@@ -663,24 +595,16 @@
   .vh-window::-webkit-scrollbar { display: none; }
   .vh-track { transform: none !important; }
   .vh-track > li { scroll-snap-align: start; }
-  .vh-card, .vh-card-img, .vh-card-go { transition: none; }
+  .vh-tool, .vh-cat, .vh-thumb img, .vh-cat img { transition: none; }
 }
 </style>
 
 <script>
 (function () {
   "use strict";
-
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ------------------------------------------------------------------
-   * ONE slider engine drives every [data-voy-rail]:
-   *   · gentle auto ping-pong scroll
-   *   · pause on hover / focus / drag
-   *   · prev / next arrow buttons
-   *   · pointer drag + swipe (with click-guard so links don't misfire)
-   * No cards are cloned or duplicated (keeps links unique for SEO).
-   * ------------------------------------------------------------------ */
+  /* ---- ONE slider engine for every [data-voy-rail] ---- */
   function initRail(rail) {
     if (rail.dataset.voyRailReady === "true") return;
     rail.dataset.voyRailReady = "true";
@@ -694,26 +618,16 @@
 
     var pos = 0, dir = 1, maxScroll = 0;
     var dragging = false, lastX = 0, moved = 0;
-    var hovering = false, target = null, pauseUntil = 0;
-    var lastT = performance.now();
+    var hovering = false, target = null, pauseUntil = 0, lastT = performance.now();
 
-    function measure() {
-      maxScroll = Math.max(0, track.scrollWidth - win.clientWidth);
-      if (pos > maxScroll) pos = maxScroll;
-      updateArrows();
-    }
-
+    function measure() { maxScroll = Math.max(0, track.scrollWidth - win.clientWidth); if (pos > maxScroll) pos = maxScroll; updateArrows(); }
     function stepSize() {
       var first = track.children[0];
-      var cardW = first ? first.getBoundingClientRect().width : 320;
-      var gap = parseFloat(getComputedStyle(track).columnGap || "18") || 18;
+      var cardW = first ? first.getBoundingClientRect().width : 300;
+      var gap = parseFloat(getComputedStyle(track).columnGap || "20") || 20;
       return cardW + gap;
     }
-
-    function updateArrows() {
-      if (prev) prev.disabled = pos <= 1;
-      if (next) next.disabled = pos >= maxScroll - 1;
-    }
+    function updateArrows() { if (prev) prev.disabled = pos <= 1; if (next) next.disabled = pos >= maxScroll - 1; }
 
     function frame(now) {
       var dt = Math.min(50, now - lastT); lastT = now;
@@ -721,95 +635,79 @@
         pos += (target - pos) * Math.min(1, dt / 150);
         if (Math.abs(target - pos) < 0.5) { pos = target; target = null; }
       } else if (!reduceMotion && !dragging && !hovering && now > pauseUntil && maxScroll > 2) {
-        pos += dir * (42 * dt / 1000);
-        if (pos >= maxScroll) { pos = maxScroll; dir = -1; }
-        else if (pos <= 0)    { pos = 0; dir = 1; }
+        pos += dir * (40 * dt / 1000);
+        if (pos >= maxScroll) { pos = maxScroll; dir = -1; } else if (pos <= 0) { pos = 0; dir = 1; }
       }
       if (pos < 0) pos = 0; if (pos > maxScroll) pos = maxScroll;
       track.style.transform = "translate3d(" + (-pos) + "px,0,0)";
       updateArrows();
       requestAnimationFrame(frame);
     }
-
-    function nudge(d) {
-      pauseUntil = performance.now() + 4500;
-      var base = (target === null ? pos : target);
-      target = Math.max(0, Math.min(maxScroll, base + d * stepSize() * 1.15));
-    }
+    function nudge(d) { pauseUntil = performance.now() + 4500; var base = (target === null ? pos : target); target = Math.max(0, Math.min(maxScroll, base + d * stepSize() * 1.1)); }
 
     if (next) next.addEventListener("click", function () { nudge(1); });
     if (prev) prev.addEventListener("click", function () { nudge(-1); });
-
     win.addEventListener("mouseenter", function () { hovering = true; });
     win.addEventListener("mouseleave", function () { hovering = false; });
-
-    win.addEventListener("pointerdown", function (e) {
-      dragging = true; lastX = e.clientX; moved = 0; target = null;
-      win.classList.add("is-drag");
-      try { win.setPointerCapture(e.pointerId); } catch (_) {}
-    });
-    win.addEventListener("pointermove", function (e) {
-      if (!dragging) return;
-      var dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx);
-      pos = Math.max(0, Math.min(maxScroll, pos - dx));
-    });
-    function endDrag(e) {
-      if (!dragging) return;
-      dragging = false; pauseUntil = performance.now() + 3500;
-      win.classList.remove("is-drag");
-      try { win.releasePointerCapture(e.pointerId); } catch (_) {}
-    }
+    win.addEventListener("pointerdown", function (e) { dragging = true; lastX = e.clientX; moved = 0; target = null; win.classList.add("is-drag"); try { win.setPointerCapture(e.pointerId); } catch (_) {} });
+    win.addEventListener("pointermove", function (e) { if (!dragging) return; var dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx); pos = Math.max(0, Math.min(maxScroll, pos - dx)); });
+    function endDrag(e) { if (!dragging) return; dragging = false; pauseUntil = performance.now() + 3500; win.classList.remove("is-drag"); try { win.releasePointerCapture(e.pointerId); } catch (_) {} }
     win.addEventListener("pointerup", endDrag);
     win.addEventListener("pointercancel", endDrag);
+    track.addEventListener("click", function (e) { if (moved > 6) { e.preventDefault(); e.stopPropagation(); } }, true);
 
-    /* Stop a drag from triggering the card link */
-    track.addEventListener("click", function (e) {
-      if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
-    }, true);
-
-    if ("ResizeObserver" in window) new ResizeObserver(measure).observe(win);
-    else window.addEventListener("resize", measure, { passive: true });
-
+    if ("ResizeObserver" in window) new ResizeObserver(measure).observe(win); else window.addEventListener("resize", measure, { passive: true });
     measure();
     if (!reduceMotion) requestAnimationFrame(frame);
   }
 
-  /* ------------------------------------------------------------------
-   * Fill live article counts for category cards via WP REST API.
-   * Safe fallback stays "View articles" if the request fails.
-   * ------------------------------------------------------------------ */
+  /* ---- Live WP category counts ---- */
   function loadCategoryCounts(root) {
-    var cards = root.querySelectorAll(".vh-card--cat[data-cat-slug]");
+    var cards = root.querySelectorAll(".vh-cat[data-cat-slug]");
     if (!cards.length) return;
-
-    var apiRoot = (window.wpApiSettings && window.wpApiSettings.root)
-      ? window.wpApiSettings.root
-      : window.location.origin + "/wp-json/";
-
+    var apiRoot = (window.wpApiSettings && window.wpApiSettings.root) ? window.wpApiSettings.root : window.location.origin + "/wp-json/";
     fetch(apiRoot + "wp/v2/categories?per_page=100&_fields=slug,count", { credentials: "same-origin" })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (cats) {
         if (!Array.isArray(cats)) return;
-        var bySlug = {};
-        cats.forEach(function (c) { if (c && c.slug) bySlug[c.slug] = Number(c.count) || 0; });
+        var bySlug = {}; cats.forEach(function (c) { if (c && c.slug) bySlug[c.slug] = Number(c.count) || 0; });
         cards.forEach(function (card) {
-          var slug = card.getAttribute("data-cat-slug");
-          var el = card.querySelector("[data-category-count]");
-          var n = bySlug[slug];
+          var el = card.querySelector("[data-category-count]"); var n = bySlug[card.getAttribute("data-cat-slug")];
           if (!el || typeof n === "undefined") return;
           el.textContent = n + (n === 1 ? " article" : " articles");
         });
-      })
-      .catch(function () { /* keep fallback text */ });
+      }).catch(function () {});
+  }
+
+  /* ---- Scroll reveal ---- */
+  function initReveal(root) {
+    var items = root.querySelectorAll(".vh-reveal");
+    if (reduceMotion || !("IntersectionObserver" in window)) { items.forEach(function (el) { el.classList.add("vh-in"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("vh-in"); io.unobserve(en.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    items.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---- Smooth in-page scroll for CTAs ---- */
+  function initScrollLinks(root) {
+    root.querySelectorAll('[data-scroll]').forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var id = a.getAttribute("href"); if (!id || id.charAt(0) !== "#") return;
+        var t = root.querySelector(id); if (!t) return;
+        e.preventDefault();
+        t.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      });
+    });
   }
 
   function boot() {
-    document.querySelectorAll(".voyasee-home [data-voy-rail]").forEach(initRail);
-    document.querySelectorAll(".voyasee-home").forEach(loadCategoryCounts);
+    document.querySelectorAll(".voyasee-home").forEach(function (root) {
+      root.querySelectorAll("[data-voy-rail]").forEach(initRail);
+      loadCategoryCounts(root); initReveal(root); initScrollLinks(root);
+    });
   }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
-  else boot();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
   window.addEventListener("elementor/frontend/init", boot);
 })();
 </script>
