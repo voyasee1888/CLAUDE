@@ -4,7 +4,7 @@ Tags: tipping, tip calculator, travel, gratuity, currency
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,19 @@ older-browser-safe style, and the dataset is embedded inline rather than
 fetched, so it runs reliably across desktop, tablet, mobile and in-app browsers.
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed the Egyptian Pound (EGP) symbol rendering as the literal text
+  "E\u{00A3}" instead of "E£" -- a PHP string-quoting bug (the escape was in a
+  single-quoted string, which PHP never expands). All 147 bundled currency
+  symbols were re-scanned and confirmed clean; EGP was the only one affected.
+* Fixed overlapping text in the "at a glance" cards and the "typical range for
+  this service" panel: a long label ("Hotel housekeeping") next to a long
+  value ("~E£95.00 per night") could run into each other. Both are now laid
+  out so a label and its value can never collide, regardless of how long the
+  country's currency symbol or amount is.
+* Re-verified with the exact scenario reported (Egypt, valet parking) on both
+  desktop and mobile -- no broken symbols, no overlapping text.
 
 = 1.2.0 =
 * New premium deep-blue HD background and theme, with all text re-tuned for

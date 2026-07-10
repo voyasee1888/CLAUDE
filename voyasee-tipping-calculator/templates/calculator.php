@@ -164,8 +164,10 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
             <div class="vtc-glance-grid" data-vtc-glance-grid>
                 <?php foreach ($overview['rows'] as $row): ?>
                     <div class="vtc-glance-item">
-                        <span class="vtc-glance-icon" aria-hidden="true"><?php echo esc_html($row['icon']); ?></span>
-                        <span class="vtc-glance-label"><?php echo esc_html($row['label']); ?></span>
+                        <span class="vtc-glance-item-top">
+                            <span class="vtc-glance-icon" aria-hidden="true"><?php echo esc_html($row['icon']); ?></span>
+                            <span class="vtc-glance-label"><?php echo esc_html($row['label']); ?></span>
+                        </span>
                         <span class="vtc-glance-value"><?php echo esc_html($row['display']); ?></span>
                     </div>
                 <?php endforeach; ?>

@@ -139,7 +139,7 @@ return [
 
         // Africa
         'ZAR' => ['symbol' => 'R',   'decimals' => 2, 'name' => 'South African Rand',       'rate' => 18.5],
-        'EGP' => ['symbol' => 'E\u{00A3}', 'decimals' => 2, 'name' => 'Egyptian Pound',     'rate' => 48.0],
+        'EGP' => ['symbol' => "E\u{00A3}", 'decimals' => 2, 'name' => 'Egyptian Pound',     'rate' => 48.0],
         'MAD' => ['symbol' => 'DH',  'decimals' => 2, 'name' => 'Moroccan Dirham',          'rate' => 10.0],
         'TND' => ['symbol' => 'DT',  'decimals' => 3, 'name' => 'Tunisian Dinar',           'rate' => 3.1],
         'DZD' => ['symbol' => 'DA',  'decimals' => 2, 'name' => 'Algerian Dinar',           'rate' => 134.0],

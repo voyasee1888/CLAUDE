@@ -407,13 +407,14 @@
 .vtc-range-label { font-size: 0.76rem; color: var(--vtc-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
 .vtc-range-track { position: relative; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #35618f, #5aa6e0, var(--vtc-gold)); }
 .vtc-range-marker { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid var(--vtc-gold-deep); transform: translate(-50%, -50%); transition: left 0.5s; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-.vtc-range-scale { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px; }
-.vtc-range-pt { display: flex; flex-direction: column; min-width: 0; }
-.vtc-range-pt.is-low { align-items: flex-start; text-align: left; }
-.vtc-range-pt.is-mid { align-items: center; text-align: center; }
-.vtc-range-pt.is-high { align-items: flex-end; text-align: right; }
-.vtc-range-pt-lbl { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vtc-faint); }
-.vtc-range-pt-val { font-size: 0.82rem; font-weight: 700; color: var(--vtc-text); font-variant-numeric: tabular-nums; }
+/* Stacked rows (label left, amount right) rather than 3 narrow columns -- a
+   currency+amount string like "E£95.00" cannot be squeezed into a ~80px
+   column without breaking mid-number, so each point gets its own full-width
+   row instead, which has no length limit to overflow. */
+.vtc-range-scale { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+.vtc-range-pt { display: flex; flex-direction: row; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; }
+.vtc-range-pt-lbl { flex-shrink: 0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vtc-faint); }
+.vtc-range-pt-val { font-size: 0.88rem; font-weight: 700; color: var(--vtc-text); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 
 /* note + messages */
 .vtc-note {
@@ -480,11 +481,15 @@
 .vtc-glance { margin-top: clamp(26px, 5vw, 44px); }
 .vtc-glance-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(1.4rem, 3.5vw, 2rem); margin: 0 0 6px; }
 .vtc-glance-verdict { color: var(--vtc-gold-2); font-weight: 600; margin: 0 0 18px; }
-.vtc-glance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.vtc-glance-item { display: flex; align-items: center; gap: 12px; padding: 13px 15px; background: var(--vtc-panel); border: 1px solid var(--vtc-border); border-radius: var(--vtc-r-sm); }
-.vtc-glance-icon { font-size: 1.3rem; }
-.vtc-glance-label { flex: 1; font-size: 0.9rem; color: var(--vtc-muted); }
-.vtc-glance-value { font-weight: 700; color: var(--vtc-gold-2); font-size: 0.95rem; text-align: right; }
+.vtc-glance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+/* Stacked (icon+label on their own row, value on its own row below) rather
+   than side-by-side -- a long label ("Hotel housekeeping") and a long value
+   ("~E£95.00 per night") can never collide this way, regardless of length. */
+.vtc-glance-item { display: flex; flex-direction: column; gap: 8px; padding: 13px 15px; background: var(--vtc-panel); border: 1px solid var(--vtc-border); border-radius: var(--vtc-r-sm); }
+.vtc-glance-item-top { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.vtc-glance-icon { font-size: 1.3rem; flex-shrink: 0; }
+.vtc-glance-label { flex: 1; min-width: 0; font-size: 0.88rem; color: var(--vtc-muted); line-height: 1.35; }
+.vtc-glance-value { font-weight: 700; color: var(--vtc-gold-2); font-size: 1rem; text-align: left; line-height: 1.3; }
 .vtc-glance-note { margin: 18px 0 6px; color: var(--vtc-muted); font-size: 0.95rem; }
 .vtc-disclaimer { font-size: 0.82rem; color: var(--vtc-faint); font-style: italic; }
 

@@ -288,15 +288,15 @@
     rtrack.appendChild(marker);
     range.appendChild(rtrack);
     var scale = el("div", "vtc-range-scale");
-    function rangePt(lbl, val, cls) {
-      var d = el("div", "vtc-range-pt " + cls);
+    function rangePt(lbl, val) {
+      var d = el("div", "vtc-range-pt");
       d.appendChild(el("span", "vtc-range-pt-lbl", lbl));
       d.appendChild(el("span", "vtc-range-pt-val", val));
       return d;
     }
-    scale.appendChild(rangePt(strings.low, money(cur.symbol, r.band.low, cur.decimals), "is-low"));
-    scale.appendChild(rangePt(strings.standard, money(cur.symbol, r.band.standard, cur.decimals), "is-mid"));
-    scale.appendChild(rangePt(strings.high, money(cur.symbol, r.band.high, cur.decimals), "is-high"));
+    scale.appendChild(rangePt(strings.low, money(cur.symbol, r.band.low, cur.decimals)));
+    scale.appendChild(rangePt(strings.standard, money(cur.symbol, r.band.standard, cur.decimals)));
+    scale.appendChild(rangePt(strings.high, money(cur.symbol, r.band.high, cur.decimals)));
     range.appendChild(scale);
     meters.appendChild(range);
     card.appendChild(meters);
@@ -589,8 +589,10 @@
           var meta = DATA.services[skey];
           var band = c.services[skey];
           var item = el("div", "vtc-glance-item");
-          item.appendChild(el("span", "vtc-glance-icon", meta.icon || ""));
-          item.appendChild(el("span", "vtc-glance-label", meta.label));
+          var top = el("span", "vtc-glance-item-top");
+          top.appendChild(el("span", "vtc-glance-icon", meta.icon || ""));
+          top.appendChild(el("span", "vtc-glance-label", meta.label));
+          item.appendChild(top);
           item.appendChild(el("span", "vtc-glance-value", bandDisplay(band, meta, cur)));
           grid.appendChild(item);
         }
