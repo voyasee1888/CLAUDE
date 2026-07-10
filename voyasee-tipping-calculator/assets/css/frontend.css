@@ -1,8 +1,8 @@
 /* =========================================================================
-   Voyasee Tipping Calculator — premium dark-first theme.
+   Voyasee Tipping Calculator — premium blue theme.
    Everything is scoped under .vtc so it never fights the host WordPress theme.
-   Concept: "discreet at the table, premium on the screen" — deep ink ground,
-   warm metallic-gold accent (a nod to a coin/gratuity), HD CSS-built backdrop.
+   Concept: deep-ocean navy HD ground with a warm metallic-gold accent (a nod
+   to a coin/gratuity). Text tuned for high contrast on blue.
    ========================================================================= */
 
 .vtc, .vtc * { box-sizing: border-box; }
@@ -10,22 +10,24 @@
 .vtc [hidden] { display: none !important; }
 
 .vtc {
-    --vtc-ink: #0d1116;
-    --vtc-ink-2: #131b22;
-    --vtc-panel: rgba(255, 255, 255, 0.045);
-    --vtc-panel-2: rgba(255, 255, 255, 0.07);
-    --vtc-panel-solid: #161f28;
-    --vtc-border: rgba(255, 255, 255, 0.10);
-    --vtc-border-strong: rgba(255, 255, 255, 0.18);
-    --vtc-text: #eef3f6;
-    --vtc-muted: #9aabb8;
-    --vtc-faint: #6d7d89;
-    --vtc-gold: #e6b968;
-    --vtc-gold-2: #f4d89e;
-    --vtc-gold-deep: #b98637;
-    --vtc-good: #5ccb8c;
-    --vtc-warn: #eaa93f;
-    --vtc-danger: #ec7a60;
+    --vtc-ink: #0a1830;
+    --vtc-ink-2: #10233f;
+    --vtc-panel: rgba(255, 255, 255, 0.06);
+    --vtc-panel-2: rgba(255, 255, 255, 0.11);
+    --vtc-panel-solid: #14294a;
+    --vtc-border: rgba(150, 190, 240, 0.16);
+    --vtc-border-strong: rgba(150, 190, 240, 0.34);
+    --vtc-text: #f3f7fd;
+    --vtc-muted: #b9cbe4;
+    --vtc-faint: #8ba4c6;
+    --vtc-gold: #f0c46b;
+    --vtc-gold-2: #ffdd9b;
+    --vtc-gold-deep: #c0913f;
+    --vtc-steel: #5aa6e0;
+    --vtc-steel-2: #86c5f2;
+    --vtc-good: #5fd39a;
+    --vtc-warn: #f2b64c;
+    --vtc-danger: #f0876d;
     --vtc-r: 18px;
     --vtc-r-sm: 12px;
 
@@ -41,7 +43,7 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 30px 80px -30px rgba(2, 10, 26, 0.8);
 }
 
 /* ---------- HD background ---------- */
@@ -50,24 +52,28 @@
     inset: 0;
     z-index: 0;
     background:
-        radial-gradient(130% 120% at 50% -15%, #223240 0%, #14202a 42%, #0c1116 72%, #090d11 100%);
+        radial-gradient(120% 120% at 15% -10%, #1e4d86 0%, rgba(30, 77, 134, 0) 45%),
+        radial-gradient(120% 120% at 90% 10%, #17427a 0%, rgba(23, 66, 122, 0) 50%),
+        radial-gradient(140% 130% at 50% 115%, #0e2f5c 0%, rgba(14, 47, 92, 0) 55%),
+        linear-gradient(160deg, #123a6b 0%, #0a1830 60%, #071127 100%);
+    background-color: #0a1830;
     pointer-events: none;
 }
 .vtc-bg-glow {
     position: absolute;
     border-radius: 50%;
-    filter: blur(70px);
-    opacity: 0.5;
+    filter: blur(72px);
+    opacity: 0.55;
 }
 .vtc-bg-glow-1 {
-    width: 46%; height: 46%;
-    top: -12%; left: -8%;
-    background: radial-gradient(circle, rgba(230, 185, 104, 0.42), transparent 68%);
+    width: 48%; height: 48%;
+    top: -14%; left: -10%;
+    background: radial-gradient(circle, rgba(240, 196, 107, 0.30), transparent 68%);
 }
 .vtc-bg-glow-2 {
-    width: 52%; height: 52%;
-    bottom: -18%; right: -12%;
-    background: radial-gradient(circle, rgba(64, 138, 168, 0.32), transparent 70%);
+    width: 55%; height: 55%;
+    bottom: -20%; right: -14%;
+    background: radial-gradient(circle, rgba(70, 150, 230, 0.40), transparent 70%);
 }
 .vtc-bg-grain {
     position: absolute;
@@ -174,13 +180,14 @@
     box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.75);
     overflow: hidden;
 }
-.vtc-combo-search {
+.vtc .vtc-combo-search {
     width: 100%;
     padding: 12px 14px;
-    border: none;
-    border-bottom: 1px solid var(--vtc-border);
-    background: rgba(0, 0, 0, 0.25);
-    color: var(--vtc-text);
+    border: none !important;
+    border-bottom: 1px solid var(--vtc-border) !important;
+    background: rgba(3, 12, 28, 0.45) !important;
+    color: var(--vtc-text) !important;
+    -webkit-text-fill-color: var(--vtc-text);
     font-size: 0.98rem;
     outline: none;
 }
@@ -234,25 +241,30 @@
 .vtc-amount {
     display: flex;
     align-items: center;
-    background: var(--vtc-panel-solid);
+    background: var(--vtc-panel-solid) !important;
     border: 1px solid var(--vtc-border-strong);
     border-radius: var(--vtc-r-sm);
     padding: 4px 16px;
     transition: border-color 0.15s, box-shadow 0.15s;
 }
-.vtc-amount:focus-within { border-color: var(--vtc-gold); box-shadow: 0 0 0 3px rgba(230, 185, 104, 0.15); }
+.vtc-amount:focus-within { border-color: var(--vtc-gold); box-shadow: 0 0 0 3px rgba(240, 196, 107, 0.18); }
 .vtc-amount-sym { color: var(--vtc-gold-2); font-size: 1.4rem; font-weight: 600; margin-right: 8px; }
-.vtc-amount-input {
+/* !important guards against host themes that force a white background / dark
+   text on every input, which previously made this field render white. */
+.vtc .vtc-amount-input {
     flex: 1;
     min-width: 0;
-    border: none;
-    background: none;
-    color: var(--vtc-text);
+    border: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: var(--vtc-text) !important;
     font-size: clamp(1.5rem, 4vw, 2rem);
     font-weight: 700;
     padding: 10px 0;
     outline: none;
+    box-shadow: none !important;
     font-variant-numeric: tabular-nums;
+    -webkit-text-fill-color: var(--vtc-text);
 }
 .vtc-amount-input::placeholder { color: var(--vtc-faint); }
 
@@ -299,19 +311,21 @@
 
 /* Options */
 .vtc-options { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
-.vtc-check { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; font-size: 0.92rem; color: var(--vtc-muted); }
+.vtc-check { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; font-size: 0.95rem; color: var(--vtc-text); }
 .vtc-check input { width: 18px; height: 18px; accent-color: var(--vtc-gold); }
 .vtc-home { display: inline-flex; align-items: center; gap: 8px; }
-.vtc-home-label { font-size: 0.85rem; color: var(--vtc-faint); }
-.vtc-home select {
-    background: var(--vtc-panel-solid);
-    border: 1px solid var(--vtc-border);
+.vtc-home-label { font-size: 0.9rem; color: var(--vtc-muted); }
+.vtc .vtc-home select {
+    background: var(--vtc-panel-solid) !important;
+    border: 1px solid var(--vtc-border-strong) !important;
     border-radius: 9px;
-    color: var(--vtc-text);
+    color: var(--vtc-text) !important;
+    -webkit-text-fill-color: var(--vtc-text);
     padding: 8px 10px;
     font-size: 0.88rem;
     max-width: 190px;
 }
+.vtc .vtc-home select option { color: #10233f; background: #eef4fc; }
 .vtc-noscript { color: var(--vtc-warn); font-size: 0.9rem; }
 
 /* ---------- Result ---------- */
@@ -366,12 +380,12 @@
 
 /* segmented bill+tip bar */
 .vtc-bar { margin: 20px 0 8px; }
-.vtc-bar-track { display: flex; height: 26px; border-radius: 999px; overflow: hidden; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--vtc-border); }
-.vtc-bar-bill { background: linear-gradient(90deg, #33556a, #3f6f88); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.vtc-bar-track { display: flex; height: 26px; border-radius: 999px; overflow: hidden; background: rgba(3, 12, 28, 0.5); border: 1px solid var(--vtc-border); }
+.vtc-bar-bill { background: linear-gradient(90deg, #3f7fbf, #6fb3e0); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 .vtc-bar-tip { background: linear-gradient(90deg, var(--vtc-gold-deep), var(--vtc-gold-2)); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 .vtc-bar-legend { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.8rem; color: var(--vtc-muted); }
 .vtc-bar-legend span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
-.vtc-legend-bill::before { background: #3f6f88; }
+.vtc-legend-bill::before { background: #6fb3e0; }
 .vtc-legend-tip::before { background: var(--vtc-gold); }
 
 /* per person */
@@ -391,9 +405,15 @@
 .vtc-gauge-verdict { font-size: 0.86rem; color: var(--vtc-gold-2); font-weight: 600; }
 
 .vtc-range-label { font-size: 0.76rem; color: var(--vtc-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-.vtc-range-track { position: relative; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #2c3b47, #3f6f88, var(--vtc-gold)); }
+.vtc-range-track { position: relative; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #35618f, #5aa6e0, var(--vtc-gold)); }
 .vtc-range-marker { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid var(--vtc-gold-deep); transform: translate(-50%, -50%); transition: left 0.5s; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-.vtc-range-scale { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.76rem; color: var(--vtc-muted); font-variant-numeric: tabular-nums; }
+.vtc-range-scale { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px; }
+.vtc-range-pt { display: flex; flex-direction: column; min-width: 0; }
+.vtc-range-pt.is-low { align-items: flex-start; text-align: left; }
+.vtc-range-pt.is-mid { align-items: center; text-align: center; }
+.vtc-range-pt.is-high { align-items: flex-end; text-align: right; }
+.vtc-range-pt-lbl { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vtc-faint); }
+.vtc-range-pt-val { font-size: 0.82rem; font-weight: 700; color: var(--vtc-text); font-variant-numeric: tabular-nums; }
 
 /* note + messages */
 .vtc-note {

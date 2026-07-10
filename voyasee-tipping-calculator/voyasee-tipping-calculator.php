@@ -3,7 +3,7 @@
  * Plugin Name: Voyasee Tipping Calculator
  * Plugin URI: https://voyasee.com/
  * Description: A premium, worldwide tipping calculator powered entirely by Voyasee's own curated tipping intelligence (no third-party API). Covers 200+ countries and territories with culture-aware advice, an infographic result, bill splitting, share links, and print/PDF.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-tipping-calculator
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('VTC_VERSION', '1.1.0');
+define('VTC_VERSION', '1.2.0');
 define('VTC_FILE', __FILE__);
 define('VTC_DIR', plugin_dir_path(__FILE__));
 define('VTC_URL', plugin_dir_url(__FILE__));

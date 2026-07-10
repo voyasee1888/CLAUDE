@@ -23,14 +23,24 @@ $flag = static function (string $code): string {
     return $utf8(0x1F1E6 + ord($code[0]) - 65) . $utf8(0x1F1E6 + ord($code[1]) - 65);
 };
 
-// Footer links
+// Footer links — all 16 sibling Voyasee tools.
 $tools = [
-    ['url' => $settings['tool_interactive_world_map'] ?? '',  'title' => __('Interactive World Map', 'voyasee-tipping-calculator'),  'desc' => __('Explore 200+ destinations on a rotating globe.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F30D}"],
-    ['url' => $settings['tool_best_area_to_stay'] ?? '',      'title' => __('Best Area to Stay', 'voyasee-tipping-calculator'),      'desc' => __('Match your trip to the right neighbourhood.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F3E8}"],
+    ['url' => $settings['tool_interactive_travel_map'] ?? '', 'title' => __('Interactive Travel Map', 'voyasee-tipping-calculator'), 'desc' => __('Find destinations by budget, month & style.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F5FA}"],
+    ['url' => $settings['tool_interactive_world_map'] ?? '',  'title' => __('Interactive World Map', 'voyasee-tipping-calculator'),  'desc' => __('Spin a globe of 200+ destinations.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F30D}"],
+    ['url' => $settings['tool_destination_quiz'] ?? '',       'title' => __('Destination Quiz', 'voyasee-tipping-calculator'),       'desc' => __('Get matches for your travel style.', 'voyasee-tipping-calculator'), 'icon' => "\u{2753}"],
+    ['url' => $settings['tool_comparison'] ?? '',             'title' => __('Destination Comparison', 'voyasee-tipping-calculator'), 'desc' => __('Battle two places side by side.', 'voyasee-tipping-calculator'), 'icon' => "\u{2696}"],
+    ['url' => $settings['tool_best_area'] ?? '',              'title' => __('Best Area to Stay', 'voyasee-tipping-calculator'),      'desc' => __('Match your trip to the right neighbourhood.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F3E8}"],
+    ['url' => $settings['tool_smart_travel_hub'] ?? '',       'title' => __('Smart Travel Hub', 'voyasee-tipping-calculator'),       'desc' => __('Live weather, currency & local basics.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F9ED}"],
+    ['url' => $settings['tool_month_planner'] ?? '',          'title' => __('Travel Month Planner', 'voyasee-tipping-calculator'),   'desc' => __('Find the best month to visit anywhere.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F4C5}"],
     ['url' => $settings['tool_trip_budget_calculator'] ?? '', 'title' => __('Trip Budget Calculator', 'voyasee-tipping-calculator'), 'desc' => __('Estimate what your trip will really cost.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F4B0}"],
-    ['url' => $settings['tool_smart_travel_hub'] ?? '',       'title' => __('Smart Travel Hub', 'voyasee-tipping-calculator'),       'desc' => __('Live weather, currency and local basics.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F9ED}"],
-    ['url' => $settings['tool_travel_month_planner'] ?? '',   'title' => __('Travel Month Planner', 'voyasee-tipping-calculator'),   'desc' => __('Find the best month to visit anywhere.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F4C5}"],
-    ['url' => $settings['tool_packing_list'] ?? '',           'title' => __('Packing List Generator', 'voyasee-tipping-calculator'), 'desc' => __('A checklist tailored to your trip.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F9F3}"],
+    ['url' => $settings['tool_packing_list'] ?? '',           'title' => __('Packing List Generator', 'voyasee-tipping-calculator'), 'desc' => __('A climate-aware checklist for your trip.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F9F3}"],
+    ['url' => $settings['tool_carry_on_checker'] ?? '',       'title' => __('Carry-On Size Checker', 'voyasee-tipping-calculator'),  'desc' => __('Check your bag against airline rules.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F4CF}"],
+    ['url' => $settings['tool_medicine_checker'] ?? '',       'title' => __('Medicine & Items Checker', 'voyasee-tipping-calculator'),'desc' => __('Check what you can legally bring.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F48A}"],
+    ['url' => $settings['tool_transit_visa'] ?? '',           'title' => __('Transit Visa & Layover', 'voyasee-tipping-calculator'), 'desc' => __('Check layover & transit-visa risk.', 'voyasee-tipping-calculator'), 'icon' => "\u{2708}"],
+    ['url' => $settings['tool_schengen'] ?? '',               'title' => __('Schengen Day Bank', 'voyasee-tipping-calculator'),      'desc' => __('Track your 90/180-day balance.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F1EA}\u{1F1FA}"],
+    ['url' => $settings['tool_scam_checker'] ?? '',           'title' => __('Travel Scam Checker', 'voyasee-tipping-calculator'),    'desc' => __('Spot suspicious offers before you pay.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F6E1}"],
+    ['url' => $settings['tool_jet_lag'] ?? '',                'title' => __('Jet Lag Recovery Planner', 'voyasee-tipping-calculator'),'desc' => __('Beat jet lag with a sleep plan.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F319}"],
+    ['url' => $settings['tool_travel_passport'] ?? '',        'title' => __('Travel Passport', 'voyasee-tipping-calculator'),        'desc' => __('Your final trip-readiness check.', 'voyasee-tipping-calculator'), 'icon' => "\u{1F6C2}"],
 ];
 $tools = array_values(array_filter($tools, static fn($t) => !empty($t['url'])));
 
@@ -57,7 +67,7 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
             <p class="vtc-sub"><?php echo esc_html__('Know exactly what to tip — anywhere in the world. Culture-aware advice for 200+ countries, so you never over-tip, under-tip, or tip where you shouldn\'t.', 'voyasee-tipping-calculator'); ?></p>
             <div class="vtc-stats">
                 <span class="vtc-stat"><strong>200+</strong> <?php echo esc_html__('countries', 'voyasee-tipping-calculator'); ?></span>
-                <span class="vtc-stat"><strong>8</strong> <?php echo esc_html__('service types', 'voyasee-tipping-calculator'); ?></span>
+                <span class="vtc-stat"><strong>10</strong> <?php echo esc_html__('service types', 'voyasee-tipping-calculator'); ?></span>
                 <span class="vtc-stat"><strong><?php echo esc_html__('0', 'voyasee-tipping-calculator'); ?></strong> <?php echo esc_html__('guesswork', 'voyasee-tipping-calculator'); ?></span>
             </div>
         </header>

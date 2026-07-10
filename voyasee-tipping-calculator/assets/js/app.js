@@ -180,9 +180,9 @@
     function pt(deg, rad) { var a = deg * Math.PI / 180; return [cx + rad * Math.cos(a), cy - rad * Math.sin(a)]; }
     var defs = svg("defs", {});
     var grad = svg("linearGradient", { id: "vtcGaugeGrad", x1: "0", y1: "0", x2: "1", y2: "0" });
-    grad.appendChild(svg("stop", { offset: "0%", "stop-color": "#3f6f88" }));
-    grad.appendChild(svg("stop", { offset: "60%", "stop-color": "#7d8f6a" }));
-    grad.appendChild(svg("stop", { offset: "100%", "stop-color": "#e6b968" }));
+    grad.appendChild(svg("stop", { offset: "0%", "stop-color": "#5aa6e0" }));
+    grad.appendChild(svg("stop", { offset: "60%", "stop-color": "#8fb890" }));
+    grad.appendChild(svg("stop", { offset: "100%", "stop-color": "#f0c46b" }));
     defs.appendChild(grad); s.appendChild(defs);
     var a1 = pt(180, r), a2 = pt(0, r);
     s.appendChild(svg("path", { d: "M " + a1[0] + " " + a1[1] + " A " + r + " " + r + " 0 0 1 " + a2[0] + " " + a2[1],
@@ -288,9 +288,15 @@
     rtrack.appendChild(marker);
     range.appendChild(rtrack);
     var scale = el("div", "vtc-range-scale");
-    scale.appendChild(el("span", null, strings.low + " " + money(cur.symbol, r.band.low, cur.decimals)));
-    scale.appendChild(el("span", null, strings.standard + " " + money(cur.symbol, r.band.standard, cur.decimals)));
-    scale.appendChild(el("span", null, strings.high + " " + money(cur.symbol, r.band.high, cur.decimals)));
+    function rangePt(lbl, val, cls) {
+      var d = el("div", "vtc-range-pt " + cls);
+      d.appendChild(el("span", "vtc-range-pt-lbl", lbl));
+      d.appendChild(el("span", "vtc-range-pt-val", val));
+      return d;
+    }
+    scale.appendChild(rangePt(strings.low, money(cur.symbol, r.band.low, cur.decimals), "is-low"));
+    scale.appendChild(rangePt(strings.standard, money(cur.symbol, r.band.standard, cur.decimals), "is-mid"));
+    scale.appendChild(rangePt(strings.high, money(cur.symbol, r.band.high, cur.decimals), "is-high"));
     range.appendChild(scale);
     meters.appendChild(range);
     card.appendChild(meters);
@@ -330,9 +336,68 @@
     var print = el("button", "vtc-btn");
     print.type = "button";
     print.innerHTML = "🖨 " + strings.print;
-    print.onclick = function () { window.print(); };
+    print.onclick = function () { printReceipt(res, strings); };
     actions.appendChild(share); actions.appendChild(print);
     card.appendChild(actions);
+  }
+
+  /* Clean, self-contained "tipping receipt" for print / Save-as-PDF, opened in
+   * its own window so the output is a tidy branded card, not the whole themed
+   * page. Falls back to window.print() if pop-ups are blocked. */
+  function printReceipt(res, strings) {
+    var cur = res.currency, r = res.result, type = res.service.type;
+    var w = window.open("", "vtcReceipt", "width=460,height=680");
+    if (!w) { window.print(); return; }
+    var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
+    var row = function (label, val, cls) {
+      return '<div class="row ' + (cls || "") + '"><span>' + esc(label) + '</span><b>' + esc(val) + '</b></div>';
+    };
+    var body = "";
+    if (r.not_expected) {
+      body += '<div class="notip">' + (res.country.flags && res.country.flags.tipping_offensive ? "🙏" : "✅") +
+        '<div class="notip-t">' + esc(strings.noTipTitle || "No tip needed here") + '</div>' +
+        '<div class="notip-x">' + esc(res.country.note) + '</div></div>';
+    } else {
+      if (type === "percent" && res.input.amount > 0) body += row(strings.bill || "Bill", money(cur.symbol, res.input.amount, cur.decimals));
+      body += row(strings.suggestedTip || "Suggested tip", money(cur.symbol, r.tip, cur.decimals), "big");
+      if (type === "percent") body += row(strings.totalToPay || "Total to pay", money(cur.symbol, r.total, cur.decimals), "total");
+      if (res.input.party > 1) body += row((strings.perPerson || "Per person") + " (×" + res.input.party + ")", money(cur.symbol, (type === "percent" ? r.per_person_total : r.per_person_tip), cur.decimals));
+      if (r.cash_tip && r.cash_tip !== r.tip) body += row(strings.cashTip || "Easiest cash tip", money(cur.symbol, r.cash_tip, cur.decimals));
+      if (res.home) body += row((strings.approxIn || "Approx") + " (" + res.home.code + ")", money(res.home.symbol, (type === "percent" ? res.home.total : res.home.tip), res.home.decimals));
+    }
+    var date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    var doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Tipping Receipt</title><style>'
+      + '*{box-sizing:border-box;margin:0;padding:0}'
+      + 'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#eef3fb;color:#0e2038;padding:24px;}'
+      + '.rcpt{max-width:400px;margin:0 auto;background:#fff;border:1px solid #dce6f4;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(14,32,56,.12)}'
+      + '.hd{background:linear-gradient(135deg,#123a6b,#0a1830);color:#fff;padding:20px 22px;text-align:center}'
+      + '.brand{font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:#ffdd9b}'
+      + '.ttl{font-size:1.5rem;font-weight:700;margin-top:4px}'
+      + '.sub{font-size:.85rem;color:#b9cbe4;margin-top:6px}'
+      + '.bd{padding:20px 22px}'
+      + '.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px dashed #e2e9f4;font-size:.95rem;color:#42536b}'
+      + '.row b{color:#0e2038;font-variant-numeric:tabular-nums;font-weight:700}'
+      + '.row.big{border-bottom:2px solid #f0c46b;padding:12px 0}'
+      + '.row.big span{font-weight:700;color:#0e2038}'
+      + '.row.big b{font-size:1.9rem;color:#123a6b}'
+      + '.row.total b{font-size:1.15rem}'
+      + '.note{margin-top:14px;font-size:.86rem;color:#42536b;line-height:1.5;background:#f5f8fd;border-left:3px solid #f0c46b;padding:11px 13px;border-radius:8px}'
+      + '.notip{text-align:center;padding:14px 0}.notip-t{font-size:1.3rem;font-weight:700;margin-top:6px}.notip-x{font-size:.9rem;color:#42536b;margin-top:8px;line-height:1.5}'
+      + '.ft{padding:14px 22px;border-top:1px solid #e2e9f4;text-align:center;font-size:.75rem;color:#7286a3}'
+      + '.ft a{color:#123a6b;text-decoration:none;font-weight:600}'
+      + '@media print{body{background:#fff;padding:0}.rcpt{border:none;box-shadow:none}}'
+      + '</style></head><body><div class="rcpt">'
+      + '<div class="hd"><div class="brand">Voyasee · Tipping</div>'
+      + '<div class="ttl">' + esc(flagEmoji(res.country.code) + " " + res.country.name) + '</div>'
+      + '<div class="sub">' + esc(res.service.label) + ' · ' + esc(date) + '</div></div>'
+      + '<div class="bd">' + body
+      + '<div class="note">' + esc(res.country.note) + '</div></div>'
+      + '<div class="ft">Generated by the Voyasee Tipping Calculator · <a href="https://voyasee.com/">voyasee.com</a><br>Guidance only — customs vary locally.</div>'
+      + '</div></body></html>';
+    w.document.open();
+    w.document.write(doc);
+    w.document.close();
+    setTimeout(function () { try { w.focus(); w.print(); } catch (e) {} }, 350);
   }
 
   /* ---- one calculator instance ---- */

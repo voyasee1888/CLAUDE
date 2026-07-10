@@ -4,7 +4,7 @@ Tags: tipping, tip calculator, travel, gratuity, currency
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,10 +52,11 @@ no external service is contacted at runtime — the data ships inside the plugin
 * Shareable result links (the exact calculation reopens for anyone you send it
   to) and one-tap print / save-to-PDF.
 * A server-rendered "at a glance" guide that works with JavaScript disabled.
-* Premium, self-contained dark theme with an HD background that never clashes
-  with your site theme; works the same on phone, tablet and desktop, including
-  in-app browsers (Facebook / Instagram / WebView).
-* A footer with your other Voyasee tools and affiliate links, all editable.
+* Premium, self-contained deep-blue theme with an HD background that never
+  clashes with your site theme; works the same on phone, tablet and desktop,
+  including in-app browsers (Facebook / Instagram / WebView).
+* A footer linking all 16 sibling Voyasee tools plus affiliate links, all editable.
+* One-tap Print / Save-as-PDF produces a clean, branded "tipping receipt".
 
 = Programmatic SEO pages (Phase 2 + 3) =
 
@@ -109,6 +110,28 @@ older-browser-safe style, and the dataset is embedded inline rather than
 fetched, so it runs reliably across desktop, tablet, mobile and in-app browsers.
 
 == Changelog ==
+
+= 1.2.0 =
+* New premium deep-blue HD background and theme, with all text re-tuned for
+  high contrast and legibility on blue.
+* Fixed the bill-amount field rendering with a white background on some host
+  themes (it now correctly matches the dark-blue theme), and hardened the
+  country search and currency dropdown against theme style bleed.
+* Fixed the "typical range for this service" scale where the Low / Standard /
+  Generous labels and amounts could run together — now a clean aligned layout.
+* Brightened the "Round up the total" and "Also show in" labels for visibility.
+* Corrected the hero stat to "10 service types" (valet and concierge were added
+  in 1.1.0).
+* Footer now links all 16 sibling Voyasee tools (Travel Passport, Interactive
+  Travel Map, Interactive World Map, Smart Travel Hub, Trip Budget Calculator,
+  Packing List, Carry-On Size Checker, Travel Scam Checker, Destination Quiz,
+  Destination Comparison, Travel Month Planner, Medicine & Items Checker, Jet
+  Lag Recovery Planner, Transit Visa & Layover, Schengen Day Bank, Best Area to
+  Stay) — all editable in Settings.
+* Print / Save-as-PDF now opens a dedicated, self-contained branded "tipping
+  receipt" (country, service, date, bill, tip, total, per-person, cash tip and
+  note) instead of printing the whole themed page — a clean one-card PDF.
+* Re-verified layout and legibility across desktop, tablet and mobile.
 
 = 1.1.0 =
 * More scenarios: added Valet parking and Hotel concierge, for ten services in all.
