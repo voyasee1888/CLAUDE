@@ -28,7 +28,7 @@ final class VSB_Shortcode {
                 'nonce' => '',
                 'adminPostUrl' => esc_url_raw(admin_url('admin-post.php')),
                 'pageUrl' => esc_url_raw(self::current_url()),
-                'dataVersion' => sanitize_text_field((string) ($settings['data_version'] ?? '2026.06.22-v7.0')),
+                'dataVersion' => sanitize_text_field((string) ($settings['data_version'] ?? '2026.07.10-v7.0')),
                 'limits' => ['bags' => 6, 'flights' => 10, 'sharedAirlines' => 20],
                 'affiliates' => array_filter([
                     'flights' => esc_url_raw($settings['affiliate_flights'] ?? ''),

@@ -123,7 +123,7 @@ final class VSB_DB {
             'tool_printables' => 'https://voyasee.com/travel-printables/',
             'tool_flights' => 'https://voyasee.com/book-cheap-flights/',
             'tool_tours' => 'https://voyasee.com/book-tours/',
-            'data_version' => '2026.06.22-v7.0',
+            'data_version' => '2026.07.10-v7.0',
         ];
         $current = get_option('vsb_settings', []);
         if (!is_array($current)) $current = [];
