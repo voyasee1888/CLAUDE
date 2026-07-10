@@ -4,7 +4,7 @@ Tags: tipping, tip calculator, travel, gratuity, currency
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,9 +35,13 @@ no external service is contacted at runtime — the data ships inside the plugin
 = Features =
 
 * 200+ countries and territories, each with its own tipping culture and currency.
-* Eight services: restaurant, cafe/bar, taxi/rideshare, food delivery, tour
-  guide/driver, spa/salon/barber, hotel housekeeping (per night) and hotel
-  porter (per bag).
+* Ten services: restaurant, cafe/bar, taxi/rideshare, food delivery, tour
+  guide/driver, spa/salon/barber, hotel housekeeping (per night), hotel porter
+  (per bag), valet parking and hotel concierge.
+* Offline country auto-detect from the browser timezone (no GPS or permission).
+* "Easiest cash tip" suggestion — a clean amount to hand over in local cash.
+* Installable as an app (PWA) that works fully offline.
+* Embeddable on other sites via an <iframe> route.
 * Service-quality adjustment (below par / as expected / great) that stays inside
   each country's real range — it never invents numbers.
 * Split the tip and total between any number of people.
@@ -53,12 +57,20 @@ no external service is contacted at runtime — the data ships inside the plugin
   in-app browsers (Facebook / Instagram / WebView).
 * A footer with your other Voyasee tools and affiliate links, all editable.
 
-= Per-country SEO pages (Phase 2) =
+= Programmatic SEO pages (Phase 2 + 3) =
 
-Optionally enable programmatic landing pages at `/tipping-in-{country}/` (e.g.
-`/tipping-in-japan/`). Each page renders the calculator pre-set to that country
-plus real "how much to tip in {country}" content and structured data, capturing
-the large "how much to tip in X" search demand around the main tool.
+Optionally enable a full set of programmatic pages that capture the "how much to
+tip in X" search demand around the main tool:
+
+* `/tipping-in-{country}/` — full country guide (e.g. `/tipping-in-japan/`).
+* `/tipping-in-{country}/{service}/` — service-specific guide (e.g.
+  `/tipping-in-france/taxi/`), served only where that service is actually tipped.
+* `/tipping-in-{region}/` — region hubs (e.g. `/tipping-in-europe/`).
+* `/tipping-guides/` — a master index of every country.
+
+Each renders the calculator pre-set to the relevant country and service, with
+real server-rendered content, service-aware structured data, and registration
+in the WordPress sitemap.
 
 == Installation ==
 
@@ -97,6 +109,31 @@ older-browser-safe style, and the dataset is embedded inline rather than
 fetched, so it runs reliably across desktop, tablet, mobile and in-app browsers.
 
 == Changelog ==
+
+= 1.1.0 =
+* More scenarios: added Valet parking and Hotel concierge, for ten services in all.
+* Easiest cash tip: every result now also suggests a clean, hand-over-in-cash
+  amount (the exact tip rounded up to a convenient local figure).
+* Offline country auto-detect: the calculator now pre-selects your country from
+  the browser's own timezone — no GPS, no permission and no external service —
+  with a clear "detected" hint you can override.
+* Phase 3 SEO: added service-level pages at /tipping-in-{country}/{service}/
+  ("how much to tip a taxi driver in France", etc.), region hubs at
+  /tipping-in-{region}/, a master index at /tipping-guides/, service-aware
+  structured data, and registration of every guide in the WordPress sitemap.
+  Service pages are only served where that service is actually tipped, keeping
+  the set free of thin pages.
+* Installable app (PWA): a web app manifest, app icons and a conservative,
+  root-scoped service worker let visitors install the calculator and use it
+  fully offline. The service worker only caches the plugin's own assets and
+  tipping pages and passes every other request straight through, so it never
+  interferes with the rest of the site. An "Install app" button appears where
+  the browser supports it.
+* Embeddable widget: a theme-free /tipping-embed/ route (with an optional
+  ?country=XX preset) plus a ready-to-paste <iframe> snippet in Settings, so the
+  calculator can be embedded on other sites.
+* New settings: toggle for the installable app (PWA); the programmatic-pages
+  toggle now also controls the service pages, region hubs, index and embed route.
 
 = 1.0.0 =
 * Initial release.

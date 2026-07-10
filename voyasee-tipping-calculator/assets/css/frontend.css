@@ -112,6 +112,8 @@
     color: var(--vtc-muted);
 }
 .vtc-stat strong { color: var(--vtc-gold-2); font-weight: 700; }
+.vtc-install { padding: 7px 15px; border-radius: 999px; border: 1px solid var(--vtc-gold); background: rgba(230,185,104,0.14); color: var(--vtc-gold-2); font-size: 13px; font-weight: 600; cursor: pointer; }
+.vtc-install:hover { background: rgba(230,185,104,0.24); }
 
 /* ---------- App grid ---------- */
 .vtc-app {
@@ -418,6 +420,17 @@
 .vtc-noTip-title { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 5vw, 2.2rem); color: #fff; margin: 6px 0 8px; font-weight: 600; }
 .vtc-noTip-text { color: var(--vtc-muted); font-size: 0.98rem; max-width: 380px; margin: 0 auto; }
 
+/* easiest cash tip */
+.vtc-cashline { margin-top: 12px; padding: 10px 14px; border-radius: var(--vtc-r-sm); background: rgba(92, 203, 140, 0.10); border: 1px solid rgba(92, 203, 140, 0.28); font-size: 0.9rem; color: #b7e6c9; display: flex; gap: 9px; align-items: center; }
+.vtc-cashline strong { color: #d8f5e4; font-variant-numeric: tabular-nums; }
+.vtc-cashline-icon { font-size: 1rem; }
+
+/* detected-country hint */
+.vtc-detected { margin-top: 8px; font-size: 0.82rem; color: var(--vtc-faint); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vtc-detected-link { background: none; border: none; color: var(--vtc-gold-2); cursor: pointer; font: inherit; text-decoration: underline; padding: 0; }
+.vtc-geo-btn { background: none; border: 1px solid var(--vtc-border); border-radius: 999px; color: var(--vtc-muted); font-size: 0.78rem; padding: 3px 10px; cursor: pointer; }
+.vtc-geo-btn:hover { border-color: var(--vtc-gold-deep); color: var(--vtc-gold-2); }
+
 /* home currency line */
 .vtc-home-line { margin-top: 14px; font-size: 0.9rem; color: var(--vtc-muted); text-align: center; }
 .vtc-home-line strong { color: var(--vtc-gold-2); font-variant-numeric: tabular-nums; }
@@ -491,6 +504,19 @@
 .vtc-related-list { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; padding: 0; margin: 0; }
 .vtc-related-list a { display: inline-block; padding: 8px 14px; border-radius: 999px; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); text-decoration: none; color: inherit; font-size: 0.9rem; }
 .vtc-related-list a:hover { background: rgba(230,185,104,0.15); border-color: #e6b968; }
+.vtc-country-back { margin-top: 10px; }
+.vtc-country-back a { text-decoration: none; color: #b98637; font-size: 0.92rem; }
+
+/* Region hub grid */
+.vtc-region-grid { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; padding: 8px 16px; }
+.vtc-region-card { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 14px; border: 1px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.02); text-decoration: none; color: inherit; transition: all 0.15s; }
+.vtc-region-card:hover { border-color: #e6b968; background: rgba(230,185,104,0.08); transform: translateY(-2px); }
+.vtc-region-card-name { font-weight: 700; font-size: 1.02rem; }
+.vtc-region-card-verdict { font-size: 0.85rem; color: #6b5a62; }
+
+/* Index */
+.vtc-index-region { max-width: 1120px; margin: 0 auto 22px; padding: 0 16px; }
+.vtc-index-count { color: #999; font-weight: 400; font-size: 0.9rem; }
 
 /* ---------- Motion / print ---------- */
 @media (prefers-reduced-motion: reduce) {

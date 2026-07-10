@@ -19,6 +19,7 @@ final class VTC_Shortcode {
     public static function render(array $atts = []): string {
         $atts = shortcode_atts([
             'country' => '',
+            'service' => '',
         ], $atts, 'voyasee_tipping_calculator');
 
         wp_enqueue_style('vtc-frontend');
@@ -38,6 +39,10 @@ final class VTC_Shortcode {
             $default_country = 'US';
         }
         $home_currency = strtoupper($settings['default_home_currency'] ?? '');
+        $default_service = '';
+        if (!empty($atts['service']) && isset(VTC_Data::services()[$atts['service']])) {
+            $default_service = $atts['service'];
+        }
 
         $uid = 'vtc-' . wp_unique_id();
         $country_list = VTC_Data::country_list();
@@ -48,8 +53,11 @@ final class VTC_Shortcode {
         $config = wp_json_encode([
             'restBase'        => esc_url_raw(rest_url('voyasee-tipping/v1/')),
             'defaultCountry'  => $default_country,
+            'defaultService'  => $default_service,
             'defaultHome'     => $home_currency,
+            'autodetect'      => empty($atts['country']),
             'countryPageBase' => VTC_Settings::country_pages_enabled() ? esc_url_raw(home_url('/tipping-in-')) : '',
+            'swUrl'           => VTC_Settings::pwa_enabled() ? esc_url_raw(VTC_PWA::sw_url()) : '',
             'strings'         => self::strings(),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
@@ -79,6 +87,11 @@ final class VTC_Shortcode {
             'suggestedTip'     => __('Suggested tip', 'voyasee-tipping-calculator'),
             'totalToPay'       => __('Total to pay', 'voyasee-tipping-calculator'),
             'perPerson'        => __('Per person', 'voyasee-tipping-calculator'),
+            'cashTip'          => __('Easiest cash tip', 'voyasee-tipping-calculator'),
+            'detected'         => __('Detected', 'voyasee-tipping-calculator'),
+            'change'           => __('change', 'voyasee-tipping-calculator'),
+            'useMyLocation'    => __('Use my location', 'voyasee-tipping-calculator'),
+            'install'          => __('Install app', 'voyasee-tipping-calculator'),
             'bill'             => __('Bill', 'voyasee-tipping-calculator'),
             'tip'              => __('Tip', 'voyasee-tipping-calculator'),
             'noTipTitle'       => __('No tip needed here', 'voyasee-tipping-calculator'),

@@ -10,6 +10,7 @@ final class VTC_Data {
     private static ?array $data = null;
     private static ?array $currencies = null;
     private static ?array $currency_meta = null;
+    private static ?array $tz = null;
 
     private static function load(): void {
         if (null !== self::$data) {
@@ -19,6 +20,7 @@ final class VTC_Data {
         $cur = require VTC_DIR . 'includes/data/currency-data.php';
         self::$currencies = $cur['currencies'];
         self::$currency_meta = $cur['meta'];
+        self::$tz = require VTC_DIR . 'includes/data/timezone-countries.php';
     }
 
     public static function services(): array {
@@ -111,6 +113,64 @@ final class VTC_Data {
         return array_keys(self::$data['countries']);
     }
 
+    /** Service key -> URL slug, e.g. hotel_housekeeping -> hotel-housekeeping. */
+    public static function service_slug(string $key): string {
+        return str_replace('_', '-', $key);
+    }
+
+    /** URL slug -> service key, or null. */
+    public static function service_from_slug(string $slug): ?string {
+        $key = str_replace('-', '_', strtolower(trim($slug)));
+        return isset(self::services()[$key]) ? $key : null;
+    }
+
+    /** Natural-language phrase for a service, for headings like "how much to tip {phrase} in X". */
+    public static function service_phrase(string $key): string {
+        $map = [
+            'restaurant'         => 'at a restaurant',
+            'cafe_bar'           => 'at a cafe or bar',
+            'taxi'               => 'a taxi driver',
+            'food_delivery'      => 'for food delivery',
+            'tour_guide'         => 'a tour guide',
+            'spa_salon'          => 'at a spa or salon',
+            'hotel_housekeeping' => 'hotel housekeeping',
+            'hotel_porter'       => 'a hotel porter',
+            'valet'              => 'for valet parking',
+            'concierge'          => 'a hotel concierge',
+        ];
+        return $map[$key] ?? (self::services()[$key]['label'] ?? $key);
+    }
+
+    /** Region slug, e.g. "Middle East" -> middle-east. */
+    public static function region_slug(string $region): string {
+        $s = strtolower($region);
+        $s = preg_replace('/[^a-z0-9]+/', '-', $s);
+        return trim((string) $s, '-');
+    }
+
+    /** Region slug -> region name, or null. */
+    public static function region_from_slug(string $slug): ?string {
+        $slug = strtolower(trim($slug));
+        foreach (self::country_list() as $c) {
+            if (self::region_slug($c['region']) === $slug) {
+                return $c['region'];
+            }
+        }
+        return null;
+    }
+
+    /** All region names, sorted. */
+    public static function regions(): array {
+        self::load();
+        $r = [];
+        foreach (self::$data['countries'] as $row) {
+            $r[$row['region']] = true;
+        }
+        $names = array_keys($r);
+        sort($names);
+        return $names;
+    }
+
     /** URL slug for a country page, e.g. "united-states" -> tipping-in-united-states. */
     public static function country_slug(string $name): string {
         $s = strtolower($name);
@@ -133,6 +193,7 @@ final class VTC_Data {
             'countries'  => self::$data['countries'],
             'currencies' => self::$currencies,
             'currencyMeta' => self::$currency_meta,
+            'tz'         => self::$tz,
         ];
     }
 

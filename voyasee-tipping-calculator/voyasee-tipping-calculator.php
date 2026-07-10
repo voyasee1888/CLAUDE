@@ -3,7 +3,7 @@
  * Plugin Name: Voyasee Tipping Calculator
  * Plugin URI: https://voyasee.com/
  * Description: A premium, worldwide tipping calculator powered entirely by Voyasee's own curated tipping intelligence (no third-party API). Covers 200+ countries and territories with culture-aware advice, an infographic result, bill splitting, share links, and print/PDF.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Voyasee
  * Author URI: https://voyasee.com/
  * Text Domain: voyasee-tipping-calculator
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('VTC_VERSION', '1.0.0');
+define('VTC_VERSION', '1.1.0');
 define('VTC_FILE', __FILE__);
 define('VTC_DIR', plugin_dir_path(__FILE__));
 define('VTC_URL', plugin_dir_url(__FILE__));
@@ -28,6 +28,7 @@ require_once VTC_DIR . 'includes/class-vtc-rest.php';
 require_once VTC_DIR . 'includes/class-vtc-shortcode.php';
 require_once VTC_DIR . 'includes/class-vtc-country-pages.php';
 require_once VTC_DIR . 'includes/class-vtc-schema.php';
+require_once VTC_DIR . 'includes/class-vtc-pwa.php';
 require_once VTC_DIR . 'includes/class-vtc-admin.php';
 
 final class Voyasee_Tipping_Calculator {
@@ -49,6 +50,7 @@ final class Voyasee_Tipping_Calculator {
         VTC_Shortcode::init();
         VTC_Country_Pages::init();
         VTC_Schema::init();
+        VTC_PWA::init();
         VTC_Admin::init();
     }
 

@@ -52,6 +52,8 @@ return [
         'spa_salon'          => ['label' => 'Spa / Salon / Barber',  'type' => 'percent',    'icon' => "\u{2702}"],
         'hotel_housekeeping' => ['label' => 'Hotel housekeeping',    'type' => 'flat_night', 'unit' => 'night', 'icon' => "\u{1F6CE}"],
         'hotel_porter'       => ['label' => 'Hotel porter / Bellhop','type' => 'flat_bag',   'unit' => 'bag',   'icon' => "\u{1F9F3}"],
+        'valet'              => ['label' => 'Valet parking',         'type' => 'flat_car',   'unit' => 'car',   'icon' => "\u{1F17F}"],
+        'concierge'          => ['label' => 'Hotel concierge',       'type' => 'flat_favor', 'unit' => 'favor', 'icon' => "\u{1F6CE}"],
     ],
 
     /* ---------------------------------------------------------------------
@@ -75,6 +77,8 @@ return [
                 'spa_salon'          => [15, 18, 20],
                 'hotel_housekeeping' => [2, 3, 5],
                 'hotel_porter'       => [1, 2, 3],
+                'valet'              => [2, 3, 5],
+                'concierge'          => [5, 10, 20],
             ],
         ],
         2 => [
@@ -92,6 +96,8 @@ return [
                 'spa_salon'          => [5, 10, 10],
                 'hotel_housekeeping' => [1, 2, 3],
                 'hotel_porter'       => [1, 1, 2],
+                'valet'              => [1, 2, 3],
+                'concierge'          => [0, 5, 10],
             ],
         ],
         3 => [
@@ -109,6 +115,8 @@ return [
                 'spa_salon'          => [0, 5, 10],
                 'hotel_housekeeping' => [1, 2, 3],
                 'hotel_porter'       => [1, 1, 2],
+                'valet'              => [1, 2, 3],
+                'concierge'          => [0, 5, 10],
             ],
         ],
         4 => [
@@ -126,6 +134,8 @@ return [
                 'spa_salon'          => [0, 0, 0],
                 'hotel_housekeeping' => [0, 0, 0],
                 'hotel_porter'       => [0, 0, 0],
+                'valet'              => [0, 0, 0],
+                'concierge'          => [0, 0, 0],
             ],
         ],
         5 => [
@@ -143,6 +153,8 @@ return [
                 'spa_salon'          => [10, 10, 10],
                 'hotel_housekeeping' => [1, 2, 3],
                 'hotel_porter'       => [1, 1, 2],
+                'valet'              => [1, 1, 2],
+                'concierge'          => [1, 2, 5],
             ],
         ],
     ],

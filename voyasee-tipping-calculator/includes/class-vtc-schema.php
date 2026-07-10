@@ -15,10 +15,24 @@ final class VTC_Schema {
     }
 
     public static function output(): void {
-        $code = VTC_Country_Pages::current_code();
-        if ($code) {
-            self::country_schema($code);
-            return;
+        $t = VTC_Country_Pages::current();
+        if ($t) {
+            if ('service' === $t['type']) {
+                self::service_schema($t['code'], $t['service']);
+                return;
+            }
+            if ('country' === $t['type']) {
+                self::country_schema($t['code']);
+                return;
+            }
+            if ('region' === $t['type']) {
+                self::place_breadcrumb(sprintf('Tipping in %s', $t['region']), home_url('/tipping-in-' . VTC_Data::region_slug($t['region']) . '/'));
+                return;
+            }
+            if ('index' === $t['type']) {
+                self::place_breadcrumb('Tipping Guides', home_url('/tipping-guides/'));
+                return;
+            }
         }
         if (is_singular()) {
             $post = get_post();
@@ -26,6 +40,52 @@ final class VTC_Schema {
                 self::tool_schema(get_permalink($post));
             }
         }
+    }
+
+    private static function service_schema(string $code, string $service): void {
+        $c = VTC_Data::resolve_country($code);
+        $slug = VTC_Data::country_slug($c['name']);
+        $sslug = VTC_Data::service_slug($service);
+        $phrase = VTC_Data::service_phrase($service);
+        $url = home_url('/tipping-in-' . $slug . '/' . $sslug . '/');
+        $overview = VTC_Calculator::country_overview($code);
+        $display = '';
+        foreach ($overview['rows'] as $row) {
+            if ($row['key'] === $service) $display = $row['display'];
+        }
+        $name = sprintf('How Much to Tip %s in %s', $phrase, $c['name']);
+        $desc = ('Not expected' === $display)
+            ? sprintf('Tipping %s is not generally expected in %s. %s', $phrase, $c['name'], self::strip($c['note']))
+            : sprintf('For %s in %s, the usual guidance is %s. Use the free Voyasee calculator for the exact amount.', $phrase, $c['name'], $display);
+
+        self::emit(self::software($url, $name, $desc));
+        self::emit([
+            '@context' => 'https://schema.org', '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => home_url('/')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Tipping Calculator', 'item' => home_url('/tipping-calculator/')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => 'Tipping in ' . $c['name'], 'item' => home_url('/tipping-in-' . $slug . '/')],
+                ['@type' => 'ListItem', 'position' => 4, 'name' => ucfirst($phrase), 'item' => $url],
+            ],
+        ]);
+        $answer = ('Not expected' === $display)
+            ? sprintf('Tipping %s is not generally expected in %s.', $phrase, $c['name'])
+            : sprintf('For %s in %s, the usual guidance is %s. Enter your exact amount in the calculator for the precise tip.', $phrase, $c['name'], $display);
+        self::emit(self::faq([
+            [sprintf('How much should I tip %s in %s?', $phrase, $c['name']), $answer],
+            [sprintf('Is the %s tipping guide free?', $c['name']), 'Yes — the calculator and this guide are completely free, with no account required.'],
+        ]));
+    }
+
+    private static function place_breadcrumb(string $name, string $url): void {
+        self::emit([
+            '@context' => 'https://schema.org', '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => home_url('/')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Tipping Calculator', 'item' => home_url('/tipping-calculator/')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $name, 'item' => $url],
+            ],
+        ]);
     }
 
     private static function emit(array $data): void {

@@ -146,6 +146,7 @@
     var total = (type === "percent") ? roundMoney(amount + tip, d) : tip;
     var ppTip = roundMoney(tip / party, d);
     var ppTotal = roundMoney(total / party, d);
+    var cashTip = (tip > 0) ? roundUpTotal(tip, d) : 0;
 
     var home = homeConversion(args.home_currency, country.currency, tip, total, type);
 
@@ -154,7 +155,7 @@
       currency: { code: country.currency, symbol: cur.symbol, decimals: d },
       input: { amount: amount, quality: args.quality, party: party, units: units, round_up: roundUp },
       result: { tip: tip, total: total, per_person_tip: ppTip, per_person_total: ppTotal,
-                rate_pct: ratePct, per_unit: perUnit, band: bandAmt, not_expected: notExpected },
+                cash_tip: cashTip, rate_pct: ratePct, per_unit: perUnit, band: bandAmt, not_expected: notExpected },
       home: home, messages: messages(country, type, notExpected)
     };
   }
@@ -265,6 +266,16 @@
       card.appendChild(pp);
     }
 
+    // easiest cash tip
+    if (r.cash_tip && r.cash_tip !== r.tip) {
+      var cashLine = el("div", "vtc-cashline");
+      cashLine.appendChild(el("span", "vtc-cashline-icon", "💵"));
+      var ct = el("span", null, (strings.cashTip || "Easiest cash tip") + ": ");
+      ct.appendChild(el("strong", null, money(cur.symbol, r.cash_tip, cur.decimals)));
+      cashLine.appendChild(ct);
+      card.appendChild(cashLine);
+    }
+
     // meters: gauge + range
     var meters = el("div", "vtc-meters");
     meters.appendChild(buildGauge(res.country.cluster_key, res.country.verdict, strings));
@@ -334,7 +345,7 @@
 
     var state = {
       country: config.defaultCountry || "US",
-      service: "restaurant",
+      service: (config.defaultService && DATA.services[config.defaultService]) ? config.defaultService : "restaurant",
       amount: "",
       quality: "standard",
       party: 1,
@@ -363,7 +374,26 @@
         roundupInput = q("[data-vtc-roundup]"),
         homeSelect = q("[data-vtc-home]"),
         resultMount = q("[data-vtc-result-card]"),
-        resultEmpty = q("[data-vtc-result-empty]");
+        resultEmpty = q("[data-vtc-result-empty]"),
+        detectedWrap = q("[data-vtc-detected]");
+
+    /* offline country auto-detect from the browser timezone (no GPS/API) */
+    function detectCountry() {
+      try {
+        if (!DATA.tz || !window.Intl || !Intl.DateTimeFormat) return null;
+        var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (tz && DATA.tz[tz] && resolveCountry(DATA.tz[tz])) return DATA.tz[tz];
+      } catch (e) {}
+      return null;
+    }
+    function showDetected(code) {
+      if (!detectedWrap) return;
+      var c = resolveCountry(code);
+      detectedWrap.innerHTML = "";
+      detectedWrap.appendChild(el("span", null, "📍 " + (strings.detected || "Detected") + ": "));
+      detectedWrap.appendChild(el("strong", null, flagEmoji(code) + " " + c.name));
+      detectedWrap.hidden = false;
+    }
 
     /* country combo */
     var countryList = [];
@@ -386,7 +416,7 @@
         b.appendChild(el("span", "vtc-combo-opt-flag", flagEmoji(c.code)));
         b.appendChild(el("span", "vtc-combo-opt-name", c.name));
         b.appendChild(el("span", "vtc-combo-opt-tag", c.region));
-        (function (code) { b.onclick = function () { setCountry(code); closeCombo(); }; })(c.code);
+        (function (code) { b.onclick = function () { if (detectedWrap) detectedWrap.hidden = true; setCountry(code); closeCombo(); }; })(c.code);
         li.appendChild(b);
         comboList.appendChild(li);
       }
@@ -584,6 +614,11 @@
     /* build UI */
     renderServices();
     var hadHash = readHash();
+    // Offline auto-detect: only when no shared link and not a country-preset page.
+    if (!hadHash && config.autodetect) {
+      var det = detectCountry();
+      if (det) { state.country = det; showDetected(det); }
+    }
     // reflect state into controls
     setCountry(state.country);
     setService(state.service);
@@ -602,6 +637,39 @@
   function boot() {
     var roots = document.querySelectorAll("[data-vtc-root]");
     for (var i = 0; i < roots.length; i++) initRoot(roots[i]);
+    registerPWA(roots[0]);
+  }
+
+  /* PWA: register the service worker + wire an install button (opt-in via config.swUrl) */
+  function registerPWA(root) {
+    if (!root) return;
+    var config = {};
+    try { config = JSON.parse(root.getAttribute("data-vtc-config") || "{}"); } catch (e) { config = {}; }
+    var strings = config.strings || {};
+    if (config.swUrl && navigator.serviceWorker) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(config.swUrl, { scope: "/" }).catch(function () {});
+      });
+    }
+    var deferred = null;
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      deferred = e;
+      var stats = document.querySelectorAll("[data-vtc-root] .vtc-stats");
+      for (var i = 0; i < stats.length; i++) {
+        if (stats[i].querySelector(".vtc-install")) continue;
+        var b = el("button", "vtc-install", "⤓ " + (strings.install || "Install app"));
+        b.type = "button";
+        b.onclick = function () {
+          if (!deferred) return;
+          deferred.prompt();
+          deferred.userChoice.then(function () { deferred = null; });
+          var btns = document.querySelectorAll(".vtc-install");
+          for (var j = 0; j < btns.length; j++) btns[j].style.display = "none";
+        };
+        stats[i].appendChild(b);
+      }
+    });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

@@ -95,6 +95,10 @@ final class VTC_Calculator {
         $per_person_tip = self::round_money($tip / $party, $decimals);
         $per_person_total = self::round_money($total / $party, $decimals);
 
+        // "Easiest cash tip": the exact tip rounded up to a convenient amount to
+        // hand over in local cash. Only meaningful when it differs from the tip.
+        $cash_tip = ($tip > 0) ? self::round_up_total($tip, $decimals) : 0.0;
+
         $messages = self::messages($country, $type, $not_expected);
 
         $home = self::home_conversion($args['home_currency'] ?? '', $country['currency'], $tip, $total, $type);
@@ -119,6 +123,7 @@ final class VTC_Calculator {
                 'total'            => $total,
                 'per_person_tip'   => $per_person_tip,
                 'per_person_total' => $per_person_total,
+                'cash_tip'         => $cash_tip,
                 'rate_pct'         => $rate_pct,
                 'per_unit'         => $per_unit,
                 'band'             => $band_amounts,

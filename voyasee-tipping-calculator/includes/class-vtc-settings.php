@@ -17,6 +17,7 @@ final class VTC_Settings {
             'default_country'       => 'US',
             'default_home_currency' => '',
             'country_pages_enabled' => '1',
+            'pwa_enabled'           => '1',
         ]);
     }
 
@@ -41,6 +42,10 @@ final class VTC_Settings {
 
     public static function country_pages_enabled(): bool {
         return '1' === self::get('country_pages_enabled', '1');
+    }
+
+    public static function pwa_enabled(): bool {
+        return '1' === self::get('pwa_enabled', '1');
     }
 
     public static function save(array $values): void {

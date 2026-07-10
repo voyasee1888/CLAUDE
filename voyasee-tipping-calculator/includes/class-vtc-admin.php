@@ -97,7 +97,14 @@ final class VTC_Admin {
                         <th scope="row"><?php echo esc_html__('Per-country SEO pages', 'voyasee-tipping-calculator'); ?></th>
                         <td>
                             <label><input type="checkbox" name="<?php echo esc_attr($opt); ?>[country_pages_enabled]" value="1" <?php checked($s['country_pages_enabled'], '1'); ?>>
-                            <?php echo esc_html__('Enable /tipping-in-{country}/ landing pages (visit Settings → Permalinks → Save once after toggling).', 'voyasee-tipping-calculator'); ?></label>
+                            <?php echo esc_html__('Enable /tipping-in-{country}/ pages, /tipping-in-{country}/{service}/ pages, region hubs, the /tipping-guides/ index and the embed route (visit Settings → Permalinks → Save once after toggling).', 'voyasee-tipping-calculator'); ?></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php echo esc_html__('Installable app (PWA + offline)', 'voyasee-tipping-calculator'); ?></th>
+                        <td>
+                            <label><input type="checkbox" name="<?php echo esc_attr($opt); ?>[pwa_enabled]" value="1" <?php checked($s['pwa_enabled'], '1'); ?>>
+                            <?php echo esc_html__('Serve a web app manifest + service worker so the calculator can be installed and used offline (visit Settings → Permalinks → Save once after toggling).', 'voyasee-tipping-calculator'); ?></label>
                         </td>
                     </tr>
                 </table>
@@ -120,6 +127,12 @@ final class VTC_Admin {
                 </table>
                 <?php submit_button(); ?>
             </form>
+
+            <h2><?php echo esc_html__('Embed on another site', 'voyasee-tipping-calculator'); ?></h2>
+            <p class="description"><?php echo esc_html__('Paste this where you want the calculator to appear (requires the programmatic pages to be enabled above). Add ?country=JP to preset a country.', 'voyasee-tipping-calculator'); ?></p>
+            <textarea readonly rows="3" class="large-text code" onclick="this.select()"><?php
+                echo esc_textarea('<iframe src="' . esc_url(home_url('/tipping-embed/')) . '" title="Voyasee Tipping Calculator" style="width:100%;max-width:1120px;height:1400px;border:0;" loading="lazy"></iframe>');
+            ?></textarea>
         </div>
         <?php
     }

@@ -77,6 +77,7 @@ $affiliates = array_values(array_filter($affiliates, static fn($t) => !empty($t[
                             <ul class="vtc-combo-list" data-vtc-combo-list role="listbox"></ul>
                         </div>
                     </div>
+                    <div class="vtc-detected" data-vtc-detected hidden></div>
                 </div>
 
                 <div class="vtc-field">
