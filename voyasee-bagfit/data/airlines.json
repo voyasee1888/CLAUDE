@@ -1,12 +1,12 @@
 {
-  "version": "7.9.1",
+  "version": "7.9.3",
   "schema_version": "7.3",
-  "generated_at": "2026-06-27",
+  "generated_at": "2026-07-10",
   "coverage": {
     "total_profiles": 250,
-    "deep_verified": 34,
-    "source_linked": 125,
-    "directory_only": 91
+    "deep_verified": 124,
+    "source_linked": 36,
+    "directory_only": 90
   },
   "airlines": [
     {
@@ -2391,9 +2391,9 @@
       "country": "Spain",
       "source_url": "https://www.aireuropa.com/ot/en/aea/travel-information/baggage/hand-luggage.html",
       "source_title": "Air Europa official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -2423,14 +2423,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -2438,11 +2438,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -2454,10 +2454,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -2489,7 +2489,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "On ATR regional aircraft the cabin limit drops to 55×35×20 cm / 8 kg."
           },
           {
             "id": "unknown",
@@ -2504,7 +2504,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "On ATR regional aircraft the cabin limit drops to 55×35×20 cm / 8 kg."
           }
         ],
         "checked": [
@@ -2521,7 +2521,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Air Europa",
@@ -9338,9 +9338,9 @@
       "country": "Spain",
       "source_url": "https://www.bintercanarias.com/eng/information/baggage/hand-luggage",
       "source_title": "Binter Canarias official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -9366,8 +9366,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -9381,11 +9381,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -9397,10 +9397,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -9428,7 +9428,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "ATR aircraft: 45×35×25 cm / 8 kg; larger Embraer aircraft allow a bigger cabin bag."
           },
           {
             "id": "unknown",
@@ -9443,7 +9443,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "ATR aircraft: 45×35×25 cm / 8 kg; larger Embraer aircraft allow a bigger cabin bag."
           }
         ],
         "checked": [
@@ -9460,7 +9460,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Binter Canarias",
@@ -10225,9 +10225,9 @@
       "country": "Bulgaria",
       "source_url": "https://www.air.bg/en/customer-support/baggage/hand-baggage",
       "source_title": "Bulgaria Air official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -10257,14 +10257,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -10272,11 +10272,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -10288,10 +10288,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -10323,7 +10323,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy: one hand bag up to 55×40×23 cm / 10 kg plus one small personal item."
           },
           {
             "id": "unknown",
@@ -10338,7 +10338,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy: one hand bag up to 55×40×23 cm / 10 kg plus one small personal item."
           }
         ],
         "checked": [
@@ -10355,7 +10355,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Bulgaria Air",
@@ -10742,9 +10742,9 @@
       "country": "Trinidad and Tobago",
       "source_url": "https://www.caribbean-airlines.com/#/baggage/carry-on-baggage",
       "source_title": "Caribbean Airlines official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -10770,8 +10770,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -10785,11 +10785,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -10801,10 +10801,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -10832,7 +10832,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 56×36×23 cm / 10 kg."
           },
           {
             "id": "unknown",
@@ -10847,7 +10847,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 56×36×23 cm / 10 kg."
           }
         ],
         "checked": [
@@ -10864,7 +10864,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Caribbean Airlines",
@@ -12661,16 +12661,16 @@
       "country": "Cyprus",
       "source_url": "https://www.cyprusairways.com/baggage-information",
       "source_title": "Cyprus Airways official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
-          400,
-          300,
+          350,
+          200,
           200
         ],
-        "max_weight_g": null,
+        "max_weight_g": 5000,
         "included": "included"
       },
       "cabin": {
@@ -12693,14 +12693,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -12708,11 +12708,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -12724,10 +12724,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -12735,11 +12735,11 @@
             "id": "published-personal",
             "label": "Published personal-item limit",
             "dimensions_mm": [
-              400,
-              300,
+              350,
+              200,
               200
             ],
-            "max_weight_g": null,
+            "max_weight_g": 5000,
             "piece_count": 1,
             "inclusion": "included",
             "placement": "underseat"
@@ -12759,7 +12759,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "One personal item up to 35×20×20 cm / 5 kg is included."
           },
           {
             "id": "unknown",
@@ -12774,7 +12774,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "One personal item up to 35×20×20 cm / 5 kg is included."
           }
         ],
         "checked": [
@@ -12791,7 +12791,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Cyprus Airways",
@@ -15209,9 +15209,9 @@
       "country": "Fiji",
       "source_url": "https://www.fijiairways.com/en-us/manage/baggage-allowances",
       "source_title": "Fiji Airways official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -15237,8 +15237,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -15252,11 +15252,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -15268,10 +15268,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -15299,7 +15299,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 55×40×23 cm / 7 kg."
           },
           {
             "id": "unknown",
@@ -15314,7 +15314,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 55×40×23 cm / 7 kg."
           }
         ],
         "checked": [
@@ -15331,7 +15331,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Fiji Airways",
@@ -16059,9 +16059,9 @@
       "country": "Saudi Arabia",
       "source_url": "https://www.flynas.com/en/travel/baggage/cabin-baggage",
       "source_title": "flynas official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -16091,14 +16091,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -16106,11 +16106,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -16122,10 +16122,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -16157,7 +16157,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 56×36×23 cm / 7 kg."
           },
           {
             "id": "unknown",
@@ -16172,7 +16172,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 56×36×23 cm / 7 kg."
           }
         ],
         "checked": [
@@ -16189,7 +16189,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "flynas",
@@ -17466,9 +17466,9 @@
       "country": "China",
       "source_url": "https://www.hainanairlines.com/HUPortal/dyn/portal/DisplayPage?COUNTRY_SITE=US&SITE=CBHZCBHZ&LANGUAGE=US&PAGE=CABA",
       "source_title": "Hainan Airlines official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -17480,7 +17480,7 @@
           400,
           200
         ],
-        "max_weight_g": 10000,
+        "max_weight_g": 5000,
         "max_linear_mm": null,
         "included": "conditional"
       },
@@ -17494,8 +17494,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -17509,11 +17509,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -17525,10 +17525,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -17551,12 +17551,12 @@
               400,
               200
             ],
-            "max_weight_g": 10000,
+            "max_weight_g": 5000,
             "combined_weight_g": null,
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Domestic and international weight limits can differ."
+            "condition_note": "Economy 5 kg; Business up to 10 kg."
           },
           {
             "id": "unknown",
@@ -17566,12 +17566,12 @@
               400,
               200
             ],
-            "max_weight_g": 10000,
+            "max_weight_g": 5000,
             "combined_weight_g": null,
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Domestic and international weight limits can differ."
+            "condition_note": "Economy 5 kg; Business up to 10 kg."
           }
         ],
         "checked": [
@@ -17588,7 +17588,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Hainan Airlines",
@@ -20635,9 +20635,9 @@
       "country": "Japan",
       "source_url": "https://www.jetstar.com/jp/en/help/articles/carry-on-baggage-what-can-i-bring-on-board",
       "source_title": "Jetstar Japan official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -20667,14 +20667,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -20682,11 +20682,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -20698,10 +20698,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -20730,10 +20730,10 @@
             ],
             "max_weight_g": 7000,
             "combined_weight_g": 7000,
-            "piece_count": 2,
+            "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Standard allowance is combined across two items."
+            "condition_note": "Up to 2 items with a combined weight of 7 kg."
           },
           {
             "id": "unknown",
@@ -20745,10 +20745,10 @@
             ],
             "max_weight_g": 7000,
             "combined_weight_g": 7000,
-            "piece_count": 2,
+            "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Standard allowance is combined across two items."
+            "condition_note": "Up to 2 items with a combined weight of 7 kg."
           }
         ],
         "checked": [
@@ -20765,7 +20765,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Jetstar Japan",
@@ -24687,9 +24687,9 @@
       "country": "Japan",
       "source_url": "https://www.flypeach.com/en/lm/ai/airports/baggage/carry_on_bag",
       "source_title": "Peach Aviation official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -24715,8 +24715,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -24730,11 +24730,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -24746,10 +24746,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -24774,10 +24774,10 @@
             ],
             "max_weight_g": 7000,
             "combined_weight_g": 7000,
-            "piece_count": 1,
+            "piece_count": 2,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "The total weight covers all permitted cabin items."
+            "condition_note": "Up to 2 pieces, combined ≤ 7 kg and total dimensions ≤ 115 cm."
           },
           {
             "id": "unknown",
@@ -24789,10 +24789,10 @@
             ],
             "max_weight_g": 7000,
             "combined_weight_g": 7000,
-            "piece_count": 1,
+            "piece_count": 2,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "The total weight covers all permitted cabin items."
+            "condition_note": "Up to 2 pieces, combined ≤ 7 kg and total dimensions ≤ 115 cm."
           }
         ],
         "checked": [
@@ -24809,7 +24809,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Peach Aviation",
@@ -26771,9 +26771,9 @@
       "country": "Rwanda",
       "source_url": "https://www.rwandair.com/information/prepare-to-fly/baggage/cabin-baggage/",
       "source_title": "RwandAir official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -26785,7 +26785,7 @@
           400,
           200
         ],
-        "max_weight_g": 7000,
+        "max_weight_g": 10000,
         "max_linear_mm": null,
         "included": "conditional"
       },
@@ -26799,8 +26799,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -26814,11 +26814,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -26830,10 +26830,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -26856,12 +26856,12 @@
               400,
               200
             ],
-            "max_weight_g": 7000,
+            "max_weight_g": 10000,
             "combined_weight_g": null,
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy hand baggage is one bag up to 55×40×20 cm / 10 kg."
           },
           {
             "id": "unknown",
@@ -26871,12 +26871,12 @@
               400,
               200
             ],
-            "max_weight_g": 7000,
+            "max_weight_g": 10000,
             "combined_weight_g": null,
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy hand baggage is one bag up to 55×40×20 cm / 10 kg."
           }
         ],
         "checked": [
@@ -26893,7 +26893,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "RwandAir",
@@ -28985,9 +28985,9 @@
       "country": "Czechia",
       "source_url": "https://www.smartwings.com/en/baggage",
       "source_title": "Smartwings official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -29017,14 +29017,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "source_linked",
@@ -29032,11 +29032,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -29048,10 +29048,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -29083,7 +29083,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Cabin bag included on all fares; the 40×30×15 cm / 3 kg personal item is free only on Plus, Flex and Business fares."
           },
           {
             "id": "unknown",
@@ -29098,7 +29098,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Cabin bag included on all fares; the 40×30×15 cm / 3 kg personal item is free only on Plus, Flex and Business fares."
           }
         ],
         "checked": [
@@ -29115,7 +29115,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Smartwings",
@@ -30141,9 +30141,9 @@
       "country": "China",
       "source_url": "https://en.ch.com/flights/baggage/carry-on-baggage",
       "source_title": "Spring Airlines official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -30169,8 +30169,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -30184,11 +30184,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -30200,10 +30200,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -30231,7 +30231,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Cabin allowance can vary by fare and route."
+            "condition_note": "Basic fare 5 kg (international) / 7 kg (domestic); up to 55×40×20 cm & 10 kg with a SpringPlus upgrade."
           },
           {
             "id": "unknown",
@@ -30246,7 +30246,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Cabin allowance can vary by fare and route."
+            "condition_note": "Basic fare 5 kg (international) / 7 kg (domestic); up to 55×40×20 cm & 10 kg with a SpringPlus upgrade."
           }
         ],
         "checked": [
@@ -30263,7 +30263,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Spring Airlines",
@@ -30596,9 +30596,9 @@
       "country": "United States",
       "source_url": "https://www.suncountry.com/bags-optional-services",
       "source_title": "Sun Country Airlines official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           430,
@@ -30628,14 +30628,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -30643,11 +30643,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -30659,10 +30659,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -30694,7 +30694,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Overhead carry-on is a paid add-on on most fares; personal item is free."
           },
           {
             "id": "unknown",
@@ -30709,7 +30709,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Overhead carry-on is a paid add-on on most fares; personal item is free."
           }
         ],
         "checked": [
@@ -30726,7 +30726,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Sun Country Airlines",
@@ -30750,9 +30750,9 @@
       "country": "Türkiye/Germany",
       "source_url": "https://www.sunexpress.com/en-gb/information/luggage-info/carry-on-baggage/",
       "source_title": "SunExpress official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -30782,14 +30782,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -30797,11 +30797,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -30813,10 +30813,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -30848,7 +30848,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 55×40×23 cm / 8 kg."
           },
           {
             "id": "unknown",
@@ -30863,7 +30863,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy cabin allowance is one bag up to 55×40×23 cm / 8 kg."
           }
         ],
         "checked": [
@@ -30880,7 +30880,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "SunExpress",
@@ -31815,9 +31815,9 @@
       "country": "Romania",
       "source_url": "https://www.tarom.ro/en/passenger-information/baggage/hand-baggage/",
       "source_title": "TAROM official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -31843,8 +31843,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -31858,11 +31858,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -31874,10 +31874,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -31905,7 +31905,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "On ATR 42/72 regional aircraft the cabin bag must not exceed 35×30×20 cm."
           },
           {
             "id": "unknown",
@@ -31920,7 +31920,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "On ATR 42/72 regional aircraft the cabin bag must not exceed 35×30×20 cm."
           }
         ],
         "checked": [
@@ -31937,7 +31937,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "TAROM",
@@ -33020,9 +33020,9 @@
       "country": "United Kingdom",
       "source_url": "https://www.tui.co.uk/destinations/info/luggage-allowance",
       "source_title": "TUI Airways official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -33052,14 +33052,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -33067,11 +33067,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -33083,10 +33083,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -33118,7 +33118,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Personal item 40×30×20 cm fits under the seat."
           },
           {
             "id": "unknown",
@@ -33133,7 +33133,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Personal item 40×30×20 cm fits under the seat."
           }
         ],
         "checked": [
@@ -33150,7 +33150,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "TUI Airways",
@@ -34541,12 +34541,12 @@
       "country": "Mexico",
       "source_url": "https://www.vivaaerobus.com/en-us/info/get-ready-to-fly/baggage",
       "source_title": "Viva Aerobus official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
-          400,
+          450,
           350,
           200
         ],
@@ -34573,14 +34573,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -34588,11 +34588,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -34604,10 +34604,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -34615,7 +34615,7 @@
             "id": "published-personal",
             "label": "Published personal-item limit",
             "dimensions_mm": [
-              400,
+              450,
               350,
               200
             ],
@@ -34639,7 +34639,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Cabin allowance depends on the selected fare and purchased baggage."
+            "condition_note": "Overhead carry-on is a paid add-on; the 45×35×20 cm personal item is free on every fare."
           },
           {
             "id": "unknown",
@@ -34654,7 +34654,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "Cabin allowance depends on the selected fare and purchased baggage."
+            "condition_note": "Overhead carry-on is a paid add-on; the 45×35×20 cm personal item is free on every fare."
           }
         ],
         "checked": [
@@ -34671,7 +34671,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "Viva Aerobus",
@@ -35732,9 +35732,9 @@
       "country": "China",
       "source_url": "https://www.xiamenair.com/brandnew_EN/travel-essentials/baggage/carry-on-baggage.html",
       "source_title": "XiamenAir official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": null,
         "max_weight_g": null,
@@ -35760,8 +35760,8 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
@@ -35775,11 +35775,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -35791,10 +35791,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -35822,7 +35822,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy 5 kg; Business up to 10 kg."
           },
           {
             "id": "unknown",
@@ -35837,7 +35837,7 @@
             "piece_count": 1,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": ""
+            "condition_note": "Economy 5 kg; Business up to 10 kg."
           }
         ],
         "checked": [
@@ -35854,7 +35854,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "XiamenAir",
@@ -35878,9 +35878,9 @@
       "country": "Japan",
       "source_url": "https://www.zipair.net/en/service/baggage/carry_on",
       "source_title": "ZIPAIR official baggage information",
-      "last_verified": "2026-06-22",
+      "last_verified": "2026-07-10",
       "status": "published",
-      "confidence": "medium",
+      "confidence": "high",
       "personal": {
         "dimensions_mm": [
           400,
@@ -35910,14 +35910,14 @@
       "policy_note": "Measure the outermost points, including wheels, handles, pockets and protruding parts. Airport staff and the issued ticket remain authoritative.",
       "data_quality": {
         "source_type": "official_airline",
-        "verification_status": "source_linked_requires_manual_review",
-        "reviewed_at": "2026-06-22",
+        "verification_status": "reviewed_against_official_page",
+        "reviewed_at": "2026-07-10",
         "recommended_review_days": 90,
         "scope": "general_public_baggage_rule",
         "field_verification": {
           "personal_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "personal_weight": {
             "status": "not_published",
@@ -35925,11 +35925,11 @@
           },
           "cabin_dimensions": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "cabin_weight": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           },
           "checked_dimensions": {
             "status": "not_published",
@@ -35941,10 +35941,10 @@
           },
           "fare_inclusion": {
             "status": "source_linked",
-            "reviewed_at": null
+            "reviewed_at": "2026-07-10"
           }
         },
-        "coverage_tier": "core_source_linked"
+        "coverage_tier": "deep_verified"
       },
       "allowance_options": {
         "personal": [
@@ -35973,10 +35973,10 @@
             ],
             "max_weight_g": 7000,
             "combined_weight_g": 7000,
-            "piece_count": 1,
+            "piece_count": 2,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "The stated weight is a combined allowance across all cabin items."
+            "condition_note": "Up to 2 cabin pieces with a combined weight of 7 kg."
           },
           {
             "id": "unknown",
@@ -35988,10 +35988,10 @@
             ],
             "max_weight_g": 7000,
             "combined_weight_g": 7000,
-            "piece_count": 1,
+            "piece_count": 2,
             "inclusion": "conditional",
             "placement": "overhead",
-            "condition_note": "The stated weight is a combined allowance across all cabin items."
+            "condition_note": "Up to 2 cabin pieces with a combined weight of 7 kg."
           }
         ],
         "checked": [
@@ -36008,7 +36008,7 @@
       },
       "review_note": "This is a structured planning snapshot. Recheck the official source and the baggage allowance printed in the booking before departure.",
       "schema_version": "7.0",
-      "coverage_tier": "core_source_linked",
+      "coverage_tier": "deep_verified",
       "directory_only": false,
       "aliases": [
         "ZIPAIR",
