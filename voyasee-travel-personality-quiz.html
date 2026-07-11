@@ -37,12 +37,12 @@
 
   <!-- ===================== INTRO ===================== -->
   <div class="tp-screen tp-intro" data-tp-screen="intro">
-    <span class="tp-eyebrow"><span class="tp-eyebrow-dot"></span>Voyasee Play · Travel DNA</span>
+    <span class="tp-eyebrow"><span class="tp-eyebrow-dot"></span>Voyasee Play · Travel DNA Quiz</span>
     <h2 id="tp-title">What's Your <em>Travel DNA?</em></h2>
-    <p class="tp-intro-copy">10 quick questions. Watch your travel personality build itself in real time, then get matched against 8 traveler archetypes — with the real reasons behind your match, not just a label.</p>
+    <p class="tp-intro-copy">This free travel DNA quiz asks 14 quick questions, then watches your travel personality build itself in real time before matching you against 10 traveler archetypes — with the real reasons behind your match, not just a label.</p>
     <div class="tp-intro-meta">
-      <span>&#9201; ~2 minutes</span>
-      <span>&#127942; 8 archetypes</span>
+      <span>&#9201; ~3 minutes</span>
+      <span>&#127942; 10 archetypes</span>
       <span>&#128200; Live-building profile</span>
     </div>
 
@@ -91,6 +91,7 @@
         </svg>
         <div class="tp-radar-labels" data-tp-radar-labels></div>
         <p class="tp-leaning" data-tp-leaning>Answer a question to begin…</p>
+        <div class="tp-trait-bars tp-trait-bars-compact" data-tp-trait-bars></div>
       </div>
     </div>
   </div>
@@ -139,6 +140,8 @@
           <polygon class="tp-radar-fill" data-tp-result-radar-fill style="fill:url(#tpGradResult)" points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
         </svg>
         <div class="tp-radar-labels" data-tp-result-radar-labels></div>
+        <div class="tp-dominant-stat" data-tp-dominant-stat></div>
+        <div class="tp-trait-bars" data-tp-result-trait-bars></div>
       </div>
 
       <div class="tp-matches">
@@ -286,6 +289,19 @@
 .tp-radar-labels .tp-rl{ font:700 9.5px/1.2 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); }
 .tp-leaning{ margin:14px 0 0; font:700 12.5px/1.4 "Plus Jakarta Sans",sans-serif; color:var(--teal); min-height:34px; }
 
+/* Infographic-style trait bar list */
+.tp-trait-bars{ display:flex; flex-direction:column; gap:11px; margin-top:16px; text-align:left; }
+.tp-trait-bars-compact{ gap:8px; margin-top:10px; }
+.tp-trait-row{ display:grid; grid-template-columns:56px 42px 1fr 42px; align-items:center; gap:7px; }
+.tp-trait-name{ font:800 10px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.03em; color:var(--ink-soft); }
+.tp-trait-pole{ font:700 8.5px/1 "Plus Jakarta Sans",sans-serif; color:var(--muted); white-space:nowrap; }
+.tp-trait-pole-high{ text-align:right; }
+.tp-trait-track{ position:relative; height:5px; border-radius:999px; background:rgba(255,255,255,.09); }
+.tp-trait-dot{ position:absolute; top:50%; width:11px; height:11px; border-radius:50%; background:var(--grad); transform:translate(-50%,-50%); box-shadow:0 0 8px rgba(43,227,202,.5); transition:left .5s cubic-bezier(.2,.7,.3,1); left:50%; }
+
+.tp-dominant-stat{ margin:16px 0 4px; padding:12px 16px; border-radius:14px; background:linear-gradient(120deg, rgba(43,227,202,.10), rgba(167,139,250,.10)); border:1px solid var(--glass-brd); font:700 12px/1.4 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); text-align:left; }
+.tp-dominant-stat strong{ color:var(--teal); font-size:15px; }
+
 /* Result */
 .tp-result{ width:min(980px, calc(100% - 8px)); margin:0 auto; }
 .tp-result-top{ text-align:center; max-width:640px; margin:0 auto 34px; }
@@ -326,7 +342,7 @@
 }
 @media (prefers-reduced-motion:reduce){
   .tp-orb{ animation:none !important; transition:none !important; }
-  .tp-progress-fill, .tp-opt, .tp-radar-fill, .tp-opt-letter{ transition:none; animation:none; }
+  .tp-progress-fill, .tp-opt, .tp-radar-fill, .tp-opt-letter, .tp-trait-dot{ transition:none; animation:none; }
   .tp-question-panel.tp-anim-in{ animation:none; }
   .tp-calc-sweep, .tp-calc-icon, .tp-calc-dots i{ animation:none; }
   .tp-confetti.is-on span{ animation:none; opacity:0; }
@@ -405,11 +421,35 @@
       { t:"A week with zero plans and no idea what's next.", fx:{STRUCTURE:2} },
       { t:"A week where every single hour is scheduled.", fx:{STRUCTURE:-2} }
     ]},
-    { q:"Last one — deep down, what makes a trip 'good' for you?", options:[
+    { q:"Deep down, what makes a trip 'good' for you?", options:[
       { t:"I came back with a completely new perspective.", fx:{NOVELTY:2} },
       { t:"I actually rested for once.", fx:{PACE:-1, COMFORT:1} },
       { t:"I made real connections with people I met.", fx:{SOCIAL:2} },
       { t:"I checked off everything on my list.", fx:{STRUCTURE:1, PACE:1} }
+    ]},
+    { q:"There's a street festival happening tonight, completely unplanned. What do you do?", options:[
+      { t:"I'm there immediately, plans be damned.", fx:{NOVELTY:2, STRUCTURE:-1} },
+      { t:"I check what it's actually about first, then decide.", fx:{STRUCTURE:1} },
+      { t:"I go, but I bring the people I'm traveling with.", fx:{SOCIAL:1} },
+      { t:"I watch from a quiet rooftop bar instead of joining the crowd.", fx:{SOCIAL:-1, PACE:-1} }
+    ]},
+    { q:"Pick the trip length that sounds right to you.", options:[
+      { t:"A long weekend — enough, then home.", fx:{PACE:1} },
+      { t:"Two to three weeks, one region, no rush.", fx:{PACE:-1} },
+      { t:"As long as possible — months if I could.", fx:{NOVELTY:1, STRUCTURE:-1} },
+      { t:"However long the itinerary needs to fit everything in.", fx:{STRUCTURE:1} }
+    ]},
+    { q:"Your accommodation for the night falls through last minute. Your gut reaction?", options:[
+      { t:"Mild panic — I need this fixed on a plan immediately.", fx:{STRUCTURE:1, COMFORT:1} },
+      { t:"I'll figure it out — worst case, I wing it.", fx:{STRUCTURE:-2} },
+      { t:"I ask around — someone nearby always knows a place.", fx:{SOCIAL:1} },
+      { t:"Honestly, this is basically why I travel — for stories like this.", fx:{NOVELTY:1} }
+    ]},
+    { q:"Last one — which describes your camera roll after a trip?", options:[
+      { t:"Mostly landscapes, empty streets, quiet details.", fx:{TERRAIN:-1, SOCIAL:-1} },
+      { t:"Mostly people — new friends, group shots, shared meals.", fx:{SOCIAL:2} },
+      { t:"Mostly food, markets, close-ups of local life.", fx:{TERRAIN:1} },
+      { t:"Mostly a well-organized folder, sorted neatly by day.", fx:{STRUCTURE:1} }
     ]}
   ];
 
@@ -445,7 +485,15 @@
     { key:"free", name:"The Free Spirit", icon:"&#127801;", tagline:"Your best travel days were never on the itinerary.",
       desc:"Plans are a starting point, not a promise. You say yes to the detour, the stranger's tip, the bus you weren't supposed to take.",
       vec:{PACE:30, COMFORT:30, SOCIAL:55, STRUCTURE:5, TERRAIN:40, NOVELTY:80},
-      dest:["Marrakech, Morocco","Havana, Cuba","Northern Vietnam"] }
+      dest:["Marrakech, Morocco","Havana, Cuba","Northern Vietnam"] },
+    { key:"nomad", name:"The Digital Nomad Wanderer", icon:"&#128187;", tagline:"Your office has a view, and the view keeps changing.",
+      desc:"You don't take trips, you take extended stays. Wifi speed matters almost as much as the skyline, and you've mastered working from anywhere without missing sunset.",
+      vec:{PACE:50, COMFORT:55, SOCIAL:50, STRUCTURE:20, TERRAIN:60, NOVELTY:60},
+      dest:["Chiang Mai, Thailand","Lisbon, Portugal","Medellín, Colombia"] },
+    { key:"family", name:"The Family Adventurer", icon:"&#128106;", tagline:"Adventure, yes — but everyone needs to make it back for dinner.",
+      desc:"You want real experiences, not just a resort pool, but you also need clean bathrooms within reach and a schedule that actually holds. You've mastered the achievable adventure.",
+      vec:{PACE:45, COMFORT:65, SOCIAL:70, STRUCTURE:65, TERRAIN:50, NOVELTY:40},
+      dest:["Costa Rica","The Algarve, Portugal","Kruger National Park, South Africa"] }
   ];
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -524,9 +572,12 @@
     var leaningEl = root.querySelector("[data-tp-leaning]");
     var quizRadarFill = root.querySelector("[data-tp-radar-fill]");
     var quizRadarLabels = root.querySelector("[data-tp-radar-labels]");
+    var quizTraitBars = root.querySelector("[data-tp-trait-bars]");
 
     var resultRadarFill = root.querySelector("[data-tp-result-radar-fill]");
     var resultRadarLabels = root.querySelector("[data-tp-result-radar-labels]");
+    var resultTraitBars = root.querySelector("[data-tp-result-trait-bars]");
+    var dominantStat = root.querySelector("[data-tp-dominant-stat]");
     var resultIcon = root.querySelector("[data-tp-result-icon]");
     var resultName = root.querySelector("[data-tp-result-name]");
     var resultTagline = root.querySelector("[data-tp-result-tagline]");
@@ -583,6 +634,39 @@
       });
     }
 
+    function renderTraitBars(container, vec) {
+      if (!container) return;
+      var existingRows = container.querySelectorAll(".tp-trait-row");
+      if (existingRows.length === TRAIT_KEYS.length) {
+        TRAIT_KEYS.forEach(function (k, i) {
+          var dot = existingRows[i].querySelector(".tp-trait-dot");
+          if (dot) dot.style.left = clamp(vec[k], 3, 97) + "%";
+        });
+        return;
+      }
+      container.innerHTML = "";
+      TRAIT_KEYS.forEach(function (k) {
+        var row = document.createElement("div");
+        row.className = "tp-trait-row";
+        row.innerHTML =
+          '<span class="tp-trait-name">' + TRAIT_LABELS[k].short + '</span>' +
+          '<span class="tp-trait-pole">' + TRAIT_LABELS[k].low + '</span>' +
+          '<div class="tp-trait-track"><div class="tp-trait-dot" style="left:' + clamp(vec[k], 3, 97) + '%"></div></div>' +
+          '<span class="tp-trait-pole tp-trait-pole-high">' + TRAIT_LABELS[k].high + '</span>';
+        container.appendChild(row);
+      });
+    }
+
+    function renderDominantStat(container, vec) {
+      if (!container) return;
+      var scored = TRAIT_KEYS.map(function (k) { return { k:k, dec: Math.abs(vec[k] - 50) }; });
+      scored.sort(function (a, b) { return b.dec - a.dec; });
+      var top = scored[0];
+      var label = vec[top.k] >= 50 ? TRAIT_LABELS[top.k].high : TRAIT_LABELS[top.k].low;
+      var pct = Math.round(50 + top.dec);
+      container.innerHTML = "Your most defining trait: <strong>" + label + "</strong> (" + pct + "% intensity)";
+    }
+
     function updateLeaning(vec) {
       var scored = TRAIT_KEYS.map(function (k) { return { k:k, dec: Math.abs(vec[k] - 50) }; });
       scored.sort(function (a, b) { return b.dec - a.dec; });
@@ -618,6 +702,7 @@
       var vecUpTo = computeVector(answers.slice(0, currentQ));
       quizRadarFill.setAttribute("points", radarPoints(vecUpTo, 110, 110, 90));
       renderLabels(quizRadarLabels, vecUpTo);
+      renderTraitBars(quizTraitBars, vecUpTo);
       updateLeaning(vecUpTo);
 
       if (questionPanel) {
@@ -640,6 +725,7 @@
       answers[currentQ] = opt;
       var newVec = computeVector(answers);
       animateRadar(quizRadarFill, prevVec, newVec);
+      renderTraitBars(quizTraitBars, newVec);
       updateLeaning(newVec);
 
       window.setTimeout(function () {
@@ -691,6 +777,8 @@
 
       resultRadarFill.setAttribute("points", radarPoints(finalVec, 110, 110, 90));
       renderLabels(resultRadarLabels, finalVec);
+      renderTraitBars(resultTraitBars, finalVec);
+      renderDominantStat(dominantStat, finalVec);
 
       matchList.innerHTML = "";
       ranked.slice(0, 3).forEach(function (r, i) {
@@ -769,6 +857,7 @@
     renderWelcomeBack();
     initParallax();
     renderLabels(quizRadarLabels, currentVec);
+    renderTraitBars(quizTraitBars, currentVec);
   }
 
   function boot() { document.querySelectorAll(".voy-tp").forEach(initQuiz); }

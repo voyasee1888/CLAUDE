@@ -28,9 +28,9 @@
   <div class="lg-aura" aria-hidden="true"></div>
 
   <header class="lg-hero">
-    <span class="lg-eyebrow"><span class="lg-eyebrow-dot"></span>Voyasee Play · Travel Trivia</span>
+    <span class="lg-eyebrow"><span class="lg-eyebrow-dot"></span>Voyasee Play · Guess the Destination Game</span>
     <h2 id="lg-title">Guess the Landmark &amp; Scene</h2>
-    <p class="lg-sub">Landmarks, food &amp; culture, and natural wonders from around the world. Reveal clues, rack up points, and see how well you really know the planet.</p>
+    <p class="lg-sub">A free guess the destination game: 48 landmarks, dishes and natural wonders from around the world. Reveal clues, rack up points, and see how well you really know the planet.</p>
 
     <div class="lg-modes" role="tablist" aria-label="Game mode">
       <button type="button" class="lg-mode-btn is-active" data-mode="daily" role="tab" aria-selected="true">Daily Challenge</button>
@@ -61,7 +61,14 @@
 
   <div class="lg-board" data-lg-board>
     <div class="lg-board-top">
-      <div class="lg-pips" data-lg-pips role="img" aria-label="Round progress"></div>
+      <div class="lg-pips-col">
+        <div class="lg-pips" data-lg-pips role="img" aria-label="Round progress"></div>
+        <div class="lg-legend">
+          <span><i style="background:#9a5cd0"></i>Landmarks</span>
+          <span><i style="background:#e0673f"></i>Food &amp; Culture</span>
+          <span><i style="background:#3a9e57"></i>Nature &amp; Wildlife</span>
+        </div>
+      </div>
       <div class="lg-score">Score <strong data-lg-score>0</strong><span class="lg-score-max">/ <span data-lg-max>1000</span></span></div>
     </div>
 
@@ -170,11 +177,15 @@
 
 /* Board */
 .lg-board{ width:min(880px, calc(100% - 16px)); margin:0 auto; }
-.lg-board-top{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; padding:0 4px; }
+.lg-board-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:14px; padding:0 4px; }
+.lg-pips-col{ display:flex; flex-direction:column; gap:8px; }
+.lg-legend{ display:flex; flex-wrap:wrap; gap:10px; }
+.lg-legend span{ display:inline-flex; align-items:center; gap:5px; font:700 10px/1 "Plus Jakarta Sans",sans-serif; color:var(--muted); }
+.lg-legend i{ width:8px; height:8px; border-radius:50%; display:inline-block; }
 .lg-pips{ display:flex; gap:6px; flex-wrap:wrap; }
-.lg-pips span{ width:20px; height:8px; border-radius:5px; background:var(--line); transition:background-color .25s ease, transform .2s ease; }
-.lg-pips span.is-current{ background:var(--grad); transform:scaleX(1.15); }
-.lg-pips span.is-done{ background:var(--teal); }
+.lg-pips span{ width:20px; height:8px; border-radius:5px; background:color-mix(in srgb, var(--pip-color, var(--teal)) 22%, var(--line)); border:1px solid color-mix(in srgb, var(--pip-color, var(--teal)) 35%, transparent); transition:background-color .25s ease, transform .2s ease, box-shadow .25s ease; }
+.lg-pips span.is-current{ background:var(--pip-color, var(--teal)); border-color:transparent; transform:scaleX(1.25); box-shadow:0 0 10px color-mix(in srgb, var(--pip-color, var(--teal)) 60%, transparent); }
+.lg-pips span.is-done{ background:var(--pip-color, var(--teal)); border-color:transparent; opacity:.75; }
 .lg-score{ font:700 13.5px/1 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); white-space:nowrap; }
 .lg-score strong{ font:800 18px/1 "Sora","Plus Jakarta Sans",sans-serif; color:var(--ink); margin:0 3px; }
 .lg-score-max{ color:var(--muted); }
@@ -278,6 +289,8 @@
       clues:["A white marble mausoleum reflects perfectly in a long pool.","Built by an emperor in memory of his wife.","India's most iconic monument to love."] },
     { name:"Pyramids of Giza", country:"Cairo, Egypt", cat:"landmarks", diff:"easy", accent:"#d69a2b", icon:"&#9651;",
       clues:["Ancient stone structures rise from the desert beside a sphinx.","Built as tombs for pharaohs thousands of years ago.","The last surviving wonder of the ancient world."] },
+    { name:"Statue of Liberty", country:"New York, USA", cat:"landmarks", diff:"easy", accent:"#2a9bc4", icon:"&#128293;",
+      clues:["A copper-green giant holds a torch above a harbor entrance.","A gift from France arrived here by ship in pieces, then was assembled.","America's most famous symbol of welcome, on Liberty Island."] },
     // LANDMARKS — medium
     { name:"Colosseum", country:"Rome, Italy", cat:"landmarks", diff:"medium", accent:"#d69324", icon:"&#9821;",
       clues:["A massive stone amphitheater once held tens of thousands of spectators.","Gladiators fought here nearly 2,000 years ago.","Rome's most visited ancient ruin."] },
@@ -287,6 +300,8 @@
       clues:["A giant statue stretches its arms wide atop a mountain.","It overlooks a beach-lined bay and a famous carnival city.","One of the New Seven Wonders of the World."] },
     { name:"Burj Khalifa", country:"Dubai, UAE", cat:"landmarks", diff:"medium", accent:"#1f9e8c", icon:"&#9650;",
       clues:["A needle-like tower pierces the desert skyline.","It held the title of world's tallest building on completion.","Part of a futuristic downtown built on the Arabian Gulf."] },
+    { name:"Golden Gate Bridge", country:"San Francisco, USA", cat:"landmarks", diff:"medium", accent:"#e0673f", icon:"&#128171;",
+      clues:["A famous red-orange bridge often disappears into rolling fog.","It was the longest suspension bridge in the world when it opened.","San Francisco's postcard icon, spanning a strait into the bay."] },
     // LANDMARKS — hard
     { name:"Machu Picchu", country:"Cusco, Peru", cat:"landmarks", diff:"hard", accent:"#3a9e57", icon:"&#9968;",
       clues:["Stone terraces cling to a ridge between two mountain peaks.","This citadel sits at the end of a famous multi-day trail.","A 15th-century Inca site rediscovered by the outside world in 1911."] },
@@ -296,6 +311,10 @@
       clues:["Stone towers rise from a jungle beside a wide moat.","It began as a Hindu temple before becoming Buddhist.","The largest religious monument in the world."] },
     { name:"Neuschwanstein Castle", country:"Bavaria, Germany", cat:"landmarks", diff:"hard", accent:"#4a80c9", icon:"&#127984;",
       clues:["A fairy-tale castle perches on a rugged hill above a gorge.","Its 19th-century king never saw it fully completed.","Said to have inspired a famous animated-film castle."] },
+    { name:"Alhambra", country:"Granada, Spain", cat:"landmarks", diff:"hard", accent:"#d69324", icon:"&#127984;",
+      clues:["Intricate tilework and reflecting pools fill a fortress-palace on a hilltop.","Moorish rulers built this complex before power in the region changed hands.","Spain's most visited Islamic-era palace, above the city of Granada."] },
+    { name:"Stonehenge", country:"England, UK", cat:"landmarks", diff:"hard", accent:"#4a80c9", icon:"&#129517;",
+      clues:["Massive stones stand in a circle on an open, windswept plain.","Nobody fully agrees how prehistoric people moved these stones here.","England's most mysterious ancient monument, aligned with the solstice sun."] },
 
     // FOOD & CULTURE — easy
     { name:"Italy", country:"Southern Europe", cat:"food", diff:"easy", accent:"#e0673f", icon:"&#127829;",
@@ -306,6 +325,8 @@
       clues:["Corn tortillas are folded around endless fillings here.","Families build colorful altars to remember loved ones each November.","Home of tacos and the Day of the Dead."] },
     { name:"India", country:"South Asia", cat:"food", diff:"easy", accent:"#d69a2b", icon:"&#127831;",
       clues:["Spice blends simmer into rich, fragrant sauces here.","A spring festival ends with crowds throwing colored powder.","Home of curry culture and the festival of Holi."] },
+    { name:"China", country:"East Asia", cat:"food", diff:"easy", accent:"#e05e7d", icon:"&#127859;",
+      clues:["Steamed parcels of dough are folded around meat or vegetables here.","Red envelopes and dragon dances mark the biggest holiday of its year.","Home of dumplings and Lunar New Year."] },
     // FOOD & CULTURE — medium
     { name:"Thailand", country:"Southeast Asia", cat:"food", diff:"medium", accent:"#e05e7d", icon:"&#127837;",
       clues:["Stir-fried rice noodles balance sweet, sour and spicy flavors.","A national new year festival turns city streets into water fights.","Home of pad thai and the Songkran festival."] },
@@ -315,6 +336,8 @@
       clues:["A saffron rice dish is cooked in a wide, shallow pan.","Dancers stamp sharp, rhythmic footwork to guitar and clapping.","Home of paella and flamenco."] },
     { name:"South Korea", country:"East Asia", cat:"food", diff:"medium", accent:"#2f8fd1", icon:"&#127850;",
       clues:["Fermented spicy cabbage appears at almost every meal here.","A global pop-music wave carried this country's culture worldwide.","Home of kimchi and K-pop."] },
+    { name:"Peru", country:"South America", cat:"food", diff:"medium", accent:"#3a9e57", icon:"&#127859;",
+      clues:["Raw fish is 'cooked' by citrus juice in this coastal specialty.","Colorful textiles and Incan festivals fill its Andean highlands.","Home of ceviche and the Inti Raymi sun festival."] },
     // FOOD & CULTURE — hard
     { name:"Morocco", country:"North Africa", cat:"food", diff:"hard", accent:"#e0673f", icon:"&#127838;",
       clues:["A cone-shaped clay pot slow-cooks meat and vegetables together.","Maze-like marketplaces sell spices, leather and lanterns.","Home of tagine and the souks of Marrakech."] },
@@ -324,6 +347,10 @@
       clues:["Skewered, spiced meat is grilled over open flame here.","Tiny tulip-shaped glasses of tea are offered to every guest.","Home of kebabs and a deep-rooted tea culture."] },
     { name:"Vietnam", country:"Southeast Asia", cat:"food", diff:"hard", accent:"#5aa130", icon:"&#127858;",
       clues:["A fragrant beef-and-noodle soup is a breakfast staple here.","Paper lanterns light up an old riverside town each full moon.","Home of pho and the lantern town of Hoi An."] },
+    { name:"Lebanon", country:"Middle East", cat:"food", diff:"hard", accent:"#d69a2b", icon:"&#127859;",
+      clues:["A spread of small dips and dishes turns dinner into a slow event.","Chickpea and sesame dips are a daily staple on tables here.","Home of mezze and some of the world's oldest hummus traditions."] },
+    { name:"Ethiopia", country:"East Africa", cat:"food", diff:"hard", accent:"#c98a3d", icon:"&#9749;",
+      clues:["A spongy, sour flatbread doubles as your plate and your utensil.","A slow, ceremonial roasting ritual turns beans into a shared coffee moment.","Home of injera and the traditional coffee ceremony."] },
 
     // NATURE & WILDLIFE — easy
     { name:"Iceland", country:"North Atlantic", cat:"nature", diff:"easy", accent:"#1f97c9", icon:"&#10052;",
@@ -334,6 +361,8 @@
       clues:["A single river basin holds a huge share of the planet's species.","Dense green canopy stretches further than the eye can see.","Home of most of the Amazon Rainforest."] },
     { name:"Namibia", country:"Southern Africa", cat:"nature", diff:"easy", accent:"#c98a3d", icon:"&#127964;",
       clues:["Some of the world's tallest sand dunes glow deep red at sunrise here.","A ghost forest of dead camel-thorn trees stands in a cracked white clay pan nearby.","Home of the Namib Desert and the towering dunes of Sossusvlei."] },
+    { name:"Costa Rica", country:"Central America", cat:"nature", diff:"easy", accent:"#3a9e57", icon:"&#127811;",
+      clues:["Cloud forests here stay wrapped in mist nearly all year round.","Sloths, toucans and tree frogs pack an outsized share of the world's species into one small country.","A Central American nature haven famous for its 'pura vida' cloud forests."] },
     // NATURE & WILDLIFE — medium
     { name:"Ecuador", country:"South America", cat:"nature", diff:"medium", accent:"#0e9f8f", icon:"&#128034;",
       clues:["A remote volcanic island chain shaped a famous theory of evolution.","Giant tortoises and marine iguanas live nowhere else quite like this.","Home of the Galápagos Islands."] },
@@ -343,6 +372,8 @@
       clues:["A curtain of mist rises from a river plunging into a gorge.","Locals call it 'the smoke that thunders.'","Shared home of Victoria Falls."] },
     { name:"United States", country:"North America", cat:"nature", diff:"medium", accent:"#e05e7d", icon:"&#9819;",
       clues:["A geyser here erupts on a fairly predictable schedule.","Bison roam a volcanic caldera beneath colorful hot springs.","Home of Yellowstone, the world's first national park."] },
+    { name:"Norway", country:"Scandinavia", cat:"nature", diff:"medium", accent:"#1f97c9", icon:"&#9992;",
+      clues:["Steep cliffs plunge straight into narrow arms of the sea here.","The midnight sun never fully sets here in peak summer.","Home of dramatic fjords carved by ancient glaciers."] },
     // NATURE & WILDLIFE — hard
     { name:"Canada", country:"North America", cat:"nature", diff:"hard", accent:"#2f8fd1", icon:"&#127956;",
       clues:["Glacier-fed water turns a striking turquoise in this mountain town.","Elk sometimes wander through the streets of this resort town.","Home of Banff's famous turquoise lakes."] },
@@ -351,11 +382,17 @@
     { name:"Antarctica", country:"The Southern Ocean", cat:"nature", diff:"hard", accent:"#4a80c9", icon:"&#10052;",
       clues:["No country owns this frozen continent at the bottom of the world.","Colonies of flightless birds huddle together against the wind.","The only continent with no permanent human residents."] },
     { name:"Bolivia", country:"South America", cat:"nature", diff:"hard", accent:"#9a5cd0", icon:"&#128167;",
-      clues:["A thin layer of rainwater turns this flat plain into a giant mirror.","It's the largest salt flat on the planet.","Home of the Salar de Uyuni."] }
+      clues:["A thin layer of rainwater turns this flat plain into a giant mirror.","It's the largest salt flat on the planet.","Home of the Salar de Uyuni."] },
+    { name:"Madagascar", country:"East Africa", cat:"nature", diff:"hard", accent:"#9a5cd0", icon:"&#128024;",
+      clues:["An island split from the mainland millions of years ago, evolving its own rules.","Wide-eyed primates found nowhere else leap between its trees.","Home of the lemurs and otherworldly baobab avenues."] },
+    { name:"Borneo, Malaysia", country:"Southeast Asia", cat:"nature", diff:"hard", accent:"#5aa130", icon:"&#128018;",
+      clues:["Ancient rainforest here is older than the Amazon itself.","Orange-haired great apes swing through the canopy of this island's jungle.","Shared island home of wild orangutans in Southeast Asia."] }
   ];
 
   var CAT_LABEL = { landmarks:"Landmarks", food:"Food & Culture", nature:"Nature & Wildlife" };
-  var DIFF_LABEL = { easy:"Easy", medium:"Medium", hard:"Hard" };
+  var CAT_ICON = { landmarks:"\u{1F3DB}\u{FE0F}", food:"\u{1F35C}", nature:"\u{1F33F}" };
+  var CAT_COLOR = { landmarks:"#9a5cd0", food:"#e0673f", nature:"#3a9e57" };
+  var DIFF_LABEL = { easy:"★☆☆ Easy", medium:"★★☆ Medium", hard:"★★★ Hard" };
   var POINTS_BY_CLUES = { 1:100, 2:70, 3:40 };
   var ROUNDS_PER_SESSION = 10;
 
@@ -468,7 +505,12 @@
 
     function buildPips() {
       pips.innerHTML = "";
-      rounds.forEach(function () { var s = document.createElement("span"); pips.appendChild(s); });
+      rounds.forEach(function (r) {
+        var s = document.createElement("span");
+        s.style.setProperty("--pip-color", CAT_COLOR[r.cat] || "#0ea394");
+        s.title = CAT_LABEL[r.cat] || "";
+        pips.appendChild(s);
+      });
       updatePips();
     }
     function updatePips() {
@@ -597,8 +639,8 @@
         var row = document.createElement("div");
         row.className = "lg-brk-row";
         row.innerHTML =
-          '<div class="lg-brk-top"><span>' + CAT_LABEL[c] + '</span><span>' + sums[c] + '/' + maxes[c] + '</span></div>' +
-          '<div class="lg-brk-bar"><div class="lg-brk-bar-fill" style="width:' + pct + '%"></div></div>';
+          '<div class="lg-brk-top"><span>' + CAT_ICON[c] + ' ' + CAT_LABEL[c] + '</span><span>' + sums[c] + '/' + maxes[c] + '</span></div>' +
+          '<div class="lg-brk-bar"><div class="lg-brk-bar-fill" style="width:' + pct + '%;background:' + CAT_COLOR[c] + '"></div></div>';
         breakdownRows.appendChild(row);
       });
     }
