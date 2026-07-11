@@ -29,7 +29,7 @@
 
   <header class="lg-hero">
     <span class="lg-eyebrow"><span class="lg-eyebrow-dot"></span>Voyasee Play · Travel Trivia</span>
-    <h1 id="lg-title">Guess the Landmark &amp; Scene</h1>
+    <h2 id="lg-title">Guess the Landmark &amp; Scene</h2>
     <p class="lg-sub">Landmarks, food &amp; culture, and natural wonders from around the world. Reveal clues, rack up points, and see how well you really know the planet.</p>
 
     <div class="lg-modes" role="tablist" aria-label="Game mode">
@@ -102,9 +102,20 @@
 
   <div class="lg-end" data-lg-end hidden>
     <div class="lg-end-card">
-      <span class="lg-end-eyebrow">Session complete</span>
+      <span class="lg-end-eyebrow" data-lg-end-eyebrow>Session complete</span>
       <div class="lg-end-score" data-lg-end-score>0 / 1000</div>
       <p class="lg-end-msg" data-lg-end-msg>&nbsp;</p>
+
+      <div class="lg-best" data-lg-best hidden>
+        <span class="lg-best-badge" data-lg-best-badge></span>
+        <span class="lg-best-text" data-lg-best-text></span>
+      </div>
+
+      <div class="lg-breakdown" data-lg-breakdown hidden>
+        <span class="lg-breakdown-title">Category breakdown</span>
+        <div class="lg-breakdown-rows" data-lg-breakdown-rows></div>
+      </div>
+
       <div class="lg-streak" data-lg-streak hidden><i class="lg-streak-dot" aria-hidden="true"></i><span data-lg-streak-n>0</span>-day streak</div>
       <div class="lg-end-actions">
         <button type="button" class="lg-btn lg-btn-primary" data-lg-share>Share my score</button>
@@ -141,7 +152,7 @@
 .lg-hero{ width:min(720px, calc(100% - 24px)); margin:0 auto 26px; text-align:center; }
 .lg-eyebrow{ display:inline-flex; align-items:center; gap:8px; padding:7px 15px 7px 12px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.85); color:var(--teal-deep); font:800 11px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.05em; text-transform:uppercase; box-shadow:var(--shadow); }
 .lg-eyebrow-dot{ width:8px;height:8px;border-radius:50%; background:var(--grad); }
-.lg-hero h1{ margin:15px 0 0; font:700 clamp(28px,4vw,44px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; }
+.lg-hero h2{ margin:15px 0 0; font:700 clamp(28px,4vw,44px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; }
 .lg-sub{ max-width:560px; margin:10px auto 0; color:var(--ink-soft); font-size:14.5px; line-height:1.6; }
 
 .lg-modes{ display:inline-flex; gap:6px; margin-top:20px; padding:5px; border-radius:999px; background:#eef4f5; border:1px solid var(--line); }
@@ -210,6 +221,20 @@
 .lg-end-eyebrow{ display:inline-flex; padding:6px 14px; border-radius:999px; background:#eef4f5; color:var(--teal-deep); font:800 11px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase; }
 .lg-end-score{ margin:16px 0 6px; font:800 clamp(36px,7vw,54px)/1 "Sora","Plus Jakarta Sans",sans-serif; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--teal-deep); }
 .lg-end-msg{ margin:0; color:var(--ink-soft); font-size:14px; }
+
+.lg-best{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:16px; padding:9px 16px; border-radius:999px; background:color-mix(in srgb, var(--teal) 10%, #fff); border:1px solid color-mix(in srgb, var(--teal) 26%, transparent); }
+.lg-best-badge{ font:800 10px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:999px; background:var(--grad); color:#fff; }
+.lg-best-text{ font:700 12.5px/1 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); }
+
+.lg-breakdown{ margin-top:20px; padding:16px 18px; border-radius:16px; background:var(--paper); border:1px solid var(--line); text-align:left; }
+.lg-breakdown-title{ display:block; font:800 10.5px/1 "Plus Jakarta Sans",sans-serif; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.lg-breakdown-rows{ display:flex; flex-direction:column; gap:10px; }
+.lg-brk-row{ display:flex; flex-direction:column; gap:5px; }
+.lg-brk-top{ display:flex; align-items:center; justify-content:space-between; font:700 12px/1 "Plus Jakarta Sans",sans-serif; color:var(--ink); }
+.lg-brk-top span:last-child{ color:var(--muted); font-weight:600; }
+.lg-brk-bar{ height:7px; border-radius:999px; background:var(--line); overflow:hidden; }
+.lg-brk-bar-fill{ height:100%; border-radius:999px; background:var(--grad); transition:width .5s ease; }
+
 .lg-streak{ display:inline-flex; align-items:center; gap:6px; margin-top:14px; padding:6px 13px; border-radius:999px; background:color-mix(in srgb, var(--gold) 16%, #fff); border:1px solid color-mix(in srgb, var(--gold) 35%, transparent); color:#8a5a06; font:800 12px/1 "Plus Jakarta Sans",sans-serif; }
 .lg-streak-dot{ width:6px;height:6px;border-radius:50%; background:var(--gold); display:inline-block; }
 .lg-end-actions{ margin-top:22px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
@@ -406,6 +431,11 @@
     var streakN = root.querySelector("[data-lg-streak-n]");
     var shareBtn = root.querySelector("[data-lg-share]");
     var againBtn = root.querySelector("[data-lg-again]");
+    var bestBox = root.querySelector("[data-lg-best]");
+    var bestBadge = root.querySelector("[data-lg-best-badge]");
+    var bestText = root.querySelector("[data-lg-best-text]");
+    var breakdownBox = root.querySelector("[data-lg-breakdown]");
+    var breakdownRows = root.querySelector("[data-lg-breakdown-rows]");
 
     var mode = "daily";
     var catFilter = "all", diffFilter = "all";
@@ -525,6 +555,54 @@
       return streak;
     }
 
+    function checkPersonalBest(total, max, pct) {
+      var BEST_PCT = "voy_landmark_best_pct", BEST_SCORE = "voy_landmark_best_score", BEST_MAX = "voy_landmark_best_max";
+      var prevPct; try { prevPct = parseFloat(localStorage.getItem(BEST_PCT)); } catch (e) {}
+      var isFirst = isNaN(prevPct);
+      var isNewBest = isFirst || pct > prevPct;
+
+      if (isNewBest) {
+        try { localStorage.setItem(BEST_PCT, String(pct)); localStorage.setItem(BEST_SCORE, String(total)); localStorage.setItem(BEST_MAX, String(max)); } catch (e) {}
+      }
+
+      bestBox.hidden = false;
+      if (isNewBest && !isFirst) {
+        bestBadge.textContent = "New best";
+        bestText.textContent = "You just beat your previous personal best.";
+      } else if (isFirst) {
+        bestBadge.textContent = "First run";
+        bestText.textContent = "This is now your personal best to beat.";
+      } else {
+        var prevScore, prevMax;
+        try { prevScore = localStorage.getItem(BEST_SCORE); prevMax = localStorage.getItem(BEST_MAX); } catch (e) {}
+        bestBadge.textContent = "Personal best";
+        bestText.textContent = (prevScore && prevMax ? prevScore + "/" + prevMax : Math.round(prevPct * 100) + "%") + " — keep going to beat it.";
+      }
+    }
+
+    function renderBreakdown() {
+      var sums = {}, maxes = {};
+      rounds.forEach(function (r, i) {
+        sums[r.cat] = (sums[r.cat] || 0) + (roundScores[i] || 0);
+        maxes[r.cat] = (maxes[r.cat] || 0) + 100;
+      });
+      var order = ["landmarks", "food", "nature"];
+      var any = order.some(function (c) { return maxes[c]; });
+      breakdownBox.hidden = !any;
+      if (!any) return;
+      breakdownRows.innerHTML = "";
+      order.forEach(function (c) {
+        if (!maxes[c]) return;
+        var pct = Math.round((sums[c] / maxes[c]) * 100);
+        var row = document.createElement("div");
+        row.className = "lg-brk-row";
+        row.innerHTML =
+          '<div class="lg-brk-top"><span>' + CAT_LABEL[c] + '</span><span>' + sums[c] + '/' + maxes[c] + '</span></div>' +
+          '<div class="lg-brk-bar"><div class="lg-brk-bar-fill" style="width:' + pct + '%"></div></div>';
+        breakdownRows.appendChild(row);
+      });
+    }
+
     function endSession() {
       var total = roundScores.reduce(function (a, b) { return a + b; }, 0);
       var max = rounds.length * 100;
@@ -539,6 +617,9 @@
                 pct >= 0.45 ? "Solid effort — a few clues away from expert level." :
                 "A fun warm-up. Play again and beat this score.";
       endMsgEl.textContent = msg;
+
+      checkPersonalBest(total, max, pct);
+      renderBreakdown();
 
       if (mode === "daily") {
         var s = bumpStreak();

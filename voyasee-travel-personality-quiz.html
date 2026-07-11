@@ -38,14 +38,21 @@
   <!-- ===================== INTRO ===================== -->
   <div class="tp-screen tp-intro" data-tp-screen="intro">
     <span class="tp-eyebrow"><span class="tp-eyebrow-dot"></span>Voyasee Play · Travel DNA</span>
-    <h1 id="tp-title">What's Your <em>Travel DNA?</em></h1>
+    <h2 id="tp-title">What's Your <em>Travel DNA?</em></h2>
     <p class="tp-intro-copy">10 quick questions. Watch your travel personality build itself in real time, then get matched against 8 traveler archetypes — with the real reasons behind your match, not just a label.</p>
     <div class="tp-intro-meta">
       <span>&#9201; ~2 minutes</span>
       <span>&#127942; 8 archetypes</span>
       <span>&#128200; Live-building profile</span>
     </div>
+
+    <div class="tp-welcome-back" data-tp-welcome-back hidden>
+      <span class="tp-welcome-icon" data-tp-welcome-icon aria-hidden="true"></span>
+      <span class="tp-welcome-text">Welcome back — last time you were <strong data-tp-welcome-name></strong>.</span>
+    </div>
+
     <button type="button" class="tp-btn tp-btn-primary tp-btn-lg" data-tp-start>Start the Quiz <i aria-hidden="true">&#8594;</i></button>
+    <p class="tp-retake-hint" data-tp-retake-hint hidden>Moods change on the road — retake it and see if you've changed too.</p>
   </div>
 
   <!-- ===================== QUIZ ===================== -->
@@ -65,6 +72,12 @@
       <div class="tp-radar-panel">
         <span class="tp-radar-title">Your Travel DNA — forming live</span>
         <svg class="tp-radar" viewBox="0 0 220 220" aria-hidden="true">
+          <defs>
+            <radialGradient id="tpGradQuiz" cx="50%" cy="50%" r="65%">
+              <stop offset="0%" stop-color="#2be3ca" stop-opacity=".55"></stop>
+              <stop offset="100%" stop-color="#ff8a6b" stop-opacity=".22"></stop>
+            </radialGradient>
+          </defs>
           <polygon class="tp-radar-grid" points="110,20 180,65 180,155 110,200 40,155 40,65"></polygon>
           <polygon class="tp-radar-grid tp-radar-grid-2" points="110,50 155,80 155,140 110,170 65,140 65,80"></polygon>
           <polygon class="tp-radar-grid tp-radar-grid-3" points="110,80 130,95 130,125 110,140 90,125 90,95"></polygon>
@@ -74,7 +87,7 @@
           <line class="tp-radar-axis" x1="110" y1="110" x2="110" y2="200"></line>
           <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="155"></line>
           <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="65"></line>
-          <polygon class="tp-radar-fill" data-tp-radar-fill points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
+          <polygon class="tp-radar-fill" data-tp-radar-fill style="fill:url(#tpGradQuiz)" points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
         </svg>
         <div class="tp-radar-labels" data-tp-radar-labels></div>
         <p class="tp-leaning" data-tp-leaning>Answer a question to begin…</p>
@@ -82,8 +95,20 @@
     </div>
   </div>
 
+  <!-- ===================== CALCULATING (brief, builds anticipation) ===================== -->
+  <div class="tp-screen tp-calc" data-tp-screen="calculating" hidden>
+    <div class="tp-calc-ring" aria-hidden="true">
+      <svg viewBox="0 0 100 100"><circle class="tp-calc-track" cx="50" cy="50" r="42"></circle><circle class="tp-calc-sweep" cx="50" cy="50" r="42"></circle></svg>
+      <span class="tp-calc-icon" aria-hidden="true">&#9881;</span>
+    </div>
+    <p class="tp-calc-text">Reading your Travel DNA<span class="tp-calc-dots" aria-hidden="true"><i></i><i></i><i></i></span></p>
+  </div>
+
   <!-- ===================== RESULT ===================== -->
   <div class="tp-screen tp-result" data-tp-screen="result" hidden>
+    <div class="tp-confetti" data-tp-confetti aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
     <div class="tp-result-top">
       <span class="tp-eyebrow"><span class="tp-eyebrow-dot"></span>Your result</span>
       <div class="tp-result-icon" data-tp-result-icon aria-hidden="true"></div>
@@ -96,6 +121,12 @@
       <div class="tp-result-radar-box">
         <span class="tp-radar-title">Your final Travel DNA</span>
         <svg class="tp-radar" viewBox="0 0 220 220" aria-hidden="true">
+          <defs>
+            <radialGradient id="tpGradResult" cx="50%" cy="50%" r="65%">
+              <stop offset="0%" stop-color="#2be3ca" stop-opacity=".55"></stop>
+              <stop offset="100%" stop-color="#ff8a6b" stop-opacity=".22"></stop>
+            </radialGradient>
+          </defs>
           <polygon class="tp-radar-grid" points="110,20 180,65 180,155 110,200 40,155 40,65"></polygon>
           <polygon class="tp-radar-grid tp-radar-grid-2" points="110,50 155,80 155,140 110,170 65,140 65,80"></polygon>
           <polygon class="tp-radar-grid tp-radar-grid-3" points="110,80 130,95 130,125 110,140 90,125 90,95"></polygon>
@@ -105,7 +136,7 @@
           <line class="tp-radar-axis" x1="110" y1="110" x2="110" y2="200"></line>
           <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="155"></line>
           <line class="tp-radar-axis" x1="110" y1="110" x2="40" y2="65"></line>
-          <polygon class="tp-radar-fill" data-tp-result-radar-fill points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
+          <polygon class="tp-radar-fill" data-tp-result-radar-fill style="fill:url(#tpGradResult)" points="110,110 110,110 110,110 110,110 110,110 110,110"></polygon>
         </svg>
         <div class="tp-radar-labels" data-tp-result-radar-labels></div>
       </div>
@@ -144,7 +175,7 @@
 
 /* Aurora background */
 .tp-bg{ position:absolute; z-index:-2; inset:0; overflow:hidden; pointer-events:none; }
-.tp-orb{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.42; }
+.tp-orb{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.42; transition:transform .5s cubic-bezier(.2,.6,.2,1); will-change:transform; }
 .tp-orb-1{ width:420px; height:420px; top:-14%; left:-8%; background:var(--teal); animation:tpDrift1 22s ease-in-out infinite; }
 .tp-orb-2{ width:380px; height:380px; top:6%; right:-10%; background:var(--coral); animation:tpDrift2 26s ease-in-out infinite; }
 .tp-orb-3{ width:340px; height:340px; bottom:-16%; left:12%; background:var(--violet); animation:tpDrift3 24s ease-in-out infinite; }
@@ -166,11 +197,17 @@
 
 /* Intro */
 .tp-intro{ max-width:640px; margin:20px auto; text-align:center; }
-.tp-intro h1{ margin:18px 0 0; font:700 clamp(30px,5vw,50px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; color:#fff; }
+.tp-intro h2{ margin:18px 0 0; font:700 clamp(30px,5vw,50px)/1.1 "Playfair Display",Georgia,serif; letter-spacing:-.01em; color:#fff; }
 .tp-intro em{ font-style:italic; background:var(--grad2); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--violet); }
 .tp-intro-copy{ max-width:520px; margin:16px auto 0; color:var(--ink-soft); font-size:15px; line-height:1.65; }
 .tp-intro-meta{ display:flex; flex-wrap:wrap; gap:10px 18px; justify-content:center; margin:22px 0 0; font:700 12.5px/1 "Plus Jakarta Sans",sans-serif; color:var(--muted); }
 .tp-btn-lg{ margin-top:30px; padding:15px 30px; font-size:15px; }
+
+.tp-welcome-back{ display:inline-flex; align-items:center; gap:10px; margin:26px auto 0; padding:10px 18px; border-radius:999px; background:var(--glass); border:1px solid var(--glass-brd); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.tp-welcome-icon{ font-size:18px; line-height:1; }
+.tp-welcome-text{ font:600 12.5px/1.3 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); }
+.tp-welcome-text strong{ color:var(--teal); }
+.tp-retake-hint{ margin:12px 0 0; font-size:11.5px; color:var(--muted); }
 
 .tp-btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:999px; border:1px solid transparent; font:700 13.5px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; text-decoration:none !important; transition:transform .2s ease, box-shadow .2s ease; }
 .tp-btn-primary{ background:var(--grad); color:#08110f !important; box-shadow:0 14px 30px rgba(43,227,202,.25); }
@@ -188,6 +225,41 @@
 .tp-layout{ display:grid; grid-template-columns:1.15fr .85fr; gap:26px; align-items:start; }
 
 .tp-question-panel{ padding:30px 30px 26px; border:1px solid var(--glass-brd); border-radius:22px; background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 20px 50px rgba(0,0,0,.3); }
+.tp-question-panel.tp-anim-in{ animation:tpQuestionIn .42s cubic-bezier(.2,.7,.3,1); }
+@keyframes tpQuestionIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+
+/* Calculating screen */
+.tp-calc{ display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:320px; text-align:center; }
+.tp-calc-ring{ position:relative; width:100px; height:100px; margin-bottom:20px; }
+.tp-calc-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.tp-calc-track{ fill:none; stroke:var(--glass-brd); stroke-width:5; }
+.tp-calc-sweep{ fill:none; stroke:url(#tpGradQuiz); stroke:var(--teal); stroke-width:5; stroke-linecap:round; stroke-dasharray:264; stroke-dashoffset:264; animation:tpCalcSweep 1.1s cubic-bezier(.4,0,.2,1) infinite; }
+.tp-calc-icon{ position:absolute; inset:0; display:grid; place-items:center; font-size:30px; animation:tpCalcSpin 2.4s linear infinite; }
+@keyframes tpCalcSweep{ 0%{ stroke-dashoffset:264; } 50%{ stroke-dashoffset:40; } 100%{ stroke-dashoffset:264; } }
+@keyframes tpCalcSpin{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+.tp-calc-text{ font:700 15px/1.4 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); }
+.tp-calc-dots{ display:inline-flex; gap:3px; margin-left:4px; }
+.tp-calc-dots i{ width:4px; height:4px; border-radius:50%; background:var(--teal); display:inline-block; animation:tpDotBounce 1.2s ease-in-out infinite; }
+.tp-calc-dots i:nth-child(2){ animation-delay:.15s; }
+.tp-calc-dots i:nth-child(3){ animation-delay:.3s; }
+@keyframes tpDotBounce{ 0%,80%,100%{ opacity:.3; transform:translateY(0); } 40%{ opacity:1; transform:translateY(-3px); } }
+
+/* Confetti */
+.tp-confetti{ position:absolute; inset:0; z-index:5; pointer-events:none; overflow:hidden; }
+.tp-confetti span{ position:absolute; top:8%; width:9px; height:9px; border-radius:2px; opacity:0; }
+.tp-confetti.is-on span{ animation:tpConfettiFall 1.6s ease-in forwards; }
+.tp-confetti span:nth-child(1){ left:8%; background:var(--teal); animation-delay:0s; }
+.tp-confetti span:nth-child(2){ left:20%; background:var(--coral); animation-delay:.08s; }
+.tp-confetti span:nth-child(3){ left:35%; background:var(--gold); animation-delay:.03s; }
+.tp-confetti span:nth-child(4){ left:50%; background:var(--violet); animation-delay:.12s; }
+.tp-confetti span:nth-child(5){ left:64%; background:var(--teal); animation-delay:.06s; }
+.tp-confetti span:nth-child(6){ left:78%; background:var(--coral); animation-delay:.15s; }
+.tp-confetti span:nth-child(7){ left:90%; background:var(--gold); animation-delay:.02s; }
+.tp-confetti span:nth-child(8){ left:44%; background:#fff; animation-delay:.2s; }
+@keyframes tpConfettiFall{
+  0%{ opacity:1; transform:translateY(0) rotate(0deg); }
+  100%{ opacity:0; transform:translateY(340px) rotate(340deg); }
+}
 .tp-back{ background:none; border:none; padding:0 0 14px; color:var(--muted); font:700 12px/1 "Plus Jakarta Sans",sans-serif; cursor:pointer; }
 .tp-back:hover{ color:var(--teal); }
 .tp-question{ margin:0 0 22px; font:700 clamp(19px,2.4vw,26px)/1.3 "Sora","Plus Jakarta Sans",sans-serif; color:#fff; letter-spacing:-.01em; }
@@ -195,8 +267,10 @@
 .tp-opt{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:15px 18px; border:1px solid var(--glass-brd); border-radius:16px; background:rgba(255,255,255,.03); color:var(--ink); font:600 14px/1.4 "Plus Jakarta Sans",sans-serif; cursor:pointer; transition:transform .18s ease, background-color .18s ease, border-color .18s ease; }
 .tp-opt:hover{ background:var(--glass-2); border-color:color-mix(in srgb, var(--teal) 40%, var(--glass-brd)); transform:translateX(3px); }
 .tp-opt.is-picked{ background:linear-gradient(120deg, rgba(43,227,202,.16), rgba(255,138,107,.12)); border-color:var(--teal); }
-.tp-opt-letter{ flex:0 0 auto; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); color:var(--ink-soft); font:800 12px/1 "Plus Jakarta Sans",sans-serif; }
-.tp-opt.is-picked .tp-opt-letter{ background:var(--grad); color:#08110f; }
+.tp-opt-letter{ flex:0 0 auto; width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); color:var(--ink-soft); font:800 12px/1 "Plus Jakarta Sans",sans-serif; transition:background-color .2s ease, transform .3s cubic-bezier(.34,1.56,.64,1); }
+.tp-opt.is-picked{ box-shadow:0 0 0 1px var(--teal), 0 12px 26px rgba(43,227,202,.14); }
+.tp-opt.is-picked .tp-opt-letter{ background:var(--grad); color:#08110f; transform:scale(1.12); }
+.tp-opt:disabled, .tp-opt.is-disabled{ pointer-events:none; opacity:.55; }
 
 /* Radar panel */
 .tp-radar-panel{ padding:26px 22px 22px; border:1px solid var(--glass-brd); border-radius:22px; background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.3); }
@@ -206,7 +280,8 @@
 .tp-radar-grid-2{ fill:none; }
 .tp-radar-grid-3{ fill:none; }
 .tp-radar-axis{ stroke:rgba(255,255,255,.10); stroke-width:1; }
-.tp-radar-fill{ fill:color-mix(in srgb, var(--teal) 28%, transparent); stroke:var(--teal); stroke-width:2; stroke-linejoin:round; filter:drop-shadow(0 0 10px color-mix(in srgb, var(--teal) 50%, transparent)); }
+.tp-radar-fill{ stroke:var(--teal); stroke-width:2; stroke-linejoin:round; filter:drop-shadow(0 0 10px color-mix(in srgb, var(--teal) 50%, transparent)); animation:tpRadarPulse 3.2s ease-in-out infinite; }
+@keyframes tpRadarPulse{ 0%,100%{ filter:drop-shadow(0 0 8px color-mix(in srgb, var(--teal) 40%, transparent)); } 50%{ filter:drop-shadow(0 0 16px color-mix(in srgb, var(--teal) 65%, transparent)); } }
 .tp-radar-labels{ position:relative; margin-top:6px; }
 .tp-radar-labels .tp-rl{ font:700 9.5px/1.2 "Plus Jakarta Sans",sans-serif; color:var(--ink-soft); }
 .tp-leaning{ margin:14px 0 0; font:700 12.5px/1.4 "Plus Jakarta Sans",sans-serif; color:var(--teal); min-height:34px; }
@@ -250,8 +325,14 @@
   .tp-radar{ max-width:200px; }
 }
 @media (prefers-reduced-motion:reduce){
-  .tp-orb{ animation:none; }
-  .tp-progress-fill, .tp-opt, .tp-radar-fill{ transition:none; }
+  .tp-orb{ animation:none !important; transition:none !important; }
+  .tp-progress-fill, .tp-opt, .tp-radar-fill, .tp-opt-letter{ transition:none; animation:none; }
+  .tp-question-panel.tp-anim-in{ animation:none; }
+  .tp-calc-sweep, .tp-calc-icon, .tp-calc-dots i{ animation:none; }
+  .tp-confetti.is-on span{ animation:none; opacity:0; }
+}
+@media (hover:none), (pointer:coarse){
+  .tp-orb{ transition:none; }
 }
 </style>
 
@@ -424,12 +505,20 @@
     var screens = {
       intro: root.querySelector('[data-tp-screen="intro"]'),
       quiz: root.querySelector('[data-tp-screen="quiz"]'),
+      calculating: root.querySelector('[data-tp-screen="calculating"]'),
       result: root.querySelector('[data-tp-screen="result"]')
     };
+    var welcomeBack = root.querySelector("[data-tp-welcome-back]");
+    var welcomeIcon = root.querySelector("[data-tp-welcome-icon]");
+    var welcomeName = root.querySelector("[data-tp-welcome-name]");
+    var retakeHint = root.querySelector("[data-tp-retake-hint]");
+    var confetti = root.querySelector("[data-tp-confetti]");
+    var orbs = root.querySelectorAll(".tp-orb");
     var startBtn = root.querySelector("[data-tp-start]");
     var progressFill = root.querySelector("[data-tp-progress]");
     var progressLabel = root.querySelector("[data-tp-progress-label]");
     var backBtn = root.querySelector("[data-tp-back]");
+    var questionPanel = root.querySelector(".tp-question-panel");
     var questionEl = root.querySelector("[data-tp-question]");
     var optionsEl = root.querySelector("[data-tp-options]");
     var leaningEl = root.querySelector("[data-tp-leaning]");
@@ -506,6 +595,8 @@
       leaningEl.textContent = "Leaning: " + parts.join(" · ");
     }
 
+    var letters = ["A","B","C","D"];
+
     function renderQuestion() {
       var qd = QUESTIONS[currentQ];
       questionEl.textContent = qd.q;
@@ -514,14 +605,13 @@
       backBtn.hidden = currentQ === 0;
 
       optionsEl.innerHTML = "";
-      var letters = ["A","B","C","D"];
       qd.options.forEach(function (opt, i) {
         var btn = document.createElement("button");
         btn.type = "button";
         btn.className = "tp-opt";
         if (answers[currentQ] === opt) btn.classList.add("is-picked");
         btn.innerHTML = '<span class="tp-opt-letter">' + letters[i] + '</span><span>' + opt.t + '</span>';
-        btn.addEventListener("click", function () { chooseOption(opt); });
+        btn.addEventListener("click", function (e) { chooseOption(opt, e.currentTarget); });
         optionsEl.appendChild(btn);
       });
 
@@ -529,9 +619,23 @@
       quizRadarFill.setAttribute("points", radarPoints(vecUpTo, 110, 110, 90));
       renderLabels(quizRadarLabels, vecUpTo);
       updateLeaning(vecUpTo);
+
+      if (questionPanel) {
+        questionPanel.classList.remove("tp-anim-in");
+        void questionPanel.offsetWidth;
+        questionPanel.classList.add("tp-anim-in");
+      }
     }
 
-    function chooseOption(opt) {
+    function chooseOption(opt, btnEl) {
+      var allOpts = optionsEl.querySelectorAll(".tp-opt");
+      allOpts.forEach(function (b) { b.classList.remove("is-picked"); b.disabled = true; });
+      if (btnEl) {
+        btnEl.classList.add("is-picked");
+        var letterEl = btnEl.querySelector(".tp-opt-letter");
+        if (letterEl) letterEl.innerHTML = "&#10003;";
+      }
+
       var prevVec = computeVector(answers);
       answers[currentQ] = opt;
       var newVec = computeVector(answers);
@@ -546,7 +650,7 @@
         } else {
           finishQuiz(newVec);
         }
-      }, 320);
+      }, 380);
     }
 
     backBtn.addEventListener("click", function () {
@@ -555,6 +659,26 @@
 
     function finishQuiz(finalVec) {
       currentVec = finalVec;
+      show("calculating");
+      window.setTimeout(function () { revealResult(finalVec); }, 1050);
+    }
+
+    function saveLastResult(archetype) {
+      try {
+        localStorage.setItem("voy_travel_dna_last_name", archetype.name);
+        localStorage.setItem("voy_travel_dna_last_icon", archetype.icon);
+        localStorage.setItem("voy_travel_dna_last_at", String(Date.now()));
+      } catch (e) {}
+    }
+
+    function fireConfetti() {
+      confetti.classList.remove("is-on");
+      void confetti.offsetWidth;
+      confetti.classList.add("is-on");
+      window.setTimeout(function () { confetti.classList.remove("is-on"); }, 1700);
+    }
+
+    function revealResult(finalVec) {
       var ranked = ARCHETYPES.map(function (a) {
         return { arch:a, pct: matchPercent(finalVec, a.vec) };
       }).sort(function (a, b) { return b.pct - a.pct; });
@@ -584,7 +708,9 @@
         matchList.appendChild(row);
       });
 
+      saveLastResult(top);
       show("result");
+      fireConfetti();
     }
 
     shareBtn.addEventListener("click", function () {
@@ -613,6 +739,35 @@
       show("quiz");
     });
 
+    function renderWelcomeBack() {
+      var name; try { name = localStorage.getItem("voy_travel_dna_last_name"); } catch (e) {}
+      if (!name) return;
+      var icon; try { icon = localStorage.getItem("voy_travel_dna_last_icon"); } catch (e) {}
+      welcomeIcon.innerHTML = icon || "";
+      welcomeName.textContent = name;
+      welcomeBack.hidden = false;
+      retakeHint.hidden = false;
+    }
+
+    function initParallax() {
+      if (!window.matchMedia || !window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+      var depths = [18, 14, 22, 10];
+      root.addEventListener("pointermove", function (e) {
+        var r = root.getBoundingClientRect();
+        var nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+        var ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+        orbs.forEach(function (orb, i) {
+          var d = depths[i % depths.length];
+          orb.style.transform = "translate(" + (nx * d) + "px," + (ny * d) + "px)";
+        });
+      });
+      root.addEventListener("pointerleave", function () {
+        orbs.forEach(function (orb) { orb.style.transform = ""; });
+      });
+    }
+
+    renderWelcomeBack();
+    initParallax();
     renderLabels(quizRadarLabels, currentVec);
   }
 
