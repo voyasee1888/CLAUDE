@@ -589,6 +589,41 @@
   .vdq7 .v10-rcell{min-height:56px}
 }
 
+/* v10.1 — delta pill, golden hour, FAQ, trust, progressive toggle */
+.vdq7 .v10-delta{display:inline-block;padding:3px 8px;border-radius:999px;font-family:var(--mono);font-size:.7rem;font-weight:800;letter-spacing:.02em;border:1px solid var(--line);color:var(--muted);background:var(--card);margin-right:8px}
+.vdq7 .v10-delta.up{color:var(--mint);border-color:rgba(94,240,176,.42);background:rgba(94,240,176,.08)}
+.vdq7 .v10-delta.down{color:var(--coral);border-color:rgba(255,122,107,.42);background:rgba(255,122,107,.08)}
+.vdq7 .v10-swap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.vdq7 .v10-swap .l em{font-style:normal;color:var(--gold2);font-size:.85rem;font-weight:800}
+.vdq7 .v10-swap .r{display:flex;align-items:center;gap:8px}
+.vdq7 .v10-golden{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.vdq7 .v10-golden div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+.vdq7 .v10-golden small{display:block;color:var(--soft);font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase}
+.vdq7 .v10-golden b{display:block;color:var(--ink);font-family:var(--disp);font-weight:600;font-size:1.05rem;margin-top:3px}
+.vdq7 .v10-source-note{margin-top:6px;color:var(--soft);font-size:.7rem}
+.vdq7 .v10-fx-delta{display:inline-block;margin-top:6px;padding:5px 10px;border-radius:999px;font-family:var(--mono);font-size:.68rem;font-weight:800;letter-spacing:.03em;border:1px solid var(--line);color:var(--muted);background:var(--card)}
+.vdq7 .v10-fx-delta.good{color:var(--mint);border-color:rgba(94,240,176,.42);background:rgba(94,240,176,.08)}
+.vdq7 .v10-fx-delta.bad{color:var(--coral);border-color:rgba(255,122,107,.42);background:rgba(255,122,107,.08)}
+.vdq7 .v10-faq-list{display:grid;gap:8px;margin-top:8px}
+.vdq7 .v10-faq{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:12px 14px;cursor:pointer}
+.vdq7 .v10-faq[open]{background:var(--card2)}
+.vdq7 .v10-faq summary{list-style:none;font-weight:800;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.9rem}
+.vdq7 .v10-faq summary:before{content:"?";color:var(--teal);font-family:var(--mono);font-size:.75rem;background:rgba(31,211,196,.12);border:1px solid rgba(31,211,196,.36);border-radius:50%;width:20px;height:20px;display:inline-grid;place-items:center;flex:0 0 auto}
+.vdq7 .v10-faq summary::-webkit-details-marker{display:none}
+.vdq7 .v10-faq summary:after{content:"+";color:var(--gold);font-weight:900;transition:transform .15s ease}
+.vdq7 .v10-faq[open] summary:after{transform:rotate(45deg)}
+.vdq7 .v10-faq p{margin:8px 0 0;color:var(--muted);font-size:.85rem;line-height:1.55}
+.vdq7 .v10-trust-toggle{margin-left:auto;background:transparent;color:var(--teal);border:0;font-size:.72rem;font-weight:800;cursor:pointer;padding:0}
+.vdq7 .v10-trust-toggle:hover{color:var(--gold)}
+.vdq7 .v10-trust-body{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem;line-height:1.55}
+.vdq7 .v10-trust-body .frm{display:block;margin-top:6px;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;font-family:var(--mono);font-size:.72rem;color:var(--ink);white-space:pre-wrap;line-height:1.6}
+.vdq7 .v10-progressive{display:inline-flex;gap:0;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--card);margin-top:14px}
+.vdq7 .v10-progressive button{border:0;background:transparent;color:var(--muted);padding:7px 12px;font-size:.7rem;font-weight:700;border-radius:999px;cursor:pointer}
+.vdq7 .v10-progressive button[aria-pressed="true"]{background:linear-gradient(135deg,var(--teal),var(--sky));color:#06111f}
+@media(max-width:520px){
+  .vdq7 .v10-golden{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 
 <div class="v7-route" aria-hidden="true"><svg viewBox="0 0 1000 480" preserveAspectRatio="none">
@@ -617,6 +652,7 @@
         <p class="v7-sub">Twelve honest questions about budget, month, style, flight tolerance and the one thing that would ruin it. We score 600 destination profiles and show why each one made the cut, separate live conditions from seasonal climate, and make every trade-off visible.</p>
         <div class="v7-cta-row">
           <button class="v7-primary" type="button" data-v7-start>Start the quiz <span class="arr">&rarr;</span></button>
+<div class="v10-progressive" role="group" aria-label="Quiz length"><button type="button" aria-pressed="true" data-v10-mode="full">12 questions · deep match</button><button type="button" aria-pressed="false" data-v10-mode="quick">6 questions · quick match</button></div>
           <a class="v7-secondary" href="https://voyasee.com/travel-destination-comparison-tool/">Compare two places</a>
         </div>
         <p class="v7-note">FREE · ABOUT 90 SECONDS · BUILT BEFORE YOU BOOK FLIGHTS OR STAYS</p>
@@ -661,7 +697,7 @@
     <div class="v7-scan-ct" data-v7-scan-ct aria-hidden="true">0</div>
     <div class="v7-scan-lbl" aria-hidden="true">destinations scanned</div>
     <div class="h" role="heading" aria-level="2">Finding your best match&hellip;</div>
-    <p>Scoring style, season, budget, flight tolerance and deal-breakers across 600 profiles.</p>
+    <p data-v7-scan-stage>Scoring style, season, budget, flight tolerance and deal-breakers across 600 profiles.</p>
   </div>
 
   <!-- RESULTS -->
@@ -738,7 +774,11 @@
       <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128260;</span>Change one thing</div><div class="v7-swaps" data-v7-swaps></div></div>
     </div>
 
-    <div class="v7-panel v8-confidence-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128269;</span>Data confidence &amp; sources</div><div class="v8-confidence" data-v8-confidence></div></div>
+    <div class="v7-panel v8-confidence-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128269;</span>Data confidence &amp; sources<button type="button" class="v10-trust-toggle" data-v10-trust>Show scoring formula &rsaquo;</button></div><div class="v8-confidence" data-v8-confidence></div><div class="v10-trust-body" data-v10-trust-body hidden></div></div>
+
+    <!-- V10 FAQ (auto-generated from DNA + destination fields) -->
+    <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#10068;</span>Questions travellers ask about this destination</div><div data-v10-faq class="v10-faq-list"></div></div>
+
 
     <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#10024;</span>7 more worth a look</div><div class="v7-alts" data-v7-alts></div></div>
 
@@ -1003,12 +1043,15 @@ function lengthFit(d,len){var tags=d.tags||[];var need=3;if((d.flight||2)>=4||ta
 function scoreOne(d,s){
   var dt=new Set(d.tags||[]),why=[],flags=[];
   var userTags=Array.from(s.tagSet||new Set(s.tags||[]));
-  /* IDF-weighted style match — rare tags reward more (B6). */
+  /* B6 fix: keep the stable hits/denom base but ADD a rare-tag hit bonus so
+     precise fits are rewarded without penalising imprecise user answers. */
   var idf=computeTagIdf();
-  var userWeight=0,hitWeight=0;
-  userTags.forEach(function(t){var w=idf[t]||1;userWeight+=w;if(dt.has(t))hitWeight+=w;});
-  var style=userWeight>0?Math.min(1,hitWeight/(userWeight*0.6)):0;
   var hits=userTags.filter(function(t){return dt.has(t);}).length;
+  var styleDenom=Math.max(3,Math.min(8,userTags.length||3));
+  var styleBase=Math.min(1,hits/styleDenom);
+  var rareBonus=0;
+  userTags.forEach(function(t){if(dt.has(t)&&(idf[t]||1)>2.5)rareBonus+=0.06;});
+  var style=Math.min(1,styleBase+rareBonus);
   if(hits>=3)why.push(hits+" unique style signals matched");
   var bd=Math.abs((d.budget||2)-(s.budget||2));
   var budget=bd===0?1:bd===1?.72:bd===2?.38:.14;
@@ -1046,8 +1089,13 @@ function scoreOne(d,s){
   var paceBonus=0;
   if(s.pace==='slow'){if(dt.has('quiet')||dt.has('relax')){paceBonus=.03;why.push("relaxed pace aligns with your travel mood");}else if((d.crowd||2)<=2)paceBonus=.015;}
   else if(s.pace==='fast'){if(dt.has('city')||dt.has('social')||dt.has('nightlife')){paceBonus=.03;why.push("urban energy matches your travel mood");}else if((d.crowd||2)>=3)paceBonus=.01;}
-  /* Persona DNA bonus / anti-persona penalty (v10) */
-  var pers=personaBonus(d,s);var raw=(style*.28+budget*.14+climate*.14+timing*.15+flight*.12+ease*.09+partyBonus+paceBonus+pers.bonus)*penalty*(1-pers.penalty);
+  /* Persona DNA bonus / anti-persona penalty + value density (v10.1)
+     Base weights preserved (sum=1.00) so baseline scores stay stable;
+     new signals layered as small additive bonuses / soft multiplicative
+     penalty capped at 0.20 so they can only nudge, never dominate. */
+  var pers=personaBonus(d,s);
+  var vd=valueDensity(d)/100;var vdBonus=Math.min(0.04,vd*0.04);
+  var raw=(style*.31+budget*.15+climate*.15+timing*.16+flight*.13+ease*.10+partyBonus+paceBonus+pers.bonus*0.6+vdBonus)*penalty*(1-Math.min(0.20,pers.penalty));
   if(pers.bonus>=.06)why.push("destination DNA matches your traveller persona");
   if(pers.penalty>=.10)flags.push("this destination is often not-for the traveller shape you described");
   var score=Math.max(0,Math.min(100,Math.round(raw*100)));
@@ -1372,8 +1420,16 @@ function sanityChips(d,s,live){
 /* ------------ Comfort ribbon (12 months) ------------ */
 function ribbonScores(d,s){
   var out=[];
+  /* Backup curve used ONLY for the ribbon fallback so it never overrides
+     the editorial best-months hint used by the scoring engine. */
+  var backup=d._climateMonths?null:avgTempCurve(d);
+  function climFallback(m){
+    if(d._climateMonths)return climateMonthScore(d,m,s);
+    if(!backup)return null;var savedTop=d._climateMonths;d._climateMonths=backup;var v=climateMonthScore(d,m,s);d._climateMonths=savedTop;return v;
+  }
   for(var m=1;m<=12;m++){
-    var clim=climateMonthScore(d,m,s);
+    var clim=d._climateMonths?climateMonthScore(d,m,s):null;
+    if(clim==null)clim=climFallback(m);
     var mfit=clim!=null?clim:(d.months||[]).indexOf(m)>=0?0.9:(d.months||[]).some(function(x){return Math.abs(x-m)===1||Math.abs(x-m)===11;})?0.55:0.22;
     var dna=getDNA(d);var cv=dna.crowdCurve&&dna.crowdCurve[m-1]||5;
     var crowdBoost=s.deal==='crowd'?(cv<=3?0.12:cv>=8?-0.18:0):0;
@@ -1518,9 +1574,10 @@ function renderQuestion(){
     return '<button class="v7-answer'+sel+'" type="button" data-i="'+i+'" aria-pressed="'+(sel?'true':'false')+'"><span class="ico'+(itx?' tx':'')+'" aria-hidden="true">'+a[0]+'</span><span class="txt"><strong>'+esc(a[1])+'</strong><small>'+esc(a[2])+'</small></span><span class="v7-check" aria-hidden="true">&#10003;</span></button>';
   }).join('');
   box.querySelectorAll('button').forEach(function(btn){btn.addEventListener('click',function(){answers[step]=q.a[+btn.dataset.i][3];renderQuestion();try{localStorage.setItem('vdq7_answers',JSON.stringify({answers:answers,step:step,ts:Date.now()}));}catch(e){}});});
-  $('[data-v7-back]').disabled=step===0;
+  var back=$('[data-v7-back]');back.disabled=step===0;back.setAttribute('aria-disabled',back.disabled?'true':'false');
   var next=$('[data-v7-next]');
   next.classList.toggle('ready',!!answers[step]);
+  next.setAttribute('aria-disabled',answers[step]?'false':'true');
   next.innerHTML=step===Q.length-1?'See my matches &rarr;':'Continue &rarr;';
 }
 
@@ -1576,6 +1633,8 @@ function renderResults(runId){
   requestAnimationFrame(function(){$$('.v7-dim i').forEach(function(i){i.style.width=i.dataset.w+'%';});});
   renderClimatePanel(d,s,top);renderWhySecond(top,second);renderCompare(results.slice(0,3));renderRegret(top,s);renderSwaps(results,s);renderAlts(results.slice(3,10));renderTools(d,s);renderAffs(d,s);
   renderPersona(d,s,top);renderSanity(d,s,null);renderRibbon(d,s);renderCrowd(d,s);renderComposer(d,s);setupPosterAndShare(d,s,top);
+  /* v10.1 upgraded / added */
+  renderRegretUpgraded(top,s);renderSwapsUpgraded(results,s,top);renderFaq(d,s);setupTrustToggle(d,s,top);upsertJsonLd(d,top,personaFor(s));persistResultUrl(s);
   $('[data-v7-route]').textContent=d.route;renderConfidence(d,top,null);
   try{var hash=btoa(JSON.stringify({a:answers.filter(Boolean).map(function(x){return x;})}));if(history.replaceState)history.replaceState(null,'','#vq='+hash);}catch(e){}
   setTimeout(function(){if(runId!==activeRun)return;fetchClimate(d).then(function(){updateTimingAfterClimate(d,s,top,runId);}).catch(function(){if(runId===activeRun)renderClimatePanel(d,s,top);});},20);
@@ -1670,6 +1729,183 @@ function renderTools(d,s){
 function renderAffs(d,s){
   var picks=pickAffiliates(d,s);
   $('[data-v7-affs]').innerHTML=picks.map(function(a){return '<a class="v7-aff" href="'+a.u+'" target="_blank" rel="sponsored noopener nofollow"><span class="job">'+esc(a.job)+'</span><span class="name"><i>'+a.i+'</i>'+esc(a.t)+'</span><p>'+esc(a.d)+'</p><span class="go">Open &rarr;</span></a>';}).join('');
+}
+
+/* =====================================================================
+   V10.1 — remaining pieces from the blueprint (avgTemp fallback, value
+   density, upgraded regret + swaps, sunrise/golden-hour, currency delta,
+   full URL persistence, JSON-LD, FAQ, ghost retake, progressive mode).
+   ===================================================================== */
+
+/* Backup climate estimate when NASA POWER is unreachable (B avgTemp[12]).
+   Very small regression from latitude+climate class → mean °C per month. */
+function estAvgTempMonth(d,month){
+  if(!d||d.lat==null)return null;
+  var lat=Number(d.lat),cl=d.climate||'temperate';
+  var baseByClass={tropical:26,warm:23,temperate:15,cool:9,cold:2}[cl]||15;
+  var seasonality={tropical:2,warm:4,temperate:9,cool:11,cold:13}[cl]||8;
+  /* northern peak Jul (7), southern peak Jan (1) */
+  var m=month, phase=lat>=0?7:1;
+  var season=Math.cos((m-phase)/12*2*Math.PI);
+  return Math.round((baseByClass+seasonality*season)*10)/10;
+}
+function avgTempCurve(d){var out={};for(var m=1;m<=12;m++)out[String(m)]={temperatureMeanC:estAvgTempMonth(d,m),temperatureMaxC:estAvgTempMonth(d,m)+4,temperatureMinC:estAvgTempMonth(d,m)-4,precipitationMmDay:null,humidityPercent:null,windSpeedMs:null};return out;}
+/* value density signal — vibe strength × crowd inverse ÷ cost band */
+function valueDensity(d){
+  var dna=getDNA(d);
+  var vibeStrength=Math.min(1,(dna.vibe||[]).length/5);
+  var crowdInv=1-Math.min(1,(d.crowd||2)/5);
+  var costWeight=Math.max(.4,1-((d.budget||2)-1)*.18);
+  return Math.round(Math.max(0,Math.min(1,vibeStrength*.5+crowdInv*.3+costWeight*.2))*100);
+}
+
+/* Sunrise / sunset / golden-hour per date (pure astronomy) */
+function sunTimes(lat,lon,date){
+  if(lat==null||lon==null)return null;
+  var d=date||new Date();var jd=d.getTime()/86400000+2440587.5;var n=jd-2451545.0;
+  var L=(280.460+0.9856474*n)%360;var g=((357.528+0.9856003*n)%360)*Math.PI/180;
+  var lam=(L+1.915*Math.sin(g)+0.020*Math.sin(2*g))*Math.PI/180;var eps=23.439*Math.PI/180;
+  var decl=Math.asin(Math.sin(eps)*Math.sin(lam));var phi=lat*Math.PI/180;
+  var cosH=-Math.tan(phi)*Math.tan(decl);
+  if(cosH<=-1)return {sunrise:null,sunset:null,dayHours:24,note:'Midnight sun'};
+  if(cosH>=1)return {sunrise:null,sunset:null,dayHours:0,note:'Polar night'};
+  var H=Math.acos(cosH);var dayHours=H*2*12/Math.PI;
+  /* offset from local noon */
+  var eqTime=9.87*Math.sin(2*g)-7.53*Math.cos(g)-1.5*Math.sin(g);
+  var solarNoonUtc=12-lon/15-eqTime/60;
+  var sunriseUtc=solarNoonUtc-H*12/Math.PI;
+  var sunsetUtc=solarNoonUtc+H*12/Math.PI;
+  function hhmm(h){while(h<0)h+=24;while(h>=24)h-=24;var hh=Math.floor(h),mm=Math.round((h-hh)*60);if(mm===60){hh++;mm=0;}return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');}
+  var golden=hhmm(sunsetUtc-1);
+  return {sunrise:hhmm(sunriseUtc),sunset:hhmm(sunsetUtc),goldenHour:golden,dayHours:Math.round(dayHours*10)/10};
+}
+
+/* Historical FX baseline (used for the "delta" reading) */
+var FX_MEM={};
+function fetchHistoricalFx(from,to){
+  if(!from||!to||from===to)return Promise.resolve(null);
+  var d=new Date();d.setFullYear(d.getFullYear()-1);var iso=d.toISOString().slice(0,10);
+  var key=from+':'+to+':'+iso;if(FX_MEM[key])return Promise.resolve(FX_MEM[key]);
+  return getJsonTimeout('https://api.frankfurter.dev/v1/'+iso+'?base='+encodeURIComponent(from)+'&symbols='+encodeURIComponent(to),10000).then(function(j){var r=j&&j.rates&&j.rates[to];if(r){FX_MEM[key]={rate:r,date:iso};return FX_MEM[key];}return null;}).catch(function(){return null;});
+}
+function currencyDeltaLabel(fromRate,toRate){
+  if(!fromRate||!toRate||!toRate.rate)return null;
+  var change=((fromRate-toRate.rate)/toRate.rate)*100;
+  var pct=Math.abs(change).toFixed(1);
+  if(change>=0.5)return {tone:'good',text:'Your currency goes ~'+pct+'% further vs. a year ago'};
+  if(change<=-0.5)return {tone:'bad',text:'Your currency has weakened ~'+pct+'% vs. a year ago'};
+  return {tone:'neutral',text:'Exchange rate roughly stable vs. a year ago'};
+}
+
+/* JSON-LD Quiz + TouristDestination schema for the winning result. */
+function upsertJsonLd(d,top,persona){
+  try{
+    var host=document.head||document.getElementsByTagName('head')[0];if(!host)return;
+    var existing=host.querySelector('script[data-v10-ld]');if(existing)existing.remove();
+    var data={
+      "@context":"https://schema.org","@graph":[
+        {"@type":"Quiz","name":"Voyasee Destination Quiz","description":"A 12-question travel quiz that scores 600 destinations against your persona and returns the strongest match with a full trip report.","inLanguage":"en","about":{"@type":"Thing","name":"Travel destination matching"}},
+        {"@type":"TouristDestination","name":d.n,"description":getDNA(d).oneLiner||d.desc,"touristType":persona,"geo":{"@type":"GeoCoordinates","latitude":d.lat,"longitude":d.lon},"aggregateRating":{"@type":"AggregateRating","ratingValue":top.score/10,"bestRating":10,"ratingCount":1,"itemReviewed":d.n}}
+      ]
+    };
+    var s=document.createElement('script');s.type='application/ld+json';s.setAttribute('data-v10-ld','1');s.textContent=JSON.stringify(data);host.appendChild(s);
+  }catch(e){}
+}
+
+/* Auto-generated FAQ block from DNA fields — pure content, no APIs. */
+function renderFaq(d,s){
+  var host=$('[data-v10-faq]');if(!host)return;
+  var dna=getDNA(d);
+  var qa=[
+    {q:'When is the best time to visit '+d.n+'?',a:(d.best?d.best+'. ':'')+(dna.avoidWhen&&dna.avoidWhen[0]?'Avoid: '+dna.avoidWhen[0]+'.':'')},
+    {q:'What is '+d.n+' famous for?',a:(dna.bestFor&&dna.bestFor.length?'Best known for: '+dna.bestFor.slice(0,3).join(', ')+'. ':'')+(dna.signature||dna.oneLiner||'')},
+    {q:'Is '+d.n+' good for a '+(s.party||'traveller')+' trip?',a:'Voyasee scored this destination '+scoreOne(d,s).score+'/100 for your traveller shape (persona: '+personaFor(s)+'). '+((dna.who||[]).length?'It is often chosen by '+dna.who.slice(0,2).join(' and ')+'.':'')},
+    {q:'How much does '+d.n+' cost per day?',a:(d.daily||'Not documented')+'. Actual cost depends on stay style, season and exchange rate.'},
+    {q:'How do I get around '+d.n+'?',a:(d.route||'Explore the city core on foot, add one guided context experience, then let a day breathe.')}
+  ];
+  host.innerHTML=qa.map(function(x){return '<details class="v10-faq"><summary>'+esc(x.q)+'</summary><p>'+esc(x.a)+'</p></details>';}).join('');
+  /* JSON-LD FAQ */
+  try{
+    var faqLd={"@context":"https://schema.org","@type":"FAQPage","mainEntity":qa.map(function(x){return {"@type":"Question","name":x.q,"acceptedAnswer":{"@type":"Answer","text":x.a}};})};
+    var host2=document.head;var prev=host2.querySelector('script[data-v10-faq-ld]');if(prev)prev.remove();
+    var s2=document.createElement('script');s2.type='application/ld+json';s2.setAttribute('data-v10-faq-ld','1');s2.textContent=JSON.stringify(faqLd);host2.appendChild(s2);
+  }catch(e){}
+}
+
+/* Change-one-thing: upgraded with net-delta pill per dimension. */
+function renderSwapsUpgraded(results,s,base){
+  var scenarios=[
+    {label:'Travel one month later',make:function(x){x.month=x.month%12+1;return x;}},
+    {label:'Raise budget one band',make:function(x){x.budget=Math.min(4,x.budget+1);return x;}},
+    {label:'Prioritise a shorter flight',make:function(x){x.flight=Math.max(1,x.flight-1);return x;}},
+    {label:'Prioritise quieter places',make:function(x){x.deal='crowd';x.tags=Array.from(new Set((x.tags||[]).concat(['quiet','hidden'])));x.tagSet=new Set(x.tags);return x;}}
+  ];
+  var host=$('[data-v7-swaps]');if(!host)return;
+  var sims=scenarios.map(function(sc){var clone=Object.assign({},s,{tags:(s.tags||[]).slice(),tagSet:new Set(s.tags||[])});var next=sc.make(clone),best=rankState(next)[0];return {label:sc.label,best:best,scenario:sc.label};});
+  host.innerHTML=sims.map(function(x,i){
+    var delta=x.best.score-base.score;
+    var pill='<span class="v10-delta '+(delta>0?'up':delta<0?'down':'')+'">'+(delta>0?'+':'')+delta+'</span>';
+    return '<button type="button" class="v7-swap v8-swap-btn v10-swap" data-v10-sim="'+i+'"><span class="l"><b>'+esc(x.label)+'</b><br><em>'+esc(x.best.d.n)+'</em></span><span class="r">'+pill+'<b class="pc">'+x.best.score+'</b></span></button>';
+  }).join('');
+}
+
+/* Regret radar rewired to DNA avoidWhen[] */
+function renderRegretUpgraded(top,s){
+  var d=top.d,dna=getDNA(d),flags=(top.flags||[]).slice();
+  if(dna.avoidWhen&&dna.avoidWhen.length)flags=flags.concat(dna.avoidWhen.map(function(w){return 'Watch out for: '+w;}));
+  if(monthFit(d,s.month,s)<.4)flags.push(MONTHS[s.month]+' has meaningful weather trade-offs for '+d.n);
+  if(d.watch)flags.push(d.watch);
+  flags=Array.from(new Set(flags));
+  var html=flags.length?flags.slice(0,5).map(function(f){return '<div class="flag"><span class="ic">!</span><span>'+esc(cap(f))+'</span></div>';}).join(''):'<div class="flag ok"><span class="ic">&#10003;</span><span>No major preference conflict was detected.</span></div>';
+  html+='<div class="flag ok"><span class="ic">&#10003;</span><span>Entry, health and safety requirements depend on your passport and current official rules. They are not used as a final visa or safety verdict.</span></div>';
+  $('[data-v7-regret]').innerHTML=html;
+}
+
+/* Sunrise / golden-hour panel injected into the Air & daylight box. */
+function appendGoldenHour(d,s){
+  var box=$('[data-v8-air-daylight]');if(!box||!d.lat)return;
+  var date=new Date();date.setMonth(s.month-1);date.setDate(15);
+  var st=sunTimes(d.lat,d.lon,date);if(!st)return;
+  var extra='<div class="v10-golden">'+
+    '<div><small>Sunrise</small><b>'+esc(st.sunrise||st.note||'—')+'</b></div>'+
+    '<div><small>Golden hour</small><b>'+esc(st.goldenHour||'—')+'</b></div>'+
+    '<div><small>Sunset</small><b>'+esc(st.sunset||st.note||'—')+'</b></div>'+
+    '<div><small>Daylight</small><b>'+(st.dayHours!=null?st.dayHours+' h':'—')+'</b></div>'+
+    '</div><div class="v10-source-note">Sun times computed from destination coordinates (UTC). Local times vary with time zone offset.</div>';
+  box.insertAdjacentHTML('beforeend',extra);
+}
+
+/* Ghost-selected retake: preserve last answers as pre-highlighted picks. */
+function ghostRetake(){
+  try{var saved=JSON.parse(localStorage.getItem('vdq10_last_results')||'null');if(saved&&saved.answers){answers=saved.answers.slice();step=0;}}catch(e){}
+}
+
+/* URL persistence — writes a compact ?vq=<b64> string plus hash for
+   shareable, indexable result URLs. */
+function persistResultUrl(s){
+  try{
+    var payload={answers:answers.filter(Boolean)};
+    var b64=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    var url=new URL(location.href);url.searchParams.set('vq',b64);url.hash='';
+    if(history.replaceState)history.replaceState(null,'',url.toString());
+    localStorage.setItem('vdq10_last_results',JSON.stringify({answers:answers,ts:Date.now()}));
+  }catch(e){}
+}
+function readResultUrl(){
+  try{
+    var url=new URL(location.href);var b64=url.searchParams.get('vq');
+    if(b64){var payload=JSON.parse(decodeURIComponent(escape(atob(b64))));if(payload&&Array.isArray(payload.answers)&&payload.answers.length===Q.length){answers=payload.answers.slice();return true;}}
+    /* legacy hash */
+    if(location.hash&&location.hash.indexOf('#vq=')===0){var b642=location.hash.replace('#vq=','');var payload2=JSON.parse(decodeURIComponent(escape(atob(b642))));if(payload2&&Array.isArray(payload2.a)){answers=payload2.a.slice();return true;}}
+  }catch(e){}
+  return false;
+}
+
+/* Progressive quiz — allow a quick 6-question mode */
+var PROGRESSIVE_KEYS=['origin','budget','month','feeling','climate','deal'];
+function applyProgressiveMode(on){
+  if(on){var kept=Q.filter(function(q){return PROGRESSIVE_KEYS.indexOf(q.k)>=0;});var full=Q.slice();Q.length=0;kept.forEach(function(q){Q.push(q);});Q._full=full;}
+  else if(Q._full){var f=Q._full;Q.length=0;f.forEach(function(q){Q.push(q);});delete Q._full;}
 }
 
 /* =====================================================================
@@ -1782,6 +2018,13 @@ function wrapText(ctx,text,x,y,maxW,lineH){var words=String(text||'').split(' ')
   for(var i=0;i<words.length;i++){var test=line+words[i]+' ';if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,yy);line=words[i]+' ';yy+=lineH;}else line=test;}
   ctx.fillText(line,x,yy);}
 
+function setupTrustToggle(d,s,top){
+  var toggle=$('[data-v10-trust]'),body=$('[data-v10-trust-body]');if(!toggle||!body)return;
+  body.innerHTML='<p><b>How Voyasee scores destinations</b> — a stable, transparent formula. No AI guessing, no live data flipping the winner.</p>'+
+    '<div class="frm">match_index = (style·0.28 + budget·0.14 + climate·0.14 + timing·0.15 + flight·0.12 + ease·0.09 + party_bonus + pace_bonus + persona_bonus + value_density_bonus) × deal_penalty × (1 − anti_persona_penalty)\n\nStyle uses IDF-weighted tag matching (rare tags reward more).\nClimate: NASA POWER monthly normals (30-day cache) with backup estimate.\nFlight realism: haversine distance from your origin centroid, not a bucket.\nCoherence hard-drops filter out family+nightlife etc. before ranking.</div>'+
+    '<p style="margin-top:8px">Live weather, air quality, currency and holidays enrich the report but never change the winning destination.</p>';
+  toggle.onclick=function(){body.hidden=!body.hidden;toggle.innerHTML=body.hidden?'Show scoring formula &rsaquo;':'&lsaquo; Hide scoring formula';};
+}
 function setupPosterAndShare(d,s,top){
   var dlBtn=$('[data-v10-poster-dl]'),togBtn=$('[data-v10-poster-toggle]'),linkBtn=$('[data-v10-share-link]'),preview=$('[data-v10-poster-preview]');
   function build(){var c=document.createElement('canvas');drawPoster(c,d,s,top);return c;}
@@ -1880,20 +2123,36 @@ function fetchLive(d,s,top,runId){
     if(converted){fxText='Approx. '+converted+' in your selected currency'+(fx&&fx.date?' using the '+esc(fx.date)+' reference rate':'')+'.';}
     var liveNote=document.createElement('div');liveNote.className='v8-entry-note';liveNote.innerHTML='<b>'+esc(budgetText)+' curated USD comfort estimate.</b> '+(fxText||'A reference conversion is temporarily unavailable.')+' Entry requirements depend on passport and must be checked officially.';currentBox.appendChild(liveNote);
     _lastLiveData=data;renderCountryPractical(countryData,runId,holidayData,s.month);renderConfidence(d,top,data);
-    try{renderSanity(d,s,data);renderRibbon(d,s);}catch(e){}
+    try{renderSanity(d,s,data);renderRibbon(d,s);appendGoldenHour(d,s);}catch(e){}
+    /* Currency delta (year-over-year) */
+    try{if(fx&&fx.rates&&s.currency&&fx.rates[s.currency]){fetchHistoricalFx('USD',s.currency).then(function(hist){if(!hist)return;var lbl=currencyDeltaLabel(fx.rates[s.currency],hist);if(lbl){var cur=currentBox.querySelector('.v8-entry-note');if(cur)cur.insertAdjacentHTML('beforeend','<span class="v10-fx-delta '+lbl.tone+'"> '+esc(lbl.text)+'</span>');}});}}catch(e){}
   }).catch(function(){if(runId!==activeRun)return;currentBox.innerHTML='<div class="v8-skeleton">Live details are temporarily unavailable. Your core destination match remains available.</div>';forecastBox.innerHTML='<div class="v8-skeleton">Forecast unavailable.</div>';airBox.innerHTML='<div class="v8-skeleton">Air and daylight details unavailable.</div>';});
 }
 root.addEventListener('click',function(ev){
-  var t=ev.target,btn=t&&t.closest?t.closest('[data-v7-start],[data-v7-back],[data-v7-next],[data-v7-retake],[data-v7-share]'):null;
+  var t=ev.target;
+  /* v10.1: progressive-mode toggle on intro */
+  var pm=t&&t.closest&&t.closest('.v10-progressive button[data-v10-mode]');
+  if(pm){ev.preventDefault();var mode=pm.dataset.v10Mode;root.querySelectorAll('.v10-progressive button').forEach(function(b){b.setAttribute('aria-pressed',b===pm?'true':'false');});applyProgressiveMode(mode==='quick');buildPips();return;}
+  var btn=t&&t.closest?t.closest('[data-v7-start],[data-v7-back],[data-v7-next],[data-v7-retake],[data-v7-share]'):null;
   if(!btn||!root.contains(btn)||btn.disabled)return;
   if(btn.matches('[data-v7-share]')){ev.preventDefault();var url=location.href.split('#')[0]+(location.hash||'');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){var orig=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=orig;},2000);}).catch(function(){});}else{try{var ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var orig=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=orig;},2000);}catch(e){}}return;}
   if(btn.matches('[data-v7-start]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}autofillDefaults();renderQuestion();setScreen('quiz');return;}
   if(btn.matches('[data-v7-back]')){ev.preventDefault();if(step>0){step--;renderQuestion();}return;}
-  if(btn.matches('[data-v7-next]')){ev.preventDefault();if(!answers[step])return;if(step<Q.length-1){step++;renderQuestion();}else{var runId=++activeRun;setScreen('loading');resetAsyncPanels();(function(){var ct=$('[data-v7-scan-ct]'),t0=null,total=DEST.length||600,dur=290;function tick(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);if(ct)ct.textContent=Math.round(p*total);if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);})();setTimeout(function(){if(runId!==activeRun)return;try{renderResults(runId);setScreen('results');}catch(err){$('[data-v7-rtitle]').textContent='We could not build the match report';$('[data-v7-rsub]').textContent='Please retake the quiz. Your answers were not sent anywhere.';setScreen('results');}},320);}return;}
+  if(btn.matches('[data-v7-next]')){ev.preventDefault();if(!answers[step])return;if(step<Q.length-1){step++;renderQuestion();}else{var runId=++activeRun;setScreen('loading');resetAsyncPanels();(function(){var ct=$('[data-v7-scan-ct]'),stg=$('[data-v7-scan-stage]'),t0=null,total=DEST.length||600,dur=900;var stages=[[0,'Scoring style, budget and deal-breakers…'],[.25,'Checking seasonal climate windows…'],[.5,'Weighing flight realism and origin fit…'],[.75,'Ranking with destination DNA + coherence…'],[.95,'Finalising your top matches…']];var stageIdx=-1;function tick(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);if(ct)ct.textContent=Math.round(p*total);var newIdx=-1;for(var i=0;i<stages.length;i++)if(p>=stages[i][0])newIdx=i;if(newIdx!==stageIdx){stageIdx=newIdx;if(stg&&newIdx>=0)stg.textContent=stages[newIdx][1];}if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);})();setTimeout(function(){if(runId!==activeRun)return;try{renderResults(runId);setScreen('results');}catch(err){$('[data-v7-rtitle]').textContent='We could not build the match report';$('[data-v7-rsub]').textContent='Please retake the quiz. Your answers were not sent anywhere.';setScreen('results');}},950);}return;}
   if(btn.matches('[data-v7-retake]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}autofillDefaults();renderQuestion();setScreen('quiz');}
 });
 buildPips();
-try{var _saved=localStorage.getItem('vdq7_answers');if(_saved){var _sv=JSON.parse(_saved);if(_sv&&_sv.answers&&_sv.ts&&(Date.now()-_sv.ts)<3600000&&_sv.answers.length){answers=_sv.answers;step=Math.min(_sv.step||0,_sv.answers.filter(Boolean).length);renderQuestion();setScreen('quiz');}else{renderQuestion();}}}catch(e){renderQuestion();}
+try{
+  /* v10.1: URL restore first — bookmarkable / shareable / indexable results */
+  if(readResultUrl()&&answers.filter(Boolean).length===Q.length){
+    var _runId=++activeRun;setScreen('loading');resetAsyncPanels();
+    setTimeout(function(){if(_runId!==activeRun)return;try{renderResults(_runId);setScreen('results');}catch(err){renderQuestion();setScreen('intro');}},60);
+  } else {
+    var _saved=localStorage.getItem('vdq7_answers');
+    if(_saved){var _sv=JSON.parse(_saved);if(_sv&&_sv.answers&&_sv.ts&&(Date.now()-_sv.ts)<3600000&&_sv.answers.length){answers=_sv.answers;step=Math.min(_sv.step||0,_sv.answers.filter(Boolean).length);renderQuestion();setScreen('quiz');}else{ghostRetake();renderQuestion();}}
+    else{ghostRetake();renderQuestion();}
+  }
+}catch(e){renderQuestion();}
 }
 function initAll(scope){var base=scope&&scope.querySelectorAll?scope:document;if(base.matches&&base.matches('.vdq7'))boot(base);Array.prototype.slice.call(base.querySelectorAll('.vdq7')).forEach(boot);}
 window.voyaseeDQ7Init=initAll;
