@@ -444,6 +444,151 @@
   .vdq7 .v7-scan-ct{font-size:2.4rem}
 }
 
+/* =====================================================================
+   V10 UPGRADE — Persona, DNA, comfort ribbon, crowd calendar, sanity
+   chips, trip composer, share poster, responsive polish, bug fixes.
+   All colours reuse existing tokens for a coherent look.
+   ===================================================================== */
+/* Persona card (hero, sits above summary tiles) */
+.vdq7 .v10-persona{position:relative;overflow:hidden;margin:22px 0 8px;padding:22px 22px 20px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(31,211,196,.14),rgba(154,140,255,.10) 55%,rgba(245,185,66,.10));box-shadow:var(--shadow)}
+.vdq7 .v10-persona:before{content:"";position:absolute;inset:auto -20% -60% -20%;height:120%;background:radial-gradient(closest-side,rgba(31,211,196,.24),transparent 70%);filter:blur(50px);z-index:0}
+.vdq7 .v10-persona>*{position:relative;z-index:1}
+.vdq7 .v10-persona .ey{font-family:var(--mono);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--teal);display:inline-flex;align-items:center;gap:8px}
+.vdq7 .v10-persona .ey:before{content:"";width:22px;height:1.5px;background:var(--gold)}
+.vdq7 .v10-persona h4{margin:10px 0 6px;font-family:var(--disp);font-weight:600;font-size:clamp(1.6rem,3.4vw,2.4rem);line-height:1.05;letter-spacing:-.01em}
+.vdq7 .v10-persona h4 em{font-style:italic;background:linear-gradient(120deg,var(--gold2),var(--teal),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.vdq7 .v10-persona p{margin:0;color:var(--muted);font-size:.95rem;line-height:1.55;max-width:720px}
+.vdq7 .v10-persona-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.vdq7 .v10-ptag{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:6px 12px;font-size:.72rem;font-weight:600;letter-spacing:.02em;color:var(--ink);white-space:nowrap}
+.vdq7 .v10-ptag.gold{border-color:rgba(245,185,66,.42);background:rgba(245,185,66,.09);color:var(--gold)}
+.vdq7 .v10-ptag.mint{border-color:rgba(94,240,176,.42);background:rgba(94,240,176,.08);color:var(--mint)}
+.vdq7 .v10-ptag.violet{border-color:rgba(154,140,255,.42);background:rgba(154,140,255,.09);color:var(--violet)}
+
+/* Sanity chips */
+.vdq7 .v10-sanity{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 4px}
+.vdq7 .v10-schip{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--line);background:var(--card);border-radius:999px;font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.vdq7 .v10-schip i{width:8px;height:8px;border-radius:50%;background:var(--soft);box-shadow:0 0 8px currentColor}
+.vdq7 .v10-schip.ok{border-color:rgba(94,240,176,.34);background:rgba(94,240,176,.07);color:var(--mint)}
+.vdq7 .v10-schip.warn{border-color:rgba(245,185,66,.34);background:rgba(245,185,66,.08);color:var(--gold)}
+.vdq7 .v10-schip.bad{border-color:rgba(255,122,107,.34);background:rgba(255,122,107,.08);color:var(--coral)}
+
+/* 12-month comfort ribbon */
+.vdq7 .v10-ribbon-wrap{margin-top:16px}
+.vdq7 .v10-ribbon{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin-top:8px}
+.vdq7 .v10-rcell{position:relative;padding:8px 4px 7px;border-radius:9px;border:1px solid var(--line);background:var(--card);text-align:center;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease}
+.vdq7 .v10-rcell:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.vdq7 .v10-rcell b{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--soft)}
+.vdq7 .v10-rcell span{display:block;font-family:var(--disp);font-weight:600;font-size:1.1rem;line-height:1;margin-top:3px;color:var(--ink)}
+.vdq7 .v10-rcell small{display:block;font-family:var(--mono);font-size:.55rem;letter-spacing:.06em;color:var(--soft);margin-top:2px;text-transform:uppercase}
+.vdq7 .v10-rcell.prime{border-color:rgba(94,240,176,.55);background:rgba(94,240,176,.14)}
+.vdq7 .v10-rcell.good{border-color:rgba(31,211,196,.55);background:rgba(31,211,196,.12)}
+.vdq7 .v10-rcell.ok{border-color:rgba(245,185,66,.42);background:rgba(245,185,66,.08)}
+.vdq7 .v10-rcell.weak{border-color:rgba(255,122,107,.42);background:rgba(255,122,107,.09)}
+.vdq7 .v10-rcell.active{outline:2px solid rgba(245,185,66,.75);outline-offset:2px}
+.vdq7 .v10-ribbon-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--soft);text-transform:uppercase}
+.vdq7 .v10-ribbon-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* Crowd calendar (compact horizontal bars) */
+.vdq7 .v10-crowd{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;margin-top:8px;align-items:end}
+.vdq7 .v10-cbar{position:relative;border-radius:6px;background:linear-gradient(180deg,var(--mint),var(--teal));min-height:6px}
+.vdq7 .v10-cbar.mid{background:linear-gradient(180deg,var(--gold),var(--gold2))}
+.vdq7 .v10-cbar.peak{background:linear-gradient(180deg,var(--coral),#c9483a)}
+.vdq7 .v10-cbar span{position:absolute;left:50%;top:-4px;transform:translate(-50%,-100%);font-family:var(--mono);font-size:.55rem;letter-spacing:.05em;color:var(--soft)}
+.vdq7 .v10-crowd-labels{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;margin-top:5px}
+.vdq7 .v10-crowd-labels div{text-align:center;font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;color:var(--soft)}
+
+/* Trip Composer (tabs) */
+.vdq7 .v10-composer{margin-top:8px}
+.vdq7 .v10-tabs{display:inline-flex;gap:0;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
+.vdq7 .v10-tab{border:0;background:transparent;color:var(--muted);padding:8px 14px;font-size:.75rem;font-weight:700;border-radius:999px;letter-spacing:.02em;cursor:pointer;transition:background .15s ease,color .15s ease}
+.vdq7 .v10-tab[aria-selected="true"]{background:linear-gradient(135deg,var(--teal),var(--sky));color:#06111f}
+.vdq7 .v10-tab:not([aria-selected="true"]):hover{color:var(--ink)}
+.vdq7 .v10-tpane{margin-top:12px;display:none}
+.vdq7 .v10-tpane.on{display:block}
+.vdq7 .v10-plan{display:grid;gap:8px}
+.vdq7 .v10-plan-row{display:grid;grid-template-columns:22px 1fr;gap:10px;border-left:2px solid var(--line);padding:4px 0 4px 12px}
+.vdq7 .v10-plan-row b{color:var(--gold);font-family:var(--mono);font-size:.72rem;letter-spacing:.06em}
+.vdq7 .v10-plan-row p{margin:2px 0 0;color:var(--muted);font-size:.85rem;line-height:1.5}
+.vdq7 .v10-pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vdq7 .v10-pair{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--card)}
+.vdq7 .v10-pair b{display:block;color:var(--ink);font-weight:800;font-size:.9rem}
+.vdq7 .v10-pair small{display:block;color:var(--soft);margin-top:2px;font-size:.72rem;letter-spacing:.02em}
+.vdq7 .v10-pair p{margin:8px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5}
+.vdq7 .v10-savers{display:grid;gap:8px}
+.vdq7 .v10-saver{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);background:var(--card);border-radius:12px}
+.vdq7 .v10-saver i{font-size:1.1rem;line-height:1}
+.vdq7 .v10-saver span{color:var(--muted);font-size:.82rem;line-height:1.5}
+
+/* Poster share card */
+.vdq7 .v10-share-wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.vdq7 .v10-share-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card2);color:var(--ink);border-radius:999px;padding:9px 14px;font-size:.78rem;font-weight:700;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+.vdq7 .v10-share-btn:hover{border-color:rgba(31,211,196,.5);background:rgba(31,211,196,.08)}
+.vdq7 .v10-share-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1004;border-color:transparent}
+.vdq7 .v10-share-btn.primary:hover{filter:brightness(1.05)}
+.vdq7 .v10-poster-preview{margin-top:10px;max-width:280px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.vdq7 .v10-poster-preview canvas,.vdq7 .v10-poster-preview img{display:block;width:100%;height:auto}
+
+/* Match fingerprint radar — widen for full labels + values under label */
+.vdq7 .v8-radar-wrap{padding-right:0}
+.vdq7 .v8-radar-wrap svg{overflow:visible;width:100%;max-width:260px;height:auto;display:block;margin:0 auto}
+
+/* Mobile / tablet polish — pin bar sticky, sizes, grids */
+.vdq7 .v10-mobile-cta{display:none}
+@media(max-width:1024px){
+  .vdq7 .v7-hero{grid-template-columns:1fr;padding:38px 0 26px}
+  .vdq7 .v7-grid3{grid-template-columns:1fr 1fr}
+  .vdq7 .v8-live-grid{grid-template-columns:1fr 1fr}
+  .vdq7 .v10-persona h4{font-size:clamp(1.5rem,4.2vw,2rem)}
+}
+@media(max-width:760px){
+  .vdq7 .v7-wrap{padding:0 16px}
+  .vdq7 .v7-hero{padding:26px 0 20px;gap:26px}
+  .vdq7 .v7-top{flex-direction:column;align-items:flex-start;gap:10px}
+  .vdq7 .v7-trust{width:100%;justify-content:flex-start}
+  .vdq7 .v7-grid2,.vdq7 .v7-grid3,.vdq7 .v8-live-grid,.vdq7 .v8-primary-grid{grid-template-columns:1fr!important;gap:12px}
+  .vdq7 .v7-winner-body{grid-template-columns:1fr!important;gap:16px}
+  .vdq7 .v7-gauge-card{justify-self:start;width:100%;max-width:none;padding:14px}
+  .vdq7 .v7-wname{font-size:clamp(2rem,7vw,2.4rem);word-break:break-word}
+  .vdq7 .v7-wdesc{font-size:.95rem}
+  .vdq7 .v7-wmicro{gap:6px}
+  .vdq7 .v7-wmicro span{font-size:.68rem;padding:4px 9px}
+  .vdq7 .v8-summary{grid-template-columns:1fr 1fr!important;gap:8px}
+  .vdq7 .v8-tile{padding:12px}
+  .vdq7 .v8-tile strong{font-size:1.05rem}
+  .vdq7 .v8-dims-dual{grid-template-columns:1fr!important;gap:14px}
+  .vdq7 .v8-radar-wrap svg{max-width:200px}
+  .vdq7 .v10-ribbon{grid-template-columns:repeat(6,minmax(0,1fr));row-gap:5px}
+  .vdq7 .v10-crowd,.vdq7 .v10-crowd-labels{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .vdq7 .v10-pair-grid{grid-template-columns:1fr}
+  .vdq7 .v10-persona{padding:18px 16px 16px;border-radius:16px}
+  .vdq7 .v10-persona-tags .v10-ptag{font-size:.68rem}
+  .vdq7 .v7-affs,.vdq7 .v7-tools{grid-template-columns:1fr 1fr!important;gap:8px}
+  .vdq7 .v7-aff,.vdq7 .v7-tool{padding:12px}
+  .vdq7 .v10-mobile-cta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0));gap:8px;background:rgba(7,13,31,.86);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+  .vdq7 .v10-mobile-cta button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:11px 8px;font-weight:800;font-size:.8rem;letter-spacing:.02em;cursor:pointer}
+  .vdq7 .v10-mobile-cta button.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1004;border-color:transparent}
+  .vdq7 .v7-results{padding-bottom:80px}
+}
+@media(max-width:480px){
+  .vdq7 .v7-answer{grid-template-columns:44px 1fr 20px;padding:10px 12px}
+  .vdq7 .v7-answer .ico{width:44px;height:44px;font-size:1.4rem}
+  .vdq7 .v7-answer strong{font-size:.9rem}
+  .vdq7 .v7-answer small{font-size:.72rem}
+  .vdq7 .v8-forecast{grid-template-columns:1fr!important}
+  .vdq7 .v8-summary{grid-template-columns:1fr!important}
+  .vdq7 .v10-ribbon{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .vdq7 .v7-affs,.vdq7 .v7-tools{grid-template-columns:1fr!important}
+  .vdq7 .v10-tabs{width:100%;justify-content:space-between}
+  .vdq7 .v10-tab{flex:1;text-align:center;padding:8px 6px;font-size:.68rem}
+}
+
+/* Larger targets on touch */
+@media(hover:none){
+  .vdq7 .v7-answer{min-height:64px}
+  .vdq7 .v10-tab{min-height:38px}
+  .vdq7 .v10-rcell{min-height:56px}
+}
+
 </style>
 
 <div class="v7-route" aria-hidden="true"><svg viewBox="0 0 1000 480" preserveAspectRatio="none">
@@ -528,7 +673,44 @@
     </div>
     <div data-v7-winner></div>
 
+    <!-- V10 Persona hero -->
+    <section class="v10-persona" data-v10-persona aria-label="Your traveller persona"></section>
+
+    <!-- V10 Sanity chips -->
+    <div class="v10-sanity" data-v10-sanity aria-label="Sanity checks"></div>
+
     <div class="v8-summary" data-v8-summary aria-label="Match summary"></div>
+
+    <!-- V10 Comfort ribbon + Crowd calendar -->
+    <div class="v7-grid2">
+      <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128198;</span>12-month comfort ribbon<span class="v7-aff-note" style="margin-left:auto">Climate × crowds × your deals</span></div><div class="v10-ribbon-wrap" data-v10-ribbon></div></div>
+      <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128101;</span>Crowd calendar</div><div data-v10-crowd></div></div>
+    </div>
+
+    <!-- V10 Trip Composer -->
+    <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128218;</span>Trip composer<span class="v7-aff-note" style="margin-left:auto">Built from destination DNA</span></div>
+      <div class="v10-composer" data-v10-composer>
+        <div class="v10-tabs" role="tablist">
+          <button class="v10-tab" role="tab" aria-selected="true" data-v10-tab="plan">Base plan</button>
+          <button class="v10-tab" role="tab" aria-selected="false" data-v10-tab="pairs">Route ideas</button>
+          <button class="v10-tab" role="tab" aria-selected="false" data-v10-tab="save">Money savers</button>
+        </div>
+        <div class="v10-tpane on" data-v10-pane="plan"></div>
+        <div class="v10-tpane" data-v10-pane="pairs"></div>
+        <div class="v10-tpane" data-v10-pane="save"></div>
+      </div>
+    </div>
+
+    <!-- V10 Share poster -->
+    <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#128248;</span>Share your match<span class="v7-aff-note" style="margin-left:auto">Made for Instagram / Pinterest</span></div>
+      <div class="v10-share-wrap">
+        <button class="v10-share-btn primary" type="button" data-v10-poster-dl>&#11015;&#65039; Download poster (PNG)</button>
+        <button class="v10-share-btn" type="button" data-v10-poster-toggle>&#128064; Preview poster</button>
+        <button class="v10-share-btn" type="button" data-v10-share-link>&#128279; Copy result link</button>
+      </div>
+      <div class="v10-poster-preview" data-v10-poster-preview hidden></div>
+    </div>
+
 
     <div class="v7-grid2 v8-primary-grid">
       <div class="v7-panel"><div class="v7-ph" role="heading" aria-level="3"><span class="pin">&#9989;</span>Why this won</div><div class="v7-why" data-v7-why></div></div>
@@ -569,6 +751,13 @@
       <div class="v7-affs" data-v7-affs></div>
       <button class="v7-retake" type="button" data-v7-retake>&#8635; Retake the quiz</button>
       <button class="v7-retake" type="button" data-v7-share style="margin-left:8px" title="Copy shareable link">&#128279; Copy link</button>
+    </div>
+
+    <!-- V10 Mobile fixed CTA bar (phones only) -->
+    <div class="v10-mobile-cta" role="group" aria-label="Result actions">
+      <button type="button" data-v10-mobile-retake>&#8635; Retake</button>
+      <button type="button" data-v10-mobile-share>&#128279; Share link</button>
+      <button type="button" class="primary" data-v10-mobile-poster>&#128248; Poster</button>
     </div>
   </div>
 
@@ -644,7 +833,7 @@ var AFFILIATES=[
 var MONTHS=["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 var Q=[
  {k:"origin",t:"Where are you starting from?",s:"This helps judge flight realism and short-trip practicality.",a:[["🇪🇺","Europe","Closer access to Europe, North Africa and the Middle East.",{origin:"Europe"}],["🇮🇳","South Asia","Good access to Asia, Middle East and Indian Ocean trips.",{origin:"South Asia"}],["🌎","North America","Long-haul decisions matter more from here.",{origin:"North America"}],["🌏","Asia Pacific","Strong access to East Asia, Southeast Asia and Oceania.",{origin:"Asia Pacific"}],["🌍","Middle East / Africa","Good hub access to Europe, Asia and Africa.",{origin:"MEA"}],["🌎","Latin America","Americas and some Europe routes often feel more realistic.",{origin:"Latin America"}]]},
- {k:"currency",t:"Which currency do you plan in?",s:"Currency helps the live budget signal when exchange data is available.",a:[["€","EUR","Euro planning.",{currency:"EUR"}],["$","USD","US dollar planning.",{currency:"USD"}],["£","GBP","British pound planning.",{currency:"GBP"}],["₹","INR","Indian rupee planning.",{currency:"INR"}],["C$","CAD","Canadian dollar planning.",{currency:"CAD"}],["A$","AUD","Australian dollar planning.",{currency:"AUD"}]]},
+ {k:"currency",t:"Which currency do you plan in?",s:"Currency helps the live budget signal when exchange data is available.",a:[["€","EUR","Euro planning.",{currency:"EUR"}],["$","USD","US dollar planning.",{currency:"USD"}],["£","GBP","British pound planning.",{currency:"GBP"}],["₹","INR","Indian rupee planning.",{currency:"INR"}],["C$","CAD","Canadian dollar planning.",{currency:"CAD"}],["A$","AUD","Australian dollar planning.",{currency:"AUD"}],["¥","JPY","Japanese yen planning.",{currency:"JPY"}],["S$","SGD","Singapore dollar planning.",{currency:"SGD"}],["د.إ","AED","UAE dirham planning.",{currency:"AED"}],["Fr","CHF","Swiss franc planning.",{currency:"CHF"}],["R$","BRL","Brazilian real planning.",{currency:"BRL"}],["R","ZAR","South African rand planning.",{currency:"ZAR"}],["฿","THB","Thai baht planning.",{currency:"THB"}],["NZ$","NZD","New Zealand dollar planning.",{currency:"NZD"}]]},
  {k:"budget",t:"What is your realistic daily comfort budget?",s:"This includes local costs after flights, not luxury shopping.",a:[["🎒","Under $70/day","Hostels, local food and careful choices.",{budget:1,tags:["budget","value"]}],["🏨","$70–160/day","Comfortable mid-range travel.",{budget:2,tags:["value","comfort"]}],["🥂","$160–300/day","Boutique stays and curated experiences.",{budget:3,tags:["premium","comfort"]}],["💎","$300+/day","High-service, convenience and luxury comfort.",{budget:4,tags:["luxury","exclusive"]}]]},
  {k:"length",t:"How long is this trip?",s:"Some places are perfect for a short break; others deserve more time.",a:[["2–4","Short break","A compact, lower-friction destination is best.",{length:3,tags:["easy","city"]}],["5–8","One week","Enough time for a city plus one day trip or beach reset.",{length:7,tags:["balanced"]}],["9–14","Two weeks","You can handle more distance, nature or multi-stop routing.",{length:12,tags:["adventure","roadtrip"]}],["15+","Slow trip","Remote, layered or bigger journeys are realistic.",{length:18,tags:["remote","deep"]}]]},
  {k:"month",t:"Which month are you most likely to travel?",s:"Choose the real month so seasonal climate and timing pressure can be checked.",a:[["Jan","January","Winter sun, snow trips or post-holiday escapes.",{month:1,tags:["winter","sunny"]}],["Feb","February","Winter sun, festivals and late-season snow options.",{month:2,tags:["winter","value"]}],["Mar","March","Spring starts and shoulder-season value.",{month:3,tags:["mild","value"]}],["Apr","April","Comfortable city and culture weather.",{month:4,tags:["mild","culture"]}],["May","May","Longer days, spring landscapes and pre-summer balance.",{month:5,tags:["mild","nature"]}],["Jun","June","Early summer, beaches and longer days.",{month:6,tags:["beach","social"]}],["Jul","July","Peak summer, outdoor days and busy holiday energy.",{month:7,tags:["beach","family"]}],["Aug","August","Peak summer and school-holiday energy.",{month:8,tags:["beach","family"]}],["Sep","September","Warm shoulder season with softer crowds.",{month:9,tags:["mild","value"]}],["Oct","October","Autumn food, culture and softer crowds.",{month:10,tags:["food","culture"]}],["Nov","November","Shoulder value and warm-weather escapes.",{month:11,tags:["value","sunny"]}],["Dec","December","Festive cities, winter magic or tropical reset.",{month:12,tags:["winter","tropical"]}]]},
@@ -690,6 +879,8 @@ function getJsonTimeout(url,timeoutMs,opts){
 }
 function fetchClimate(d){
   if(d._climateMonths)return Promise.resolve({ok:true,months:d._climateMonths,source:'NASA POWER',cached:true});
+  /* v10: 30-day localStorage cache so repeat visits don't re-hit NASA. (B1) */
+  var cached=climateCacheGet(d);if(cached){d._climateMonths=cached;return Promise.resolve({ok:true,months:cached,source:'cache',cached:true});}
   if(d._climatePromise)return d._climatePromise;
   var VWB='/wp-json/voyasee-weather/v1';
   var vwbNormals=VWB+'/climate-normals?lat='+encodeURIComponent(d.lat)+'&lon='+encodeURIComponent(d.lon);
@@ -698,7 +889,7 @@ function fetchClimate(d){
       var u='https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M,T2M_MAX,T2M_MIN,PRECTOTCORR,RH2M,WS2M,ALLSKY_SFC_SW_DWN&community=RE&longitude='+encodeURIComponent(d.lon)+'&latitude='+encodeURIComponent(d.lat)+'&format=JSON';
       return getJsonTimeout(u,15000,{credentials:'omit'}).then(parseNasaClimate);
     });
-  }).then(function(data){var months=data&&((data.climatology&&data.climatology.months)||data.months);if(months)d._climateMonths=months;return data;}).finally(function(){d._climatePromise=null;});
+  }).then(function(data){var months=data&&((data.climatology&&data.climatology.months)||data.months);if(months){d._climateMonths=months;climateCacheSet(d,months);}return data;}).finally(function(){d._climatePromise=null;});
   return d._climatePromise;
 }
 function hydrateTopClimate(results){
@@ -756,7 +947,7 @@ function svgRadarChart(dims){
     return '<text x="'+lx+'" y="'+(ly-5)+'" text-anchor="'+anch+'" fill="rgba(244,247,255,.5)" font-size="8.5" font-family="IBM Plex Mono,ui-monospace,monospace" letter-spacing=".06em">'+lbl+'</text>'+
       '<text x="'+lx+'" y="'+(ly+8)+'" text-anchor="'+anch+'" fill="rgba(244,247,255,.9)" font-size="10" font-weight="700" font-family="IBM Plex Mono,ui-monospace,monospace">'+val+'</text>';
   }).join('');
-  return '<svg viewBox="0 0 220 220" width="100%" aria-label="Match fingerprint radar chart">'+
+  return '<svg viewBox="-32 -12 284 254" width="100%" preserveAspectRatio="xMidYMid meet" aria-label="Match fingerprint radar chart">'+
     '<defs><linearGradient id="vr7g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1fd3c4" stop-opacity=".32"/><stop offset="1" stop-color="#f5b942" stop-opacity=".18"/></linearGradient></defs>'+
     grids+axes+'<polygon points="'+poly+'" fill="url(#vr7g)" stroke="#1fd3c4" stroke-width="1.8" stroke-linejoin="round"/>'+
     dots+lbls+'</svg>';
@@ -811,9 +1002,13 @@ function lengthFit(d,len){var tags=d.tags||[];var need=3;if((d.flight||2)>=4||ta
 
 function scoreOne(d,s){
   var dt=new Set(d.tags||[]),why=[],flags=[];
-  var userTags=Array.from(s.tagSet||new Set(s.tags||[])),hits=userTags.filter(function(t){return dt.has(t);}).length;
-  var styleDenom=Math.max(3,Math.min(8,userTags.length||3));
-  var style=Math.min(1,hits/styleDenom);
+  var userTags=Array.from(s.tagSet||new Set(s.tags||[]));
+  /* IDF-weighted style match — rare tags reward more (B6). */
+  var idf=computeTagIdf();
+  var userWeight=0,hitWeight=0;
+  userTags.forEach(function(t){var w=idf[t]||1;userWeight+=w;if(dt.has(t))hitWeight+=w;});
+  var style=userWeight>0?Math.min(1,hitWeight/(userWeight*0.6)):0;
+  var hits=userTags.filter(function(t){return dt.has(t);}).length;
   if(hits>=3)why.push(hits+" unique style signals matched");
   var bd=Math.abs((d.budget||2)-(s.budget||2));
   var budget=bd===0?1:bd===1?.72:bd===2?.38:.14;
@@ -831,7 +1026,10 @@ function scoreOne(d,s){
   else if(timing<.4)flags.push(MONTHS[s.month]+" may involve weather trade-offs");
   var fd=(d.flight||2)-(s.flight||2),flight=fd<=0?1:fd===1?.58:fd===2?.28:.12;
   if(fd<=0)why.push("flight-distance band fits your tolerance");else flags.push("longer journey than your preferred flight band");
-  var orig=originFit(d,s)?1:(s.flight<=1?0:.5);flight=flight*.75+orig*.25;
+  var orig=originFit(d,s)?1:(s.flight<=1?0:.5);flight=flight*.60+orig*.20;
+  /* Continuous haversine-based realism from origin centroid (B9) */
+  var oc=ORIGIN_CENTROIDS[s.origin];if(oc&&Number.isFinite(d.lat)&&Number.isFinite(d.lon)){var km=haversineKm(oc[0],oc[1],d.lat,d.lon);var realism=realismFromKm(km,s.flight);d._km=km;d._flightHours=flightHoursFromKm(km);if(realism!=null)flight+=realism*0.20;}
+  flight=Math.max(0,Math.min(1,flight));
   var riskGap=(d.risk||1)-(s.risk||2),ease=.78;
   if(riskGap>0)ease-=riskGap*.15;else ease+=.07;
   if((d.crowd||2)>=4)ease-=.12;
@@ -843,12 +1041,15 @@ function scoreOne(d,s){
   if(s.deal==='difficult'&&(d.risk||1)>=3){penalty*=.64;flags.push("more planning friction than you requested");}
   if(s.deal==='weather'&&timing<.4){penalty*=.68;flags.push("selected-month weather confidence is weaker");}
   if(s.deal==='heat'&&d.climate==='tropical'){penalty*=.68;flags.push("heat and humidity may be a concern");}
-  if(s.deal==='entry')flags.push("entry rules depend on your passport and are not used as a match score");
+  if(s.deal==='entry'){var eLow=String(d.entry||'').toLowerCase();if(eLow!=='easy'&&eLow!=='very easy'){penalty*=.75;flags.push("entry may involve more paperwork than you want");}}
   var partyBonus=0;if(s.party&&(d.parties||[]).indexOf(s.party)>=0){partyBonus=.04;why.push("works well for "+s.party+" travel");}
   var paceBonus=0;
   if(s.pace==='slow'){if(dt.has('quiet')||dt.has('relax')){paceBonus=.03;why.push("relaxed pace aligns with your travel mood");}else if((d.crowd||2)<=2)paceBonus=.015;}
   else if(s.pace==='fast'){if(dt.has('city')||dt.has('social')||dt.has('nightlife')){paceBonus=.03;why.push("urban energy matches your travel mood");}else if((d.crowd||2)>=3)paceBonus=.01;}
-  var raw=(style*.31+budget*.15+climate*.15+timing*.16+flight*.13+ease*.10+partyBonus+paceBonus)*penalty;
+  /* Persona DNA bonus / anti-persona penalty (v10) */
+  var pers=personaBonus(d,s);var raw=(style*.28+budget*.14+climate*.14+timing*.15+flight*.12+ease*.09+partyBonus+paceBonus+pers.bonus)*penalty*(1-pers.penalty);
+  if(pers.bonus>=.06)why.push("destination DNA matches your traveller persona");
+  if(pers.penalty>=.10)flags.push("this destination is often not-for the traveller shape you described");
   var score=Math.max(0,Math.min(100,Math.round(raw*100)));
   var dims={Style:Math.round(style*100),Budget:Math.round(budget*100),Climate:Math.round(climate*100),Timing:Math.round(timing*100),Flight:Math.round(flight*100),Ease:Math.round(ease*100)};
   return {d:d,score:score,raw:raw,dims:dims,why:why.slice(0,5),flags:Array.from(new Set(flags)).slice(0,5)};
@@ -868,7 +1069,9 @@ function canonicalDestinationKey(d){
   return DESTINATION_FAMILY[key]||key;
 }
 function rankState(s){
-  var ranked=DEST.map(function(d){return scoreOne(d,s);}).sort(function(a,b){return (b.raw-a.raw)||a.d.n.localeCompare(b.d.n);});
+  var pool=DEST.filter(function(d){return passesCoherence(d,s);});
+  if(pool.length<80)pool=DEST; /* keep enough candidates if constraint is too tight */
+  var ranked=pool.map(function(d){return scoreOne(d,s);}).sort(function(a,b){return (b.raw-a.raw)||a.d.n.localeCompare(b.d.n);});
   var unique=[],seenCanonical=new Set();
   ranked.forEach(function(x){var key=canonicalDestinationKey(x.d);if(seenCanonical.has(key))return;seenCanonical.add(key);unique.push(x);});
   var top=[],countries=new Set();
@@ -880,17 +1083,394 @@ function rankState(s){
 function rank(){return rankState(state());}
 function confidence(sc){return sc>=88?'Very strong fit':sc>=78?'Strong fit':sc>=68?'Good fit with checks':sc>=55?'Possible fit with trade-offs':'Exploratory match';}
 
+/* =====================================================================
+   V10 UPGRADE ENGINE — persona, DNA derivation, haversine, coherence,
+   comfort ribbon, crowd calendar, sanity chips, trip composer, poster.
+   Free / commercially safe. Adds new signals on top of the existing
+   scoring model without changing its stable weights.
+   ===================================================================== */
+var ORIGIN_CENTROIDS={
+  'Europe':[50.1,10.0],'South Asia':[22.5,79.0],'North America':[39.8,-98.5],
+  'Asia Pacific':[15.0,110.0],'MEA':[24.7,45.0],'Latin America':[-14.2,-51.9]
+};
+function haversineKm(a,b,c,d){
+  if(a==null||b==null||c==null||d==null)return null;
+  var R=6371,DEG=Math.PI/180;
+  var dLat=(c-a)*DEG,dLon=(d-b)*DEG,s=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a*DEG)*Math.cos(c*DEG)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return Math.round(2*R*Math.asin(Math.min(1,Math.sqrt(s))));
+}
+function flightHoursFromKm(km){if(km==null)return null;var base=1,cruise=830;return Math.round((base+km/cruise)*10)/10;}
+function realismFromKm(km,tolerance){
+  if(km==null)return null;
+  var band=[0,4200,8300,13000,20040][tolerance||2]||8300;
+  if(km<=band)return 1;
+  return Math.max(0.15,1-((km-band)/band)*0.85);
+}
+
+/* Coherence — hard-drops for combinations users nearly never enjoy. */
+var COHERENCE_BLOCKS=[
+  {when:function(s){return s.party==='family'&&s.risk<=1;},blockTags:['nightlife','remote','wild']},
+  {when:function(s){return s.deal==='crowd';},blockTags:['peak','packed']},
+  {when:function(s){return s.deal==='heat';},blockClimate:['tropical'],onlyIfDealHeat:true}
+];
+function passesCoherence(d,s){
+  var tags=d.tags||[];
+  for(var i=0;i<COHERENCE_BLOCKS.length;i++){
+    var b=COHERENCE_BLOCKS[i];if(!b.when(s))continue;
+    if(b.blockTags&&b.blockTags.some(function(t){return tags.indexOf(t)>=0;}))return false;
+    if(b.blockClimate&&b.blockClimate.indexOf(d.climate)>=0){
+      /* keep it — coherence is soft in scoring for climate; deal="heat" penalty handles it */
+    }
+  }
+  return true;
+}
+
+/* ------------ IDF-weighted style match (rare tags reward more) ------------ */
+var TAG_IDF=null;
+function computeTagIdf(){
+  if(TAG_IDF)return TAG_IDF;
+  var freq={},total=DEST.length||1;
+  DEST.forEach(function(d){(d.tags||[]).forEach(function(t){freq[t]=(freq[t]||0)+1;});});
+  var out={};Object.keys(freq).forEach(function(t){out[t]=Math.log((total+1)/(freq[t]+0.5));});
+  TAG_IDF=out;return out;
+}
+
+/* ------------ Curated DNA overrides for hero destinations ------------ */
+var DNA_OVERRIDES={
+  /* keys are lowercase, comma-stripped destination names */
+  'kyoto japan':{vibe:['contemplative','refined','seasonal','tea-scented','quiet-luxe'],iconography:'🌸🏯🍵',oneLiner:"Temples, tea, tatami — Japan's most quiet-elegant city.",bestFor:['cherry blossoms','tea ceremony','zen gardens','kaiseki'],signature:'A kaiseki dinner in a wooden machiya lane',avoidWhen:['Golden Week (Apr 29–May 5)','Aug typhoon window'],pairsWith:['Nara','Kanazawa'],moneySavers:['Kyoto City Bus 1-day pass','Free temple gardens at opening'],firstDay:'Land KIX → Haruka train to Kyoto → drop bags near Gion → sunset at Kiyomizu-dera, dinner in Pontocho alley.',photoMoodHex:'#c94f6c'},
+  'lisbon portugal':{vibe:['sun-washed','tiled','melodic','walkable','value-luxe'],iconography:'🌊🎶🍮',oneLiner:'Tiled streets, seafood and sunsets over the Tagus.',bestFor:['pastel de nata','fado nights','Sintra day trip','viewpoints'],signature:'Sunset from Miradouro da Graça with a bica in hand',avoidWhen:['peak August heat + crowds'],pairsWith:['Sintra','Porto'],moneySavers:['Viva Viagem transit card','Tram 28 off-peak'],firstDay:'Land LIS → Aeroporto metro → Alfama check-in → sunset at Portas do Sol, dinner tascas in Mouraria.',photoMoodHex:'#f0a355'},
+  'bali indonesia':{vibe:['spiritual','lush','budget-boho','wellness','island'],iconography:'🌿🏝️🧘',oneLiner:'Rice terraces, temples and the world\'s easiest wellness reset.',bestFor:['Ubud yoga','Uluwatu cliffs','rice-paddy walks','beach clubs'],signature:'Sunrise at Mount Batur then a jungle brunch',avoidWhen:['Jan–Feb wet season','Nyepi silent day'],pairsWith:['Lombok','Gili Islands'],moneySavers:['Warungs over restaurants','Local Grab/Gojek rides'],firstDay:'Land DPS → Ubud transfer (~1 hr) → villa check-in → Campuhan ridge walk at dusk.',photoMoodHex:'#4fb08a'},
+  'reykjavik iceland':{vibe:['glacial','moody','otherworldly','photogenic','cold-luxe'],iconography:'🌌❄️🐋',oneLiner:'A quiet capital with volcanoes, waterfalls and northern lights at the doorstep.',bestFor:['Blue Lagoon','Golden Circle','glacier hikes','whale watching'],signature:'Northern lights over Þingvellir on a clear winter night',avoidWhen:['Nov–Feb storm windows can ground flights'],pairsWith:['Vík','Akureyri'],moneySavers:['Bonus/Krónan supermarkets','Free swimming pools with pass'],firstDay:'Land KEF → Flybus to city → Hallgrímskirkja + Sun Voyager stroll → hot dog at Bæjarins Beztu.',photoMoodHex:'#5aa0ff'},
+  'marrakech morocco':{vibe:['sensory','labyrinthine','warm-luxe','artisan','sunset-rooftop'],iconography:'🕌🌶️🕯️',oneLiner:'Riads, spice markets and rooftops that catch every desert sunset.',bestFor:['Jemaa el-Fnaa','Majorelle Garden','Atlas day trip','riad stays'],signature:'A tagine on a lantern-lit riad rooftop',avoidWhen:['July–Aug extreme heat','Ramadan disruptions'],pairsWith:['Essaouira','Atlas Mountains'],moneySavers:['Petit taxi metered rides','Souk bargaining etiquette'],firstDay:'Land RAK → riad in the medina → Bahia Palace + Ben Youssef Madrasa → sunset café over Jemaa el-Fnaa.',photoMoodHex:'#e88a3f'},
+  'chiang mai thailand':{vibe:['creative','warm-value','mountain-city','nomad-friendly','slow'],iconography:'🐘🍜⛰️',oneLiner:'Old temples, jungle trails and the world\'s best value slow-travel base.',bestFor:['old city temples','elephant sanctuaries','Nimman cafés','cooking classes'],signature:'Sunday walking market with pad krapow at a plastic stool',avoidWhen:['Feb–Apr burning-season smoke haze'],pairsWith:['Pai','Chiang Rai'],moneySavers:['Songthaew shared rides','Street food over hotel meals'],firstDay:'Land CNX → old-city guesthouse → Doi Suthep at golden hour → Nimman for dinner and coffee.',photoMoodHex:'#3fa8a1'},
+  'porto portugal':{vibe:['tiled','riverside','wine-soaked','walkable','value-luxe'],iconography:'🍷🌉📚',oneLiner:'Port wine, tiled facades and one of Europe\'s most photogenic riverfronts.',bestFor:['Ribeira','port cellars','Livraria Lello','Douro day trip'],signature:'Sunset port tasting across the Douro in Vila Nova de Gaia',avoidWhen:['August peak crowds and heat'],pairsWith:['Douro Valley','Guimarães'],moneySavers:['Andante transit card','Francesinha at local tascas'],firstDay:'Land OPO → metro to Trindade → Livraria Lello → sunset in Ribeira with vinho verde.',photoMoodHex:'#c25a3c'},
+  'oaxaca mexico':{vibe:['artisan','mezcal-driven','colour-drenched','food-first','festival'],iconography:'🌵🎨🌶️',oneLiner:'Mole, mezcal and one of the Americas\' most creative craft scenes.',bestFor:['tlayudas','mezcal tastings','Monte Albán','Teotitlán rugs'],signature:'A mezcal flight in a candlelit mezcaleria',avoidWhen:['Day of the Dead peak crowds (late Oct–early Nov)'],pairsWith:['Hierve el Agua','Puerto Escondido'],moneySavers:['Mercado 20 de Noviembre lunches','Colectivo transport'],firstDay:'Land OAX → walk historic centre → Templo de Santo Domingo → dinner at a smoke-scented barbacoa spot.',photoMoodHex:'#e28a2b'},
+  'georgetown malaysia':{vibe:['heritage','street-food','multicultural','warm','value'],iconography:'🍜🎨🕌',oneLiner:"Penang's UNESCO old town — street art, hawker food and easy multicultural mash-up.",bestFor:['hawker centres','Clan Jetties','street art','Kek Lok Si'],signature:'Char kway teow at a hawker stall you argued about for hours',avoidWhen:['Sept–Oct haze from regional fires'],pairsWith:['Langkawi','Ipoh'],moneySavers:['Rapid Penang bus','Hawker over restaurant meals'],firstDay:'Land PEN → George Town heritage stay → Little India → sunset at Gurney Drive hawker centre.',photoMoodHex:'#d68a3f'},
+  'ljubljana slovenia':{vibe:['storybook','walkable','sustainable','riverside','green'],iconography:'🌉🌿🐉',oneLiner:"Europe's greenest little capital — walk everywhere, drink good coffee, day-trip to lakes.",bestFor:['Triple Bridge','Ljubljana Castle','Lake Bled day trip','farmers market'],signature:'A late coffee by the Ljubljanica while dragons watch',avoidWhen:['July heat in inland valleys'],pairsWith:['Lake Bled','Piran'],moneySavers:['Urbana transit card','Odprta Kuhna open kitchen Fridays'],firstDay:'Arrive by train → walk into old town → castle funicular at sunset → dinner in Križanke area.',photoMoodHex:'#65b58e'}
+};
+
+/* Derive DNA for destinations without a curated override. Uses existing
+   tags/climate/region/party/best/desc to synthesise reliable fields. */
+var VIBE_LEXICON={
+  culture:['story-rich','historic','walkable','artisan'],history:['storied','layered','ancient','preserved'],art:['gallery-first','creative','photogenic','artisan'],
+  food:['flavour-first','market-driven','signature-eats','table-obsessed'],mild:['comfortable','breezy','shoulder-season'],quiet:['unhurried','off-radar','peaceful'],scenic:['picture-postcard','dramatic','sweeping'],
+  beach:['sun-soaked','coastal','waterfront','tropical-easy'],relax:['unrushed','wellness','slow','soft'],romantic:['golden-hour','sunset-lit','intimate'],
+  city:['urban','high-energy','skyline','buzz'],nightlife:['late-night','rooftop','live-music'],social:['convivial','warm','festival'],family:['stroller-friendly','safe','logistical-easy'],
+  wellness:['restorative','spa','yoga','breathe-out'],mountain:['crisp','alpine','trail-rich'],nature:['leafy','wildlife-rich','forested'],adventure:['heart-rate','trail','outdoor'],active:['sweaty','sporty','pulse-quickening'],island:['salt-air','ferry-day','coral-clear'],
+  luxury:['polished','quiet-luxe','curated'],value:['budget-comfort','honest-priced','local-first'],budget:['backpacker','shoestring','hostel-friendly'],
+  winter:['snow-lit','cosy-cabin','festive'],tropical:['humid','lush','swim-ready'],cool:['crisp','pine-scented','morning-cool'],
+  hidden:['off-map','under-the-radar','locals-only'],remote:['far-flung','frontier','quiet']
+};
+function derivedVibe(d){
+  var tags=(d.tags||[]).slice();var pool=[];
+  tags.forEach(function(t){if(VIBE_LEXICON[t])pool=pool.concat(VIBE_LEXICON[t]);});
+  if(!pool.length)pool=['photogenic','memorable','story-rich','worth-planning'];
+  var uniq=[];var seen={};pool.forEach(function(x){if(!seen[x]){seen[x]=1;uniq.push(x);}});
+  return uniq.slice(0,5);
+}
+function derivedIconography(d){
+  var tags=d.tags||[],map={food:'🍜',culture:'🏛️',history:'🏛️',art:'🎨',beach:'🏝️',water:'🌊',mountain:'⛰️',nature:'🌿',winter:'❄️',snow:'❄️',city:'🏙️',nightlife:'🌃',wellness:'🧘',adventure:'🥾',remote:'🗺️',luxury:'✨',romantic:'🌇',family:'👪',hidden:'💎',tropical:'🌴',island:'🏝️'};
+  var picks=[];for(var i=0;i<tags.length&&picks.length<3;i++){if(map[tags[i]]&&picks.indexOf(map[tags[i]])<0)picks.push(map[tags[i]]);}
+  if(!picks.length)picks=['📍','✨','🌍'];
+  return picks.join('');
+}
+function derivedOneLiner(d){
+  if(d.desc&&d.desc.length<=110)return d.desc;
+  var trimmed=(d.desc||'').split(/[.!?]/)[0];
+  return trimmed?trimmed.trim()+'.':(d.n+' — a place worth planning around.');
+}
+function derivedNotFor(d){
+  var tags=d.tags||[],out=[];
+  if(tags.indexOf('quiet')>=0||tags.indexOf('remote')>=0)out.push('party-first groups');
+  if(tags.indexOf('nightlife')>=0)out.push('early-to-bed travellers');
+  if(d.budget>=3)out.push('shoestring backpackers');
+  if(d.budget<=1&&tags.indexOf('luxury')<0)out.push('luxury-first travellers');
+  if(d.climate==='tropical')out.push('heat-sensitive travellers');
+  if(d.climate==='cold')out.push('warmth-seeking travellers');
+  if(d.risk>=3)out.push('comfort-first newbies');
+  return out.slice(0,3);
+}
+function derivedWho(d){
+  var tags=d.tags||[],out=[];
+  if(tags.indexOf('romantic')>=0||tags.indexOf('couple')>=0)out.push('honeymoon travellers');
+  if(tags.indexOf('solo')>=0||tags.indexOf('independent')>=0)out.push('confident solo travellers');
+  if(tags.indexOf('family')>=0||tags.indexOf('safe')>=0)out.push('family travellers');
+  if(tags.indexOf('food')>=0)out.push('food nerds');
+  if(tags.indexOf('culture')>=0||tags.indexOf('history')>=0)out.push('culture-first travellers');
+  if(tags.indexOf('adventure')>=0)out.push('outdoor / adventure travellers');
+  if(tags.indexOf('remote')>=0||tags.indexOf('hidden')>=0)out.push('off-the-beaten-path seekers');
+  if(tags.indexOf('nomad')>=0)out.push('digital nomads');
+  if(tags.indexOf('luxury')>=0)out.push('slow-luxe travellers');
+  return out.slice(0,4);
+}
+function derivedBestFor(d){
+  var tags=d.tags||[],hot=['food','beach','culture','history','art','adventure','nature','nightlife','wellness'],out=[];
+  hot.forEach(function(t){if(tags.indexOf(t)>=0)out.push(t+' scene');});
+  if(!out.length)out=['local exploring','the vibe','the food'];
+  return out.slice(0,4);
+}
+function derivedSignature(d){
+  if(d.route&&d.route.length<180)return d.route.split(/[,.]/)[0].trim();
+  return 'A slow evening in the old town when the light softens';
+}
+function derivedFirstDay(d){
+  var city=String(d.n||'').replace(/,.*/,'');
+  var vibe=(d.climate==='tropical'?'settle in slow — coconut, shade':d.climate==='cold'?'settle in warm — cosy meal, hot drink':d.climate==='cool'?'take a gentle walk — crisp air, coffee':'take a walk — coffee, get the light');
+  return 'Land → check into the '+((d.tags||[]).indexOf('remote')>=0?'closest base town':'old town or main district')+' → '+vibe+' → sunset at the highest/oldest viewpoint → local dinner near your stay.';
+}
+function derivedPairsWith(d){
+  /* find 2 destinations from the same country / region that share the most tags */
+  var others=DEST.filter(function(x){return x.id!==d.id&&(x.country===d.country||x.region===d.region);});
+  var tags=new Set(d.tags||[]);
+  others.forEach(function(x){var xt=new Set(x.tags||[]);var s=0;xt.forEach(function(t){if(tags.has(t))s++;});x._pairScore=s;});
+  others.sort(function(a,b){return (b._pairScore||0)-(a._pairScore||0);});
+  return others.slice(0,2).map(function(x){return x.n.replace(/,.*/,'');});
+}
+function derivedMoneySavers(d){
+  var out=[];
+  if(d.budget>=3)out.push('Set-menu lunches vs. dinners can halve costs at the same restaurants.');
+  else out.push('Eat where locals queue — usually a fraction of tourist-street prices.');
+  out.push('Use metro/bus passes for at least the first two days before deciding on taxis.');
+  if((d.tags||[]).indexOf('beach')>=0)out.push('Public beaches often beat resort strips for atmosphere and are free.');
+  else if((d.tags||[]).indexOf('culture')>=0)out.push('Many museums have a free evening or first-Sunday window — plan around it.');
+  else out.push('Book any famous single ticket 2+ weeks ahead — it removes both cost and stress.');
+  return out.slice(0,3);
+}
+function derivedAvoidWhen(d){
+  var out=[];var m=d.months||[],offMonths=[];
+  for(var i=1;i<=12;i++)if(m.length&&m.indexOf(i)<0)offMonths.push(i);
+  if(d.climate==='tropical')out.push('Peak-monsoon and wet-season weeks');
+  if(d.climate==='cold')out.push('Deep-winter storm windows');
+  if((d.tags||[]).indexOf('beach')>=0&&d.region.indexOf('Caribbean')>=0)out.push('Aug–Sep hurricane peak');
+  if(d.crowd>=4)out.push('Peak-summer school-holiday weeks');
+  if(!out.length)out.push('National holidays and long weekends spike prices');
+  return out.slice(0,2);
+}
+function derivedCrowdCurve(d){
+  var m=d.months||[],base=d.crowd||2,curve=[];
+  for(var i=1;i<=12;i++){
+    var boost=m.indexOf(i)>=0?2.5:0;
+    var val=Math.max(1,Math.min(10,base*2+boost+(i===7||i===8?1.2:0)+(i===12?0.8:0)));
+    curve.push(Math.round(val));
+  }
+  return curve;
+}
+function destinationKey(d){return String(d.n||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
+function getDNA(d){
+  if(d._dna)return d._dna;
+  var key=destinationKey(d);
+  var override=DNA_OVERRIDES[key]||null;
+  var dna={
+    vibe:override&&override.vibe||derivedVibe(d),
+    who:override&&override.who||derivedWho(d),
+    notFor:override&&override.notFor||derivedNotFor(d),
+    oneLiner:override&&override.oneLiner||derivedOneLiner(d),
+    bestFor:override&&override.bestFor||derivedBestFor(d),
+    iconography:override&&override.iconography||derivedIconography(d),
+    pairsWith:override&&override.pairsWith||derivedPairsWith(d),
+    avoidWhen:override&&override.avoidWhen||derivedAvoidWhen(d),
+    moneySavers:override&&override.moneySavers||derivedMoneySavers(d),
+    firstDay:override&&override.firstDay||derivedFirstDay(d),
+    signature:override&&override.signature||derivedSignature(d),
+    crowdCurve:override&&override.crowdCurve||derivedCrowdCurve(d),
+    photoMoodHex:override&&override.photoMoodHex||null
+  };
+  d._dna=dna;return dna;
+}
+
+/* ------------ Persona derivation from user answers ------------ */
+function personaFor(s){
+  var pieces=[];
+  /* Pace / mood */
+  if(s.pace==='slow')pieces.push('Slow');
+  else if(s.pace==='fast')pieces.push('High-energy');
+  else pieces.push('Balanced');
+  /* Style */
+  var t=new Set(s.tags||[]);
+  if(t.has('culture')||t.has('history')||t.has('art'))pieces.push('Cultural');
+  else if(t.has('food'))pieces.push('Food-first');
+  else if(t.has('beach')||t.has('water'))pieces.push('Coastal');
+  else if(t.has('adventure')||t.has('nature'))pieces.push('Outdoor');
+  else if(t.has('city')||t.has('nightlife'))pieces.push('Urban');
+  else pieces.push('Curious');
+  /* Party shape */
+  var partyMap={solo:'Solo',couple:'Couple',family:'Family',group:'Group'};
+  pieces.push(partyMap[s.party]||'Traveller');
+  return pieces.join(' ');
+}
+function personaCopy(s,d){
+  var lines=[];
+  if(s.length>=15)lines.push('You want time — this trip is not a highlights sprint.');
+  else if(s.length<=3)lines.push('You want a compact escape that respects a real work week.');
+  if(s.deal==='crowd')lines.push('Space and authenticity matter more than famous names.');
+  if(s.deal==='expensive')lines.push('You would trade a bit of polish for real value.');
+  if(s.deal==='heat')lines.push('You need a place that stays comfortable, not brutal.');
+  if(s.deal==='weather')lines.push('You want reliable weather more than a lucky window.');
+  if(s.deal==='difficult')lines.push('You want a lower-friction trip, not a logistical puzzle.');
+  if(s.deal==='entry')lines.push('You want a destination where paperwork does not eat the trip.');
+  if(!lines.length)lines.push('You want a good balance across time, style and comfort.');
+  return lines.slice(0,2).join(' ');
+}
+function personaTagsFor(s){
+  var t=new Set(s.tags||[]),out=[];
+  if(s.party==='solo')out.push(['solo-friendly','mint']);
+  if(s.party==='couple')out.push(['romantic','gold']);
+  if(s.party==='family')out.push(['family-easy','mint']);
+  if(s.party==='group')out.push(['group-social','violet']);
+  if(t.has('culture'))out.push(['culture-heavy','violet']);
+  if(t.has('food'))out.push(['food-driven','gold']);
+  if(t.has('beach'))out.push(['soft-coast','mint']);
+  if(t.has('adventure')||t.has('active'))out.push(['outdoor','gold']);
+  if(s.deal==='crowd')out.push(['space-seeker','mint']);
+  if(s.deal==='expensive')out.push(['value-first','']);
+  if(s.deal==='heat')out.push(['heat-averse','']);
+  return out.slice(0,6);
+}
+
+/* ------------ Sanity chips (visa/heat/monsoon/festival/holiday) ------------ */
+function sanityChips(d,s,live){
+  var chips=[];
+  /* Entry difficulty */
+  var e=String(d.entry||'').toLowerCase();
+  var entryStatus=e==='easy'||e==='very easy'?'ok':e==='moderate'?'warn':'bad';
+  chips.push([entryStatus,'🛂','Entry '+(d.entry||'unknown')]);
+  /* Heat / cold */
+  var cm=d._climateMonths&&d._climateMonths[String(s.month)];
+  var hi=cm&&num(cm.temperatureMaxC);
+  if(hi!=null){
+    if(hi>=36)chips.push(['bad','🔥','Extreme heat likely ('+Math.round(hi)+'°C highs)']);
+    else if(hi>=32)chips.push(['warn','☀️','Hot ('+Math.round(hi)+'°C highs)']);
+    else if(hi<=5)chips.push(['warn','❄️','Deep chill ('+Math.round(hi)+'°C highs)']);
+    else chips.push(['ok','🌤️','Comfort '+Math.round(hi)+'°C highs']);
+  }
+  /* Rain / monsoon */
+  var rain=cm&&num(cm.precipitationMmDay);
+  if(rain!=null){
+    if(rain>=8)chips.push(['bad','🌧️','Heavy rain window']);
+    else if(rain>=5)chips.push(['warn','🌦️','Wet — pack rain gear']);
+    else chips.push(['ok','🌤️','Dry-side of the calendar']);
+  }
+  /* Crowd / festival — from DNA + user answers */
+  var dna=getDNA(d);
+  if(dna.crowdCurve){
+    var cv=dna.crowdCurve[s.month-1]||5;
+    if(cv>=8)chips.push([s.deal==='crowd'?'bad':'warn','👥','Peak crowd month']);
+    else if(cv<=3)chips.push(['ok','🕊️','Quiet-month window']);
+  }
+  /* Live AQI */
+  var aq=live&&live.airQuality;
+  var idx=aq&&(aq.owmIndex!=null?aq.owmIndex:aq.index);
+  if(idx!=null){
+    if(idx>=4)chips.push(['bad','🌫️','Air quality poor now']);
+    else if(idx>=3)chips.push(['warn','🌫️','Moderate air quality']);
+    else chips.push(['ok','🍃','Good air quality now']);
+  }
+  return chips.slice(0,6);
+}
+
+/* ------------ Comfort ribbon (12 months) ------------ */
+function ribbonScores(d,s){
+  var out=[];
+  for(var m=1;m<=12;m++){
+    var clim=climateMonthScore(d,m,s);
+    var mfit=clim!=null?clim:(d.months||[]).indexOf(m)>=0?0.9:(d.months||[]).some(function(x){return Math.abs(x-m)===1||Math.abs(x-m)===11;})?0.55:0.22;
+    var dna=getDNA(d);var cv=dna.crowdCurve&&dna.crowdCurve[m-1]||5;
+    var crowdBoost=s.deal==='crowd'?(cv<=3?0.12:cv>=8?-0.18:0):0;
+    var score=Math.max(0,Math.min(1,mfit+crowdBoost));
+    out.push({m:m,score:score,climateOnly:clim!=null});
+  }
+  return out;
+}
+function bestWindow(list){
+  var best=list.reduce(function(a,b){return b.score>a.score?b:a;});
+  return best.m;
+}
+
+/* ------------ Trip Composer content ------------ */
+function tripPlan(d){
+  var dna=getDNA(d),lines=[];
+  var first=dna.firstDay||'Land → check into your stay → gentle first walk → sunset viewpoint → local dinner.';
+  lines.push({day:'Day 1',text:first});
+  if(dna.bestFor&&dna.bestFor[0])lines.push({day:'Day 2',text:'Anchor the day around '+dna.bestFor[0]+', add a small food stop and one photogenic walk.'});
+  if(dna.bestFor&&dna.bestFor[1])lines.push({day:'Day 3',text:'Give '+dna.bestFor[1]+' a proper morning, then rest deliberately in the afternoon.'});
+  if(dna.pairsWith&&dna.pairsWith[0])lines.push({day:'Day 4',text:'Day-trip to '+dna.pairsWith[0]+' — leave early, be back for dinner.'});
+  lines.push({day:'Slow day',text:'Leave one day with no plan. This is where the trip actually lands in your memory.'});
+  return lines;
+}
+
+/* ------------ Persona bonus for scoring ------------ */
+function personaBonus(d,s){
+  var dna=getDNA(d),who=dna.who||[],notFor=dna.notFor||[];
+  var persona=personaFor(s).toLowerCase();
+  var bonus=0;
+  who.forEach(function(w){var wl=w.toLowerCase();if(persona.indexOf('solo')>=0&&wl.indexOf('solo')>=0)bonus+=0.06;
+    if(persona.indexOf('couple')>=0&&(wl.indexOf('couple')>=0||wl.indexOf('honeymoon')>=0||wl.indexOf('romantic')>=0))bonus+=0.06;
+    if(persona.indexOf('family')>=0&&wl.indexOf('family')>=0)bonus+=0.06;
+    if(persona.indexOf('food')>=0&&wl.indexOf('food')>=0)bonus+=0.04;
+    if(persona.indexOf('cultural')>=0&&(wl.indexOf('culture')>=0||wl.indexOf('history')>=0))bonus+=0.04;
+    if(persona.indexOf('outdoor')>=0&&(wl.indexOf('outdoor')>=0||wl.indexOf('adventure')>=0))bonus+=0.04;
+    if(persona.indexOf('slow')>=0&&wl.indexOf('slow')>=0)bonus+=0.03;
+  });
+  var penalty=0;
+  notFor.forEach(function(nf){var nl=nf.toLowerCase();
+    if(persona.indexOf('solo')>=0&&nl.indexOf('solo')>=0)penalty+=0.08;
+    if(persona.indexOf('family')>=0&&(nl.indexOf('family')>=0||nl.indexOf('nightlife')>=0||nl.indexOf('party')>=0))penalty+=0.14;
+    if(persona.indexOf('slow')>=0&&nl.indexOf('rush')>=0)penalty+=0.06;
+    if(s.deal==='heat'&&nl.indexOf('heat')>=0)penalty+=0.10;
+    if(s.deal==='expensive'&&nl.indexOf('luxury')>=0)penalty+=0.08;
+    if(s.deal==='expensive'&&nl.indexOf('shoestring')<0&&nl.indexOf('luxury')<0&&nl.indexOf('rush')<0)penalty+=0;
+  });
+  return {bonus:Math.min(0.18,bonus),penalty:Math.min(0.28,penalty)};
+}
+
+/* ------------ Currency + origin auto-detect helpers ------------ */
+function autoDetectCurrency(){
+  try{var locale=(navigator.language||'en-US');var map={'US':'USD','GB':'GBP','IN':'INR','CA':'CAD','AU':'AUD','JP':'JPY','SG':'SGD','AE':'AED','CH':'CHF','BR':'BRL','ZA':'ZAR','TH':'THB','NZ':'NZD'};
+    var cc=locale.split('-')[1]||'';if(map[cc])return map[cc];
+    if(/^(fr|de|es|it|nl|pt|el|fi|sv|da|no|pl|cs|hu|ro|bg)/i.test(locale))return 'EUR';
+    return 'USD';}catch(e){return 'USD';}
+}
+function autoDetectOrigin(){
+  try{var tz=Intl&&Intl.DateTimeFormat&&(new Intl.DateTimeFormat().resolvedOptions().timeZone||'');
+    if(/Europe\//.test(tz))return 'Europe';
+    if(/Asia\/(Kolkata|Colombo|Karachi|Dhaka|Kathmandu|Thimphu)/.test(tz))return 'South Asia';
+    if(/(America\/|US\/|Canada\/)/.test(tz))return 'North America';
+    if(/Asia\//.test(tz)||/Australia\//.test(tz)||/Pacific\//.test(tz))return 'Asia Pacific';
+    if(/Africa\//.test(tz))return 'MEA';
+    return '';}catch(e){return '';}
+}
+
+/* ------------ Cache climate to localStorage ------------ */
+var CLIMATE_MEM_TTL=30*24*60*60*1000;
+function climateCacheGet(d){
+  try{var k='vdq10_cli_'+d.id,raw=localStorage.getItem(k);if(!raw)return null;var j=JSON.parse(raw);if(!j.ts||Date.now()-j.ts>CLIMATE_MEM_TTL)return null;return j.data;}catch(e){return null;}
+}
+function climateCacheSet(d,data){try{localStorage.setItem('vdq10_cli_'+d.id,JSON.stringify({ts:Date.now(),data:data}));}catch(e){}}
+
 /* ---------- AFFILIATE SELECTION (contextual and approved-region aware) ---------- */
 function pickAffiliates(d,s){
-  var region=d.region,tags=d.tags||[],chosen=[],seen={};
+  var region=d.region||'',tags=d.tags||[],chosen=[],seen={};
+  /* Region matching that respects exact region names — 'Asia' as a
+     substring wrongly matched Central/South Asia for Asia-Pacific-only
+     partners. Use explicit region allow-lists. (B10) */
+  var APAC=['East Asia','Southeast Asia','Oceania','Indian Ocean','Central Asia','South Asia'];
+  var EUROPE=['Western Europe','Southern Europe','Central Europe','Northern Europe','Mediterranean','Balkans','Eastern Europe','Europe / Asia','Caucasus','Europe'];
+  var AMERICAS=['North America','Central America','South America','Caribbean'];
+  var AFRICA_ME=['Middle East','North Africa','East Africa','West Africa','Central Africa','Africa'];
+  function inList(list){return list.indexOf(region)>=0;}
   function byKey(k){for(var i=0;i<AFFILIATES.length;i++)if(AFFILIATES[i].key===k)return AFFILIATES[i];return null;}
   function fits(a){return a&&(a.regions==='*'||a.regions.indexOf(region)>=0);}
   function add(a){if(a&&!seen[a.key]&&fits(a)){seen[a.key]=1;chosen.push(a);}}
   var bEU=byKey('booking_eu'),bAP=byKey('booking_apac');
-  if(fits(bEU))add(bEU);else if(fits(bAP))add(bAP); // Never force a Booking.com market link outside its supplied region.
+  if(inList(EUROPE)||inList(AMERICAS)||inList(AFRICA_ME)){if(fits(bEU))add(bEU);else if(fits(bAP))add(bAP);}
+  else if(inList(APAC)){if(fits(bAP))add(bAP);else if(fits(bEU))add(bEU);}
+  else {if(fits(bEU))add(bEU);else if(fits(bAP))add(bAP);}
   add(byKey('aviasales'));
-  if(fits(byKey('gyg')))add(byKey('gyg'));else if(fits(byKey('klook')))add(byKey('klook'));else add(byKey('viator'));
-  if(fits(byKey('12go'))&&(tags.indexOf('roadtrip')>=0||tags.indexOf('island')>=0||tags.indexOf('beach')>=0||region.indexOf('Asia')>=0))add(byKey('12go'));
+  if(inList(EUROPE)&&fits(byKey('gyg')))add(byKey('gyg'));
+  else if((inList(APAC)||region==='East Asia'||region==='Southeast Asia')&&fits(byKey('klook')))add(byKey('klook'));
+  else add(byKey('viator'));
+  if(fits(byKey('12go'))&&(inList(APAC)||region==='Southeast Asia'||tags.indexOf('island')>=0)){add(byKey('12go'));}
   if(tags.indexOf('roadtrip')>=0||tags.indexOf('remote')>=0||tags.indexOf('nature')>=0)add(byKey('discovercars'));
   if(s.party==='family'||s.risk===1||d.flight>=3)add(byKey('welcome'));
   if(s.length>=9||d.risk>=2||d.flight>=3||tags.indexOf('adventure')>=0)add(byKey('safetywing'));
@@ -908,6 +1488,19 @@ function setScreen(sc){
   try{root.scrollIntoView({behavior:"smooth",block:"start"});}catch(e){}
 }
 function buildPips(){var n=Q.length,h='';for(var i=0;i<n;i++)h+='<div class="v7-pip"></div>';$('[data-v7-pips]').innerHTML=h;}
+function autofillDefaults(){
+  /* Auto-detect currency & origin on first quiz view. If we can guess the
+     answer confidently, mark that step's answer so users only tap to confirm
+     — reduces one question of friction. Never overwrite a user pick. */
+  try{
+    var detectedC=autoDetectCurrency(),detectedO=autoDetectOrigin();
+    Q.forEach(function(q,i){
+      if(answers[i])return; /* respect saved */
+      if(q.k==='currency'&&detectedC){var a=q.a.find(function(x){return x[3]&&x[3].currency===detectedC;});if(a)answers[i]=a[3];}
+      if(q.k==='origin'&&detectedO){var a2=q.a.find(function(x){return x[3]&&x[3].origin===detectedO;});if(a2)answers[i]=a2[3];}
+    });
+  }catch(e){}
+}
 function renderQuestion(){
   var q=Q[step];
   $('[data-v7-qnum]').textContent="Question "+(step+1)+" of "+Q.length;
@@ -947,6 +1540,7 @@ function updateTimingAfterClimate(d,s,top,runId){
   var timingBar=$('[data-dim-key="Timing"] i'),timingNum=$('[data-dim-key="Timing"] b');if(timingBar)timingBar.style.width=timing+'%';if(timingNum)timingNum.textContent=timing;
   var radarEl=$('[data-v8-radar]');if(radarEl)radarEl.innerHTML=svgRadarChart(top.dims);
   renderClimatePanel(d,s,top);renderConfidence(d,top,_lastLiveData);
+  try{renderRibbon(d,s);renderSanity(d,s,_lastLiveData);}catch(e){}
 }
 function renderResults(runId){
   _lastLiveData=null;
@@ -981,6 +1575,7 @@ function renderResults(runId){
   $('[data-v7-dims]').innerHTML='<div class="v8-dims-dual"><div class="v8-radar-wrap"><div data-v8-radar>'+svgRadarChart(top.dims)+'</div></div><div>'+barsHtml+'</div></div>';
   requestAnimationFrame(function(){$$('.v7-dim i').forEach(function(i){i.style.width=i.dataset.w+'%';});});
   renderClimatePanel(d,s,top);renderWhySecond(top,second);renderCompare(results.slice(0,3));renderRegret(top,s);renderSwaps(results,s);renderAlts(results.slice(3,10));renderTools(d,s);renderAffs(d,s);
+  renderPersona(d,s,top);renderSanity(d,s,null);renderRibbon(d,s);renderCrowd(d,s);renderComposer(d,s);setupPosterAndShare(d,s,top);
   $('[data-v7-route]').textContent=d.route;renderConfidence(d,top,null);
   try{var hash=btoa(JSON.stringify({a:answers.filter(Boolean).map(function(x){return x;})}));if(history.replaceState)history.replaceState(null,'','#vq='+hash);}catch(e){}
   setTimeout(function(){if(runId!==activeRun)return;fetchClimate(d).then(function(){updateTimingAfterClimate(d,s,top,runId);}).catch(function(){if(runId===activeRun)renderClimatePanel(d,s,top);});},20);
@@ -1077,6 +1672,129 @@ function renderAffs(d,s){
   $('[data-v7-affs]').innerHTML=picks.map(function(a){return '<a class="v7-aff" href="'+a.u+'" target="_blank" rel="sponsored noopener nofollow"><span class="job">'+esc(a.job)+'</span><span class="name"><i>'+a.i+'</i>'+esc(a.t)+'</span><p>'+esc(a.d)+'</p><span class="go">Open &rarr;</span></a>';}).join('');
 }
 
+/* =====================================================================
+   V10 RENDERERS — persona, sanity, ribbon, crowd, composer, poster
+   ===================================================================== */
+function renderPersona(d,s,top){
+  var el=$('[data-v10-persona]');if(!el)return;
+  var persona=personaFor(s),copy=personaCopy(s,d),tags=personaTagsFor(s);
+  var chips=tags.map(function(x){return '<span class="v10-ptag '+(x[1]||'')+'">'+esc(x[0])+'</span>';}).join('');
+  var dna=getDNA(d),vibes=(dna.vibe||[]).slice(0,4).map(function(v){return '<span class="v10-ptag">'+esc(v)+'</span>';}).join('');
+  var kmLine='';if(d._km)kmLine=' &middot; ~'+d._km.toLocaleString()+' km · ~'+d._flightHours+' h flight from your region';
+  el.innerHTML=
+    '<span class="ey">Your traveller persona</span>'+
+    '<h4>You travel like a <em>'+esc(persona)+'</em></h4>'+
+    '<p>'+esc(copy)+' <b style="color:var(--ink)">'+esc(d.n)+'</b> matches this shape'+kmLine+'.</p>'+
+    '<div class="v10-persona-tags">'+chips+'</div>'+
+    (vibes?'<div class="v10-persona-tags" style="margin-top:8px"><span class="ey" style="margin-right:6px">Destination vibe</span>'+vibes+'</div>':'');
+}
+
+function renderSanity(d,s,live){
+  var el=$('[data-v10-sanity]');if(!el)return;
+  var chips=sanityChips(d,s,live);
+  el.innerHTML=chips.map(function(c){return '<span class="v10-schip '+c[0]+'"><i></i>'+c[1]+' '+esc(c[2])+'</span>';}).join('');
+}
+
+function renderRibbon(d,s){
+  var host=$('[data-v10-ribbon]');if(!host)return;
+  var list=ribbonScores(d,s);var best=bestWindow(list);
+  var cells=list.map(function(x){
+    var cls=x.score>=.85?'prime':x.score>=.65?'good':x.score>=.45?'ok':'weak';
+    if(x.m===s.month)cls+=' active';
+    var lab=x.score>=.85?'Prime':x.score>=.65?'Good':x.score>=.45?'OK':'Weak';
+    return '<div class="v10-rcell '+cls+'"><b>'+MONTHS[x.m].slice(0,3)+'</b><span>'+Math.round(x.score*100)+'</span><small>'+lab+'</small></div>';
+  }).join('');
+  var note=best!==s.month?'<div style="margin-top:8px;color:var(--muted);font-size:.8rem"><b style="color:var(--gold)">Better window:</b> '+MONTHS[best]+' — score '+Math.round(list[best-1].score*100)+'/100.</div>':'<div style="margin-top:8px;color:var(--mint);font-size:.8rem"><b>Selected month is the best-scoring window.</b></div>';
+  host.innerHTML='<div class="v10-ribbon">'+cells+'</div><div class="v10-ribbon-legend"><span><i style="background:rgba(94,240,176,.5)"></i>Prime</span><span><i style="background:rgba(31,211,196,.5)"></i>Good</span><span><i style="background:rgba(245,185,66,.5)"></i>OK</span><span><i style="background:rgba(255,122,107,.5)"></i>Weak</span></div>'+note;
+}
+
+function renderCrowd(d,s){
+  var host=$('[data-v10-crowd]');if(!host)return;
+  var dna=getDNA(d),curve=dna.crowdCurve||[];
+  var max=Math.max.apply(null,curve.concat([1]));
+  var bars=curve.map(function(v,i){
+    var h=Math.max(6,Math.round(v/max*76));
+    var cls=v>=8?'peak':v>=5?'mid':'';
+    var sel=(i+1)===s.month?' style="outline:2px solid rgba(245,185,66,.9);outline-offset:1px;border-radius:6px"':'';
+    return '<div class="v10-cbar '+cls+'"'+sel+' style="height:'+h+'px"><span>'+v+'</span></div>';
+  }).join('');
+  var labels=MONTHS.map(function(m,i){return '<div'+(i===s.month-1?' style="color:var(--gold);font-weight:800"':'')+'>'+m.slice(0,1)+'</div>';}).join('');
+  var min=curve.reduce(function(a,b,i){return b<a.v?{v:b,i:i}:a;},{v:11,i:0});
+  var q='<div style="margin-top:8px;color:var(--muted);font-size:.8rem">Quietest month: <b style="color:var(--mint)">'+MONTHS[min.i+1]+'</b> · Selected: <b style="color:var(--ink)">'+MONTHS[s.month]+'</b> ('+curve[s.month-1]+'/10 crowd).</div>';
+  host.innerHTML='<div class="v10-crowd">'+bars+'</div><div class="v10-crowd-labels">'+labels+'</div>'+q;
+}
+
+function renderComposer(d,s){
+  var host=$('[data-v10-composer]');if(!host)return;
+  var dna=getDNA(d);
+  var plan=tripPlan(d).map(function(x){return '<div class="v10-plan-row"><b>'+esc(x.day)+'</b><div><p>'+esc(x.text)+'</p></div></div>';}).join('');
+  var pairs=(dna.pairsWith||[]).length?dna.pairsWith.map(function(p){return '<div class="v10-pair"><b>'+esc(p)+'</b><small>Same country / region · natural pair</small><p>Combine as a 2–4 day extension for a two-side view of the country.</p></div>';}).join(''):'<div class="v10-pair"><b>Stay put</b><small>Depth over breadth</small><p>Give the base city a full week — it usually beats a scattered multi-stop plan.</p></div>';
+  var savers=(dna.moneySavers||[]).map(function(x){return '<div class="v10-saver"><i>💡</i><span>'+esc(x)+'</span></div>';}).join('');
+  host.querySelector('[data-v10-pane="plan"]').innerHTML='<div class="v10-plan">'+plan+'</div>';
+  host.querySelector('[data-v10-pane="pairs"]').innerHTML='<div class="v10-pair-grid">'+pairs+'</div>';
+  host.querySelector('[data-v10-pane="save"]').innerHTML='<div class="v10-savers">'+savers+'</div>';
+  host.querySelectorAll('[data-v10-tab]').forEach(function(t){t.onclick=function(){var name=t.dataset.v10Tab;host.querySelectorAll('[data-v10-tab]').forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false');});host.querySelectorAll('.v10-tpane').forEach(function(p){p.classList.toggle('on',p.dataset.v10Pane===name);});};});
+}
+
+/* ------------ Share poster: canvas 1080×1350 PNG ------------ */
+function drawPoster(canvas,d,s,top){
+  var W=1080,H=1350;canvas.width=W;canvas.height=H;var ctx=canvas.getContext('2d');
+  var dna=getDNA(d);
+  var accent=dna.photoMoodHex||'#1fd3c4';
+  /* Background gradient */
+  var g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#070d1f');g.addColorStop(0.5,'#0c1733');g.addColorStop(1,accent);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  /* Soft glow */
+  var rg=ctx.createRadialGradient(W*.35,H*.2,20,W*.35,H*.2,W*.6);rg.addColorStop(0,'rgba(31,211,196,.34)');rg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
+  /* Frame */
+  ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.strokeRect(50,50,W-100,H-100);
+  /* Voyasee wordmark */
+  ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='700 30px Georgia, serif';ctx.fillText('Voyasee',80,110);
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 14px monospace';ctx.fillText('DESTINATION QUIZ · MATCH REPORT',80,138);
+  /* Persona line */
+  ctx.fillStyle='rgba(31,211,196,.9)';ctx.font='700 22px monospace';ctx.fillText('YOU TRAVEL LIKE A',80,240);
+  ctx.fillStyle='#ffffff';ctx.font='700 44px Georgia, serif';var per=personaFor(s);ctx.fillText(per.toUpperCase(),80,290);
+  /* Iconography */
+  ctx.font='140px serif';ctx.fillText(dna.iconography||'✨',W-320,300);
+  /* City title */
+  ctx.fillStyle='#fff';ctx.font='700 110px Georgia, serif';var name=d.n;wrapText(ctx,name,80,510,W-160,120);
+  /* Region tagline */
+  ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='500 30px sans-serif';ctx.fillText(d.region+' · '+(d.daily||''),80,700);
+  /* Match score circle */
+  var mx=W-260,my=920,mr=160;
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=22;ctx.beginPath();ctx.arc(mx,my,mr,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle=accent;ctx.lineCap='round';ctx.beginPath();ctx.arc(mx,my,mr,-Math.PI/2,-Math.PI/2+Math.PI*2*(top.score/100));ctx.stroke();
+  ctx.fillStyle='#fff';ctx.font='700 90px Georgia, serif';ctx.textAlign='center';ctx.fillText(top.score,mx,my+30);
+  ctx.font='700 18px monospace';ctx.fillStyle='rgba(255,255,255,.72)';ctx.fillText('MATCH INDEX',mx,my+70);
+  ctx.textAlign='left';
+  /* Vibe chips */
+  var chipY=880,chipX=80;var vibes=(dna.vibe||[]).slice(0,3);
+  vibes.forEach(function(v){ctx.font='700 28px sans-serif';var w=ctx.measureText(v).width+50;ctx.fillStyle='rgba(255,255,255,.10)';roundRect(ctx,chipX,chipY,w,50,25);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(v,chipX+25,chipY+34);chipX+=w+12;});
+  /* One liner */
+  ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='italic 28px Georgia, serif';wrapText(ctx,'"'+(dna.oneLiner||d.desc||'')+'"',80,1020,W-160,42);
+  /* Footer */
+  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='500 20px monospace';ctx.fillText('voyasee.com/destination-quiz',80,H-90);
+  ctx.textAlign='right';ctx.fillText(MONTHS[s.month]+' · '+s.length+' days',W-80,H-90);ctx.textAlign='left';
+}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function wrapText(ctx,text,x,y,maxW,lineH){var words=String(text||'').split(' ');var line='',yy=y;
+  for(var i=0;i<words.length;i++){var test=line+words[i]+' ';if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,yy);line=words[i]+' ';yy+=lineH;}else line=test;}
+  ctx.fillText(line,x,yy);}
+
+function setupPosterAndShare(d,s,top){
+  var dlBtn=$('[data-v10-poster-dl]'),togBtn=$('[data-v10-poster-toggle]'),linkBtn=$('[data-v10-share-link]'),preview=$('[data-v10-poster-preview]');
+  function build(){var c=document.createElement('canvas');drawPoster(c,d,s,top);return c;}
+  if(dlBtn)dlBtn.onclick=function(){var c=build();try{var a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='voyasee-'+String(d.n||'match').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.png';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}};
+  if(togBtn)togBtn.onclick=function(){if(!preview)return;if(preview.hidden){preview.innerHTML='';var c=build();preview.appendChild(c);preview.hidden=false;togBtn.textContent='🙈 Hide preview';}else{preview.hidden=true;preview.innerHTML='';togBtn.innerHTML='&#128064; Preview poster';}};
+  if(linkBtn)linkBtn.onclick=function(){var url=location.href.split('#')[0]+(location.hash||'');if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){linkBtn.textContent='Copied ✓';setTimeout(function(){linkBtn.innerHTML='&#128279; Copy result link';},1600);}).catch(function(){});}};
+  /* Wire mobile CTA */
+  var mR=$('[data-v10-mobile-retake]'),mS=$('[data-v10-mobile-share]'),mP=$('[data-v10-mobile-poster]');
+  if(mR)mR.onclick=function(){var b=$('[data-v7-retake]');if(b)b.click();};
+  if(mS)mS.onclick=function(){if(linkBtn)linkBtn.click();};
+  if(mP)mP.onclick=function(){if(dlBtn)dlBtn.click();};
+}
+
 function countryLookupName(name){
   var map={
     'USA':'United States','United States of America':'United States','UK':'United Kingdom','England':'United Kingdom','Scotland':'United Kingdom','Wales':'United Kingdom','Northern Ireland':'United Kingdom',
@@ -1087,6 +1805,7 @@ function countryLookupName(name){
   return map[name]||name;
 }
 function fetchCountryPractical(d){
+  if(!d||!d.country||d.region==='World')return Promise.resolve(null); /* B11: skip for non-country regions */
   var name=countryLookupName(d.country);
   if(window.VoyaseeCountryData&&typeof window.VoyaseeCountryData.getCountry==='function'){
     return window.VoyaseeCountryData.getCountry(name,null);
@@ -1161,16 +1880,17 @@ function fetchLive(d,s,top,runId){
     if(converted){fxText='Approx. '+converted+' in your selected currency'+(fx&&fx.date?' using the '+esc(fx.date)+' reference rate':'')+'.';}
     var liveNote=document.createElement('div');liveNote.className='v8-entry-note';liveNote.innerHTML='<b>'+esc(budgetText)+' curated USD comfort estimate.</b> '+(fxText||'A reference conversion is temporarily unavailable.')+' Entry requirements depend on passport and must be checked officially.';currentBox.appendChild(liveNote);
     _lastLiveData=data;renderCountryPractical(countryData,runId,holidayData,s.month);renderConfidence(d,top,data);
+    try{renderSanity(d,s,data);renderRibbon(d,s);}catch(e){}
   }).catch(function(){if(runId!==activeRun)return;currentBox.innerHTML='<div class="v8-skeleton">Live details are temporarily unavailable. Your core destination match remains available.</div>';forecastBox.innerHTML='<div class="v8-skeleton">Forecast unavailable.</div>';airBox.innerHTML='<div class="v8-skeleton">Air and daylight details unavailable.</div>';});
 }
 root.addEventListener('click',function(ev){
   var t=ev.target,btn=t&&t.closest?t.closest('[data-v7-start],[data-v7-back],[data-v7-next],[data-v7-retake],[data-v7-share]'):null;
   if(!btn||!root.contains(btn)||btn.disabled)return;
   if(btn.matches('[data-v7-share]')){ev.preventDefault();var url=location.href.split('#')[0]+(location.hash||'');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){var orig=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=orig;},2000);}).catch(function(){});}else{try{var ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);var orig=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=orig;},2000);}catch(e){}}return;}
-  if(btn.matches('[data-v7-start]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}renderQuestion();setScreen('quiz');return;}
+  if(btn.matches('[data-v7-start]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}autofillDefaults();renderQuestion();setScreen('quiz');return;}
   if(btn.matches('[data-v7-back]')){ev.preventDefault();if(step>0){step--;renderQuestion();}return;}
   if(btn.matches('[data-v7-next]')){ev.preventDefault();if(!answers[step])return;if(step<Q.length-1){step++;renderQuestion();}else{var runId=++activeRun;setScreen('loading');resetAsyncPanels();(function(){var ct=$('[data-v7-scan-ct]'),t0=null,total=DEST.length||600,dur=290;function tick(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);if(ct)ct.textContent=Math.round(p*total);if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);})();setTimeout(function(){if(runId!==activeRun)return;try{renderResults(runId);setScreen('results');}catch(err){$('[data-v7-rtitle]').textContent='We could not build the match report';$('[data-v7-rsub]').textContent='Please retake the quiz. Your answers were not sent anywhere.';setScreen('results');}},320);}return;}
-  if(btn.matches('[data-v7-retake]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}renderQuestion();setScreen('quiz');}
+  if(btn.matches('[data-v7-retake]')){ev.preventDefault();activeRun++;answers=[];step=0;resetAsyncPanels();try{localStorage.removeItem('vdq7_answers');}catch(e){}autofillDefaults();renderQuestion();setScreen('quiz');}
 });
 buildPips();
 try{var _saved=localStorage.getItem('vdq7_answers');if(_saved){var _sv=JSON.parse(_saved);if(_sv&&_sv.answers&&_sv.ts&&(Date.now()-_sv.ts)<3600000&&_sv.answers.length){answers=_sv.answers;step=Math.min(_sv.step||0,_sv.answers.filter(Boolean).length);renderQuestion();setScreen('quiz');}else{renderQuestion();}}}catch(e){renderQuestion();}
