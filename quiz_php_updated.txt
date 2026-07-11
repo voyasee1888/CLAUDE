@@ -1,0 +1,96 @@
+<?php
+/**
+ * Voyasee Destination Quiz — page-level support for the current tool build.
+ *
+ * The Destination Quiz itself (600 destination profiles, the persona and
+ * scoring engine, every result-page panel, the share-poster generator, and
+ * the Quiz / TouristDestination / FAQPage structured data) now lives
+ * entirely inside the single HTML block pasted into the destination-quiz
+ * page content — it is fully self-contained and needs no PHP-side engine.
+ *
+ * IMPORTANT: this replaces an older wp_footer hook that used to inject a
+ * separate, outdated quiz script (a different 130-destination engine,
+ * targeting a ".vdq3" element) directly into page output. That old engine
+ * is retired here on purpose — if it is still present anywhere else in
+ * functions.php or a snippets plugin, remove it, since running it
+ * alongside the current tool would inject two competing quiz UIs into the
+ * same page.
+ *
+ * What this file does instead, only on the destination-quiz page:
+ *   1. Adds resource hints (preconnect / dns-prefetch) for the external,
+ *      free services the current tool calls, so those requests start
+ *      warming up the connection before the tool's own JavaScript runs.
+ *   2. Prints a minimal, non-personalised Quiz schema in <head> as a
+ *      fallback for crawlers or previews that do not execute JavaScript.
+ *      The tool itself overwrites this with a specific
+ *      TouristDestination + FAQPage schema once a real result exists,
+ *      so this fallback never conflicts with the live version.
+ *   3. Leaves the actual quiz markup, data and logic untouched — they
+ *      belong in the page content, not in functions.php.
+ */
+
+add_action('wp_head', function () {
+    if (!is_page('destination-quiz')) {
+        return;
+    }
+
+    // Resource hints for the free, commercially-unrestricted services the
+    // current tool calls client-side. These only pre-open a connection;
+    // they never send data and cost nothing if the tool is not visible.
+    $hosts = [
+        'https://power.larc.nasa.gov',      // seasonal climate normals
+        'https://api.frankfurter.dev',      // currency conversion + FX delta
+        'https://fonts.googleapis.com',     // Fraunces / Inter / IBM Plex Mono
+        'https://fonts.gstatic.com',
+    ];
+    foreach ($hosts as $host) {
+        printf(
+            '<link rel="preconnect" href="%1$s" crossorigin><link rel="dns-prefetch" href="%1$s">' . "\n",
+            esc_url($host)
+        );
+    }
+
+    // Same-origin plugin endpoints (Voyasee Weather Bridge, Voyasee
+    // Country Intelligence) are already same-origin, so no preconnect is
+    // needed for those — the browser reuses the existing connection.
+
+    // Minimal fallback schema. The tool's own JavaScript writes a fuller
+    // Quiz + TouristDestination + FAQPage block (data-v10-ld /
+    // data-v10-faq-ld) into <head> once a result is produced; this static
+    // version only covers the case where JavaScript has not run yet.
+    $fallback_schema = [
+        '@context'    => 'https://schema.org',
+        '@type'       => 'Quiz',
+        'name'        => 'Voyasee Destination Quiz',
+        'description' => 'A free travel-planning quiz that scores 600 curated destination profiles against a traveller\'s style, budget, season, flight tolerance and deal-breakers, and returns a ranked, explained match report.',
+        'inLanguage'  => 'en',
+        'isAccessibleForFree' => true,
+        'provider'    => [
+            '@type' => 'Organization',
+            'name'  => 'Voyasee',
+            'url'   => 'https://voyasee.com',
+        ],
+    ];
+
+    echo '<script type="application/ld+json" id="voyasee-quiz-fallback-ld">'
+        . wp_json_encode($fallback_schema)
+        . '</script>' . "\n";
+}, 5);
+
+/**
+ * Optional: if VoyaseeWeather / VoyaseeCountryData plugin config objects
+ * are not already localised elsewhere on the site, uncomment and adapt
+ * this block so the quiz's fetchClimate() / fetchCountryPractical() calls
+ * resolve to the correct REST base without falling back to the default
+ * '/wp-json/voyasee-weather/v1' and '/wp-json/voyasee-data/v1' paths.
+ */
+// add_action('wp_footer', function () {
+//     if (!is_page('destination-quiz')) {
+//         return;
+//     }
+//     printf(
+//         '<script>window.VoyaseeWeather=window.VoyaseeWeather||{apiBase:%s};window.VoyaseeCountryData=window.VoyaseeCountryData||{apiBase:%s};</script>' . "\n",
+//         wp_json_encode(rest_url('voyasee-weather/v1')),
+//         wp_json_encode(rest_url('voyasee-data/v1'))
+//     );
+// }, 5);
